@@ -182,11 +182,13 @@ formattable(mok.out, list(
     formatter("span", style = ~ style(color = ifelse(InfitMSQ < msq_min, "red", 
                                                      ifelse(InfitMSQ > msq_max, "red", "black"))))
     ))
+item_table<-formattable(itemlabels, align=c("r","l"), list(
+  formattable::area(row = c(5,8,13)) ~ color_tile("lightblue", "lightpink")))
 ```
 
 Utifrån rödmarkerade värden kan vi se att f66e h och m har för hög OutfitMSQ. De indikeras också med siffran 0 i aisp-kolumnen. 
 
-`r formattable(itemlabels, list(area(row = c(5,8,13)) ~ color_tile("lightblue", "lightpink")))`
+`r item_table`
 
 Det finns fler items med problem, men vi börjar med att ta bort de som har störst problem och köra en ny modell
 
@@ -236,11 +238,12 @@ formattable(mok.out, list(
     formatter("span", style = ~ style(color = ifelse(InfitMSQ < msq_min, "red", 
                                                      ifelse(InfitMSQ > msq_max, "red", "black"))))
     ))
+item_table2<-formattable(itemlabels, list(formattable::area(row = c(5,8,13)) ~ color_tile("lightblue", "lightpink"), formattable::area(row = c(12,16,21)) ~ color_tile("lightpink", "lightblue")))
 ```
 
 Items f66l p och u sticker ut.
 
-`r formattable(itemlabels, list(area(row = c(5,8,13)) ~ color_tile("lightblue", "lightpink"), area(row = c(12,16,21)) ~ color_tile("lightpink", "lightblue")))`
+`r item_table2`
 
 
 ```{r dimensionality3}
@@ -310,9 +313,9 @@ library(formattable)
 sign_formatter <- formatter("span", style = x ~ style(color = ifelse(x > dyn.cutoff, "red", "black")))
 # color_tile would be even better looking, but this will do for now
 resid[upper.tri(resid)]<-NA # remove duplicate values in upper triangle
-formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ sign_formatter))
+formattable(resid, list(formattable::area(col = 1:ncol(df.omit.na)) ~ sign_formatter))
 # below just gives us toned background tiles depending on value
-formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ color_tile("lightblue", "lightpink")))
+formattable(resid, list(formattable::area(col = 1:ncol(df.omit.na)) ~ color_tile("lightblue", "lightpink")))
 ```
 
 Vi ser några item-par som har för höga residualkorrelationer:
@@ -323,7 +326,7 @@ Vi ser några item-par som har för höga residualkorrelationer:
 ```{r local_deps_vis1}
 itemlabels.omit<-itemlabels[-c(5,8,13,12,16,21),]
 row.names(itemlabels.omit) <- NULL
-formattable(itemlabels.omit, list(area(row = c(2,6,10)) ~ color_tile("lightblue", "lightpink"), area(row = c(3,15)) ~ color_tile("lightpink", "lightblue")))
+formattable(itemlabels.omit, list(formattable::area(row = c(2,6,10)) ~ color_tile("lightblue", "lightpink"), formattable::area(row = c(3,15)) ~ color_tile("lightpink", "lightblue")))
 ```
 
 Eftersom f66b ställer till problem med två andra items är det en god kandidat att ta bort. Det är också tydligt att innehållet i b överlappar med det i g och n.
@@ -377,8 +380,8 @@ library(formattable)
 sign_formatter <- formatter("span", style = x ~ style(color = ifelse(x > dyn.cutoff, "red", "black")))
 # color_tile would be even better looking, but this will do for now
 resid[upper.tri(resid)]<-NA # remove duplicate values in upper triangle
-formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ sign_formatter))
+formattable(resid, list(formattable::area(col = 1:ncol(df.omit.na)) ~ sign_formatter))
 # below just gives us toned background tiles depending on value
-formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ color_tile("lightblue", "lightpink")))
+formattable(resid, list(formattable::area(col = 1:ncol(df.omit.na)) ~ color_tile("lightblue", "lightpink")))
 ```
 
