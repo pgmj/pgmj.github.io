@@ -13,7 +13,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 #knitr::opts_chunk$set(root.dir="C:/Users/magnuspjo/OneDrive - RISE/Dokument/Länsstyrelsen/Stockholmsenkäten2022")
 # # Stockholmsenkäten dataimport 2022, magnus.p.johansson@ri.se
 
@@ -50,15 +50,15 @@ for (i in 191:197) {
   df[,i]<-car::recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
 }
 #  h och p och u reverserade
-df$f66h<-recode(df$f66h,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
+df$f66h<-car::recode(df$f66h,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
 for (i in 199:205) {
-  df[,i]<-recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
+  df[,i]<-car::recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
 }
-df$f66p<-recode(df$f66p,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
+df$f66p<-car::recode(df$f66p,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
 for (i in 207:210) {
-  df[,i]<-recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
+  df[,i]<-car::recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
 }
-df$f66u<-recode(df$f66u,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
+df$f66u<-car::recode(df$f66u,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
 df.all <- df # keep everything in df.all, we will need DIF variables, etc, separately from the item data
 # remove non-item data, then go to analysis script (separate for each index)
 df <- df.all[191:211]
@@ -94,25 +94,13 @@ höga poäng = hög risk
 
 ## Deskriptiv statistik
 
-Svarsfördelningen sett över samtliga frågor:
+Svarsfördelningen för varje enskild fråga:
 
 ```{r descriptives1}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(formattable)
 # code below from https://solomonkurz.netlify.app/post/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/ 
-df %>% 
-  pivot_longer(everything()) %>% 
-  count(value) %>% 
-  mutate(percent = (100 * n / sum(n)) %>% round(digits = 1)) %>%
-  formattable()
-```
-
-Svarsfördelningen för varje enskild fråga:
-
-
-```{r descriptives2}
-knitr::opts_chunk$set(echo = FALSE)
 df %>% 
   pivot_longer(everything()) %>% 
   count(name, value) %>% 
@@ -126,7 +114,6 @@ df %>%
 # make object to show items:
 allitems<-formattable(itemlabels, align=c("r","l"), list(
   `itemnr` = formatter("span", style = ~ style(color = "grey",font.weight = "bold"))))
-
 ```
 
 Frågorna som ingår i Individfaktorer är:
@@ -134,7 +121,7 @@ Frågorna som ingår i Individfaktorer är:
 
 
 Vi har totalt `r nrow(df)` personer i vårt sampel. Könsfördelningen är (NA = not available, det vill säga att inget svar finns):
-```{r descriptives3}
+```{r descriptives2}
 formattable(summary(as.factor(df.all$Kön)))
   
 ```
@@ -142,7 +129,7 @@ formattable(summary(as.factor(df.all$Kön)))
 # Dimensionalitet och residualkorrelationer
 
 ```{r dimensionality1}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 # PCA of residuals, code borrowed from https://bookdown.org/chua/new_rasch_demo2/MD-fit.html#conduct-a-pca-of-standardized-residual-correlations
 # based on eRm residuals
 library(eRm)
@@ -174,18 +161,16 @@ Eigenvalues bör vara under 2.0 och de fem första är
 Det innebär att vi har problem med multidimensionalitet. För att undersöka vilka items som skapar problem tar vi fram en tabell som visar hur väl items passar modellen. Det huvudsakliga måttet är Rasch item fit residual MSQ, som bör ligga mellan 0.7 och 1.3. Som komplement har vi coefH från Mokken Scaling model, som bör vara över 0.3.
 
 ```{r dimensionality_fit1}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(mokken)
 mok.h<-coefH(df.omit.na) # H should be above 0.3
 mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
 mok.hi<-as.numeric(c(mok.h$Hi))
-mok.hi
 mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
 mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
 colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
 mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
 mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
-mok.out
 # formatted table that highlights cutoff values in red
 formattable(mok.out, list(
   'coefH' = 
@@ -235,13 +220,11 @@ knitr::opts_chunk$set(echo = FALSE)
 mok.h<-coefH(df.omit.na) # H should be above 0.3
 mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
 mok.hi<-as.numeric(c(mok.h$Hi))
-mok.hi
 mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
 mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
 colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
 mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
 mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
-mok.out
 # formatted table that highlights cutoff values in red
 formattable(mok.out, list(
   'coefH' = 
@@ -284,20 +267,18 @@ eigenv<- pca$values %>%
 Eigenvalues bör vara under 2.0 och de fem första är 
 `r eigenv`.
 
-Största värdet är 2.00, vilket är acceptabelt.
+Största värdet är acceptabelt.
 
 ```{r dimensionality_fit3}
 knitr::opts_chunk$set(echo = FALSE)
 mok.h<-coefH(df.omit.na) # H should be above 0.3
 mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
 mok.hi<-as.numeric(c(mok.h$Hi))
-mok.hi
 mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
 mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
 colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
 mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
 mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
-mok.out
 # formatted table that highlights cutoff values in red
 formattable(mok.out, list(
   'coefH' = 
@@ -378,9 +359,9 @@ eigenv<- pca$values %>%
 ```
 Med ytterligare 2 items borttagna har vi nu eigenvalues på `r eigenv`.
 
-Vi tittar på residualkorrelationerna igen.
+Vi tittar på residualkorrelationerna igen:
 
-```{r local_deps1}
+```{r local_deps2}
 knitr::opts_chunk$set(echo = FALSE)
 library(mirt)
 mirt.rasch <- mirt(df.omit.na, model=1, itemtype='Rasch') # unidimensional Rasch model
