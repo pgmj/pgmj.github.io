@@ -1,0 +1,403 @@
+---
+title: "Individfaktorer"
+author: "Magnus Johansson, RISE"
+date: '2022-02-13'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: united
+    highlight: tango
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+#knitr::opts_chunk$set(root.dir="C:/Users/magnuspjo/OneDrive - RISE/Dokument/Länsstyrelsen/Stockholmsenkäten2022")
+# # Stockholmsenkäten dataimport 2022, magnus.p.johansson@ri.se
+
+# first we set our chosen cut-off values for some commonly used indices:
+msq_min <- 0.7
+msq_max <- 1.3
+coefH_min <- 0.3
+loc_dep <- 0.3 #above average residual correlation
+
+# SPSS data file from Stockholm Stad
+library(foreign)
+library(car)
+library(readxl)
+library(labelled)
+
+df <- read.spss("C:/Users/magnuspjo/OneDrive - RISE/Dokument/Länsstyrelsen/Stockholmsenkäten2022/data/SE 2014-2020 KI Leifman.sav", to.data.frame = TRUE)
+# we have data from 2006 to 2020, every 2 years. Starting with 2014 as calibration dataset
+df <- subset(df, ar == "2014") # N = 12540, 372 variables
+#replace all 99* codes with missing (NA)
+for (i in 1:ncol(df)) {
+  df[,i]<-car::recode(df[,i],"990:999=NA",as.factor=FALSE)
+}
+
+###### Individfaktorer
+# koda om svaren för items som ingår i individfaktorer, F66a-F66u i data, fråga 67 i PDF
+# variabler df[191:211]
+# låg poäng = låg risk 
+# defininera svarskategorierna för att förenkla recode-koden
+smd<-'Stämmer mycket dåligt'
+sgd<-'Stämmer ganska dåligt'
+sgb<-'Stämmer ganska bra'
+smb<-'Stämmer mycket bra'
+for (i in 191:197) {
+  df[,i]<-car::recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
+}
+#  h och p och u reverserade
+df$f66h<-recode(df$f66h,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
+for (i in 199:205) {
+  df[,i]<-recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
+}
+df$f66p<-recode(df$f66p,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
+for (i in 207:210) {
+  df[,i]<-recode(df[,i],"smb=0;sgb=1;sgd=2;smd=3",as.factor=FALSE)
+}
+df$f66u<-recode(df$f66u,"smb=3;sgb=2;sgd=1;smd=0",as.factor=FALSE)
+df.all <- df # keep everything in df.all, we will need DIF variables, etc, separately from the item data
+# remove non-item data, then go to analysis script (separate for each index)
+df <- df.all[191:211]
+# setup item descriptions
+itemlabels<-read.csv("C:/Users/magnuspjo/OneDrive - RISE/Dokument/Länsstyrelsen/Stockholmsenkäten2022/data/IF_item_labels.csv")
+var_label(df) <- itemlabels$items # attach labels/descriptions to each variable
+itemlabels<-as.data.frame(itemlabels)
+row.names(itemlabels) <- NULL
+```
+
+# Individfaktorer
+
+Vi kommer att analysera
+-dimensionalitet och residualkorrelationer
+-hur svarskategorierna fungerar och ev. behov av förändringar
+-hur väl frågorna fungerar i termer av ”item fit” till Rasch-modellen
+-hur frågornas ”svårighetsgrad” matchar mot respondenternas egenskaper
+-reliabilitet (över hela indexet, ”test information function”)
+-invarians – att frågorna fungerar lika mellan kön och mättillfällen (och ev. mellan åk 9 och åk 2 på gymnasiet? ej specat i avtalet, men rimligen relevant)
+-omvandling av summerade rådata till intervalldata med mätosäkerheter på individnivå
+
+Item/frågor har etiketter f66a-f66u, fråga 67 i PDF-fil med frågor
+"Hur väl stämmer följande påståenden in på dig som person?" följs av frågorna, alla med samma svar
+
+- 'Stämmer mycket dåligt'
+- 'Stämmer ganska dåligt'
+- 'Stämmer ganska bra'
+- 'Stämmer mycket bra'
+
+f66 h och p och u är reverserade
+
+höga poäng = hög risk
+
+## Deskriptiv statistik
+
+Svarsfördelningen sett över samtliga frågor:
+
+```{r descriptives1}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(formattable)
+# code below from https://solomonkurz.netlify.app/post/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/ 
+df %>% 
+  pivot_longer(everything()) %>% 
+  count(value) %>% 
+  mutate(percent = (100 * n / sum(n)) %>% round(digits = 1)) %>%
+  formattable()
+```
+
+Svarsfördelningen för varje enskild fråga:
+
+
+```{r descriptives2}
+knitr::opts_chunk$set(echo = FALSE)
+df %>% 
+  pivot_longer(everything()) %>% 
+  count(name, value) %>% 
+  ggplot(aes(x = value, y = name, fill = n)) +
+  geom_tile() +
+  scale_fill_viridis_c(expression(italic(n)), limits = c(0, NA)) +
+  scale_x_continuous("Response", expand = c(0, 0), breaks = 0:4) +
+  ggtitle("Items") +
+  theme(axis.text.x = element_text(size = 6))
+
+# make object to show items:
+allitems<-formattable(itemlabels, align=c("r","l"), list(
+  `itemnr` = formatter("span", style = ~ style(color = "grey",font.weight = "bold"))))
+
+```
+
+Frågorna som ingår i Individfaktorer är:
+`r allitems`
+
+
+Vi har totalt `r nrow(df)` personer i vårt sampel. Könsfördelningen är (NA = not available, det vill säga att inget svar finns):
+```{r descriptives3}
+formattable(summary(as.factor(df.all$Kön)))
+  
+```
+
+# Dimensionalitet och residualkorrelationer
+
+```{r dimensionality1}
+knitr::opts_chunk$set(echo = FALSE)
+# PCA of residuals, code borrowed from https://bookdown.org/chua/new_rasch_demo2/MD-fit.html#conduct-a-pca-of-standardized-residual-correlations
+# based on eRm residuals
+library(eRm)
+df.omit.na<-na.omit(df) # eRm does not allow participants with all missing data
+df.erm<-PCM(df.omit.na) # run PCM model
+# get estimates
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+std.resids <- item.fit$st.res
+# PCA of residuals
+library(psych)
+pca <- pca(std.resids, nfactors = 3, rotate = "oblimin")
+eigenv<- pca$values %>%
+  round(2) %>%
+  head(5)
+```
+
+För att köra Rasch-analys behöver vi i detta skede ta bort individer med missing data, vilket innebär att vårt sampel minskar till `r nrow(df.omit.na)`, vilket innebär att `r nrow(df)-nrow(df.omit.na)` personer har tagits bort
+
+Först gör vi en PCA, principalkomponentanalys, på residualerna från Rasch-modellen. 
+
+Eigenvalues bör vara under 2.0 och de fem första är 
+`r eigenv`.
+
+Det innebär att vi har problem med multidimensionalitet. För att undersöka vilka items som skapar problem tar vi fram en tabell som visar hur väl items passar modellen. Det huvudsakliga måttet är Rasch item fit residual MSQ, som bör ligga mellan 0.7 och 1.3. Som komplement har vi coefH från Mokken Scaling model, som bör vara över 0.3.
+
+```{r dimensionality_fit1}
+knitr::opts_chunk$set(echo = FALSE)
+library(mokken)
+mok.h<-coefH(df.omit.na) # H should be above 0.3
+mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
+mok.hi<-as.numeric(c(mok.h$Hi))
+mok.hi
+mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
+mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
+colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
+mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
+mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
+mok.out
+# formatted table that highlights cutoff values in red
+formattable(mok.out, list(
+  'coefH' = 
+    formatter("span", style = ~ style(color = ifelse(coefH < coefH_min, "red", "black"))),
+  'OutfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(OutfitMSQ < msq_min, "red", 
+                                                     ifelse(OutfitMSQ > msq_max, "red", "black")))),
+  'InfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(InfitMSQ < msq_min, "red", 
+                                                     ifelse(InfitMSQ > msq_max, "red", "black"))))
+    ))
+```
+
+Utifrån rödmarkerade värden kan vi se att f66e h och m har för hög OutfitMSQ. De indikeras också med siffran 0 i aisp-kolumnen. 
+
+`r formattable(itemlabels, list(area(row = c(5,8,13)) ~ color_tile("lightblue", "lightpink")))`
+
+Det finns fler items med problem, men vi börjar med att ta bort de som har störst problem och köra en ny modell
+
+```{r dimensionality2}
+knitr::opts_chunk$set(echo = FALSE)
+df.omit.na$f66e<-NULL
+df.omit.na$f66h<-NULL
+df.omit.na$f66m<-NULL
+removed_items<-itemlabels[c(5,8,13),]
+
+df.erm<-PCM(df.omit.na) # run PCM model
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+std.resids <- item.fit$st.res
+pca <- pca(std.resids, nfactors = 3, rotate = "oblimin")
+eigenv<- pca$values %>%
+  round(2) %>%
+  head(5)
+```
+
+Eigenvalues bör vara under 2.0 och de fem första är 
+`r eigenv`.
+
+Det innebär att vi fortfarande har problem med multidimensionalitet.
+```{r dimensionality_fit2}
+knitr::opts_chunk$set(echo = FALSE)
+mok.h<-coefH(df.omit.na) # H should be above 0.3
+mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
+mok.hi<-as.numeric(c(mok.h$Hi))
+mok.hi
+mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
+mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
+colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
+mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
+mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
+mok.out
+# formatted table that highlights cutoff values in red
+formattable(mok.out, list(
+  'coefH' = 
+    formatter("span", style = ~ style(color = ifelse(coefH < coefH_min, "red", "black"))),
+  'OutfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(OutfitMSQ < msq_min, "red", 
+                                                     ifelse(OutfitMSQ > msq_max, "red", "black")))),
+  'InfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(InfitMSQ < msq_min, "red", 
+                                                     ifelse(InfitMSQ > msq_max, "red", "black"))))
+    ))
+```
+
+Items f66l p och u sticker ut.
+
+`r formattable(itemlabels, list(area(row = c(5,8,13)) ~ color_tile("lightblue", "lightpink"), area(row = c(12,16,21)) ~ color_tile("lightpink", "lightblue")))`
+
+
+```{r dimensionality3}
+knitr::opts_chunk$set(echo = FALSE)
+df.omit.na$f66l<-NULL
+df.omit.na$f66p<-NULL
+df.omit.na$f66u<-NULL
+removed_items<-rbind(removed_items,itemlabels[c(12,16,21),])
+
+df.erm<-PCM(df.omit.na) # run PCM model
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+std.resids <- item.fit$st.res
+pca <- pca(std.resids, nfactors = 3, rotate = "oblimin")
+eigenv<- pca$values %>%
+  round(3) %>%
+  head(5)
+```
+
+Eigenvalues bör vara under 2.0 och de fem första är 
+`r eigenv`.
+
+Största värdet är 2.00, vilket är acceptabelt.
+
+```{r dimensionality_fit3}
+knitr::opts_chunk$set(echo = FALSE)
+mok.h<-coefH(df.omit.na) # H should be above 0.3
+mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
+mok.hi<-as.numeric(c(mok.h$Hi))
+mok.hi
+mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
+mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
+colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
+mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
+mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
+mok.out
+# formatted table that highlights cutoff values in red
+formattable(mok.out, list(
+  'coefH' = 
+    formatter("span", style = ~ style(color = ifelse(coefH < coefH_min, "red", "black"))),
+  'OutfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(OutfitMSQ < msq_min, "red", 
+                                                     ifelse(OutfitMSQ > msq_max, "red", "black")))),
+  'InfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(InfitMSQ < msq_min, "red", 
+                                                     ifelse(InfitMSQ > msq_max, "red", "black"))))
+    ))
+```
+
+Items f66k och s har acceptabla fit residuals (MSQ), men coefH indikerar svagheter. Eftersom Rasch-modellen är primär lämnar vi dessa items just nu och går vidare till att titta på residualkorrelationer, eller "local independence". Detta görs genom en korrelationsmatris av itemresidualer i Rasch-modellen, där vi tar fram ett medelvärde av alla korrelationer och sätter ett gränsvärde för hur mycket ett par av items får avvika från medelvärdet. Vanligtvis ligger detta mellan 0.2 och 0.3
+
+```{r local_deps1}
+knitr::opts_chunk$set(echo = FALSE)
+library(mirt)
+mirt.rasch <- mirt(df.omit.na, model=1, itemtype='Rasch') # unidimensional Rasch model
+resid=residuals(mirt.rasch, type="Q3", digits=2)
+diag(resid) <- NA # make the diagonal of correlation matrix NA instead of 1
+dyn.cutoff<-mean(resid, na.rm=T) + loc_dep # create variable indicating dynamic cutoff at 0.3 above average
+resid<-as.data.frame(resid)
+for (i in 1:ncol(resid)) {
+  resid[,i]<-round(resid[,i],2)
+}
+# now get formattable to highlight relevant correlations according to dynamic cutoff
+library(formattable)
+sign_formatter <- formatter("span", style = x ~ style(color = ifelse(x > dyn.cutoff, "red", "black")))
+# color_tile would be even better looking, but this will do for now
+resid[upper.tri(resid)]<-NA # remove duplicate values in upper triangle
+formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ sign_formatter))
+# below just gives us toned background tiles depending on value
+formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ color_tile("lightblue", "lightpink")))
+```
+
+Vi ser några item-par som har för höga residualkorrelationer:
+- b med g
+- b med n
+- c med t
+
+```{r local_deps_vis1}
+itemlabels.omit<-itemlabels[-c(5,8,13,12,16,21),]
+row.names(itemlabels.omit) <- NULL
+formattable(itemlabels.omit, list(area(row = c(2,6,10)) ~ color_tile("lightblue", "lightpink"), area(row = c(3,15)) ~ color_tile("lightpink", "lightblue")))
+```
+
+Eftersom f66b ställer till problem med två andra items är det en god kandidat att ta bort. Det är också tydligt att innehållet i b överlappar med det i g och n.
+
+Även f66c och t är tämligen lika varandra, vilket gör att det är rimligt att ta bort den ena. För att välja vilken kan vi jämföra parametrar gällande "targeting", hur väl frågorna matchar mot respondenterna, och item-parametrar som MSQ.
+
+```{r local_deps_vis2}
+plotPImap(df.erm, sorted = T)
+plotPImap(df.erm, item.subset = c("f66c","f66t"))
+```
+Vi ser att f66c har ett bredare omfång än f66t, så den senare tas bort.
+
+```{r dimensionality4}
+knitr::opts_chunk$set(echo = FALSE)
+itemlabels.omit<-itemlabels.omit[-c(2,15),]
+row.names(itemlabels.omit) <- NULL
+df.omit.na$f66b<-NULL
+df.omit.na$f66t<-NULL
+removed_items<-rbind(removed_items,itemlabels[c(12,16,21),],itemlabels[c(2,20),])
+
+df.erm<-PCM(df.omit.na) # run PCM model
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+std.resids <- item.fit$st.res
+pca <- pca(std.resids, nfactors = 3, rotate = "oblimin")
+eigenv<- pca$values %>%
+  round(3) %>%
+  head(5)
+```
+Med ytterligare 2 items borttagna har vi nu eigenvalues på `r eigenv`.
+
+Vi tittar på residualkorrelationerna igen.
+
+```{r local_deps1}
+knitr::opts_chunk$set(echo = FALSE)
+library(mirt)
+mirt.rasch <- mirt(df.omit.na, model=1, itemtype='Rasch') # unidimensional Rasch model
+resid=residuals(mirt.rasch, type="Q3", digits=2)
+diag(resid) <- NA # make the diagonal of correlation matrix NA instead of 1
+dyn.cutoff<-mean(resid, na.rm=T) + loc_dep # create variable indicating dynamic cutoff at 0.3 above average
+resid<-as.data.frame(resid)
+for (i in 1:ncol(resid)) {
+  resid[,i]<-round(resid[,i],2)
+}
+# now get formattable to highlight relevant correlations according to dynamic cutoff
+library(formattable)
+sign_formatter <- formatter("span", style = x ~ style(color = ifelse(x > dyn.cutoff, "red", "black")))
+# color_tile would be even better looking, but this will do for now
+resid[upper.tri(resid)]<-NA # remove duplicate values in upper triangle
+formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ sign_formatter))
+# below just gives us toned background tiles depending on value
+formattable(resid, list(area(col = 1:ncol(df.omit.na)) ~ color_tile("lightblue", "lightpink")))
+```
+
