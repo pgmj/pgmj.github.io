@@ -49,7 +49,7 @@ for (i in 1:ncol(df)) {
 ###### Individfaktorer
 # koda om svaren för items som ingår i individfaktorer, F66a-F66u i data, fråga 67 i PDF
 # variabler df[191:211]
-# låg poäng = låg risk 
+# låg poäng = hög risk 
 # defininera svarskategorierna för att förenkla recode-koden
 smd<-'Stämmer mycket dåligt'
 sgd<-'Stämmer ganska dåligt'
@@ -103,9 +103,7 @@ Item/frågor har etiketter f66a-f66u i datafilen, och motsvaras av fråga 67 i P
 * 'Stämmer ganska bra'
 * 'Stämmer mycket bra'
 
-Items f66h, m, p och u är reverserade.
-
-Höga poäng innebär genomgående hög risk.
+Alla items utom f66h, m, p och u är reverserade, d.v.s. att "Stämmer mycket bra" kodas som "0" i stället för "3" till analysen. Det innebär att höga poäng genomgående innebär låg risk.
 
 ***
 
@@ -122,13 +120,14 @@ df %>%
   ggplot(aes(x = value, y = name, fill = n)) +
   geom_tile() +
   scale_fill_viridis_c(expression(italic(n)), limits = c(0, NA)) +
-  scale_x_continuous("Response", expand = c(0, 0), breaks = 0:4) +
+  scale_x_continuous("Response", expand = c(0, 0), breaks = 0:4) + # change breaks to fit number of response categories
   ggtitle("Items") +
   theme(axis.text.x = element_text(size = 6))
 
 # make object to show items:
 allitems<-formattable(itemlabels, align=c("r","l"), list(
-  `itemnr` = formatter("span", style = ~ style(color = "grey",font.weight = "bold"))))
+  `itemnr` = formatter("span", style = ~ style(color = "grey",font.weight = "bold"))),
+  table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
 ```
 
 ## Frågorna som ingår i Individfaktorer
@@ -140,7 +139,6 @@ Vi har totalt `r nrow(df)` personer i vårt sampel. ("NA" i tabeller = "svar sak
 
 ```{r descriptives2}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-#formattable(summary(as.factor(df.all$Kön)))
 demographics<-as.data.frame(summary(as.factor(df.all$Kön)))
 colnames(demographics)<-c("Antal")
 rownames(demographics)<-c("Flickor","Pojkar","Ej svar")
@@ -154,7 +152,6 @@ df.all %>%
   adorn_ns() %>%
   adorn_title() %>%
   knitr::kable()
-# replace with gtsummary?  
 ```
 
 # Dimensionalitet och residualkorrelationer
@@ -180,14 +177,14 @@ eigenv<- pca$values %>%
   head(5)
 ```
 
-För att köra Rasch-analys behöver vi i detta skede ta bort individer med missing data, vilket innebär att vårt sampel minskar till `r nrow(df.omit.na)`, vilket innebär att `r nrow(df)-nrow(df.omit.na)` personer har tagits bort
+För att köra Rasch-analys behöver vi i detta skede ta bort individer med missing data, vilket innebär att vårt sampel minskar till `r nrow(df.omit.na)`, vilket innebär att `r nrow(df)-nrow(df.omit.na)` personer har tagits bort (`r round((nrow(df)-nrow(df.omit.na))/nrow(df)*100,2)`%).
 
 Först gör vi en PCA, principalkomponentanalys, på residualerna från Rasch-modellen. 
 
 Eigenvalues för residualer bör vara under 2.0 och de fem första är 
 `r eigenv`.
 
-Det innebär att vi har problem med multidimensionalitet. För att undersöka vilka items som skapar problem tar vi fram en tabell som visar hur väl items passar modellen. Det huvudsakliga måttet är Rasch item fit residual MSQ, som bör ligga mellan 0.7 och 1.3. Som komplement har vi coefH från Mokken Scaling model, som bör vara över 0.3. Aisp visar med siffran 0 vilka items som fungerar undermåligt, och siffror över 1 innebär att items hänger samman i en separat dimension.
+Det innebär att vi har problem med multidimensionalitet. För att undersöka vilka items som skapar problem tar vi fram en tabell som visar hur väl items passar modellen. Det huvudsakliga måttet är Rasch item fit residual MSQ, som bör ligga mellan `r msq_min` och `r msq_max`. Som komplement har vi coefH från Mokken Scaling model, som bör vara över `r coefH_min`. Kolumnen aisp visar med siffran 0 vilka items som fungerar undermåligt, och siffror över 1 innebär att items hänger samman i en separat dimension.
 
 ```{r dimensionality_fit1, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
@@ -215,11 +212,11 @@ item_table<-formattable(itemlabels, align=c("r","l"), list(
 ```
 `r erm_mokkenFit`
 
-Utifrån rödmarkerade värden kan vi se att f66e och h har för hög OutfitMSQ. De indikeras också med siffran 0 i aisp-kolumnen, vilket även f66m gör, men vi låter den vara kvar för tillfället eftersom MSQ är acceptabel. 
+Utifrån rödmarkerade värden kan vi se att f66e och h har för hög OutfitMSQ. De indikeras också med siffran 0 i aisp-kolumnen, vilket även f66m gör, men vi låter den vara kvar för tillfället eftersom MSQ är acceptabel. Några items ligger strax under 0.7, men väldigt nära, så vi låter dem också vara.
 
 `r item_table`
 
-Det finns fler items med problem, men vi börjar med att ta bort de två som har störst problem och köra en ny modell.
+Vi börjar med att ta bort de två items (f66e och h) som har störst problem och kör en ny modell.
 
 ```{r dimensionality2, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
@@ -455,11 +452,255 @@ plotICC(df.erm, item.subset = "f66q")
 
 ```
 
+## Invarians och DIF
 
+Vi har flera demografiska grupperingar som vi vill undersöka om frågorna fungerar likadant för, vilket är en förutsättning för att kunna jämföra data med varandra. Dessa demografiska grupperingar är: 
+
+* Kön (pojke/flicka)
+* Årskurs (Åk 9/Gymnasiet år 2)
+
+```{r invariance1, include=FALSE}
+# we need to get vectors for DIF variables from the base data file
+# DIF with eRm requires no missing data in comparison variable
+df.nona <- df.all[c(8,10,11,191:211)]
+df.nona$f66t<-NULL
+df.nona$f66b<-NULL
+df.nona$f66l<-NULL
+df.nona$f66p<-NULL
+df.nona$f66u<-NULL
+df.nona$f66e<-NULL
+df.nona$f66h<-NULL
+df.nona$f66m<-NULL
+df.nona$SkolSDO<-car::recode(df.nona$SkolSDO,"'Övrigt ospecificerat'=NA")
+df.nona<-na.omit(df.nona)
+#write.csv(df.nona,file = "IFwinsteps220220.csv", na="")
+# we probably need to get a random subsample to not inflate p-values
+#df.nona.all<-df.nona # in case we need multiple sampling based on the larger sample
+#df.nona<-df.nona.all[sample(1:nrow(df.nona.all), 1400),]
+df.nona.gender<-df.nona$Kön
+df.nona$Kön<-NULL
+df.nona.arskurs<-df.nona$ARSKURS
+df.nona$ARSKURS<-NULL
+df.nona.skolsdo<-df.nona$SkolSDO
+df.nona$SkolSDO<-NULL
+# run PCM model
+df.erm.dif <- PCM(df.nona) # CML estimation for DIF analysis
+
+# overall tests are less useful, but can be run like this:
+#df.erm.gender<-LRtest(df.erm.dif, splitcr = df.nona.gender)
+#df.erm.arskurs<-LRtest(df.erm.dif, splitcr = df.nona.arskurs)
+#df.erm.skolsdo<-LRtest(df.erm.dif, splitcr = df.nona.skolsdo)
+
+# we can do overall tests based on different group splits to test robustness
+#dif.median<-LRtest(df.erm.dif, splitcr = "median")
+#halfsplit<-sample(1:2,nrow(df.nona), replace = T) # this be been repeated or looped
+#dif.split<-LRtest(df.erm.dif, splitcr = halfsplit)
+
+# run DIF test to get significance tests on all thresholds, only works with 2 groups
+# useful to evaluate uniformity
+#dif.sex<-Waldtest(df.erm.dif, splitcr = df.nona.gender)
+#dif.arskurs<-Waldtest(df.erm.dif, splitcr = df.nona.arskurs)
+# Rasch trees for interaction between potential DIF variables.
+library(psychotree)
+df.tree <- data.frame(matrix(ncol = 0, nrow = nrow(df.nona))) # we need to make a new dataframe
+df.tree$IF <- as.matrix(df.nona) # containing item data in a nested dataframe
+# and DIF variables:
+df.tree$gender <- car::recode(df.nona.gender,"'Flicka'=2;'Pojke'=1",as.factor = FALSE)
+df.tree$arskurs <- car::recode(df.nona.arskurs,"'Åk 9'=1;'Gy 2'=2", as.factor = FALSE)
+
+# now we can run pctree (for partial credit model)
+pctree.out<-pctree(IF ~ gender, data = df.tree)
+#plot(pctree.out)
+```
+
+`r plot(pctree.out)`
+
+Figuren ovan indikerar att det finns signifikant invarians med avseende på kön (pojke/flicka) någonstans bland våra items. För att bedöma om den är i sådan omfattning att det är problematiskt behöver vi analysera storleken på avvikelsen.
+
+```{r invariance1_2, include=TRUE}
+# compare two nodes & calculate differences. Indicate larger than 0.5 logits difference
+itempar(pctree.out, node = c(2,3)) %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(Flickor = '2', 
+         Pojkar = '3') %>%
+  rownames_to_column(var = "Item") %>%
+  mutate(Skillnad = .data[['Flickor']] - .data[['Pojkar']]) %>%
+  mutate(across(where(is.numeric), round, 3)) %>%
+  mutate(Item = str_remove_all(Item, "[IF]")) %>%
+  formattable(list('Skillnad' = formatter("span", style = ~ style(color = ifelse(Skillnad < -0.5, "red", 
+                                                                                   ifelse(Skillnad > 0.5, "red", "black"))))),
+              table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
+# make a line graph to visualize differences
+pctree.par<- itempar(pctree.out, node = c(2,3)) %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame()
+pctree.par$item<-rownames(pctree.par)
+rownames(pctree.par)<-NULL
+names(pctree.par)<-c("Flickor","Pojkar","Item")
+library(reshape)
+pctree.par <- melt(pctree.par, id.vars = "Item")
+names(pctree.par)<-c("Item", "Grupp", "Logits")
+pctree.par$Item<-str_remove_all(pctree.par$Item, "[IF]") # remove IF from item labels
+ggplot(pctree.par, aes(x=Item, y=Logits, color=Grupp, group = Grupp)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 2, color = "black")
+```
+
+Endast f66s har över 0.5 logits DIF gällande skillnader mellan kön, vilket är markerat i rött i tabellen ovan.
+
+Vi behöver nu undersöka om DIF är uniform eller inte, vilket innebär att vi ser på hur de olika trösklarna mellan svarskategorierna förhåller sig till det förväntade värdet. 
+
+```{r invariance1_3, include=FALSE}
+
+# If we have DIF, is it uniform or not?
+#df.erm.dif <- PCM(df.nona) # CML estimation.
+df.erm.gof<-LRtest(df.erm.dif, splitcr = df.nona.gender) # change DIF-variable if needed
+plotGOF(df.erm.gof, conf = list(), tlab = "item",
+          xlab = "Pojkar", ylab = "Flickor", beta.subset = c(40:42)) # indicate tresholds to focus on from df.erm.gof$betalist (number of items * thresholds)
+# ser ut som att alla ligger på samma sida linjen, vilket borde indikera uniform DIF
+# mao item split eller ta bort
+```
+
+Alla trösklar ligger på samma sida linjen, vilket innebär att vi har uniform DIF. Vi kan därför välja om vi vill "splitta" vårt item eller ta bort det helt. Att splitta ett item innebär att det betraktas som separat för pojkar och flickor, vilket tar bort effekten av DIF när personens övergripande förmåga beräknas. Dock skulle detta medföra  att det inte går att använda en transformeringstabell från ordinal summapoäng till intervallpoäng.
+
+f66s har frågeställningen "Om jag ställs inför en svår uppgift så väljer jag att göra något annat."
+
+BESLUT?
+
+Vi behåller f66s just nu, och gör invariansanalys av Årskurs.
+
+```{r reliability_check1}
+# just to see what happens if we remove f66s
+library(TAM)
+df.m<-as.matrix(df.nona)
+df.tam <- tam(df.m, irtmodel = "PCM") # EAP rel. 0.838 with f66s, 0.836 without s
+library(WrightMap)
+IRT.WrightMap(df.tam,show.thr.lab=TRUE)
+df.erm<-PCM(df.nona) # run PCM model
+# get estimates
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+# f66s 10277.482 8524   0.000      1.206     1.161   13.146  10.733   0.345
+#          Chisq   df p-value Outfit MSQ Infit MSQ Outfit t Infit t Discrim
+df.nona$f66s<-NULL
+```
+
+
+```{r invariance2_1, include=TRUE}
+# titta på ev interaktion mellan DIF-variabler
+pctree.out<-pctree(IF ~ arskurs, data = df.tree)
+plot(pctree.out)
+```
+Vi kan konstatera att även gällande årskurs verkar DIF finnas.
+
+```{r invariance2_2, include=TRUE}
+# compare two nodes & calculate differences. Indicate larger than 0.5 logits difference
+itempar(pctree.out, node = c(2,3)) %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(Åk9 = '2', 
+         Gy2 = '3') %>%
+  mutate(Skillnad = .data[['Åk9']] - .data[['Gy2']]) %>%
+  mutate(across(where(is.numeric), round, 3)) %>%
+  rownames_to_column(var = "Item") %>%
+  mutate(Item = str_remove_all(Item, "[IF]")) %>%
+  formattable(list('Skillnad' = formatter("span", style = ~ style(color = ifelse(Skillnad < -0.5, "red", 
+                                                                                   ifelse(Skillnad > 0.5, "red", "black"))))),
+                                          table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
+# make a line graph to visualize differences
+pctree.par<- itempar(pctree.out, node = c(2,3)) %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame()
+pctree.par$item<-rownames(pctree.par)
+rownames(pctree.par)<-NULL
+names(pctree.par)<-c("Åk9","Gy2","Item")
+library(reshape)
+pctree.par <- melt(pctree.par, id.vars = "Item")
+names(pctree.par)<-c("Item", "Grupp", "Logits")
+pctree.par$Item<-str_remove_all(pctree.par$Item, "[IF]") # remove IF from item labels
+ggplot(pctree.par, aes(x=Item, y=Logits, color=Grupp, group = Grupp)) +
+  geom_line(size = 1.5) +
+  geom_point(size = 2, color = "black")
+```
+
+Ingen DIF är stor nog att vara problematisk.
+
+Nästa steg är att se om det finns DIF som orsakas av interaktion mellan de två faktorerna kön och årskurs.
+
+```{r invariance_interaction1}
+# titta på ev interaktion mellan DIF-variabler
+pctree.out<-pctree(IF ~ gender + arskurs, data = df.tree)
+plot(pctree.out)
+```
+
+
+```{r invariance_interaction2}
+# compare two nodes & calculate differences. Indicate larger than 0.5 logits difference
+# Åk9:
+itempar(pctree.out, node = c(3,4)) %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(Flickor = '3', 
+         Pojkar = '4') %>%
+  rownames_to_column(var = "Item") %>%
+  mutate(Skillnad = .data[['Flickor']] - .data[['Pojkar']]) %>%
+  mutate(across(where(is.numeric), round, 3)) %>%
+  mutate(Item = str_remove_all(Item, "[IF]")) %>%
+  formattable(list('Skillnad' = formatter("span", style = ~ style(color = ifelse(Skillnad < -0.5, "red", 
+                                                                                   ifelse(Skillnad > 0.5, "red", "black"))))),
+              table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
+# Gy2:
+itempar(pctree.out, node = c(6,7)) %>%
+  as.data.frame() %>%
+  t() %>%
+  as.data.frame() %>%
+  dplyr::rename(Flickor = '6', 
+         Pojkar = '7') %>%
+  rownames_to_column(var = "Item") %>%
+  mutate(Skillnad = .data[['Flickor']] - .data[['Pojkar']]) %>%
+  mutate(across(where(is.numeric), round, 3)) %>%
+  mutate(Item = str_remove_all(Item, "[IF]")) %>%
+  formattable(list('Skillnad' = formatter("span", style = ~ style(color = ifelse(Skillnad < -0.5, "red", 
+                                                                                   ifelse(Skillnad > 0.5, "red", "black"))))),
+                                      table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
+                                          
+```
+
+Ingen av dessa når problematiska nivåer.
+
+```{r invariance_later, include=FALSE}
+
+# se Table 3 i denna artikel för ett annat sätt att sammanfatta Rasch tree DIF:
+# Aryadoust, V. (2018). Using recursive partitioning Rasch trees to investigate differential item functioning in second language reading tests. Studies in Educational Evaluation, 56, 197–204. https://doi.org/10.1016/j.stueduc.2018.01.003
+
+
+# testa stabiliteten i DIF genom subsampling, B = antal körningar
+# "Vi behöver titta närmare på stabiliteten i avvikelsen genom att göra upprepade analyser med slumpmässiga delar av vårt sampel."
+#library("stablelearner")
+#pctree.stt<-stabletree(pctree.out, B = 20)
+#summary(pctree.stt) # "Utifrån tabellen kan vi se att det är hög sannolikhet att DIF för kön kommer kunna påvisas?"
+#barplot(pctree.stt)
+#plot(pctree.stt)
+
+########### https://bookdown.org/chua/new_rasch_demo2/DIF.html#conduct-dif-analyses
+# add IIO analysis output? 
+#mok.iio<-check.iio(df.nona)
+#df.nona$f66s<-NULL
+```
 
 # Targeting
 
-Först tittar vi på items enskilda kurvor och sammanslagna.
+Items enskilda kurvor ("item information") och sammanslagna ("test information"). Det senare visar testets reliabilitet som helhet, sett över hela skalans spann.
 
 ```{r targeting1}
 plotINFO(df.erm, type = "item") # get item information curves
@@ -515,47 +756,134 @@ ggplot() +
 # add lines for reliability thresholds?
 ```
 
-## Invarians och DIF
+Antal individer som uppvisar golv- eller takeffekt.
 
-```{r invariance1}
-# we need to get vectors for DIF variables from the base data file
-# DIF with eRm requires no missing data in comparison variable
-df.nona <- df.all[c(8,10,11,191:211)]
-df.nona$f66t<-NULL
-df.nona$f66b<-NULL
-df.nona$f66l<-NULL
-df.nona$f66p<-NULL
-df.nona$f66u<-NULL
-df.nona$f66e<-NULL
-df.nona$f66h<-NULL
-df.nona$f66m<-NULL
-df.nona$SkolSDO<-car::recode(df.nona$SkolSDO,"'Övrigt ospecificerat'=NA")
-df.nona<-na.omit(df.nona)
-#write.csv(df.nona,file = "IFwinsteps220220.csv", na="")
-# we probably need to get a random subsample to not inflate p-values
-df.nona.all<-df.nona # in case we need multiple sampling based on the larger sample
-df.nona<-df.nona.all[sample(1:nrow(df.nona.all), 700),]
-df.nona.gender<-df.nona$Kön
-df.nona$Kön<-NULL
-df.nona.arskurs<-df.nona$ARSKURS
-df.nona$ARSKURS<-NULL
-df.nona.skolsdo<-df.nona$SkolSDO
-df.nona$SkolSDO<-NULL
-# run PCM model
-df.erm.dif <- PCM(df.nona) # CML estimation.
-# overall tests
-df.erm.gender<-LRtest(df.erm.dif, splitcr = df.nona.gender)
-df.erm.arskurs<-LRtest(df.erm.dif, splitcr = df.nona.arskurs)
-#df.erm.skolsdo<-LRtest(df.erm.dif, splitcr = df.nona.skolsdo)
-# run DIF test to get significance tests on all thresholds, only works with 2 groups
-dif.sex<-Waldtest(df.erm.dif, splitcr = df.nona.gender)
-dif.arskurs<-Waldtest(df.erm.dif, splitcr = df.nona.arskurs)
-# we need to adjust for multiple testing (non-working code below)
-plotGOF(df.erm.gender, conf = list(), tlab = "item",
-        xlab = "Flickor", ylab = "Pojkar")
+```{r targeting_extremes}
+df.omit.na %>%
+  mutate(rowSums(.)) %>%
+  pull() %>%
+  hist(main = "Fördelning av summerade råpoäng", ylab = "Antal")
 
-# add IIO analysis output? 
-#mok.iio<-check.iio(df.nona)
-#df.nona$f66s<-NULL
+hist(pthetas, col=rgb(1,0,0,.5), xlim = c(-6,6), main = "Personers övergripande förmåga")
+
+minmaxN<-df.omit.na %>%
+  mutate(rowSums(.)) %>%
+  pull() %>%
+  table() %>%
+  as.data.frame() %>%
+  filter(row_number() %in% c(1, n()))
+
+# ceiling effect
+ceiling_eff<-round(minmaxN[2,2]/nrow(df.omit.na)*100,2)
+# floor effect
+floor_eff<-round(minmaxN[1,2]/nrow(df.omit.na)*100,2)
+
+```
+Andelen individer som uppvisar golveffekt (lägsta svar på alla frågor) är `r floor_eff`%, och andelen som uppvisar takeffekt (högsta svar på alla frågor) är `r ceiling_eff`%
+
+```{r targeting_extremes2}
+
+# plot infit t for persons(?)
+#plotPWmap(df.erm, pmap = TRUE, imap = FALSE, horiz = F)
+
 ```
 
+
+```{r dimensionality_excluded1, include=TRUE}
+knitr::opts_chunk$set(echo = FALSE)
+# let's look at the excluded items in a separate dimensionality analysis
+# make object to show items:
+itemlabels.rem<-itemlabels[c(2,5,8,12,13,16,19,20,21),]
+formattable(itemlabels.rem, align=c("r","l"), list(
+  `itemnr` = formatter("span", style = ~ style(color = "grey",font.weight = "bold"))),
+  table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
+```
+
+Ovan syns de items som tagits bort. Där ingår de fyra (f66h m p u) som reverserats p.g.a. positiva formuleringar. Vi bör antagligen kolla på dem separat, men först en modell med samtliga exkluderade items:
+
+```{r dimensionality_excluded2, include=TRUE}
+
+# h m p u är de reverserade frågorna, vi bör nog titta på dem separat
+# Rasch-model
+df <- df.all[,removed_items$itemnr]
+df.omit.na<-na.omit(df) # eRm does not allow participants with all missing data
+df.erm<-PCM(df.omit.na) # run PCM model
+# get estimates
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+std.resids <- item.fit$st.res
+# PCA of residuals
+pca <- pca(std.resids, nfactors = 3, rotate = "oblimin")
+eigenv<- pca$values %>%
+  round(2) %>%
+  head(5)
+# Mokken analysis and create table
+mok.h<-coefH(df.omit.na) # H should be above 0.3
+mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
+mok.hi<-as.numeric(c(mok.h$Hi))
+mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
+mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
+colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
+mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
+mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
+# formatted table that highlights cutoff values in red
+erm_mokkenFit<-formattable(mok.out, list(
+  'coefH' = 
+    formatter("span", style = ~ style(color = ifelse(coefH < coefH_min, "red", "black"))),
+  'OutfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(OutfitMSQ < msq_min, "red", 
+                                                     ifelse(OutfitMSQ > msq_max, "red", "black")))),
+  'InfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(InfitMSQ < msq_min, "red", 
+                                                     ifelse(InfitMSQ > msq_max, "red", "black"))))
+    ))
+```
+
+Alla items har låg coefH och aisp indikerar att de hör till olika dimensioner.
+
+```{r dimensionality_excluded3, include=TRUE}
+
+# h m p u är de reverserade frågorna, vi bör nog titta på dem separat
+# Rasch-model
+
+df <- df.all[,itemlabels[c(8,13,16,21),1]]
+df.omit.na<-na.omit(df) # eRm does not allow participants with all missing data
+df.erm<-PCM(df.omit.na) # run PCM model
+# get estimates
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+std.resids <- item.fit$st.res
+# PCA of residuals
+pca <- pca(std.resids, nfactors = 3, rotate = "oblimin")
+eigenv<- pca$values %>%
+  round(2) %>%
+  head(5)
+# Mokken analysis and create table
+mok.h<-coefH(df.omit.na) # H should be above 0.3
+mok.a<-aisp(df.omit.na) # A zero indicates an unscalable item. Items with same integer indicates same dimension
+mok.hi<-as.numeric(c(mok.h$Hi))
+mok.out<-as.data.frame(cbind(mok.a,mok.hi[1:ncol(df.omit.na)]))
+mok.out<-cbind(mok.out, item.fit$i.outfitMSQ, item.fit$i.infitMSQ)
+colnames(mok.out)<-c("aisp", "coefH", "OutfitMSQ", "InfitMSQ")
+mok.out$OutfitMSQ<-round(mok.out$OutfitMSQ,3)
+mok.out$InfitMSQ<-round(mok.out$InfitMSQ,3)
+# formatted table that highlights cutoff values in red
+erm_mokkenFit<-formattable(mok.out, list(
+  'coefH' = 
+    formatter("span", style = ~ style(color = ifelse(coefH < coefH_min, "red", "black"))),
+  'OutfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(OutfitMSQ < msq_min, "red", 
+                                                     ifelse(OutfitMSQ > msq_max, "red", "black")))),
+  'InfitMSQ' = 
+    formatter("span", style = ~ style(color = ifelse(InfitMSQ < msq_min, "red", 
+                                                     ifelse(InfitMSQ > msq_max, "red", "black"))))
+    ))
+```
