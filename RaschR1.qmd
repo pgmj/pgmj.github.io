@@ -1,0 +1,709 @@
+---
+title: "Rasch in R, part 1"
+title-block-banner: "#009ca6"
+author: 
+  name: Magnus Johansson
+  affiliation: RISE Research Institutes of Sweden
+  affiliation-url: https://ri.se/shic
+  orcid: 0000-0003-1669-592X
+date: '2022-05-04'
+format: 
+  html:
+    toc: true
+    self-contained: true
+    logo: rise_logo_quarto.png
+    mainfont: 'Lato'
+    monofont: 'Roboto Mono'
+    code-overflow: wrap
+    code-tools: true
+    code-fold: true
+    number-sections: true
+  pdf:
+    papersize: a4
+    documentclass: report #article, report or book
+    classoption: [onecolumn, portrait]
+  revealjs:
+    theme: default
+    logo: rise_logo_quarto.png
+    chalkboard: true
+    self-contained: false
+#    footer: 'Material skapat av magnus.p.johansson@ri.se'
+    mainfont: 'Lato'
+    slide-level: 4
+    scrollable: true
+    smaller: true
+execute:
+  echo: false
+  warning: false
+  message: false
+editor_options: 
+  markdown: 
+    wrap: 72
+bibliography: references.bib
+---
+
+## Why Rasch analysis in R?
+
+::: incremental
+-   Traceability
+    -   Transparency in decisionmaking
+-   Reproducibility
+-   Freely available
+-   Documentation in the same file as analysis
+    -   (with Quarto/Rmarkdown)
+:::
+
+## Agenda
+
+::: incremental
+-   Sample analysis with provided data and code
+    -   WAAQ-7
+    -   PSS-10
+-   Suggested structure for analysis
+    -   Confirmatory and/or exploratory
+:::
+
+## Quarto formatting basics
+
+<https://quarto.org/docs/authoring/markdown-basics.html>
+
+-   Keep the page above open in a web browser
+-   We will use library(kableExtra) for tables
+    -   since it works with HTML/PDF/revealjs output
+
+```{r}
+#| label: setup
+#| code-fold: false
+#| include: false
+
+library(car)
+library(grateful)
+library(kableExtra)
+library(readxl)
+library(tidyverse)
+library(eRm)
+library(mokken)
+library(mirt)
+library(psych)
+library(ggplot2)
+library(psychotree)
+library(matrixStats)
+library(reshape)
+library(knitr)
+library(cowplot)
+
+# some commands exist in multiple packages, here we define preferred ones that are frequently used
+select <- dplyr::select
+count <- dplyr::count
+recode <- car::recode
+rename <- dplyr::rename
+
+# first we pre-set our chosen cut-off values for some commonly used indices:
+msq_min <- 0.7
+msq_max <- 1.3
+zstd_min <- -2
+zstd_max <- 2
+loc_dep <- 0.2 # above average residual correlation
+
+
+# Load data
+df<-as.data.frame(read_excel("C:/Users/magnuspjo/RISE/KP Centrum för Kategoriskt Baserade Mätningar - Dokument/Kunskapsutveckling/RaschR/data/GNI23data v1.1.xls"))
+
+df <- df %>% 
+  mutate_if(is.character, as.numeric)
+
+# Make a backup of the dataframe
+df.all<-df
+
+# Select the variables we will work with, which as this point can only be items
+df.omit.na <- df %>% 
+  select(starts_with("WAAQ"),Sex,Age) %>% # variables that start with "WAAQ"
+  na.omit() # remove rows with 100% missing data
+
+# DIF variables into vectors
+dif.gender <- df.omit.na$Sex
+dif.age <- df.omit.na$Age
+# them remove them from dataframe
+df.omit.na$Sex <- NULL
+df.omit.na$Age <- NULL
+
+# set item names to neutral qX (and avoid issues with _ in pdf output)
+names(df.omit.na) <- paste0("q", c(1:ncol(df.omit.na)))
+
+# recode WAAQ items to 0-6 (instead of 1-7)
+for (i in 1:7) {
+  df.omit.na[,i]<-recode(df.omit.na[,i],"1=0;2=1;3=2;4=3;5=4;6=5;7=6",as.factor=FALSE)
+}
+
+# Load item information
+itemlabels<-read_excel("C:/Users/magnuspjo/RISE/KP Centrum för Kategoriskt Baserade Mätningar - Dokument/Kunskapsutveckling/RaschR/data/WAAQitemlabels.xls")
+
+```
+
+## Background information
+
+The Work-related Acceptance and Action Questionnaire [@bond2013] is a
+measure of psychological flexibility contextualized to a workplace
+setting.
+
+The WAAQ uses 7 questions, all using the same response scale with 7
+steps (ranging from *"Stämmer aldrig"* to *"Stämmer alltid"*, with
+labels on all categories).
+
+```{r}
+#| label: showitems
+#| tbl-cap: "Items in the Swedish WAAQ"
+#| tbl-cap-location: top
+
+itemlabels %>% 
+  kbl(booktabs = T, escape = F,
+      table.attr = "style='width:60%;'") %>%
+  # options for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "center",
+                full_width = T,
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+  
+```
+
+### Participants
+
+We have `r nrow(df.omit.na)` participants and their gender distribution
+is shown in the table below
+
+```{r}
+#| label: genderdistr
+#| tbl-cap: "Gender distribution in sample"
+#| tbl-cap-location: top
+
+# Make table object to show gender counts and percentages
+dif.gender %>%
+  recode("1='Male';2='Female'") %>% 
+  table() %>% 
+  as_tibble() %>% 
+  mutate('Percent' = (round((100 * n / sum(n)),1))) %>% 
+  dplyr::rename('Gender' = '.') %>% 
+  kbl(booktabs = T, escape = F, table.attr = "style='width:20%;'") %>%
+  # options for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "center",
+                full_width = T,
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+                
+```
+
+### Descriptives of raw data
+
+Responses to items are described below.
+
+```{r}
+#| label: descriptives1
+#| tbl-cap: "Total number of responses for all items"
+
+df.omit.na %>% 
+  pivot_longer(everything()) %>% 
+  dplyr::count(value) %>% 
+  mutate(percent = (100 * n / sum(n)) %>% round(digits = 1)) %>%
+  rename('Response category' = 'value', 
+                'Number of responses' = 'n',
+                'Percent' = 'percent') %>%
+  kbl(booktabs = T, escape = F, table.attr = "style='width:25%;'") %>%
+  # options for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "center",
+                full_width = F,
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+```
+
+```{r}
+#| label: rawdist
+
+df.omit.na %>% 
+  mutate('Raw sum score' = rowSums(.)) %>% 
+  pull() %>% 
+  hist(main = "Distribution of summed ordinal raw scores", 
+       ylab = "Number of participants",
+       col = "#8dc8c7")
+```
+
+::: panel-tabset
+### Tile plot
+
+```{r}
+#| label: descriptives2
+df.omit.na %>% 
+  pivot_longer(everything()) %>% 
+  dplyr::count(name, value) %>% 
+  ggplot(aes(x = value, y = name, fill = n)) +
+  geom_tile() +
+  scale_fill_viridis_c(expression(italic(n)), limits = c(0, NA)) +
+  scale_x_continuous("Response", expand = c(0, 0), breaks = 0:7) + # change breaks to fit number of response categories
+  ggtitle("Items") +
+  theme(axis.text.x = element_text(size = 8)) +
+  geom_text(aes(label=n), colour = "orange") 
+
+```
+
+### Barplots
+
+```{r}
+#| label: alt-descriptives
+#| layout-nrow: 4
+
+# Individual barplots of raw response data
+#par(mfrow = c(1,2)) # display two per row
+for (i in 1:ncol(df.omit.na)) {
+  barplot(table(df.omit.na[,i]), col="#8dc8c7",
+          main=names(df.omit.na[i]),
+          ylab="Antal svar", 
+          xlab=(itemlabels[i,2]))
+}
+
+```
+:::
+
+#### Recoding responses
+
+There are fewer than 10 responses in category 0 for all items, which is
+problematic for the analysis. We will merge the two lowest categories.
+For item 2 the four lowest categories will be merged.
+
+```{r}
+#| label: recode
+
+for (i in 1:7) {
+  df.omit.na[,i]<-recode(df.omit.na[,i],"1=0;2=1;3=2;4=3;5=4;6=5",as.factor=FALSE)
+}
+df.omit.na$q2<-recode(df.omit.na$q2,"1=0;2=0;3=1;4=2;5=3",as.factor=FALSE)
+
+df.omit.na %>% 
+  pivot_longer(everything()) %>% 
+  dplyr::count(name, value) %>% 
+  ggplot(aes(x = value, y = name, fill = n)) +
+  geom_tile() +
+  scale_fill_viridis_c(expression(italic(n)), limits = c(0, NA)) +
+  scale_x_continuous("Response", expand = c(0, 0), breaks = 0:7) + # change breaks to fit number of response categories
+  ggtitle("Items") +
+  theme(axis.text.x = element_text(size = 8)) +
+  geom_text(aes(label=n), colour = "orange") 
+
+```
+
+Some cells still have fewer than 10 responses. Let's look at the
+response categories using Rasch modeling to produce ICC plots.
+
+## Analysis of response categories
+
+```{r}
+#| label: respcat1
+#| include: false
+
+# package mirt is used to create a compact figure with all item ICCs
+mirt.rasch <- mirt(df.omit.na, model=1, itemtype='Rasch') # unidimensional Rasch model
+```
+
+```{r}
+#| label: respcatfig1
+plot(mirt.rasch, type="trace")
+# for better looking, individual figures:
+#df.erm<-PCM(df.omit.na) # run PCM model, replace with RSM (rating scale) or RM (dichotomous) for other models
+#plotICC(df.erm, xlim = c(-6, 8), legpos = FALSE, ylab = "Sannolikhet", xlab = "Övergripande förmåga")
+
+```
+
+Items 1 and 5 have issues with disordered response categories, which
+need to be addressed. For both items the two lowest categories will be
+merged.
+
+```{r}
+#| label: recode2
+#| code-fold: true
+
+df.omit.na$q1<-recode(df.omit.na$q1,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
+df.omit.na$q5<-recode(df.omit.na$q5,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
+
+# individual plots for those two items:
+df.erm<-PCM(df.omit.na) # run PCM model, replace with RSM (rating scale) or RM (dichotomous) for other models
+plotICC(df.erm, xlim = c(-6, 8), legpos = FALSE, 
+        ylab = "Sannolikhet", xlab = "Övergripande förmåga",
+        item.subset = c("q1","q5"))
+```
+
+This looks good.
+
+## Dimensionality
+
+The eRm package, which uses Conditional Maximum Likelihood (CML)
+estimation, will be used primarily. For this analysis, the Partial
+Credit Model will be used.
+
+First, we look at the eigenvalues from PCA analysis of Rasch residuals.
+These should be below 2.0 to support unidimensionality. If the first
+eigenvalue is above 2.0, the subsequent analysis will include a
+clustering analysis, using Mokken Scaling.
+
+```{r}
+#| label: dim1
+#| tbl-cap: "PCA of Rasch model residuals"
+
+df.erm<-PCM(df.omit.na) # run PCM model, replace with RSM (rating scale) or RM (dichotomous) for other models
+# get estimates
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+item.se <- item.estimates$se.thresh
+person.locations.estimate <- person.parameter(df.erm)
+item.fit <- eRm::itemfit(person.locations.estimate)
+std.resids <- item.fit$st.res
+# PCA of Rasch residuals
+pca <- pca(std.resids, nfactors = ncol(df.omit.na), rotate = "oblimin")
+# create table with top 5 eigenvalues
+pca$values %>%
+  round(2) %>%
+  head(5) %>% 
+  as_tibble() %>% 
+  rename('Eigenvalues' = 'value') %>% 
+  kbl(booktabs = T, escape = F, table.attr = "style='width:25%;'") %>%
+  # options for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "center",
+                full_width = T,
+                font_size = 12,
+                fixed_thead = F) %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+  
+```
+
+Since the eigenvalues support unidimensionality, we move on to look at item fit to the
+Rasch PCM.
+
+### Item fit
+
+```{r}
+#| label: modelfit1
+#| tbl-cap: "Item fit"
+
+### zstd is inflated with large samples (N > 500). Reduce sample size to jz and 
+### run analysis yz random samples to get average ZSTD
+# jz = 300 # number to include in dataset
+# yz = 10 # number of random samples
+# outfitZ<-c()
+# infitZ<-c()
+# for (i in 1:yz) {
+#   df.new <- df.omit.na[sample(1:nrow(df.omit.na), jz), ]
+#   df.new <- na.omit(df.new)
+#   df.z <- PCM(df.new)
+#   ple <- person.parameter(df.z)
+#   item.fit.z <- eRm::itemfit(ple)
+#   outfitZ<-cbind(outfitZ,item.fit.z$i.outfitZ)
+#   infitZ<-cbind(infitZ,item.fit.z$i.infitZ)
+# }
+# item.fit.table<-as.data.frame(cbind(item.fit$i.outfitMSQ, item.fit$i.infitMSQ, rowMeans(outfitZ), rowMeans(infitZ)))
+
+# if you have a smaller sample, use this line instead of running the loop above
+item.fit.table<-as.data.frame(cbind(item.fit$i.outfitMSQ, item.fit$i.infitMSQ, item.fit$i.outfitZ, item.fit$i.infitZ))
+colnames(item.fit.table)<-c("OutfitMSQ", "InfitMSQ", "OutfitZSTD", "InfitZSTD")
+item.fit.table <- item.fit.table %>%
+    mutate(across(where(is.numeric), round, 3))
+# formatted table that highlights cutoff values in red
+item.fit.table %>% 
+  mutate(OutfitZSTD = cell_spec(OutfitZSTD, color = ifelse(OutfitZSTD < zstd_min, "red",
+                                                     ifelse(OutfitZSTD > zstd_max, "red", "black")))) %>%
+  mutate(InfitZSTD = cell_spec(InfitZSTD, color = ifelse(InfitZSTD < zstd_min, "red",
+                                                     ifelse(InfitZSTD > zstd_max, "red", "black")))) %>%
+  mutate(OutfitMSQ = cell_spec(OutfitMSQ, color = ifelse(OutfitMSQ < msq_min, "red",
+                                                     ifelse(OutfitMSQ > msq_max, "red", "black")))) %>%
+  mutate(InfitMSQ = cell_spec(InfitMSQ, color = ifelse(InfitMSQ < msq_min, "red",
+                                                     ifelse(InfitMSQ > msq_max, "red", "black")))) %>%
+  kbl(booktabs = T, escape = F) %>%
+  # bootstrap options are for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "left",
+                full_width = F,
+                font_size = 12,
+                fixed_thead = T) %>% # when there is a long list in the table
+#  column_spec(c(2:3), color = "red") %>% 
+#  row_spec(3:5, bold = T, color = "white", background = "lightblue") %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+
+```
+
+Values in red are beyond the pre-set cutoff values. We'll leave them for
+now.
+
+### Residual correlations
+
+A correlation matrix is created based on the Rasch model residuals for
+each item.
+
+The average correlation is calculated, and item pairs that correlate
+more than the pre-set cutoff value of `r loc_dep` above the average
+correlation are indicated in red in the table below.
+
+```{r}
+#| label: locdeps1
+#| include: false
+
+mirt.rasch <- mirt(df.omit.na, model=1, itemtype='Rasch') # unidimensional Rasch model
+resid=residuals(mirt.rasch, type="Q3", digits=2)
+diag(resid) <- NA # make the diagonal of correlation matrix NA instead of 1
+dyn.cutoff<-mean(resid, na.rm=T) + loc_dep # create variable indicating dynamic cutoff at 0.3 above average
+resid<-as.data.frame(resid)
+for (i in 1:ncol(resid)) {
+  resid[,i]<-round(resid[,i],2)
+}
+
+```
+
+```{r}
+#| label: locdeps1tbl
+#| tbl-cap: "Residual correlations"
+
+resid[upper.tri(resid)]<-NA # remove duplicate values in upper triangle
+# create function to highlight all variables according to cutoff values
+ldshow <- function(x) {
+  cell_spec(x, color = ifelse(x > dyn.cutoff, "red", "black"))
+}
+
+resid %>% 
+  mutate(across(everything(funs(ldshow(.))))) %>%
+  kbl(booktabs = T, escape = F, 
+      table.attr = "style='width:70%;'") %>%
+  # bootstrap options are for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "left",
+                full_width = F,
+                font_size = 12,
+                fixed_thead = T) %>% # when there is a long list in the table
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+
+#sign_formatter <- formatter("span", style = x ~ style(color = ifelse(x > dyn.cutoff, "red", "black")))
+#formattable(resid, list(formattable::area(col = 1:ncol(df.omit.na)) ~ sign_formatter),
+#            table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
+
+```
+
+No problems with residual correlations.
+
+## DIF analysis
+
+Our sample is underpowered to conduct a proper DIF-analysis of any of
+the demographic variables available (gender/age). N \> 250 per subgroup
+would be ideal, and N \> 150 minimal.
+
+For the sake of practice, we will go through the steps in setting up and
+conducting a DIF analysis anyway.
+
+We will use the Rasch Tree tool [@strobl2013], which makes it possible
+to evaluate interaction DIF, if sample size allows. For this analysis,
+we will only investigate gender effects on DIF.
+
+```{r}
+#| label: dif1
+#| fig-cap: "DIF analysis of gender"
+
+# make sure that the Rasch model results is up to date
+df.erm <- PCM(df.omit.na)
+# set up the DIF analysis
+df.tree <- data.frame(matrix(ncol = 0, nrow = nrow(df.omit.na))) # we need to make a new dataframe
+df.tree$difdata <- as.matrix(df.omit.na) # containing item data in a nested dataframe
+# and DIF variables:
+df.tree$gender<-dif.gender
+pctree.out<-pctree(difdata ~ gender, data = df.tree)
+plot(pctree.out)
+
+```
+
+No DIF was found in our small sample.
+
+## Targeting
+
+
+
+```{r}
+#| label: wrightm1
+#| fig-cap: Modified Wright map
+
+item.locations<-item_difficulty[,2:ncol(item_difficulty)]
+names(item.locations) <- paste0("T", c(1:ncol(item.locations))) #re-number items
+itemloc.long <- item.locations %>%
+  rownames_to_column() %>% 
+  dplyr::rename(names = 'rowname') %>%
+  pivot_longer(cols=starts_with('T'), 
+               names_to ='thresholds', 
+               values_to = 'par_values' )
+
+# make plot with each items thresholds shown as dots
+p1=ggplot(itemloc.long, aes(x = names, y = par_values, label = thresholds, color = names)) +
+  geom_point() + 
+  geom_text(hjust = 1.1, vjust = 1) + 
+  ylab('Location (logit scale)') + 
+  xlab('Items') + 
+  scale_y_continuous(limits = c(-5,6), breaks = scales::pretty_breaks(n = 10)) + 
+  theme_bw() + 
+  theme(legend.position = 'none') + 
+  coord_flip()
+
+### create df for ggplot histograms
+# person locations
+thetas<-as.data.frame(person.locations.estimate$theta.table)
+pthetas<-thetas$`Person Parameter`
+# item locations
+thresholds<-c()
+for (i in 2:ncol(item_difficulty)) {
+  thresholds<-c(thresholds,item_difficulty[,i])
+}
+### items and persons in the same variable
+#create data frame with 0 rows and 3 columns
+df.locations <- data.frame(matrix(ncol = 2, nrow = 0))
+#provide column names
+colnames(df.locations) <- c('type', 'locations')
+# change type of data
+df.locations$type<-as.character(df.locations$type)
+df.locations$locations<-as.numeric(df.locations$locations)
+# insert labels in accurate amounts (N+items)
+nper<-nrow(df.omit.na)
+nperp<-nper+1
+nthr<-length(thresholds)+nper
+df.locations[1:nper,1]<-paste0("Persons")
+df.locations[nperp:nthr,1]<-paste0("Item thresholds")
+# insert data from vectors with thetas and thresholds
+df.locations$locations<-c(pthetas,thresholds)
+# change type to class factor
+df.locations$type<-as.factor(df.locations$type)
+
+p2<-ggplot() + 
+  geom_histogram(data=subset(df.locations, type=="Persons"), 
+                 aes(locations, fill="Persons", y= ..count..)) +
+  xlab('') +
+  ylab('Persons') +
+  scale_x_continuous(limits = c(-5,6), breaks = scales::pretty_breaks(n = 10)) + 
+  geom_text(hjust = 1.1, vjust = 1) +
+  theme_bw() +
+  theme(legend.position = 'none')
+
+p3 <- ggplot() +
+  geom_histogram(data=subset(df.locations, type=="Item thresholds"), 
+                 aes(locations, y= -..count..)) + 
+  xlab('') +
+  ylab('Thresholds') +
+  scale_x_continuous(limits = c(-5,6), breaks = scales::pretty_breaks(n = 10)) + 
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
+  geom_text(hjust = 1.1, vjust = 1) +
+  theme_bw() +
+  theme(legend.position = 'none')
+
+# combine plots together to create Wright map
+
+plot_grid(p2,p3,p1, labels=NULL, nrow = 3, align ="hv", rel_heights = c(1,1,1.3))
+
+```
+
+### Reliability
+
+The figure below shows individual curves indicating the amount of information contributed by each item.
+
+"Test information" shows the collective information based on the combination of all items into a unidimensional scale.
+
+```{r}
+#| label: tif1
+plotINFO(df.erm, type = "item") # get item information curves
+plotINFO(df.erm, type = "test") # show only test information
+abline(h = 3.33, col = "chartreuse") # indicate TIF 3.33 = PSI 0.70
+abline(h = 5, col = "chartreuse3") # indicate TIF 5 = PSI 0.80
+
+```
+
+The horizontal light green line (TIF 3.33) indicates the conventional lower cutoff for reliability of 0.7, while the darker green line at TIF 5 indicates reliability of 0.8.
+
+### Floor/ceiling effects
+
+```{r}
+#| label: floorc1
+
+# first find the cutoff for theta where TIF goes below 3.3
+psimatrix <- data.frame(matrix(ncol = 2, nrow = 1001)) # we need to make a new dataframe
+names(psimatrix) <- c("psY","psX")
+# this gets 1001 "dots" for the scale information variable y
+psimatrix$psY <- test_info(df.erm, seq(-6, 6, length.out = 1001L)) 
+# this is the x variable in the TIF figure
+psimatrix$psX <- seq(-6, 6, length.out = 1001L)
+# now find where the cutoff points are for 3.33 on the theta (x) variable 
+# this provides the highest and lowest value into two variables
+psep_min <- psimatrix %>% slice(which.min(abs(psY - 3.33))) %>% select(psX) %>% pull()
+psep_max <- psimatrix %>% filter(psX > 0) %>%  slice(which.min(abs(psY - 3.33))) %>% select(psX) %>% pull()
+
+# calculate how many participants cross the cutoffs
+nCeilingRel<-length(which(pthetas > psep_max))
+nFloorRel<-length(which(pthetas < psep_min))
+nWithinRel<-(length(pthetas)-(nCeilingRel+nFloorRel))
+PSI<-SepRel(person.locations.estimate)
+
+### if there are large gaps in targeting, it is useful to calculate how many are affected:
+# calculate how many respondents are in the gap area
+# nWithinGap<-c()
+# nWithinGap[pthetas > psep_max  & pthetas < psep_min] <- 1
+# 
+# pGap <- nWithinGap %>%
+#   as.integer() %>%
+#   table() %>%
+#   as.tibble() %>%
+#   dplyr::select(n) %>%
+#   pull()
+
+```
+
+Test information shows that WAAQ reaches reliability above 0.7 in the interval from `r psep_min` til `r psep_max` logits. __`r round(nWithinRel/length(pthetas)*100,2)`%__ of participants are located within that area of reliability.
+
+Above 0.7 are __`r round(nCeilingRel/length(pthetas)*100,1)`%__ and below are __`r round(nFloorRel/length(pthetas)*100,1)`%__.
+
+Person separation as a point estimate is __`r round(PSI$sep.rel,3)`__
+
+
+## Software used
+
+```{r}
+#| label: packages
+pkgs <- cite_packages(cite.tidyverse = TRUE, output = "table")
+pkgs %>% 
+  kbl(booktabs = T, escape = F, 
+      table.attr = "style='width:70%;'") %>%
+  # bootstrap options are for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "left",
+                full_width = F,
+                font_size = 12,
+                fixed_thead = T) %>% # when there is a long list in the table
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+```
+
+
+
+## References
