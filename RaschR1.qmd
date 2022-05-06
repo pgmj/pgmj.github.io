@@ -395,7 +395,7 @@ clustering analysis, using Mokken Scaling.
 #| tbl-cap: "PCA of Rasch model residuals"
 
 df.erm<-PCM(df.omit.na) # run PCM model, replace with RSM (rating scale) or RM (dichotomous) for other models
-# get estimates
+# get estimates, code borrowed from https://bookdown.org/chua/new_rasch_demo2/PC-model.html
 item.estimates <- eRm::thresholds(df.erm)
 item_difficulty <- item.estimates[["threshtable"]][["1"]]
 item_difficulty<-as.data.frame(item_difficulty)
@@ -422,7 +422,7 @@ pca$values %>%
   kable_classic(html_font = "Lato") %>% 
   # latex_options are for PDF output
   kable_styling(latex_options = c("striped"))
-  
+
 ```
 
 Since the eigenvalues support unidimensionality, we move on to look at
@@ -691,19 +691,19 @@ pi.locations %>%
 
 ### Reliability
 
-The figure below shows individual curves indicating the amount of
-information contributed by each item.
-
 "Test information" shows the collective information based on the
 combination of all items into a unidimensional scale.
 
+"Item information" shows individual curves indicating the amount of
+information contributed by each item.
+
+
 ```{r}
 #| label: tif1
-plotINFO(df.erm, type = "item") # get item information curves
 plotINFO(df.erm, type = "test") # show only test information
 abline(h = 3.33, col = "chartreuse") # indicate TIF 3.33 = PSI 0.70
 abline(h = 5, col = "chartreuse3") # indicate TIF 5 = PSI 0.80
-
+plotINFO(df.erm, type = "item") # get item information curves
 ```
 
 The horizontal light green line (TIF 3.33) indicates the conventional
@@ -873,6 +873,61 @@ y.se<-ple$`SE (Logits)`
 arrows(x0=x, y0=y-y.se, x1=x, y1=y+y.se, code=3, angle=90, length=0.1)
 ```
 
+## Bonus: Contruct alley
+
+```{r}
+#| label: conallinf
+#| fig-cap: "InfitZSTD and item location"
+
+item.fit.table$Location <- item_difficulty$Location
+
+item.fit.table %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x=InfitZSTD, y=Location, label = rowname)) +
+  geom_point(size = 3, color = "black") +
+  geom_vline(xintercept = -2, color = "chartreuse3", linetype = 2) +
+  geom_vline(xintercept = 2, color = "chartreuse3", linetype = 2) + 
+  geom_text(hjust=1.5)
+
+```
+
+```{r}
+#| label: conalloutf
+#| fig-cap: "OutfitZSTD and item location"
+
+item.fit.table %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x=OutfitZSTD, y=Location, label = rowname)) +
+  geom_point(size = 3, color = "black") +
+  geom_vline(xintercept = -2, color = "chartreuse3", linetype = 2) +
+  geom_vline(xintercept = 2, color = "chartreuse3", linetype = 2) + 
+  geom_text(hjust=1.5)
+
+```
+
+### First contrast loadings vs item location
+
+```{r}
+#| label: conallpca
+#| fig-cap: "PCA of residuals first contrast loadings and item location"
+
+pca2<-prcomp(std.resids)
+pcaloadings <- as.data.frame(pca2$rotation)
+pcaloadings$Location <- item.fit.table$Location
+
+pcaloadings %>% 
+  rownames_to_column() %>% 
+  ggplot(aes(x=Location, y=PC1, label = rowname)) +
+  geom_point(size = 3, color = "black") +
+  xlim(-2, 2) +
+  ylim(-2, 2) +
+  ylab("Loadings") +
+  xlab("Item location") +
+  geom_vline(xintercept = 0, color = "chartreuse3", linetype = 2) +
+  geom_hline(yintercept = 0, color = "chartreuse3", linetype = 2) + 
+  geom_text(hjust=1.4, vjust=0.6)
+
+```
 
 ## Software used
 
