@@ -174,7 +174,9 @@ itemlabels %>%
 ### Participants
 
 We have `r nrow(df.omit.na)` participants and their gender distribution
-is shown in the table below
+is shown in the table below. All participants are Swedish adults and the
+dataset was collected to validate a measure of social interactions at
+workplaces [@johansson2021; @johansson2021a].
 
 ```{r}
 #| label: genderdistr
@@ -320,7 +322,7 @@ mirt.rasch <- mirt(df.omit.na, model=1, itemtype='Rasch') # unidimensional Rasch
 ```{r}
 #| label: respcatfig1
 plot(mirt.rasch, type="trace")
-# for better looking, individual figures:
+# for bigger, better looking, individual figures:
 #df.erm<-PCM(df.omit.na) # run PCM model, replace with RSM (rating scale) or RM (dichotomous) for other models
 #plotICC(df.erm, xlim = c(-6, 8), legpos = FALSE, ylab = "Sannolikhet", xlab = "Övergripande förmåga")
 
@@ -339,12 +341,43 @@ df.omit.na$q5<-recode(df.omit.na$q5,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
 
 # individual plots for those two items:
 df.erm<-PCM(df.omit.na) # run PCM model, replace with RSM (rating scale) or RM (dichotomous) for other models
-plotICC(df.erm, xlim = c(-6, 8), legpos = FALSE, 
-        ylab = "Sannolikhet", xlab = "Övergripande förmåga",
+plotICC(df.erm, xlim = c(-6, 6), # change the theta interval to display
+        legpos = FALSE, # change legpos to TRUE if you want the legend displayed 
+        ylab = "Probability", xlab = "Person location/ability",
         item.subset = c("q1","q5"))
 ```
 
-This looks good.
+Response categories are working as expected, after the adjustments made.
+
+### Floor/ceiling effects on raw data
+
+```{r}
+#| label: rawdist2
+
+df.omit.na %>% 
+  mutate('Raw sum score' = rowSums(.)) %>% 
+  pull() %>% 
+  hist(main = "Distribution of summed ordinal raw scores", 
+       ylab = "Number of participants",
+       col = "#8dc8c7")
+
+minmaxN<-df.omit.na %>%
+  mutate(rowSums(.)) %>%
+  pull() %>%
+  table() %>%
+  as.data.frame() %>%
+  filter(row_number() %in% c(1, n()))
+
+# ceiling effect
+ceiling_eff<-round(minmaxN[2,2]/nrow(df.omit.na)*100,2)
+# floor effect
+floor_eff<-round(minmaxN[1,2]/nrow(df.omit.na)*100,2)
+
+```
+
+The proportion of participants responding in the lowest category on all
+items is `r floor_eff`%, while the proportion who respond in the highest
+category on all items is `r ceiling_eff`%.
 
 ## Dimensionality
 
@@ -392,8 +425,8 @@ pca$values %>%
   
 ```
 
-Since the eigenvalues support unidimensionality, we move on to look at item fit to the
-Rasch PCM.
+Since the eigenvalues support unidimensionality, we move on to look at
+item fit to the Rasch PCM.
 
 ### Item fit
 
@@ -525,6 +558,7 @@ we will only investigate gender effects on DIF.
 ```{r}
 #| label: dif1
 #| fig-cap: "DIF analysis of gender"
+#| fig-cap-location: top
 
 # make sure that the Rasch model results is up to date
 df.erm <- PCM(df.omit.na)
@@ -542,11 +576,10 @@ No DIF was found in our small sample.
 
 ## Targeting
 
-
-
 ```{r}
 #| label: wrightm1
 #| fig-cap: Modified Wright map
+#| fig-cap-location: top
 
 item.locations<-item_difficulty[,2:ncol(item_difficulty)]
 names(item.locations) <- paste0("T", c(1:ncol(item.locations))) #re-number items
@@ -623,11 +656,46 @@ plot_grid(p2,p3,p1, labels=NULL, nrow = 3, align ="hv", rel_heights = c(1,1,1.3)
 
 ```
 
+### Person/item location descriptives
+
+```{r}
+#| label: PIlocation
+#| tbl-cap: "Person/Item locations"
+
+pi.locations <- data.frame(matrix(ncol = 3, nrow = 2))
+#provide column names
+colnames(pi.locations) <- c('','Mean', 'SD')
+pi.locations[1,1] <- "Items"
+pi.locations[1,2] <- round(mean(item_difficulty$Location),2)
+pi.locations[1,3] <- round(sd(item_difficulty$Location),2)
+pi.locations[2,1] <- "Persons"
+pi.locations[2,2] <- round(mean(pthetas),2)
+pi.locations[2,3] <- round(sd(pthetas),2)
+
+pi.locations %>% 
+  kbl(booktabs = T, escape = F) %>%
+  # bootstrap options are for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "left",
+                full_width = F,
+                font_size = 12,
+                fixed_thead = T) %>% # when there is a long list in the table
+#  column_spec(c(2:3), color = "red") %>% 
+#  row_spec(3:5, bold = T, color = "white", background = "lightblue") %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+
+```
+
 ### Reliability
 
-The figure below shows individual curves indicating the amount of information contributed by each item.
+The figure below shows individual curves indicating the amount of
+information contributed by each item.
 
-"Test information" shows the collective information based on the combination of all items into a unidimensional scale.
+"Test information" shows the collective information based on the
+combination of all items into a unidimensional scale.
 
 ```{r}
 #| label: tif1
@@ -638,7 +706,9 @@ abline(h = 5, col = "chartreuse3") # indicate TIF 5 = PSI 0.80
 
 ```
 
-The horizontal light green line (TIF 3.33) indicates the conventional lower cutoff for reliability of 0.7, while the darker green line at TIF 5 indicates reliability of 0.8.
+The horizontal light green line (TIF 3.33) indicates the conventional
+lower cutoff for reliability of 0.7, while the darker green line at TIF =
+5 indicates reliability of 0.8.
 
 ### Floor/ceiling effects
 
@@ -675,13 +745,133 @@ PSI<-SepRel(person.locations.estimate)
 #   dplyr::select(n) %>%
 #   pull()
 
+# Retrieve the lowest and highest item thresholds into vector variables
+
+min_thresh <- df.locations %>% 
+  filter(type == "Item thresholds") %>% 
+  arrange(locations) %>% 
+  slice(1) %>% 
+  pull()
+
+max_thresh <- df.locations %>% 
+  filter(type == "Item thresholds") %>% 
+  arrange(desc(locations)) %>% 
+  slice(1) %>% 
+  pull()
+
+# calculate how many participants cross the cutoffs
+nCeilingThresh<-length(which(pthetas > max_thresh))
+nFloorThresh<-length(which(pthetas < min_thresh))
+
 ```
 
-Test information shows that WAAQ reaches reliability above 0.7 in the interval from `r psep_min` til `r psep_max` logits. __`r round(nWithinRel/length(pthetas)*100,2)`%__ of participants are located within that area of reliability.
+Test information shows that WAAQ reaches reliability above 0.7 in the
+interval from `r psep_min` til `r psep_max` logits.
+**`r round(nWithinRel/length(pthetas)*100,2)`%** of participants are
+located within that area.
 
-Above 0.7 are __`r round(nCeilingRel/length(pthetas)*100,1)`%__ and below are __`r round(nFloorRel/length(pthetas)*100,1)`%__.
+**`r round(nCeilingRel/length(pthetas)*100,1)`%** have person locations above the cutoff for reliability 0.7 and **`r round(nFloorRel/length(pthetas)*100,1)`%** are below.
 
-Person separation as a point estimate is __`r round(PSI$sep.rel,3)`__
+Person separation as a point estimate is **`r round(PSI$sep.rel,3)`**.
+
+**`r round(nCeilingThresh/length(pthetas)*100,1)`%** have person locations above the highest item threshold (`r round(max_thresh,2)`) and **`r round(nFloorThresh/length(pthetas)*100,1)`%** are below the lowest item threshold (`r round(min_thresh,2)`).
+
+
+### Person fit
+
+```{r}
+#| label: personfit1
+
+plotPWmap(df.erm, pmap = T, imap = F)
+          #personCI = list(gamma=0.95,col="red",lty="dotted"))
+person.fit <- eRm::personfit(person.locations.estimate)
+
+nCeilingPfit<-length(which(person.fit$p.infitZ > 2))
+nFloorPfit<-length(which(person.fit$p.infitZ < -2))
+
+```
+
+**`r round(nCeilingPfit/length(pthetas)*100,1)`%** have person infit t above the cutoff 2.0 and **`r round(nFloorPfit/length(pthetas)*100,1)`%** are below -2.0.
+
+
+## Item parameters
+
+```{r}
+#| label: itemparams
+#| tbl-cap: "Item thresholds and locations"
+
+item_difficulty %>% 
+  mutate(across(where(is.numeric), round, 2)) %>% 
+  relocate(Location, .after = last_col()) %>% 
+  kbl(booktabs = T, escape = F) %>%
+  # bootstrap options are for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "left",
+                full_width = F,
+                font_size = 12,
+                fixed_thead = T) %>% # when there is a long list in the table
+#  column_spec(c(2:3), color = "red") %>% 
+#  row_spec(3:5, bold = T, color = "white", background = "lightblue") %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+
+```
+
+
+## Ordinal to interval transformation table
+
+```{r}
+#| label: ordintTr
+#| include: false
+ple<-as.data.frame(print(person.locations.estimate))
+rownames(ple)<-NULL
+colnames(ple)<-c("Ordinal sum score","Logits","SE (Logits)")
+ple[,2]<-round(ple[,2],2)
+ple[,3]<-round(ple[,3],2)
+
+ple$'Interval score (0-100)'<-round(scales::rescale(ple[,2], to = c(0,100)),1) # set 0,100 to desired range
+ple$'SE (0-100)'<-round((ple$`SE (Logits)`/(0.83/8)),1) # approximated from looking at the table
+ple$'MU (0-100)'<-(ple$'SE (0-100)')*2
+```
+
+```{r}
+#| label: ordintTbl
+#| tbl-cap: "Ordinal-interval transformation table"
+
+ple %>% 
+  mutate(across(where(is.numeric), round, 2)) %>% 
+  kbl(booktabs = T, escape = F) %>%
+  # bootstrap options are for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "left",
+                full_width = F,
+                font_size = 12,
+                fixed_thead = T) %>% # when there is a long list in the table
+#  column_spec(c(2:3), color = "red") %>% 
+#  row_spec(3:5, bold = T, color = "white", background = "lightblue") %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "SE = Standard Error. Multiply by 2 for MU = Measurement Uncertainty")
+```
+
+```{r}
+#| label: ordintPlot
+#| fig-cap: "Ordinal/interval relationship"
+#| include: false
+#| eval: false
+
+# plot with SE, code borrowed from https://www.benjaminbell.co.uk/2019/04/how-to-add-error-bars-in-r.html
+x<-ple$`Ordinal sum score`
+#y<-ple$Intervallpoäng
+y<-ple$Logits
+plot(x,y)
+y.se<-ple$`SE (Logits)`
+arrows(x0=x, y0=y-y.se, x1=x, y1=y+y.se, code=3, angle=90, length=0.1)
+```
 
 
 ## Software used
@@ -703,7 +893,5 @@ pkgs %>%
   # latex_options are for PDF output
   kable_styling(latex_options = c("striped"))
 ```
-
-
 
 ## References
