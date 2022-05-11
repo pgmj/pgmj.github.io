@@ -6,7 +6,7 @@ author:
   affiliation: RISE Research Institutes of Sweden
   affiliation-url: https://ri.se/shic
   orcid: 0000-0003-1669-592X
-date: '2022-05-04'
+date: '2022-05-10'
 format: 
   html:
     toc: true
@@ -18,6 +18,7 @@ format:
     code-tools: true
     code-fold: true
     number-sections: true
+    fig-dpi: 300
   pdf:
     papersize: a4
     documentclass: report #article, report or book
@@ -39,7 +40,9 @@ execute:
 editor_options: 
   markdown: 
     wrap: 72
-bibliography: references.bib
+bibliography: 
+- references.bib
+- grateful-refs.bib
 ---
 
 ## Why Rasch analysis in R?
@@ -92,22 +95,53 @@ library(reshape)
 library(knitr)
 library(cowplot)
 
-# some commands exist in multiple packages, here we define preferred ones that are frequently used
+### some commands exist in multiple packages, here we define preferred ones that are frequently used
 select <- dplyr::select
 count <- dplyr::count
 recode <- car::recode
 rename <- dplyr::rename
 
-# first we pre-set our chosen cut-off values for some commonly used indices:
+### set up color palette based on RISE guidelines
+RISEprimGreen <- "#009ca6"
+RISEprimRed <- "#e83c63"
+RISEprimYellow <- "#ffe500"
+RISEprimGreenMid <- "#8dc8c7"
+RISEprimRedMid <- "#f5a9ab"
+RISEprimYellowMid <- "#ffee8d"
+RISEprimGreenLight <- "#ebf5f0"
+RISEprimRedLight <- "#fde8df"
+RISEprimYellowLight <- "#fff7dd"
+RISEcompPurple <- "#482d55"
+RISEcompGreenDark <- "#0e4e65"
+RISEgrey1 <- "#f0f0f0"
+RISEgrey2 <- "#c8c8c8"
+RISEgrey3 <- "#828282"
+RISEgrey4 <- "#555555"
+
+
+### first we pre-set our chosen cut-off values for some commonly used indices:
 msq_min <- 0.7
 msq_max <- 1.3
 zstd_min <- -2
 zstd_max <- 2
 loc_dep <- 0.2 # above average residual correlation
+dif_dif <- 0.5 # logits difference between groups in average item location (DIF)
 
+### zstd is inflated with large samples (N > 500). Reduce sample size to jz and 
+### run analysis yz random samples to get average ZSTD
+jz = 300 # number to include in dataset
+yz = 10 # number of random samples
 
 # Load data
 df<-as.data.frame(read_excel("C:/Users/magnuspjo/RISE/KP Centrum för Kategoriskt Baserade Mätningar - Dokument/Kunskapsutveckling/RaschR/data/GNI23data v1.1.xls"))
+
+### if you need to download the datafile:
+# library(readODS)
+# url <- "https://figshare.com/ndownloader/files/27953790"
+# destfile <- "gnidata.ods"
+# download.file(url, destfile, mode="wb")
+# read_ods(file = "gnidata.ods")
+
 
 df <- df %>% 
   mutate_if(is.character, as.numeric)
@@ -171,6 +205,8 @@ itemlabels %>%
   
 ```
 
+
+
 ### Participants
 
 We have `r nrow(df.omit.na)` participants and their gender distribution
@@ -204,9 +240,11 @@ dif.gender %>%
                 
 ```
 
+
+
 ### Descriptives of raw data
 
-Responses to items are described below.
+Responses to all items are summarized below.
 
 ```{r}
 #| label: descriptives1
@@ -232,22 +270,14 @@ df.omit.na %>%
   kable_styling(latex_options = c("striped"))
 ```
 
-```{r}
-#| label: rawdist
-
-df.omit.na %>% 
-  mutate('Raw sum score' = rowSums(.)) %>% 
-  pull() %>% 
-  hist(main = "Distribution of summed ordinal raw scores", 
-       ylab = "Number of participants",
-       col = "#8dc8c7")
-```
+### Descriptives - item level
 
 ::: panel-tabset
 ### Tile plot
 
 ```{r}
 #| label: descriptives2
+
 df.omit.na %>% 
   pivot_longer(everything()) %>% 
   dplyr::count(name, value) %>% 
@@ -261,23 +291,25 @@ df.omit.na %>%
 
 ```
 
-### Barplots
+### Barplots {.scrollable}
 
 ```{r}
 #| label: alt-descriptives
-#| layout-nrow: 4
+#| layout-ncol: 2
 
 # Individual barplots of raw response data
 #par(mfrow = c(1,2)) # display two per row
 for (i in 1:ncol(df.omit.na)) {
   barplot(table(df.omit.na[,i]), col="#8dc8c7",
           main=names(df.omit.na[i]),
-          ylab="Antal svar", 
+          ylab="Number of responses", 
           xlab=(itemlabels[i,2]))
 }
 
 ```
 :::
+
+
 
 #### Recoding responses
 
@@ -332,9 +364,12 @@ Items 1 and 5 have issues with disordered response categories, which
 need to be addressed. For both items the two lowest categories will be
 merged.
 
+### ICC plots for recoded items
+
 ```{r}
 #| label: recode2
 #| code-fold: true
+#| layout-ncol: 2
 
 df.omit.na$q1<-recode(df.omit.na$q1,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
 df.omit.na$q5<-recode(df.omit.na$q5,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
@@ -349,35 +384,61 @@ plotICC(df.erm, xlim = c(-6, 6), # change the theta interval to display
 
 Response categories are working as expected, after the adjustments made.
 
-### Floor/ceiling effects on raw data
+### Floor/ceiling effects - raw data
 
 ```{r}
 #| label: rawdist2
+#| fig-dpi: 300
 
+# get info on thresholds
+item.estimates <- eRm::thresholds(df.erm)
+item_difficulty <- item.estimates[["threshtable"]][["1"]]
+item_difficulty<-as.data.frame(item_difficulty)
+
+# all items should have lowest category 0, making 0 the lowest total score
+rawMin <- 0 
+
+# get the number of thresholds above 0, to calculate max total raw score
+rawMax <- item_difficulty %>% 
+  select(starts_with("Threshold")) %>% 
+  pivot_longer(everything()) %>% 
+  na.omit() %>% 
+  count() %>% 
+  pull()
+
+# how many participants have score 0 ?
+rawMinN <- df.omit.na %>%
+  mutate(rowSums(.)) %>%
+  filter(.$rowSums == rawMin) %>% 
+  count() %>% 
+  pull()
+# how many participants have max score ?
+rawMaxN <- df.omit.na %>%
+  mutate(rowSums(.)) %>%
+  filter(.$rowSums == rawMax) %>% 
+  count() %>% 
+  pull()
+
+# create barplot to show sum score distribution
 df.omit.na %>% 
   mutate('Raw sum score' = rowSums(.)) %>% 
   pull() %>% 
-  hist(main = "Distribution of summed ordinal raw scores", 
+  table() %>%   
+  barplot(main = "Distribution of summed ordinal raw scores", 
        ylab = "Number of participants",
-       col = "#8dc8c7")
-
-minmaxN<-df.omit.na %>%
-  mutate(rowSums(.)) %>%
-  pull() %>%
-  table() %>%
-  as.data.frame() %>%
-  filter(row_number() %in% c(1, n()))
+       xlim = c(0, rawMax),
+       space = 0,
+       col = RISEprimGreen)
 
 # ceiling effect
-ceiling_eff<-round(minmaxN[2,2]/nrow(df.omit.na)*100,2)
+ceiling_eff<-round(rawMaxN/nrow(df.omit.na)*100,2)
 # floor effect
-floor_eff<-round(minmaxN[1,2]/nrow(df.omit.na)*100,2)
+floor_eff<-round(rawMinN/nrow(df.omit.na)*100,2)
 
 ```
 
 The proportion of participants responding in the lowest category on all
-items is `r floor_eff`%, while the proportion who respond in the highest
-category on all items is `r ceiling_eff`%.
+items (total score = 0) is `r floor_eff`%, while the proportion who respond in the highest category on all items (total score = `r rawMax`) is `r ceiling_eff`%.
 
 ## Dimensionality
 
@@ -430,14 +491,14 @@ item fit to the Rasch PCM.
 
 ### Item fit
 
+
 ```{r}
 #| label: modelfit1
 #| tbl-cap: "Item fit"
+#| layout-ncol: 2
 
 ### zstd is inflated with large samples (N > 500). Reduce sample size to jz and 
-### run analysis yz random samples to get average ZSTD
-# jz = 300 # number to include in dataset
-# yz = 10 # number of random samples
+### run analysis yz random samples to get average ZSTD (defined in r setup chunk)
 # outfitZ<-c()
 # infitZ<-c()
 # for (i in 1:yz) {
@@ -480,6 +541,21 @@ item.fit.table %>%
   # latex_options are for PDF output
   kable_styling(latex_options = c("striped"))
 
+# print the items in a separate table that should appear beside the item fit table
+itemlabels %>% 
+  kbl(booktabs = T, escape = F,
+      table.attr = "style='width:60%;'") %>%
+  # options for HTML output
+  kable_styling(bootstrap_options = c("striped", "hover"), 
+                position = "center",
+                full_width = T,
+                font_size = 12,
+                fixed_thead = T) %>% 
+  column_spec(1, bold = T) %>% 
+  kable_classic(html_font = "Lato") %>% 
+  # latex_options are for PDF output
+  kable_styling(latex_options = c("striped"))
+
 ```
 
 Values in red are beyond the pre-set cutoff values. We'll leave them for
@@ -514,13 +590,9 @@ for (i in 1:ncol(resid)) {
 #| tbl-cap: "Residual correlations"
 
 resid[upper.tri(resid)]<-NA # remove duplicate values in upper triangle
-# create function to highlight all variables according to cutoff values
-ldshow <- function(x) {
-  cell_spec(x, color = ifelse(x > dyn.cutoff, "red", "black"))
-}
 
 resid %>% 
-  mutate(across(everything(funs(ldshow(.))))) %>%
+   mutate(across(everything(), ~ cell_spec(.x, color = case_when(.x >= dyn.cutoff ~ "red", TRUE ~ "black")))) %>%  
   kbl(booktabs = T, escape = F, 
       table.attr = "style='width:70%;'") %>%
   # bootstrap options are for HTML output
@@ -534,13 +606,11 @@ resid %>%
   # latex_options are for PDF output
   kable_styling(latex_options = c("striped"))
 
-#sign_formatter <- formatter("span", style = x ~ style(color = ifelse(x > dyn.cutoff, "red", "black")))
-#formattable(resid, list(formattable::area(col = 1:ncol(df.omit.na)) ~ sign_formatter),
-#            table.attr = 'class=\"table table-striped\" style="font-size: 14px; font-family: Lato"')
-
 ```
 
-No problems with residual correlations.
+Items 1 and 3 are correlated above the relative cutoff value (`r round(dyn.cutoff,2)`). Looking at the item descriptions, both are related to working efficiently when being worried in general (item 3) or being worried about personal problems. As we saw in the section @item-fit, item 3 had quite low item fit values. This is a common issue with broad questions.
+
+It would be reasonable to eliminate either question 1 or 3, since they clearly overlap in content. We will leave this for an exercise.
 
 ## DIF analysis
 
@@ -560,8 +630,6 @@ we will only investigate gender effects on DIF.
 #| fig-cap: "DIF analysis of gender"
 #| fig-cap-location: top
 
-# make sure that the Rasch model results is up to date
-df.erm <- PCM(df.omit.na)
 # set up the DIF analysis
 df.tree <- data.frame(matrix(ncol = 0, nrow = nrow(df.omit.na))) # we need to make a new dataframe
 df.tree$difdata <- as.matrix(df.omit.na) # containing item data in a nested dataframe
@@ -580,6 +648,8 @@ No DIF was found in our small sample.
 #| label: wrightm1
 #| fig-cap: Modified Wright map
 #| fig-cap-location: top
+#| fig-dpi: 300
+#| fig-alt: "Three figures with the same scale on top of each other. At the top is a histogram of Person Locations, with a dotted line and gray field indicating mean/SD. In the middle is a similar histogram with Item Thresholds. At the bottom is a figure showing the individual item thresholds."
 
 item.locations<-item_difficulty[,2:ncol(item_difficulty)]
 names(item.locations) <- paste0("T", c(1:ncol(item.locations))) #re-number items
@@ -629,29 +699,61 @@ df.locations$locations<-c(pthetas,thresholds)
 # change type to class factor
 df.locations$type<-as.factor(df.locations$type)
 
+# get mean/SD for item/person locations
+pi.locations <- data.frame(matrix(ncol = 3, nrow = 3))
+
+#
+item.mean <- round(mean(item_difficulty$Location),2)
+item.sd <- round(sd(item_difficulty$Location),2)
+item.thresh.sd <- item_difficulty %>% 
+  select(starts_with("Threshold")) %>% 
+  pivot_longer(everything()) %>% 
+  pull() %>% 
+  na.omit() %>% sd() %>% round(2)
+person.mean <- round(mean(pthetas),2)
+person.sd <- round(sd(pthetas),2)
+#provide column names
+colnames(pi.locations) <- c('','Mean', 'SD')
+pi.locations[1,1] <- "Items"
+pi.locations[1,2] <- round(mean(item_difficulty$Location),2)
+pi.locations[1,3] <- round(sd(item_difficulty$Location),2)
+pi.locations[2,1] <- "Item thresholds"
+pi.locations[2,2] <- round(mean(item_difficulty$Location),2)
+pi.locations[2,3] <- item.thresh.sd
+pi.locations[3,1] <- "Persons"
+pi.locations[3,2] <- round(mean(pthetas),2)
+pi.locations[3,3] <- round(sd(pthetas),2)
+
+# Person location histogram
 p2<-ggplot() + 
   geom_histogram(data=subset(df.locations, type=="Persons"), 
                  aes(locations, fill="Persons", y= ..count..)) +
   xlab('') +
   ylab('Persons') +
   scale_x_continuous(limits = c(-5,6), breaks = scales::pretty_breaks(n = 10)) + 
+  geom_vline(xintercept = person.mean, color = RISEcompGreenDark, linetype = 2) +
+  annotate("rect", ymin = 0, ymax = Inf, xmin = (person.mean-person.sd), xmax = (person.mean+person.sd), alpha = .2) +
   geom_text(hjust = 1.1, vjust = 1) +
   theme_bw() +
-  theme(legend.position = 'none')
+  theme(legend.position = 'none',
+        text=element_text(family = "sans"))
 
+# Item Threshold location histogram
 p3 <- ggplot() +
   geom_histogram(data=subset(df.locations, type=="Item thresholds"), 
-                 aes(locations, y= -..count..)) + 
+                 aes(locations, y= ..count..)) + 
   xlab('') +
   ylab('Thresholds') +
   scale_x_continuous(limits = c(-5,6), breaks = scales::pretty_breaks(n = 10)) + 
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
+  scale_y_continuous() +
+  scale_y_reverse() +
+  geom_vline(xintercept = item.mean, color = RISEcompGreenDark, linetype = 2) +
+  annotate("rect", ymin = 0, ymax = Inf, xmin = (item.mean-item.thresh.sd), xmax = (item.mean+item.thresh.sd), alpha = .2) +
   geom_text(hjust = 1.1, vjust = 1) +
   theme_bw() +
   theme(legend.position = 'none')
 
-# combine plots together to create Wright map
-
+# combine plots together to create Wright map, and let the individual item threshold plot have some more space
 plot_grid(p2,p3,p1, labels=NULL, nrow = 3, align ="hv", rel_heights = c(1,1,1.3))
 
 ```
@@ -661,16 +763,6 @@ plot_grid(p2,p3,p1, labels=NULL, nrow = 3, align ="hv", rel_heights = c(1,1,1.3)
 ```{r}
 #| label: PIlocation
 #| tbl-cap: "Person/Item locations"
-
-pi.locations <- data.frame(matrix(ncol = 3, nrow = 2))
-#provide column names
-colnames(pi.locations) <- c('','Mean', 'SD')
-pi.locations[1,1] <- "Items"
-pi.locations[1,2] <- round(mean(item_difficulty$Location),2)
-pi.locations[1,3] <- round(sd(item_difficulty$Location),2)
-pi.locations[2,1] <- "Persons"
-pi.locations[2,2] <- round(mean(pthetas),2)
-pi.locations[2,3] <- round(sd(pthetas),2)
 
 pi.locations %>% 
   kbl(booktabs = T, escape = F) %>%
@@ -703,14 +795,14 @@ information contributed by each item.
 plotINFO(df.erm, type = "test") # show only test information
 abline(h = 3.33, col = "chartreuse") # indicate TIF 3.33 = PSI 0.70
 abline(h = 5, col = "chartreuse3") # indicate TIF 5 = PSI 0.80
-plotINFO(df.erm, type = "item") # get item information curves
+plotINFO(df.erm, type = "item", legpos = "topleft") # get item information curves
 ```
 
 The horizontal light green line (TIF 3.33) indicates the conventional
 lower cutoff for reliability of 0.7, while the darker green line at TIF =
 5 indicates reliability of 0.8.
 
-### Floor/ceiling effects
+### Floor/ceiling effects - test parameters
 
 ```{r}
 #| label: floorc1
@@ -724,7 +816,7 @@ psimatrix$psY <- test_info(df.erm, seq(-6, 6, length.out = 1001L))
 psimatrix$psX <- seq(-6, 6, length.out = 1001L)
 # now find where the cutoff points are for 3.33 on the theta (x) variable 
 # this provides the highest and lowest value into two variables
-psep_min <- psimatrix %>% slice(which.min(abs(psY - 3.33))) %>% select(psX) %>% pull()
+psep_min <- psimatrix %>% filter(psX < 0) %>% slice(which.min(abs(psY - 3.33))) %>% select(psX) %>% pull()
 psep_max <- psimatrix %>% filter(psX > 0) %>%  slice(which.min(abs(psY - 3.33))) %>% select(psX) %>% pull()
 
 # calculate how many participants cross the cutoffs
@@ -781,17 +873,54 @@ Person separation as a point estimate is **`r round(PSI$sep.rel,3)`**.
 
 ```{r}
 #| label: personfit1
+#| fig-cap: "Person locations and Person infit ZSTD"
 
-plotPWmap(df.erm, pmap = T, imap = F)
-          #personCI = list(gamma=0.95,col="red",lty="dotted"))
+# seems like the person map is reversed? compare to histogram 
 person.fit <- eRm::personfit(person.locations.estimate)
+thetas2<-as.data.frame(person.locations.estimate$theta.table)
 
+nPfit <- length(person.fit$p.infitZ)
 nCeilingPfit<-length(which(person.fit$p.infitZ > 2))
 nFloorPfit<-length(which(person.fit$p.infitZ < -2))
+nPgoodfit<-(nPfit-(nCeilingPfit+nFloorPfit))
 
+hist(person.fit$p.infitZ, col = RISEprimGreen, xlim = c(-4,6), xlab = "Person infit ZSTD", main = "Histogram of Person infit ZSTD")
+
+if (length(person.fit$excl_obs_num) > 0L) {
+  thetas2[person.fit$excl_obs_num,] <- NA
+  thetas2 <- na.omit(thetas2)
+}
+df.pfit <- data.frame(matrix(ncol = 2, nrow = nrow(thetas2)))
+#provide column names
+colnames(df.pfit) <- c('Person locations', 'Person infit ZSTD')
+df.pfit$`Person locations` <- thetas2$`Person Parameter`
+df.pfit$`Person infit ZSTD` <- person.fit$p.infitZ
+
+cutoff_line <- RISEprimRed
+dot_color <- "black"
+backg_color <- RISEprimGreenLight
+
+df.pfit %>% 
+  ggplot(aes(x=`Person infit ZSTD`, y=`Person locations`, label="")) +
+  geom_point(size = 1, color = dot_color) +
+  geom_vline(xintercept = -2, color = cutoff_line, linetype = 2, size = 0.7) +
+  geom_vline(xintercept = 2, color = cutoff_line, linetype = 2, size = 0.7) + 
+  xlim(-5, 5) +
+  ylim(-5, 5) +
+  scale_y_continuous(breaks=seq(-5, 5, by = 1)) +
+  scale_x_continuous(breaks=seq(-5, 7, by = 1)) +
+  theme(
+  panel.background = element_rect(fill = backg_color,
+                                colour = backg_color,
+                                size = 0.5, linetype = "solid"),
+  panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                colour = "white"), 
+  panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                colour = "white")
+  )
 ```
 
-**`r round(nCeilingPfit/length(pthetas)*100,1)`%** have person infit t above the cutoff 2.0 and **`r round(nFloorPfit/length(pthetas)*100,1)`%** are below -2.0.
+**`r round(nCeilingPfit/nPfit*100,1)`%** have person infit t above the cutoff 2.0 and **`r round(nFloorPfit/nPfit*100,1)`%** are below -2.0. Thus, **`r round(nPgoodfit/nPfit*100,1)`%** are within +/- 2 infit ZSTD.
 
 
 ## Item parameters
@@ -839,6 +968,7 @@ ple$'MU (0-100)'<-(ple$'SE (0-100)')*2
 ```{r}
 #| label: ordintTbl
 #| tbl-cap: "Ordinal-interval transformation table"
+#| layout-ncol: 2
 
 ple %>% 
   mutate(across(where(is.numeric), round, 2)) %>% 
@@ -873,43 +1003,76 @@ y.se<-ple$`SE (Logits)`
 arrows(x0=x, y0=y-y.se, x1=x, y1=y+y.se, code=3, angle=90, length=0.1)
 ```
 
-## Bonus: Contruct alley
+## Construct alley infit
+
+```{r}
+#| label: prepconall
+#| include: false
+
+item.fit.table$Location <- item_difficulty$Location
+
+```
+
 
 ```{r}
 #| label: conallinf
 #| fig-cap: "InfitZSTD and item location"
+#| fig-dpi: 300
 
-item.fit.table$Location <- item_difficulty$Location
+cutoff_line <- RISEprimRed
+dot_color <- "black"
+backg_color <- RISEprimGreenLight
 
 item.fit.table %>% 
   rownames_to_column() %>% 
   ggplot(aes(x=InfitZSTD, y=Location, label = rowname)) +
-  geom_point(size = 3, color = "black") +
-  geom_vline(xintercept = -2, color = "chartreuse3", linetype = 2) +
-  geom_vline(xintercept = 2, color = "chartreuse3", linetype = 2) + 
-  geom_text(hjust=1.5)
+  geom_point(size = 3, color = dot_color) +
+  geom_vline(xintercept = -2, color = cutoff_line, linetype = 2) +
+  geom_vline(xintercept = 2, color = cutoff_line, linetype = 2) + 
+  geom_text(hjust=1.5) + 
+  theme(
+  panel.background = element_rect(fill = backg_color,
+                                colour = backg_color,
+                                size = 0.5, linetype = "solid"),
+  panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                colour = "white"), 
+  panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                colour = "white")
+  )
 
 ```
+## Construct alley outfit
 
 ```{r}
 #| label: conalloutf
 #| fig-cap: "OutfitZSTD and item location"
+#| fig-dpi: 300
 
 item.fit.table %>% 
   rownames_to_column() %>% 
   ggplot(aes(x=OutfitZSTD, y=Location, label = rowname)) +
-  geom_point(size = 3, color = "black") +
-  geom_vline(xintercept = -2, color = "chartreuse3", linetype = 2) +
-  geom_vline(xintercept = 2, color = "chartreuse3", linetype = 2) + 
-  geom_text(hjust=1.5)
+  geom_point(size = 3, color = dot_color) +
+  geom_vline(xintercept = -2, color = cutoff_line, linetype = 2) +
+  geom_vline(xintercept = 2, color = cutoff_line, linetype = 2) + 
+  geom_text(hjust=1.5) + 
+  theme(
+  panel.background = element_rect(fill = backg_color,
+                                colour = backg_color,
+                                size = 0.5, linetype = "solid"),
+  panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                colour = "white"), 
+  panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                colour = "white")
+  )
 
 ```
 
-### First contrast loadings vs item location
+## Loadings vs item locations
 
 ```{r}
 #| label: conallpca
 #| fig-cap: "PCA of residuals first contrast loadings and item location"
+#| fig-dpi: 300
 
 pca2<-prcomp(std.resids)
 pcaloadings <- as.data.frame(pca2$rotation)
@@ -918,22 +1081,36 @@ pcaloadings$Location <- item.fit.table$Location
 pcaloadings %>% 
   rownames_to_column() %>% 
   ggplot(aes(x=Location, y=PC1, label = rowname)) +
-  geom_point(size = 3, color = "black") +
+  geom_point(size = 3, color = dot_color) +
   xlim(-2, 2) +
   ylim(-2, 2) +
   ylab("Loadings") +
   xlab("Item location") +
-  geom_vline(xintercept = 0, color = "chartreuse3", linetype = 2) +
-  geom_hline(yintercept = 0, color = "chartreuse3", linetype = 2) + 
-  geom_text(hjust=1.4, vjust=0.6)
+  geom_vline(xintercept = 0, color = cutoff_line, linetype = 2) +
+  geom_hline(yintercept = 0, color = cutoff_line, linetype = 2) + 
+  geom_text(hjust=1.4, vjust=0.6) +
+  theme(
+  panel.background = element_rect(fill = backg_color,
+                                colour = backg_color,
+                                size = 0.5, linetype = "solid"),
+  panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                colour = "white"), 
+  panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                colour = "white")
+  )
 
 ```
 
 ## Software used
 
 ```{r}
-#| label: packages
-pkgs <- cite_packages(cite.tidyverse = TRUE, output = "table")
+#| label: packagesv
+
+
+pkgs <- cite_packages(cite.tidyverse = TRUE, 
+                      output = "table",
+                      bib.file = "grateful-refs.bib",
+                      include.RStudio = TRUE)
 pkgs %>% 
   kbl(booktabs = T, escape = F, 
       table.attr = "style='width:70%;'") %>%
@@ -949,4 +1126,12 @@ pkgs %>%
   kable_styling(latex_options = c("striped"))
 ```
 
+## Exercises
+
+1. Make a table of partipant age distribution
+2. Eliminate either item 1 or 3 and check the effects on reliability
+3. Run a DIF analysis using age as DIF variable
+
+
 ## References
+
