@@ -406,18 +406,45 @@ rawMax <- item_difficulty %>%
   count() %>% 
   pull()
 
-# how many participants have score 0 ?
-rawMinN <- df.omit.na %>%
-  mutate(rowSums(.)) %>%
-  filter(.$rowSums == rawMin) %>% 
-  count() %>% 
-  pull()
-# how many participants have max score ?
+# what is the lowest score in the sample?
+rawMinX <- df.omit.na %>%
+  mutate(rowsums = rowSums(.)) %>%
+  count(rowsums) %>% 
+  arrange(rowsums) %>% 
+  head(1) %>% 
+  pull(rowsums)
+  
+# if lowest score is higher than 0, we have no floor effect
+if (rawMinX > 0) {
+  rawMinN <- 0
+} else { # if lowest score is 0, how many participants have scored 0?
+rawminN <- df.omit.na %>%
+  mutate(rowsums = rowSums(.)) %>%
+  count(rowsums) %>% 
+  arrange(rowsums) %>% 
+  head(1) %>% 
+  pull(n) 
+}
+
+# what is the highest score in the sample?
+rawMaxX <- df.omit.na %>%
+  mutate(rowsums = rowSums(.)) %>%
+  count(rowsums) %>% 
+  arrange(desc(rowsums)) %>% 
+  head(1) %>% 
+  pull(rowsums)
+  
+# if highest score is below max rawscore, we have no ceiling effect
+if (rawMaxX < rawMax) {
+  rawMaxN <- 0
+} else {
 rawMaxN <- df.omit.na %>%
-  mutate(rowSums(.)) %>%
-  filter(.$rowSums == rawMax) %>% 
-  count() %>% 
-  pull()
+  mutate(rowsums = rowSums(.)) %>%
+  count(rowsums) %>% 
+  arrange(desc(rowsums)) %>% 
+  head(1) %>% 
+  pull(n) 
+}
 
 # create barplot to show sum score distribution
 df.omit.na %>% 
