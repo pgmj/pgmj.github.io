@@ -1,13 +1,20 @@
 /* css styles */
 @font-face {
     font-family: Lato;
-    src: url("../fonts/lato.ttf") format('truetype');
+    src: url("../fonts/Lato.ttf") format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: Roboto Mono;
+    font-family: Lato;
+    src: url("../fonts/LatoBold.ttf") format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto Mono';
     src: url("../fonts/Roboto.ttf") format('truetype');
     font-weight: normal;
     font-style: normal;
