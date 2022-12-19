@@ -2,4 +2,4 @@
 title: "Home"
 ---
 
-Just a placeholder for now.
+Welcome! Content will be added.
