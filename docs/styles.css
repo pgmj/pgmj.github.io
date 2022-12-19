@@ -1,7 +1,7 @@
 /* css styles */
 @font-face {
-    font-family: lato;
-    src: url("../fonts/lato.ttf") format('truetype');
+    font-family: Lato;
+    src: url("../fonts/Lato.ttf") format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -11,11 +11,4 @@
     src: url("../fonts/Roboto.ttf") format('truetype');
     font-weight: normal;
     font-style: normal;
-}
-
-body {
-  font-family: Lato;
-  font-weight: 400;
-  font-style: normal;
-  line-height: 1.5;
 }
