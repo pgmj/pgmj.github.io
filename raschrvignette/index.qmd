@@ -1,5 +1,6 @@
 ---
-title: "RISEkbmRasch R package vignette"
+title: "RISEkbmRasch"
+subtitle: "An R package vignette"
 author: 
   name: Magnus Johansson
   affiliation: RISE Research Institutes of Sweden
