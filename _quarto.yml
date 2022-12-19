@@ -13,10 +13,7 @@ website:
 
 format:
   html:
-    theme: 
-      - materia
-      - custom.scss
-    css: styles.css
+    theme: materia
     toc: true
     mainfont: 'Lato'
     monofont: 'Roboto Mono'
