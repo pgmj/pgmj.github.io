@@ -17,7 +17,7 @@ format:
     css: styles.css
     toc: true
     mainfont: 'Lato'
-    monofont: 'Roboto Mono'
+    monofont: 'Roboto'
     code-overflow: wrap
     code-tools: true
     code-fold: show
