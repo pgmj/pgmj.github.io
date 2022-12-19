@@ -20,7 +20,7 @@ This is a work-in-progress to create a proper vignette to introduce how to make 
 
 Details on installation is at the package link above. This vignette will walk through a sample analysis using an open dataset with questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions.
 
-One of the aims with this package is to simplify psychometric analysis to shed light on the measurement properties of a scale. In a forthcoming paper (preprint should be out in January 2023) our research group propose that the basic aspects of such an analysis should include information about:
+One of the aims with this package is to simplify psychometric analysis to shed light on the measurement properties of a scale. In a forthcoming paper (preprint should be out in January 2023 and the link will be added here), our research group propose that the basic aspects of a psychometric analysis should include information about:
 
 -   Unidimensionality
 -   Response categories
