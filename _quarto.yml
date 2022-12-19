@@ -13,9 +13,7 @@ website:
 
 format:
   html:
-    theme:
-      - materia
-      - custom.cscc
+    theme: materia
     css: styles.css
     toc: true
     mainfont: 'Lato'
