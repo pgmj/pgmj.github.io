@@ -27,5 +27,6 @@ format:
     fig-dpi: 150
     layout-align: left
     page-layout: full
+    linestretch: 1.6
 
 
