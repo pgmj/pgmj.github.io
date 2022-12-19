@@ -1,0 +1,5 @@
+---
+title: "Home"
+---
+
+Just a placeholder for now.

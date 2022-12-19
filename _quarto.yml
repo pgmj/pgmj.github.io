@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+  
+website:
+  title: "R, Rasch, etc"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - raschrvignette/index.qmd
+      - about.qmd
+
+format:
+  html:
+    theme: minty
+    css: styles.css
+    toc: true
+    mainfont: 'Lato'
+    monofont: 'Roboto Mono'
+    code-overflow: wrap
+    code-tools: true
+    code-fold: show
+    number-sections: true
+    fig-dpi: 150
+    layout-align: left
+    page-layout: full
+
+
