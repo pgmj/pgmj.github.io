@@ -256,7 +256,7 @@ In this data, we see the floor effect on the left, with 11.8% of respondents all
 
 There are many ways to look at the item level data, and we'll get them all together in the tab-panel below. The `RItileplot()` is probably most informative, since it provides the number of responses in each response category for each item. It is usually recommended to have at least \~10 responses in each category for psychometric analysis, no matter which methodology is used.
 
-Kudos to [Solomon Kurz](https://solomonkurz.netlify.app/blog/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/) for providing the idea and code for the tile plot!
+Kudos to [Solomon Kurz](https://solomonkurz.netlify.app/blog/2021-05-11-yes-you-can-fit-an-exploratory-factor-analysis-with-lavaan/) for providing the idea and code on which the tile plot function is built!
 
 Most people will be familiar with the barplot, and this is probably most intuitive to understand the response distribution within each item. However, if there are many items it will take a while to review, and does not provide the same overview as a tileplot or stacked bars.
 
@@ -360,7 +360,13 @@ This figure can be helpful to identify clusters in data or multidimensionality.
 ### Analysis of response categories
 
 ```{r}
+#| include: false
 mirt.rasch <- mirt(df, model=1, itemtype='Rasch') # unidimensional Rasch model
+```
+
+```{r}
+# the line of code below is necessary prior to creating the plot:
+# mirt.rasch <- mirt(df, model=1, itemtype='Rasch') # unidimensional Rasch model
 plot(mirt.rasch, type="trace")
 ```
 Each response category for each item should have a curve that indicates it to be the most probably response at some point on the latent variable (x axis in the figure).
@@ -390,12 +396,12 @@ Item 18 has issues with the second lowest category, which needs to be merged wit
 
 Item 15 shows low item fit.
 
-Two item-pairs have high residual correlations:
+Two item-pairs show residual correlations above the cutoff value:
 
 - 15 and 16 (scared and afraid)
 - 17 and 18 (ashamed and guilty)
 
-Since item 15 also had low fit, we will remove it. And since item 18 had problems with response categories, it will also be removed.
+Since item 15 also had low item fit, we will remove it. And since item 18 had problems with response categories, it will also be removed.
 
 ```{r}
 removed.items <- c("PANAS_15","PANAS_18")
@@ -419,7 +425,7 @@ RIlistItemsMargin(df2, fontsize = 13)
 ::: panel-tabset
 ### Item fit {.smaller}
 ```{r}
-RIitemfitPCM2(df2, 300, 32, cpu = 8)
+RIitemfitPCM2(df2, 330, 32, cpu = 8)
 ```
 ### PCA
 ```{r}
