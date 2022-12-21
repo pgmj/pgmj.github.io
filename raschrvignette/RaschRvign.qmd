@@ -32,9 +32,9 @@ We'll include several ways to investigate these measurement properties, using Ra
 
 ## Getting started
 
-Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file is available (insert link later) that is suggested to have at hand for copy&paste when running a new analysis.
+Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEkbmRasch/blob/main/Quarto/RISEkbmRasch%20Quarto%20template.qmd) that can be useful to have handy for copy&paste when running a new analysis.
 
-Loading the package should also get all the dependencies loaded. You may need to make sure that ggplot2 is updated to version 3.4.0 or later.
+Loading the `RISEkbmRasch` package should also get all the dependencies loaded. You may need to make sure that ggplot2 is updated to version 3.4.0 or later.
 
 ```{r}
 library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch")
@@ -506,7 +506,7 @@ And no DIF for group.
 
 ### Sex and age
 
-While it has not been implemented in this package, the `psychotree` package allows for DIF interaction analysis between multiple DIF variables. This will also serve as an example of how to look at and modify a package function, if needed. Use `View(RIdifTable)` to view the code in the function.
+While it has not yet been implemented in this package, the `psychotree` package allows for DIF interaction analysis between multiple DIF variables. This will also serve as an example of how to look at and modify a package function, if needed. Use `View(RIdifTable)` to view the code in the function.
 
 ```{r}
 dfin <- df2
