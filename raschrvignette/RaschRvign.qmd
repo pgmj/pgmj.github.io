@@ -69,7 +69,6 @@ RISEgrey4 <- "#555555"
 We will use data from a recent paper investigating the "initial elevation effect" [@anvari2022], and focus on the 10 negative items from the PANAS. The data is available at the OSF website.
 
 ```{r}
-#| echo: false
 df.all <- read_csv("https://osf.io/download/6fbr5/?view_only=6ad4c2bb65d843bfb1470b8959913630")
 
 # subset items and demographic variables
