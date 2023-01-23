@@ -16,7 +16,7 @@ format:
     theme: 
       - materia
       - custom.scss
-    css: styles.css
+#    css: styles.css
     toc: true
     mainfont: 'Lato'
     monofont: 'Roboto Mono'

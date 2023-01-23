@@ -28,40 +28,36 @@ One of the aims with this package is to simplify psychometric analysis to shed l
 -   Targeting
 -   Measurement uncertainties (reliability)
 
-We'll include several ways to investigate these measurement properties, using Rasch Measurement Theory.
+We'll include several ways to investigate these measurement properties, using Rasch Measurement Theory. There are also functions in the package less directly related to the criteria above, that will be shown in this vignette.
+
+Please note that this is a sample analysis to showcase the R package. It is not intended as a "best practice" psychometric analysis example.
 
 ## Getting started
 
 Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEkbmRasch/blob/main/Quarto/RISEkbmRasch%20Quarto%20template.qmd) that can be useful to have handy for copy&paste when running a new analysis.
 
-Loading the `RISEkbmRasch` package should also get all the dependencies loaded. You may need to make sure that ggplot2 is updated to version 3.4.0 or later.
+Loading the `RISEkbmRasch` package should also get all the dependencies loaded. You may need to make sure that ggplot2 is updated to version 3.4.0 or later. However, it could be desirable to explicitly load the packages used, to simplify the automatic creation of citations for them, using the `grateful` package.
 
 ```{r}
 library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch")
-
-### some commands exist in multiple packages, here we define preferred ones that are frequently used
-select <- dplyr::select
-count <- dplyr::count
-recode <- car::recode
-rename <- dplyr::rename
-
-### set up color palette based on RISE guidelines
-RISEprimGreen <- "#009ca6"
-RISEprimRed <- "#e83c63"
-RISEprimYellow <- "#ffe500"
-RISEprimGreenMid <- "#8dc8c7"
-RISEprimRedMid <- "#f5a9ab"
-RISEprimYellowMid <- "#ffee8d"
-RISEprimGreenLight <- "#ebf5f0"
-RISEprimRedLight <- "#fde8df"
-RISEprimYellowLight <- "#fff7dd"
-RISEcompPurple <- "#482d55"
-RISEcompGreenDark <- "#0e4e65"
-RISEgrey1 <- "#f0f0f0"
-RISEgrey2 <- "#c8c8c8"
-RISEgrey3 <- "#828282"
-RISEgrey4 <- "#555555"
-
+library(grateful) # devtools::install_github("Pakillo/grateful")
+library(ggrepel)
+library(car)
+library(kableExtra)
+library(readxl)
+library(tidyverse)
+library(eRm)
+library(mirt)
+library(psych)
+library(ggplot2)
+library(psychotree)
+library(matrixStats)
+library(reshape)
+library(knitr)
+library(cowplot)
+library(formattable) 
+library(glue)
+library(foreach)
 ```
 
 ### Loading data
@@ -94,9 +90,9 @@ itemlabels <- df %>%
 
 ```
 
-### Demographics and invariance
+### Demographics
 
-Variables for invariance tests such as Differential Item Functioning need to be separated into vectors (ideally as factors with specified labels and levels) with the same length as the number of rows in the dataset. This means that any kind of removal of respondents with missing data needs to be done before separating the DIF variables.
+Variables for invariance tests such as Differential Item Functioning (DIF) need to be separated into vectors (ideally as factors with specified labels and levels) with the same length as the number of rows in the dataset. This means that any kind of removal of respondents with missing data needs to be done before separating the DIF variables.
 
 Let's first see whether any data is missing.
 
@@ -120,7 +116,8 @@ df %>%
 
 ```
 
-No missing data, which makes this easier. We also need to check how the `Sex` variable has been coded and which responses are present in the data.
+No missing data, which makes this easier. 
+We also need to check how the `Sex` variable has been coded and which responses are present in the data.
 
 ```{r}
 df %>% 
@@ -485,7 +482,7 @@ RIdifFigThresh(df2, dif.sex)
 
 While no item shows problematic levels of DIF regarding item location, as shown by the table, there is an interesting pattern in the thresholds figure. The lowest threshold seems to be slightly lower for node 3 (Male) for all items.
 
-The results do not require any action.
+The results do not require any action since the difference is very small.
 
 ### Age
 
@@ -620,7 +617,7 @@ However, we will not modify the response categories for this sample/simple analy
 RItif(df2)
 ```
 
-While 11.8% of respondents had a floor effect, the figure above shows us that 41.8% are located below the point where the items produce a person separation index (reliability) of 0.7 or higher.
+While 11.8% of respondents had a floor effect based on the raw sum scored data, the figure above shows us that 41.8% are located below the point where the items produce a person separation index (reliability) of 0.7 or higher.
 
 ## Person fit
 
