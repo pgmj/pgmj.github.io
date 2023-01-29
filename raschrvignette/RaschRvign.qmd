@@ -6,7 +6,7 @@ author:
   affiliation: RISE Research Institutes of Sweden
   affiliation-url: https://www.ri.se/sv/vad-vi-gor/expertiser/kategoriskt-baserade-matningar
   orcid: 0000-0003-1669-592X
-date: '2022-12-20'
+date: last-modified
 execute: 
   cache: true
   warning: false
@@ -18,9 +18,9 @@ bibliography:
 
 This is a work-in-progress to create a proper vignette to introduce how to make use of the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch).
 
-Details on installation is at the package link above. This vignette will walk through a sample analysis using an open dataset with questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **</> CODE** at the top beside the table of contents. You should be able to use the source code as is and reproduce this document locally, as long as you have the required packages installed. This site is built using the open source publishing tool [Quarto](https://www.quarto.org).
+Details on installation is at the package link above. This vignette will walk through a sample analysis using an open dataset with questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **\</\> CODE** at the top beside the table of contents. You should be able to use the source code as is and reproduce this document locally, as long as you have the required packages installed. This site is built using the open source publishing tool [Quarto](https://www.quarto.org).
 
-One of the aims with this package is to simplify psychometric analysis to shed light on the measurement properties of a scale. In a forthcoming paper (preprint should be out in January 2023 and the link will be added here), our research group propose that the basic aspects of a psychometric analysis should include information about:
+One of the aims with this package is to simplify psychometric analysis to shed light on the measurement properties of a scale. In a paper recently made available as a preprint [@johansson], our [research group](https://www.ri.se/en/what-we-do/projects/center-for-categorically-based-measurements) propose that the basic aspects of a psychometric analysis should include information about:
 
 -   Unidimensionality
 -   Response categories
@@ -116,8 +116,7 @@ df %>%
 
 ```
 
-No missing data, which makes this easier. 
-We also need to check how the `Sex` variable has been coded and which responses are present in the data.
+No missing data, which makes this easier. We also need to check how the `Sex` variable has been coded and which responses are present in the data.
 
 ```{r}
 df %>% 
@@ -354,15 +353,18 @@ RIloadLoc(df)
 This figure can be helpful to identify clusters in data or multidimensionality.
 
 ### Analysis of response categories
+
 ```{r}
 #| include: false
 mirt.rasch <- mirt(df, model=1, itemtype='Rasch') # unidimensional Rasch model
 ```
+
 ```{r}
 # the line of code below is necessary prior to creating the plot:
 # mirt.rasch <- mirt(df, model=1, itemtype='Rasch') # unidimensional Rasch model
 plot(mirt.rasch, type="trace")
 ```
+
 Each response category for each item should have a curve that indicates it to be the most probably response at some point on the latent variable (x axis in the figure).
 
 ### Targeting
@@ -384,7 +386,7 @@ The top part shows person location histogram, the middle part a histogram of ite
 RIitemHierarchy(df)
 ```
 :::
-::::
+:::
 
 Item 18 has issues with the second lowest category, which needs to be merged with the lowest category.
 
@@ -392,8 +394,8 @@ Item 15 shows low item fit.
 
 Two item-pairs show residual correlations above the cutoff value:
 
-- 15 and 16 (scared and afraid)
-- 17 and 18 (ashamed and guilty)
+-   15 and 16 (scared and afraid)
+-   17 and 18 (ashamed and guilty)
 
 Since item 15 also had low item fit, we will remove it. And since item 18 had problems with response categories, it will also be removed.
 
@@ -403,7 +405,6 @@ removed.items <- c("PANAS_15","PANAS_18")
 df2 <- df %>% 
   select(!any_of(removed.items))
 ```
-
 
 ## Rasch analysis 2
 
@@ -415,38 +416,49 @@ With items 15 and 18 removed.
 RIlistItemsMargin(df2, fontsize = 13)
 ```
 
-:::: column-page-left
+::: column-page-left
 ::: panel-tabset
 ### Item fit {.smaller}
+
 ```{r}
 RIitemfitPCM2(df2, 300, 32, cpu = 8)
 ```
+
 ### PCA
+
 ```{r}
 #| tbl-cap: "PCA of Rasch model residuals"
 RIpcmPCA(df2)
 ```
+
 ### Residual correlations
+
 ```{r}
 RIresidcorr(df2, cutoff = 0.2)
 ```
+
 ### 1st contrast loadings
+
 ```{r}
 RIloadLoc(df2)
 ```
+
 ### Targeting
+
 ```{r}
 #| fig-height: 5
 # increase fig-height above as needed, if you have many items
 RItargeting(df2)
 ```
+
 ### Item hierarchy
+
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
 ```
 :::
-::::
+:::
 
 Items 12 and 16 are a bit low in item fit ZSTD.
 
@@ -466,15 +478,20 @@ RIlistItemsMargin(df2, fontsize = 13)
 
 ::: panel-tabset
 #### Table
+
 ```{r}
 #| fig-height: 3
 RIdifTable(df2, dif.sex)
 ```
+
 #### Figure items
+
 ```{r}
 RIdifFigure(df2, dif.sex)
 ```
+
 #### Figure thresholds
+
 ```{r}
 RIdifFigThresh(df2, dif.sex)
 ```
@@ -542,33 +559,39 @@ df2 <- df2 %>%
 RIlistItemsMargin(df2, fontsize = 13)
 ```
 
-:::: column-page-left
+::: column-page-left
 ::: panel-tabset
 ### Item fit {.smaller}
+
 ```{r}
 RIitemfitPCM2(df2, 300, 32, 8)
 ```
+
 ### Residual correlations
+
 ```{r}
 RIresidcorr(df2, cutoff = 0.2)
 ```
+
 ### Targeting
+
 ```{r}
 #| fig-height: 5
 RItargeting(df2)
 ```
+
 ### Item hierarchy
+
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
 ```
 :::
-::::
+:::
 
 No problematic residual correlations, but item 12 is clearly low in item fit.
 
 ## Rasch analysis 4
-
 
 ```{r}
 removed.items <- c(removed.items,"PANAS_12")
@@ -584,28 +607,35 @@ df2 <- df2 %>%
 RIlistItemsMargin(df2, fontsize = 13)
 ```
 
-:::: column-page-left
+::: column-page-left
 ::: panel-tabset
 ### Item fit {.smaller}
+
 ```{r}
 RIitemfitPCM2(df2, 300, 32, 8)
 ```
+
 ### Residual correlations
+
 ```{r}
 RIresidcorr(df2, cutoff = 0.2)
 ```
+
 ### Targeting
+
 ```{r}
 #| fig-height: 5
 RItargeting(df2)
 ```
+
 ### Item hierarchy
+
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
 ```
 :::
-::::
+:::
 
 There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates.
 
@@ -628,6 +658,7 @@ RIpfit(df2)
 ```
 
 ## Item parameters
+
 To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package. Code for this is available upon request and will be made into a function in the `RISEkbmRasch` package at some point.
 
 ```{r}
@@ -637,12 +668,13 @@ RIitemparams(df2)
 ### Ordinal sum score to interval score
 
 This table shows the corresponding sum score values and logit scores, with standard errors for each logit value.
+
 ```{r}
 RIscoreSE(df2)
 ```
 
-
 ## Software used
+
 ```{r}
 library(grateful) # devtools::install_github("Pakillo/grateful")
 pkgs <- cite_packages(cite.tidyverse = TRUE, 
