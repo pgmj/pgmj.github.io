@@ -4,7 +4,8 @@ project:
   
 website:
   title: "R, Rasch, etc"
-  navbar:
+  navbar: 
+    background: "#009ca6"
     left:
       - href: index.qmd
         text: Home
