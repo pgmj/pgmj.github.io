@@ -659,15 +659,17 @@ RIpfit(df2)
 
 ## Item parameters
 
-To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package or by using the new (as of 2023-02-04) `RIestTheta()` function in this package (does not yet work with dichotomous data).
+To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package. 
 
-First lets output the parameters into a table.
+It can also be done by using the new (as of 2023-02-04) `RIestTheta()` function in this package (does not yet work with dichotomous data), which uses `thetaEst()` across all the participants in your dataframe.
+
+First, we'll output the parameters into a table.
 
 ```{r}
 RIitemparams(df2)
 ```
 
-`RIitemparams()` will automatically output a CSV-file called "itemParameters.csv". The filename can optionally be specified manually.
+`RIitemparams()` will automatically write a CSV-file called "itemParameters.csv". The filename can be specified manually.
 
 ### Ordinal sum score to interval score
 
@@ -689,6 +691,13 @@ df2$PersonScores <- RIestThetas2(df2, cpu = 8)
 ```
 
 `RIestThetas()` can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
+
+If you would like to use an existing item matrix, this code may be helpful:
+```{r}
+items <- as.matrix(read.csv("itemParameters.csv"))
+items
+```
+As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.
 
 Finally, we'll look at the distribution of person scores using a simple histogram.
 ```{r}
