@@ -519,7 +519,7 @@ And no DIF for group.
 
 ### Sex and age
 
-While it has not yet been implemented in this package, the `psychotree` package allows for DIF interaction analysis between multiple DIF variables. This will also serve as an example of how to look at and modify a package function, if needed. Use `View(RIdifTable)` to view the code in the function.
+While it has not yet been implemented in this package, the `psychotree` package allows for DIF interaction analysis with multiple DIF variables. This will also serve as an example of how to look at and modify a package function, if needed. Use `View(RIdifTable)` to view the code in the function. Then we can copy the code needed and modify it.
 
 ```{r}
 dfin <- df2
@@ -659,11 +659,15 @@ RIpfit(df2)
 
 ## Item parameters
 
-To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package. Code for this is available upon request and will be made into a function in the `RISEkbmRasch` package at some point.
+To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package or by using the new (as of 2023-02-04) `RIestTheta()` function in this package (does not yet work with dichotomous data).
+
+First lets output the parameters into a table.
 
 ```{r}
 RIitemparams(df2)
 ```
+
+`RIitemparams()` will automatically output a CSV-file called "itemParameters.csv". The filename can optionally be specified manually.
 
 ### Ordinal sum score to interval score
 
@@ -673,7 +677,28 @@ This table shows the corresponding sum score values and logit scores, with stand
 RIscoreSE(df2)
 ```
 
+### Estimating interval level person scores
+
+Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the `RIitemfitPCM()` function there is also a parallel processing version of the function available, which makes use of 4 cores by default.
+
+`RIestThetas()` by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, it will use eRm's CML PCM to calculate it based on the dataframe input.
+
+```{r}
+library(furrr) # for a parallel processing version of purrr::map_dbl
+df2$PersonScores <- RIestThetas2(df2, cpu = 8)
+```
+
+`RIestThetas()` can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
+
+Finally, we'll look at the distribution of person scores using a simple histogram.
+```{r}
+hist(df2$PersonScores, col = "#009ca6")
+```
+
+
 ## Software used
+
+The `grateful` package is a nice way to give credit to the packages used in making the analysis. It is not available on CRAN, but can be installed directly from GitHub (see code below).
 
 ```{r}
 library(grateful) # devtools::install_github("Pakillo/grateful")
