@@ -1,0 +1,88 @@
+---
+title: "Automating reports with Quarto"
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## Background
+
+Let's say you have survey data from a group of 28 municipalities. You
+have worked out a [Quarto](https://www.quarto.org) file to generate nice
+tables and figures and want to produce 28 different reports that all use
+the same Quarto file for each of the municipalities. Additionally, you
+want one collective report using the complete dataset.
+
+Instead of creating 28 different .qmd files and running them manually,
+this can be easily automated with parameterization. This will save huge
+amounts of time, for instance when you find that typo in one figure and
+need to re-render all 28 reports. Or, even better, when you get next
+years survey results and can re-use the whole setup and instantly
+generate your new reports!
+
+## Setting up
+
+In our simple case, we will only use one parameter, the name of the
+municipality. Of course there could be any number of parameters that you
+may want to customize, which you are likely to easily be able to do
+based on this example.
+
+We need to add two rows to the qmd-file YAML:
+
+``` yaml
+---
+params:
+  municipality: "All municipalities"
+---
+```
+
+This creates the object `params$municipality` and gives it a default
+value.
+
+Next, we create our little script, in a file called `render.R`, starting
+with a vector of municipalities. This could of course be read from a
+file, and our example will only contain four.
+
+``` r
+municipalities <- c("All municipalities","Vallentuna","Vaxholm","Södertälje","Botkyrka")
+library(glue)
+library(quarto)
+library(purrr)
+
+walk(1:length(municipalities), function(i) {
+  muni <- municipalities[i]
+  
+  outfile <- glue("{Sys.Date()}_{muni}.html") # gives the filename a date and the municipality name
+  
+  quarto_render(input = "yourQuartoTemplate.qmd", 
+                execute_params = list("grupp" = muni), 
+                output_file = outfile,
+                output_format = "html")
+})
+```
+
+> As you can see, we make use of `purrr::walk`, which means you may be
+> able to use `furrr::future_walk` to enable parallel processing?! I
+> have only tried this briefly, but it didn't work. Could be worth
+> looking into if you need to generate a lot of reports often.
+
+### Final settings
+
+Now, we just need to make sure that our Quarto file uses the params. For simplicity,
+I expect that you read your data from a file into a dataframe. We will make use of a simple `if` and `else` combined with `dplyr::filter()` from the `tidyverse`.
+
+``` r
+# read data
+df <- read_csv("yourDataFile.csv")
+
+if (params$grupp == "All municipalities") {
+  df <- df
+} else {
+  df <- df %>% 
+  filter(municipality == params$municipality)
+}
+```
+
+Save your files and run the `render.R` script! Files will be output to the same 
+directory as your .qmd file.
+

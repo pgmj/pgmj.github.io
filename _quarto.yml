@@ -6,11 +6,15 @@ website:
   title: "R, Rasch, etc"
   navbar: 
     background: "#009ca6"
+    foreground: "#FFFFFF"
     left:
       - href: index.qmd
         text: Home
       - raschrvignette/RaschRvign.qmd
       - about.qmd
+      - text: "Blog"  
+        menu:
+         - parameterizedQ.qmd
 
 format:
   html:
