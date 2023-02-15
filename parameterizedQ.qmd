@@ -89,7 +89,7 @@ Save your files and run the `render.R` script! Files will be output to
 the same directory as your .qmd file.
 
 ::: {.callout-note icon="false"}
-A much more complex example can be found here (and some of my code was
+A far more complex example can be found here (and some of my code was
 adapted from there):
 <https://github.com/Pecners/sra_pullout/blob/main/render.R>
 :::
