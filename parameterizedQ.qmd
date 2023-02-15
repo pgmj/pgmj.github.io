@@ -77,7 +77,7 @@ dataframe. We will make use of a simple `if` and `else` combined with
 # read data
 df <- read_csv("yourDataFile.csv")
 
-if (params$grupp == "All municipalities") {
+if (params$municipality == "All municipalities") {
   df <- df
 } else {
   df <- df %>% 
@@ -87,6 +87,13 @@ if (params$grupp == "All municipalities") {
 
 Save your files and run the `render.R` script! Files will be output to
 the same directory as your .qmd file.
+
+If you'd like to use the municipality in the first headline of the
+report, you can add a line like this to the Quarto file:
+
+```{r}
+## `r params$municipality` {.unnumbered}
+```
 
 ::: {.callout-note icon="false"}
 A far more complex example can be found here (and some of my code was
