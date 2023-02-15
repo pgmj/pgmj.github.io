@@ -68,8 +68,10 @@ walk(1:length(municipalities), function(i) {
 
 ### Final settings
 
-Now, we just need to make sure that our Quarto file uses the params. For simplicity,
-I expect that you read your data from a file into a dataframe. We will make use of a simple `if` and `else` combined with `dplyr::filter()` from the `tidyverse`.
+Now, we just need to make sure that our Quarto file uses the params. For
+simplicity, I expect that you read your data from a file into a
+dataframe. We will make use of a simple `if` and `else` combined with
+`dplyr::filter()` from the `tidyverse`.
 
 ``` r
 # read data
@@ -83,6 +85,11 @@ if (params$grupp == "All municipalities") {
 }
 ```
 
-Save your files and run the `render.R` script! Files will be output to the same 
-directory as your .qmd file.
+Save your files and run the `render.R` script! Files will be output to
+the same directory as your .qmd file.
 
+::: {.callout-note icon="false"}
+A much more complex example can be found here (and some of my code was
+adapted from there):
+<https://github.com/Pecners/sra_pullout/blob/main/render.R>
+:::
