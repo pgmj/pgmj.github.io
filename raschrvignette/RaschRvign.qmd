@@ -320,7 +320,7 @@ While response patterns are skewed for all items, there are more than 10 respons
 
 The eRm package and Conditional Maximum Likelihood (CML) estimation will be used primarily, with the Partial Credit Model.
 
-This is also where the five basic psychometric aspects are good to recall.
+This is also where the [five basic psychometric aspects](https://doi.org/10.31219/osf.io/3htzc) are good to recall.
 
 -   Unidimensionality
 -   Response categories
@@ -328,7 +328,7 @@ This is also where the five basic psychometric aspects are good to recall.
 -   Targeting
 -   Measurement uncertainties (reliability)
 
-We will look at all except invariance and reliability in parallel below. For unidimensionality, we are mostly interested in item fit and residual correlations, as well as PCA of residuals and loadings on the first residual contrast. At the same time, disordered response categories can influence item fit, and targeting can be useful if it is necessary to remove items due to residual correlations.
+We will begin by looking at unidimensionality, response categories, and targeting in parallel below. For unidimensionality, we are mostly interested in item fit and residual correlations, as well as PCA of residuals and loadings on the first residual contrast. At the same time, disordered response categories can influence item fit, and targeting can be useful if it is necessary to remove items due to residual correlations.
 
 When unidimensionality and response categories are found to work adequately, we will move on to invariance testing. And when/if invariance looks good, we can investigate reliability/measurement uncertainties.
 
