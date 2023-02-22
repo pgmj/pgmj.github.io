@@ -294,8 +294,14 @@ RIbarplot(df)
 #### Expected Value Curves
 ```{r}
 #| include: false
-library(TAM)
+library(TAM) # This and the next code chunk is a bit of tinkering to minimize the output from the TAM functions. The third one is only to show the code in the Quarto output.
 tam1 <- tam(as.matrix(df), irtmodel = "PCM") # run TAM Rasch Partial Credit Model on our data
+```
+
+```{r}
+#| layout-ncol: 2
+#| echo: false
+plot(tam1) # create figures
 ```
 
 ```{r}
@@ -305,11 +311,6 @@ tam1 <- tam(as.matrix(df), irtmodel = "PCM") # run TAM Rasch Partial Credit Mode
 plot(tam1) # create figures
 ```
 
-```{r}
-#| layout-ncol: 2
-#| echo: false
-plot(tam1) # create figures
-```
 The expected value curves are made using the [TAM](https://cran.r-project.org/web/packages/TAM/index.html) package, which uses Marginal Maximum Likelihood (MML) estimation. It is a good way to check if any of your items may need reversed response categories, amongst other things. However, it is rather verbose in its output (as you can see above), which doesn't look very nice when used with Quarto and you only want to see the figures in your output document.
 :::
 :::
