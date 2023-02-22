@@ -78,7 +78,7 @@ df <- df.all %>%
 
 ### Itemlabels
 
-Then we set up the itemlabels dataframe. This could also be done using the free LibreOffice Calc or MS Excel. Just make sure the file has the same structure, with two variables named `itemnr` and `item` that contain the item names and item description. The item names have to match the variable names in the item dataframe.
+Then we set up the itemlabels dataframe. This could also be done using the free [LibreOffice Calc](https://www.libreoffice.org/download/download-libreoffice/) or MS Excel. Just make sure the file has the same structure, with two variables named `itemnr` and `item` that contain the item variable names and item description. The item variable names have to match the variable names in the item dataframe.
 
 ```{r}
 itemlabels <- df %>% 
@@ -124,27 +124,31 @@ df %>%
 
 ```
 
-We'll recode all responses apart from Male/Female as missing (NA).
+We'll recode all responses apart from Male/Female as missing (NA). 
 
 ```{r}
 df$Sex <- car::recode(df$Sex,"'CONSENT REVOKED'=NA;
                       'Prefer not to say'=NA;
                       'DATA EXPIRED'=NA")
+```
 
+Let's make the variable a factor (instead of character class) and put in in a vector separate from the item dataframe.
+```{r}
 dif.sex <- factor(df$Sex)
 ```
 
-Now we can make use of a very simple function included in this package!
+And remove our DIF demographic variable from the item dataset.
+
+```{r}
+df$Sex <- NULL
+```
+
+We can now make use of a very simple function included in this package!
 
 ```{r}
 RIdemographics(dif.sex, "Sex")
 ```
 
-And remove the DIF variable from the item dataset.
-
-```{r}
-df$Sex <- NULL
-```
 
 Let's move on to the age variable.
 
@@ -212,11 +216,13 @@ First, let's familiarize ourselves with the data.
 
 ### Overall responses
 
+This provides us with an overall picture of the data distribution, and any oddities/mistakes made in recoding the item data from categories to numbers will be clearly visible.
+
 ```{r}
 RIallresp(df)
 ```
 
-The Rasch model requires the lowest response category to be zero, which makes it necessary for us to recode our data from 1-5 to 0-4.
+Most R packages for the Rasch model require the lowest response category to be zero, which makes it necessary for us to recode our data, from 1-5 to 0-4.
 
 ```{r}
 
@@ -284,6 +290,27 @@ RIbarstack(df)
 #| layout-ncol: 2
 RIbarplot(df)
 ```
+
+#### Expected Value Curves
+```{r}
+#| include: false
+library(TAM)
+tam1 <- tam(as.matrix(df), irtmodel = "PCM") # run TAM Rasch Partial Credit Model on our data
+```
+
+```{r}
+#| eval: false
+library(TAM)
+tam1 <- tam(as.matrix(df), irtmodel = "PCM") # run TAM Rasch Partial Credit Model on our data
+plot(tam1) # create figures
+```
+
+```{r}
+#| layout-ncol: 2
+#| echo: false
+plot(tam1) # create figures
+```
+The expected value curves are made using the [TAM](https://cran.r-project.org/web/packages/TAM/index.html) package, which uses Marginal Maximum Likelihood (MML) estimation. It is a good way to check if any of your items may need reversed response categories, amongst other things. However, it is rather verbose in its output (as you can see above), which doesn't look very nice when used with Quarto and you only want to see the figures in your output document.
 :::
 :::
 
@@ -334,7 +361,7 @@ A low item fit indicates that responses are too predictable and provide little i
 RIpcmPCA(df)
 ```
 
-The first eigenvalue should be below 2.0.
+The first eigenvalue should be below 2.0 to support unidimensionality.
 
 ### Residual correlations
 
@@ -342,7 +369,7 @@ The first eigenvalue should be below 2.0.
 RIresidcorr(df, cutoff = 0.2)
 ```
 
-The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations 0.2 or more above the average item-pair correlation (for all item-pairs) [@christensen2017].
+The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations 0.2 or more above the average item-pair correlation (for all item-pairs) [@christensen2017]. Rasch model residual correlations are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package
 
 ### 1st contrast loadings
 
@@ -350,19 +377,18 @@ The matrix above shows item-pair correlations of item residuals, with highlights
 RIloadLoc(df)
 ```
 
-This figure can be helpful to identify clusters in data or multidimensionality.
+Here we see item locations and their loadings on the first residual contrast. This figure can be helpful to identify clusters in data or multidimensionality.
 
 ### Analysis of response categories
 
 ```{r}
-#| include: false
-mirt.rasch <- mirt(df, model=1, itemtype='Rasch') # unidimensional Rasch model
-```
-
-```{r}
-# the line of code below is necessary prior to creating the plot:
-# mirt.rasch <- mirt(df, model=1, itemtype='Rasch') # unidimensional Rasch model
-plot(mirt.rasch, type="trace")
+#| layout-ncol: 2
+model1 <- PCM(df)
+plotICC(model1, xlim = c(-4,4),
+        xlab = "Latent variable",
+        ylab = "Probability",
+        legpos = "topleft")
+# see ?eRm::plotICC for various options
 ```
 
 Each response category for each item should have a curve that indicates it to be the most probably response at some point on the latent variable (x axis in the figure).
