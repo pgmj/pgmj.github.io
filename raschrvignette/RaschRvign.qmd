@@ -76,6 +76,16 @@ df <- df.all %>%
   select(!PANASD2_1_Attentive)
 ```
 
+The `glimpse()` function provides a quick overview of our dataframe.
+
+```{r}
+glimpse(df)
+```
+
+We have `r nrow(df)` rows, ie. respondents. All variables except Sex and Group are of class `dbl`, which means they are numeric and can have decimals. Integer (numeric with no decimals) would also be fine for our purposes. The two demographic variables currently of class `chr` (character) will need to be converted to factors (`fct`), and we will do that later on. 
+
+(If you import a dataset where item variables are of class character, you will need to recode to numeric.)
+
 ### Itemlabels
 
 Then we set up the itemlabels dataframe. This could also be done using the free [LibreOffice Calc](https://www.libreoffice.org/download/download-libreoffice/) or MS Excel. Just make sure the file has the same structure, with two variables named `itemnr` and `item` that contain the item variable names and item description. The item variable names have to match the variable names in the item dataframe.
@@ -88,6 +98,11 @@ itemlabels <- df %>%
   separate(value, c(NA, "item"), sep ="_[0-9][0-9]_") %>% 
   mutate(itemnr = paste0("PANAS_",c(11:20)), .before = "item")
 
+```
+
+The `itemlabels` dataframe looks like this.
+```{r}
+itemlabels
 ```
 
 ### Demographics
@@ -229,6 +244,7 @@ Most R packages for the Rasch model require the lowest response category to be z
 df <- df %>% 
   mutate(across(everything(), ~ car::recode(.x, "1=0;2=1;3=2;4=3;5=4", as.factor = F)))
 
+# always check that your recoding worked as intended.
 RIallresp(df)
 
 ```
@@ -351,7 +367,7 @@ RIitemfitPCM2(df, 300, 32, cpu = 8)
 
 Since we have a sample size over 500, ZSTD item fit values would be inflated if we use the whole sample. To better estimate accurate ZSTD values the `RIitemfitPCM()` function allows for multiple subsampling. It is recommended to use a sample size between 250 and 500 [@hagell2016]. We will set the sample size to 300 and run 32 subsamples. For faster processing, `RIitemfitPCM2()` enables parallel processing with multiple CPUs/cores.
 
-"Outfit" refers to item fit when person location is relatively far away from the item location, while "infit" provides estimates for when person and item locations are close together. MSQ should be close to 1, with lower and upper cutoffs set to 0.7 and 1.3, while ZSTD should be around 0, with cutoffs set to +/- 2.0. Infit is usually more important.
+"Outfit" refers to item fit when person location is relatively far away from the item location, while "infit" provides estimates for when person and item locations are close together. MSQ should be close to 1, with lower and upper cutoffs by default set to 0.7 and 1.3, while ZSTD should be around 0, with cutoffs set to +/- 2.0. Infit is usually more important. You can change the cutoffs by using options in the function, see `?RIitemfitPCM` for details.
 
 A low item fit indicates that responses are too predictable and provide little information. A high item fit can indicate several things, most often multidimensionality or, for questionnaires, a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time.
 
@@ -370,7 +386,7 @@ The first eigenvalue should be below 2.0 to support unidimensionality.
 RIresidcorr(df, cutoff = 0.2)
 ```
 
-The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations 0.2 or more above the average item-pair correlation (for all item-pairs) [@christensen2017]. Rasch model residual correlations are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package
+The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations 0.2 or more above the average item-pair correlation (for all item-pairs) [@christensen2017]. Rasch model residual correlations are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package. Again, you can set the cutoff value you desire in the function.
 
 ### 1st contrast loadings
 
