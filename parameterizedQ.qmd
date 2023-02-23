@@ -1,5 +1,14 @@
 ---
 title: "Automating reports with Quarto"
+author: 
+  name: Magnus Johansson
+  affiliation: RISE Research Institutes of Sweden
+  affiliation-url: https://www.ri.se/sv/vad-vi-gor/expertiser/kategoriskt-baserade-matningar
+  orcid: 0000-0003-1669-592X
+date: 2023-02-15
+citation:
+  type: 'webpage'
+csl: apa.csl
 editor: 
   markdown: 
     wrap: 72
@@ -13,10 +22,10 @@ tables and figures and want to produce 28 different reports that all use
 the same Quarto file for each of the municipalities. Additionally, you
 want one collective report using the complete dataset.
 
-Instead of creating 28 different .qmd files and running them manually,
+Instead of creating 28+1 different .qmd files and running them manually,
 this can be easily automated with parameterization. This will save huge
 amounts of time, for instance when you find that typo in one figure and
-need to re-render all 28 reports. Or, even better, when you get next
+need to re-render all 29 reports. Or, even better, when you get next
 years survey results and can re-use the whole setup and instantly
 generate your new reports!
 
