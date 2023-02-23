@@ -32,6 +32,8 @@ We'll include several ways to investigate these measurement properties, using Ra
 
 Please note that this is a sample analysis to showcase the R package. It is not intended as a "best practice" psychometric analysis example.
 
+You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
+
 ## Getting started
 
 Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEkbmRasch/blob/main/Quarto/RISEkbmRasch%20Quarto%20template.qmd) that can be useful to have handy for copy&paste when running a new analysis.
@@ -333,7 +335,7 @@ The expected value curves are made using the [TAM](https://cran.r-project.org/we
 
 While response patterns are skewed for all items, there are more than 10 responses in each category for all items.
 
-## Rasch analysis 1
+## Rasch analysis 1 {#sec-rasch}
 
 The eRm package and Conditional Maximum Likelihood (CML) estimation will be used primarily, with the Partial Credit Model.
 
