@@ -207,7 +207,7 @@
     "href": "latentResp/LatentResponse.html",
     "title": "What’s in a latent score?",
     "section": "",
-    "text": "We use questionnaires to measure latent variables based on multiple items/indicators, but the connection between item responses and a latent score is often unclear of difficult to explain. Here, I will present a way to visualize item responses and their corresponding latent score and measurement uncertainty that hopefully makes what lies behind the latent score much easier to understand.\nJump ahead to Section 5 to see the visualization and skip the psychometric background."
+    "text": "We use questionnaires to measure latent variables based on multiple items/indicators, but the connection between item responses and a latent score is often unclear. Here, I will present a way to visualize item responses and their corresponding latent score and measurement uncertainty that hopefully makes what lies behind the latent score much easier to understand.\nJump ahead to Section 5 to see the visualization and skip the psychometric background."
   },
   {
     "objectID": "latentResp/LatentResponse.html#background",
