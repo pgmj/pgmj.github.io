@@ -9,6 +9,6 @@ You can also find me on:
 - Twitter: [@pgmjoh](https://twitter.com/pgmjoh)
 - ORCID: [0000-0003-1669-592X](https://orcid.org/0000-0003-1669-592X)
 - Mastodon: [@pgmj](https://scicomm.xyz/@pgmj)
-- OSF: [Open Science Foundation](https://osf.io/8u2x3/)
+- OSF: [Open Science Framework](https://osf.io/8u2x3/)
 
 and of course on [GitHub](https://github.com/pgmj)
