@@ -418,8 +418,8 @@ respDist <- function(qLevel) {
   scale_fill_viridis_d(begin = 0.4, direction = -1) +
   geom_vline(xintercept = score, color = "red", linetype = 2) +
   annotate("rect", ymin = 0, ymax = Inf, xmin = score - sem, xmax = score + sem, alpha = .15) +
-  annotate("text", label = qlabel, x = score-0.12, y = 1.5, 
-           angle = 90, size = 4, family = "Lato") +
+  #annotate("text", label = qlabel, x = score-0.12, y = 1.5, 
+  #         angle = 90, size = 4, family = "Lato") +
   xlab("MHC-SF latent scores") +
   ylab("") +
   theme_minimal() +
@@ -434,7 +434,6 @@ respDist <- function(qLevel) {
 
 ```{r}
 respTable("0-20")
-
 respDist("0-20")
 ```
 
@@ -443,6 +442,7 @@ respDist("0-20")
 ```{r}
 respTable("20-40")
 respDist("20-40")
+
 ```
 
 ### 40-60
@@ -450,6 +450,7 @@ respDist("20-40")
 ```{r}
 respTable("40-60")
 respDist("40-60")
+
 ```
 
 ### 60-80
@@ -457,6 +458,7 @@ respDist("40-60")
 ```{r}
 respTable("60-80")
 respDist("60-80")
+
 ```
 
 ### 80-100
@@ -464,10 +466,11 @@ respDist("60-80")
 ```{r}
 respTable("80-100")
 respDist("80-100")
-```
-:::
 
-### All example scores together
+```
+
+
+### All together
 
 ```{r}
 ggplot(df, aes(x = MHCscore, y = Gender, fill = Gender)) +
@@ -505,6 +508,24 @@ ggplot(df, aes(x = MHCscore, y = Gender, fill = Gender)) +
   theme(axis.text.y = element_text(size = 12))
 
 ```
+:::
+
+## Other visualizations
+
+We can use the same set of scores and combine them with the previously reported figure for item hierarchy.
+
+### Targeting example
+```{r}
+RIitemHierarchy(df[,c(1:9)]) +
+  geom_hline(aes(yintercept = avg4), linetype = 2, color = "red") +
+  annotate("rect", xmin = 0, xmax = Inf, ymin = avg4 - sem4, ymax = avg4 + sem4, alpha = .1) +
+  annotate("text", label = "60-80", y = avg4-0.1, x = 9, angle = 90, size = 4.5, color = "darkorange") +
+  geom_hline(aes(yintercept = avg2), linetype = 2, color = "red") +
+  annotate("rect", xmin = 0, xmax = Inf, ymin = avg2 - sem2, ymax = avg2 + sem2, alpha = .1) +
+  annotate("text", label = "20-40", y = avg2-0.1, x = 9, angle = 90, size = 4.5, color = "darkorange") 
+
+```
+
 
 ## Software used
 
