@@ -6,6 +6,7 @@ website:
   title: "R, Rasch, etc"
   site-url: "https://pgmj.github.io"
   open-graph: true
+  twitter-card: true
   navbar: 
     background: "#009ca6"
     foreground: "#FFFFFF"

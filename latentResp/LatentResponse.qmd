@@ -12,6 +12,9 @@ csl: ../apa.csl
 format:
   html:
     code-fold: true
+website:
+  twitter-card:
+    image: "https://pgmj.github.io/latentResp/LatentResponse_files/figure-html/unnamed-chunk-26-1.png"
 execute: 
   cache: true
   warning: false
