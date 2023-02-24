@@ -809,7 +809,7 @@ that your life has a sense of direction or meaning to it
 </div>
 </div>
 <div id="tabset-2-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-5-tab">
-<div class="cell" data-hash="LatentResponse_cache/html/unnamed-chunk-11_0660fbbeea967b239044f568f8e004c1">
+<div class="cell" data-hash="LatentResponse_cache/html/unnamed-chunk-11_83c574be81a9c5032f57d73397cae8c3">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># increase fig-height above as needed, if you have many items</span></span>
@@ -821,7 +821,7 @@ that your life has a sense of direction or meaning to it
 </div>
 </div>
 <div id="tabset-2-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-6-tab">
-<div class="cell" data-hash="LatentResponse_cache/html/unnamed-chunk-12_28b87ebb2adf8e6a57dc2e8b87879d91">
+<div class="cell" data-hash="LatentResponse_cache/html/unnamed-chunk-12_fb7b944c0ce8195a4d9134fbd25b9fd9">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -833,7 +833,7 @@ that your life has a sense of direction or meaning to it
 </div>
 <div id="tabset-2-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-7-tab">
 <p>Interaction between age and gender.</p>
-<div class="cell" data-hash="LatentResponse_cache/html/unnamed-chunk-13_99ff656490dcf226141055a6c7397d90">
+<div class="cell" data-hash="LatentResponse_cache/html/unnamed-chunk-13_ec1c7d27b22e4174a4b90d3f70671083">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df.tree <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">0</span>, <span class="at">nrow =</span> <span class="fu">nrow</span>(df)))</span>
@@ -3143,7 +3143,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb37-183"><a href="#cb37-183" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting</span></span>
 <span id="cb37-184"><a href="#cb37-184" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
 <span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a><span class="co"># increase fig-height above as needed, if you have many items</span></span>
 <span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df)</span>
 <span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
@@ -3151,7 +3151,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb37-193"><a href="#cb37-193" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item hierarchy</span></span>
 <span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
 <span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df)</span>
 <span id="cb37-200"><a href="#cb37-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb37-201"><a href="#cb37-201" aria-hidden="true" tabindex="-1"></a></span>
@@ -3160,343 +3160,344 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb37-204"><a href="#cb37-204" aria-hidden="true" tabindex="-1"></a>Interaction between age and gender.</span>
 <span id="cb37-205"><a href="#cb37-205" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a>df.tree <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">0</span>, <span class="at">nrow =</span> <span class="fu">nrow</span>(df)))</span>
-<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a>df.tree<span class="sc">$</span>difdata <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(df)</span>
-<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a>df.tree<span class="sc">$</span>dif.gender <span class="ot">&lt;-</span> dif.gender</span>
-<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a>df.tree<span class="sc">$</span>dif.age<span class="ot">&lt;-</span> dif.age</span>
-<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a>pctree.out <span class="ot">&lt;-</span> <span class="fu">pctree</span>(difdata <span class="sc">~</span> dif.gender <span class="sc">+</span> dif.age, <span class="at">data =</span> df.tree)</span>
-<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pctree.out)</span>
-<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a>diffig <span class="ot">&lt;-</span> <span class="fu">itempar</span>(pctree.out) <span class="sc">%&gt;%</span></span>
-<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Mean location</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rowMeans</span>(.),</span>
-<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a>    <span class="at">StDev =</span> <span class="fu">rowSds</span>(<span class="fu">as.matrix</span>(.))</span>
-<span id="cb37-228"><a href="#cb37-228" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MaxDiff =</span> (<span class="fu">max</span>(<span class="fu">c_across</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(.) <span class="sc">-</span> <span class="dv">2</span>))))) <span class="sc">-</span></span>
-<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a>    <span class="fu">min</span>(<span class="fu">c_across</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(.) <span class="sc">-</span> <span class="dv">2</span>))))) <span class="sc">%&gt;%</span></span>
-<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">"Item"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Item =</span> <span class="fu">names</span>(df)) <span class="sc">%&gt;%</span></span>
-<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(MaxDiff, <span class="at">.after =</span> <span class="fu">last_col</span>())</span>
-<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formattable</span>(diffig,</span>
-<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">MaxDiff =</span> <span class="fu">formatter</span>(<span class="st">"span"</span>,</span>
-<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> <span class="sc">~</span> <span class="fu">style</span>(<span class="at">color =</span> <span class="fu">ifelse</span>(MaxDiff <span class="sc">&lt;</span> <span class="sc">-</span>cutoff,</span>
-<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a>        <span class="st">"red"</span>, <span class="fu">ifelse</span>(MaxDiff <span class="sc">&gt;</span> cutoff, <span class="st">"red"</span>, <span class="st">"black"</span>)</span>
-<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a>      ))</span>
-<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.attr =</span> <span class="st">"class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style=</span><span class="sc">\"</span><span class="st">font-size: 15px; font-family: Lato</span><span class="sc">\"</span><span class="st">"</span></span>
-<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a>Only DIF between genders found, and none large enough to cause problems.</span>
-<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reliability</span></span>
-<span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(df)</span>
-<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a>Item fit shows some minor issues, but we'll leave them as good enough for the primary goal of visualization. Do have a look at the item hierarchy and give it some thought?</span>
-<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimating latent scores</span></span>
-<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a>First, we need the item threshold locations to later estimate person scores.</span>
-<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-267"><a href="#cb37-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df, <span class="st">"mhcItemParams.csv"</span>)</span>
-<span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a>MHCitemParameters <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">read.csv</span>(<span class="st">"mhcItemParams.csv"</span>))</span>
-<span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-272"><a href="#cb37-272" aria-hidden="true" tabindex="-1"></a>Actually, the function used to estimate person scores can automatically estimate the item paramters. But since this is a use case, and you might be interested in applying the item parameters on your own dataset (since I cannot share this data), I thought it worth mentioning and displaying the parameters.</span>
-<span id="cb37-273"><a href="#cb37-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-276"><a href="#cb37-276" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-277"><a href="#cb37-277" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>MHCscore <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df, <span class="at">itemParams =</span> MHCitemParameters, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb37-278"><a href="#cb37-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-279"><a href="#cb37-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-280"><a href="#cb37-280" aria-hidden="true" tabindex="-1"></a><span class="fu">### Plotting the distribution</span></span>
-<span id="cb37-281"><a href="#cb37-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-284"><a href="#cb37-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-285"><a href="#cb37-285" aria-hidden="true" tabindex="-1"></a><span class="co"># for visualization, we add Gender back to the df</span></span>
-<span id="cb37-286"><a href="#cb37-286" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gender <span class="ot">&lt;-</span> dif.gender</span>
-<span id="cb37-287"><a href="#cb37-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-288"><a href="#cb37-288" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df,<span class="fu">aes</span>(<span class="at">x =</span> MHCscore, <span class="at">y =</span> Gender, <span class="at">fill =</span> Gender)) <span class="sc">+</span></span>
-<span id="cb37-289"><a href="#cb37-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_slab</span>(</span>
-<span id="cb37-290"><a href="#cb37-290" aria-hidden="true" tabindex="-1"></a>    <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">show.legend =</span> F,</span>
-<span id="cb37-291"><a href="#cb37-291" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.7</span>, </span>
-<span id="cb37-292"><a href="#cb37-292" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill_ramp =</span> <span class="fu">after_stat</span>(level)),</span>
-<span id="cb37-293"><a href="#cb37-293" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>)</span>
-<span id="cb37-294"><a href="#cb37-294" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-295"><a href="#cb37-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> <span class="st">"mean_cl_normal"</span>,<span class="at">show.legend =</span> F, <span class="at">size =</span> .<span class="dv">4</span>,</span>
-<span id="cb37-296"><a href="#cb37-296" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> <span class="fu">position_dodge2nudge</span>(<span class="at">x=</span>.<span class="dv">05</span>,<span class="at">width =</span> .<span class="dv">8</span>)) <span class="sc">+</span></span>
-<span id="cb37-297"><a href="#cb37-297" aria-hidden="true" tabindex="-1"></a><span class="fu">scale_fill_ramp_discrete</span>(<span class="at">from=</span><span class="st">'black'</span>, <span class="at">aesthetics =</span> <span class="st">"fill_ramp"</span>) <span class="sc">+</span></span>
-<span id="cb37-298"><a href="#cb37-298" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-299"><a href="#cb37-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-300"><a href="#cb37-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"MHC-SF latent scores"</span>) <span class="sc">+</span></span>
-<span id="cb37-301"><a href="#cb37-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb37-302"><a href="#cb37-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb37-303"><a href="#cb37-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
-<span id="cb37-304"><a href="#cb37-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>))</span>
-<span id="cb37-305"><a href="#cb37-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-306"><a href="#cb37-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-307"><a href="#cb37-307" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preparing visualization</span></span>
-<span id="cb37-308"><a href="#cb37-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-309"><a href="#cb37-309" aria-hidden="true" tabindex="-1"></a>Let's use some sample values, based on distribution quintiles, as a starting point.</span>
-<span id="cb37-310"><a href="#cb37-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-313"><a href="#cb37-313" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-314"><a href="#cb37-314" aria-hidden="true" tabindex="-1"></a>quintiles <span class="ot">&lt;-</span> <span class="fu">quantile</span>(df<span class="sc">$</span>MHCscore, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.6</span>,<span class="fl">0.8</span>))</span>
-<span id="cb37-315"><a href="#cb37-315" aria-hidden="true" tabindex="-1"></a>quintiles</span>
-<span id="cb37-316"><a href="#cb37-316" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-317"><a href="#cb37-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-318"><a href="#cb37-318" aria-hidden="true" tabindex="-1"></a>Now we find the mode responses for each item based on the respondents in each quintile.</span>
-<span id="cb37-319"><a href="#cb37-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-320"><a href="#cb37-320" aria-hidden="true" tabindex="-1"></a>First, lets make groupings based on the quintile cutoff values.</span>
-<span id="cb37-321"><a href="#cb37-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-324"><a href="#cb37-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-325"><a href="#cb37-325" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb37-326"><a href="#cb37-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Q_group =</span> <span class="fu">case_when</span>(MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">1</span>] <span class="sc">~</span> <span class="st">"0-20"</span>,</span>
-<span id="cb37-327"><a href="#cb37-327" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">1</span>] <span class="sc">&amp;</span> MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">2</span>] <span class="sc">~</span> <span class="st">"20-40"</span>,</span>
-<span id="cb37-328"><a href="#cb37-328" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">2</span>] <span class="sc">&amp;</span> MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">3</span>] <span class="sc">~</span> <span class="st">"40-60"</span>,</span>
-<span id="cb37-329"><a href="#cb37-329" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">3</span>] <span class="sc">&amp;</span> MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">4</span>] <span class="sc">~</span> <span class="st">"60-80"</span>,</span>
-<span id="cb37-330"><a href="#cb37-330" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">4</span>] <span class="sc">~</span> <span class="st">"80-100"</span>,</span>
-<span id="cb37-331"><a href="#cb37-331" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>)</span>
-<span id="cb37-332"><a href="#cb37-332" aria-hidden="true" tabindex="-1"></a>         )</span>
-<span id="cb37-333"><a href="#cb37-333" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-334"><a href="#cb37-334" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
-<span id="cb37-335"><a href="#cb37-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Q_group) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-336"><a href="#cb37-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Q_group, <span class="at">y =</span> n, <span class="at">fill =</span> Q_group)) <span class="sc">+</span></span>
-<span id="cb37-337"><a href="#cb37-337" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb37-338"><a href="#cb37-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-339"><a href="#cb37-339" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb37-340"><a href="#cb37-340" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
-<span id="cb37-341"><a href="#cb37-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-342"><a href="#cb37-342" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-343"><a href="#cb37-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-344"><a href="#cb37-344" aria-hidden="true" tabindex="-1"></a>Identifying mode response categories for each item for each group is the next step</span>
-<span id="cb37-345"><a href="#cb37-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-348"><a href="#cb37-348" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-349"><a href="#cb37-349" aria-hidden="true" tabindex="-1"></a>Mode <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb37-350"><a href="#cb37-350" aria-hidden="true" tabindex="-1"></a>  ux <span class="ot">&lt;-</span> <span class="fu">unique</span>(x)</span>
-<span id="cb37-351"><a href="#cb37-351" aria-hidden="true" tabindex="-1"></a>  ux[<span class="fu">which.max</span>(<span class="fu">tabulate</span>(<span class="fu">match</span>(x, ux)))]</span>
-<span id="cb37-352"><a href="#cb37-352" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-353"><a href="#cb37-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-354"><a href="#cb37-354" aria-hidden="true" tabindex="-1"></a><span class="co"># a df with one row per group and one column per item</span></span>
-<span id="cb37-355"><a href="#cb37-355" aria-hidden="true" tabindex="-1"></a>modeResponses <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">9</span>, <span class="at">nrow =</span> <span class="dv">5</span>))</span>
-<span id="cb37-356"><a href="#cb37-356" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(modeResponses) <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb37-357"><a href="#cb37-357" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"mhc"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-358"><a href="#cb37-358" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>MHCscore) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-359"><a href="#cb37-359" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>()</span>
-<span id="cb37-360"><a href="#cb37-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-361"><a href="#cb37-361" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">names</span>(modeResponses)) {</span>
-<span id="cb37-362"><a href="#cb37-362" aria-hidden="true" tabindex="-1"></a>  q0 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"0-20"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
-<span id="cb37-363"><a href="#cb37-363" aria-hidden="true" tabindex="-1"></a>  q1 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"20-40"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
-<span id="cb37-364"><a href="#cb37-364" aria-hidden="true" tabindex="-1"></a>  q2 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"40-60"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
-<span id="cb37-365"><a href="#cb37-365" aria-hidden="true" tabindex="-1"></a>  q3 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"60-80"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
-<span id="cb37-366"><a href="#cb37-366" aria-hidden="true" tabindex="-1"></a>  q4 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"80-100"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
-<span id="cb37-367"><a href="#cb37-367" aria-hidden="true" tabindex="-1"></a>  modeResponses[[i]] <span class="ot">&lt;-</span> <span class="fu">rbind</span>(q0,q1,q2,q3,q4)</span>
-<span id="cb37-368"><a href="#cb37-368" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-369"><a href="#cb37-369" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-370"><a href="#cb37-370" aria-hidden="true" tabindex="-1"></a><span class="co"># transform to dataframe with numeric variables for later extraction as vectors</span></span>
-<span id="cb37-371"><a href="#cb37-371" aria-hidden="true" tabindex="-1"></a>modeResponses <span class="ot">&lt;-</span> modeResponses <span class="sc">%&gt;%</span> </span>
-<span id="cb37-372"><a href="#cb37-372" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb37-373"><a href="#cb37-373" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
-<span id="cb37-374"><a href="#cb37-374" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-375"><a href="#cb37-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-376"><a href="#cb37-376" aria-hidden="true" tabindex="-1"></a>Estimating the latent score and SEM for each group's mode response pattern.</span>
-<span id="cb37-377"><a href="#cb37-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-380"><a href="#cb37-380" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-381"><a href="#cb37-381" aria-hidden="true" tabindex="-1"></a><span class="co"># sorry for the copy+paste code here...</span></span>
-<span id="cb37-382"><a href="#cb37-382" aria-hidden="true" tabindex="-1"></a>avg1 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V1, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-383"><a href="#cb37-383" aria-hidden="true" tabindex="-1"></a>sem1 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg1, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V1, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-384"><a href="#cb37-384" aria-hidden="true" tabindex="-1"></a>avg2 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V2, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-385"><a href="#cb37-385" aria-hidden="true" tabindex="-1"></a>sem2 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg2, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V2, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-386"><a href="#cb37-386" aria-hidden="true" tabindex="-1"></a>avg3 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V3, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-387"><a href="#cb37-387" aria-hidden="true" tabindex="-1"></a>sem3 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg3, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V3, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-388"><a href="#cb37-388" aria-hidden="true" tabindex="-1"></a>avg4 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V4, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-389"><a href="#cb37-389" aria-hidden="true" tabindex="-1"></a>sem4 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg4, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V4, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-390"><a href="#cb37-390" aria-hidden="true" tabindex="-1"></a>avg5 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V5, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-391"><a href="#cb37-391" aria-hidden="true" tabindex="-1"></a>sem5 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg5, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V5, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
-<span id="cb37-392"><a href="#cb37-392" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-393"><a href="#cb37-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-394"><a href="#cb37-394" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualization {#sec-visualization}</span></span>
-<span id="cb37-395"><a href="#cb37-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-398"><a href="#cb37-398" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-399"><a href="#cb37-399" aria-hidden="true" tabindex="-1"></a>respTable <span class="ot">&lt;-</span> <span class="cf">function</span>(qLevel) {</span>
-<span id="cb37-400"><a href="#cb37-400" aria-hidden="true" tabindex="-1"></a>    <span class="co"># typical response patterns for different risk levels</span></span>
-<span id="cb37-401"><a href="#cb37-401" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"0-20"</span>) {</span>
-<span id="cb37-402"><a href="#cb37-402" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V1 </span>
-<span id="cb37-403"><a href="#cb37-403" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"20-40"</span>) {</span>
-<span id="cb37-404"><a href="#cb37-404" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V2 </span>
-<span id="cb37-405"><a href="#cb37-405" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"40-60"</span>) {</span>
-<span id="cb37-406"><a href="#cb37-406" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V3 </span>
-<span id="cb37-407"><a href="#cb37-407" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"60-80"</span>) {</span>
-<span id="cb37-408"><a href="#cb37-408" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V4 </span>
-<span id="cb37-409"><a href="#cb37-409" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"80-100"</span>) {</span>
-<span id="cb37-410"><a href="#cb37-410" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V5 </span>
-<span id="cb37-411"><a href="#cb37-411" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb37-412"><a href="#cb37-412" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-413"><a href="#cb37-413" aria-hidden="true" tabindex="-1"></a>    itemresponses <span class="sc">%&gt;%</span></span>
-<span id="cb37-414"><a href="#cb37-414" aria-hidden="true" tabindex="-1"></a>      <span class="fu">formattable</span>(.,</span>
-<span id="cb37-415"><a href="#cb37-415" aria-hidden="true" tabindex="-1"></a>        <span class="at">align =</span> <span class="fu">c</span>(<span class="st">"r"</span>, <span class="st">"l"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>), <span class="fu">list</span>(</span>
-<span id="cb37-416"><a href="#cb37-416" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">1</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-417"><a href="#cb37-417" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">2</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-418"><a href="#cb37-418" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">3</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-419"><a href="#cb37-419" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">4</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-420"><a href="#cb37-420" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">5</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-421"><a href="#cb37-421" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">6</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">6</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-422"><a href="#cb37-422" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">7</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">7</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-423"><a href="#cb37-423" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">8</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">8</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
-<span id="cb37-424"><a href="#cb37-424" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">9</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">9</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>)</span>
-<span id="cb37-425"><a href="#cb37-425" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb37-426"><a href="#cb37-426" aria-hidden="true" tabindex="-1"></a>        <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 15px; font-family: Lato"'</span></span>
-<span id="cb37-427"><a href="#cb37-427" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb37-428"><a href="#cb37-428" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-429"><a href="#cb37-429" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-430"><a href="#cb37-430" aria-hidden="true" tabindex="-1"></a>respDist <span class="ot">&lt;-</span> <span class="cf">function</span>(qLevel) {</span>
-<span id="cb37-431"><a href="#cb37-431" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"0-20"</span>) {</span>
-<span id="cb37-432"><a href="#cb37-432" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg1</span>
-<span id="cb37-433"><a href="#cb37-433" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem1</span>
-<span id="cb37-434"><a href="#cb37-434" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"20-40"</span>) {</span>
-<span id="cb37-435"><a href="#cb37-435" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg2</span>
-<span id="cb37-436"><a href="#cb37-436" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem2</span>
-<span id="cb37-437"><a href="#cb37-437" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"40-60"</span>) {</span>
-<span id="cb37-438"><a href="#cb37-438" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg3</span>
-<span id="cb37-439"><a href="#cb37-439" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem3</span>
-<span id="cb37-440"><a href="#cb37-440" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"60-80"</span>) {</span>
-<span id="cb37-441"><a href="#cb37-441" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg4</span>
-<span id="cb37-442"><a href="#cb37-442" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem4</span>
-<span id="cb37-443"><a href="#cb37-443" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"80-100"</span>) {</span>
-<span id="cb37-444"><a href="#cb37-444" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg5</span>
-<span id="cb37-445"><a href="#cb37-445" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem5</span>
-<span id="cb37-446"><a href="#cb37-446" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb37-447"><a href="#cb37-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-448"><a href="#cb37-448" aria-hidden="true" tabindex="-1"></a>  qlabel <span class="ot">&lt;-</span> qLevel</span>
-<span id="cb37-449"><a href="#cb37-449" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> MHCscore, <span class="at">y =</span> Gender, <span class="at">fill =</span> Gender)) <span class="sc">+</span></span>
-<span id="cb37-450"><a href="#cb37-450" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_slab</span>(</span>
-<span id="cb37-451"><a href="#cb37-451" aria-hidden="true" tabindex="-1"></a>    <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">show.legend =</span> F,</span>
-<span id="cb37-452"><a href="#cb37-452" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.8</span>, <span class="at">justification =</span> <span class="dv">0</span>,</span>
-<span id="cb37-453"><a href="#cb37-453" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill_ramp =</span> <span class="fu">after_stat</span>(level)),</span>
-<span id="cb37-454"><a href="#cb37-454" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>)</span>
-<span id="cb37-455"><a href="#cb37-455" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb37-456"><a href="#cb37-456" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-457"><a href="#cb37-457" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(</span>
-<span id="cb37-458"><a href="#cb37-458" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun.data =</span> <span class="st">"mean_cl_normal"</span>, <span class="at">show.legend =</span> F, <span class="at">size =</span> .<span class="dv">4</span>,</span>
-<span id="cb37-459"><a href="#cb37-459" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge2nudge</span>(<span class="at">x =</span> .<span class="dv">05</span>, <span class="at">width =</span> .<span class="dv">8</span>)</span>
-<span id="cb37-460"><a href="#cb37-460" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-461"><a href="#cb37-461" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_ramp_discrete</span>(<span class="at">from =</span> <span class="st">"black"</span>, <span class="at">aesthetics =</span> <span class="st">"fill_ramp"</span>) <span class="sc">+</span></span>
-<span id="cb37-462"><a href="#cb37-462" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-463"><a href="#cb37-463" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> score, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb37-464"><a href="#cb37-464" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> score <span class="sc">-</span> sem, <span class="at">xmax =</span> score <span class="sc">+</span> sem, <span class="at">alpha =</span> .<span class="dv">15</span>) <span class="sc">+</span></span>
-<span id="cb37-465"><a href="#cb37-465" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> qlabel, <span class="at">x =</span> score<span class="fl">-0.12</span>, <span class="at">y =</span> <span class="fl">1.5</span>, </span>
-<span id="cb37-466"><a href="#cb37-466" aria-hidden="true" tabindex="-1"></a>           <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">family =</span> <span class="st">"Lato"</span>) <span class="sc">+</span></span>
-<span id="cb37-467"><a href="#cb37-467" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"MHC-SF latent scores"</span>) <span class="sc">+</span></span>
-<span id="cb37-468"><a href="#cb37-468" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb37-469"><a href="#cb37-469" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb37-470"><a href="#cb37-470" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">axissize =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
-<span id="cb37-471"><a href="#cb37-471" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)) <span class="sc">+</span></span>
-<span id="cb37-472"><a href="#cb37-472" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>))</span>
-<span id="cb37-473"><a href="#cb37-473" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-474"><a href="#cb37-474" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-475"><a href="#cb37-475" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-476"><a href="#cb37-476" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb37-477"><a href="#cb37-477" aria-hidden="true" tabindex="-1"></a><span class="fu">### 0-20</span></span>
-<span id="cb37-478"><a href="#cb37-478" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-481"><a href="#cb37-481" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-482"><a href="#cb37-482" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"0-20"</span>)</span>
-<span id="cb37-483"><a href="#cb37-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-484"><a href="#cb37-484" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"0-20"</span>)</span>
-<span id="cb37-485"><a href="#cb37-485" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-486"><a href="#cb37-486" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-487"><a href="#cb37-487" aria-hidden="true" tabindex="-1"></a><span class="fu">### 20-40</span></span>
-<span id="cb37-488"><a href="#cb37-488" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-491"><a href="#cb37-491" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-492"><a href="#cb37-492" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"20-40"</span>)</span>
-<span id="cb37-493"><a href="#cb37-493" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"20-40"</span>)</span>
-<span id="cb37-494"><a href="#cb37-494" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-495"><a href="#cb37-495" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-496"><a href="#cb37-496" aria-hidden="true" tabindex="-1"></a><span class="fu">### 40-60</span></span>
-<span id="cb37-497"><a href="#cb37-497" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-500"><a href="#cb37-500" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-501"><a href="#cb37-501" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"40-60"</span>)</span>
-<span id="cb37-502"><a href="#cb37-502" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"40-60"</span>)</span>
-<span id="cb37-503"><a href="#cb37-503" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-504"><a href="#cb37-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-505"><a href="#cb37-505" aria-hidden="true" tabindex="-1"></a><span class="fu">### 60-80</span></span>
-<span id="cb37-506"><a href="#cb37-506" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-509"><a href="#cb37-509" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-510"><a href="#cb37-510" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"60-80"</span>)</span>
-<span id="cb37-511"><a href="#cb37-511" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"60-80"</span>)</span>
-<span id="cb37-512"><a href="#cb37-512" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-513"><a href="#cb37-513" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-514"><a href="#cb37-514" aria-hidden="true" tabindex="-1"></a><span class="fu">### 80-100</span></span>
-<span id="cb37-515"><a href="#cb37-515" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-518"><a href="#cb37-518" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-519"><a href="#cb37-519" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"80-100"</span>)</span>
-<span id="cb37-520"><a href="#cb37-520" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"80-100"</span>)</span>
-<span id="cb37-521"><a href="#cb37-521" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-522"><a href="#cb37-522" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-523"><a href="#cb37-523" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-524"><a href="#cb37-524" aria-hidden="true" tabindex="-1"></a><span class="fu">### All example scores together</span></span>
-<span id="cb37-525"><a href="#cb37-525" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-528"><a href="#cb37-528" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-529"><a href="#cb37-529" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> MHCscore, <span class="at">y =</span> Gender, <span class="at">fill =</span> Gender)) <span class="sc">+</span></span>
-<span id="cb37-530"><a href="#cb37-530" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_slab</span>(</span>
-<span id="cb37-531"><a href="#cb37-531" aria-hidden="true" tabindex="-1"></a>    <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">show.legend =</span> F,</span>
-<span id="cb37-532"><a href="#cb37-532" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.7</span>,</span>
-<span id="cb37-533"><a href="#cb37-533" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill_ramp =</span> <span class="fu">after_stat</span>(level)),</span>
-<span id="cb37-534"><a href="#cb37-534" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>)</span>
-<span id="cb37-535"><a href="#cb37-535" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-536"><a href="#cb37-536" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(</span>
-<span id="cb37-537"><a href="#cb37-537" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun.data =</span> <span class="st">"mean_cl_normal"</span>, <span class="at">show.legend =</span> F, <span class="at">size =</span> .<span class="dv">4</span>,</span>
-<span id="cb37-538"><a href="#cb37-538" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge2nudge</span>(<span class="at">x =</span> .<span class="dv">05</span>, <span class="at">width =</span> .<span class="dv">8</span>)</span>
-<span id="cb37-539"><a href="#cb37-539" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-540"><a href="#cb37-540" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_ramp_discrete</span>(<span class="at">from =</span> <span class="st">"black"</span>, <span class="at">aesthetics =</span> <span class="st">"fill_ramp"</span>) <span class="sc">+</span></span>
-<span id="cb37-541"><a href="#cb37-541" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-542"><a href="#cb37-542" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg1, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb37-543"><a href="#cb37-543" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg1 <span class="sc">-</span> sem1, <span class="at">xmax =</span> avg1 <span class="sc">+</span> sem1, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-544"><a href="#cb37-544" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"0-20"</span>, <span class="at">x =</span> avg1<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb37-545"><a href="#cb37-545" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg2, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb37-546"><a href="#cb37-546" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg2 <span class="sc">-</span> sem2, <span class="at">xmax =</span> avg2 <span class="sc">+</span> sem2, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-547"><a href="#cb37-547" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"20-40"</span>, <span class="at">x =</span> avg2<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb37-548"><a href="#cb37-548" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg3, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb37-549"><a href="#cb37-549" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg3 <span class="sc">-</span> sem3, <span class="at">xmax =</span> avg3 <span class="sc">+</span> sem3, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-550"><a href="#cb37-550" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"40-60"</span>, <span class="at">x =</span> avg3<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb37-551"><a href="#cb37-551" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg4, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb37-552"><a href="#cb37-552" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"60-80"</span>, <span class="at">x =</span> avg4<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb37-553"><a href="#cb37-553" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg4 <span class="sc">-</span> sem4, <span class="at">xmax =</span> avg4 <span class="sc">+</span> sem4, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-554"><a href="#cb37-554" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg5, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb37-555"><a href="#cb37-555" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"80-100"</span>, <span class="at">x =</span> avg5<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb37-556"><a href="#cb37-556" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg5 <span class="sc">-</span> sem5, <span class="at">xmax =</span> avg5 <span class="sc">+</span> sem5, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb37-557"><a href="#cb37-557" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"MHC-SF latent scores"</span>) <span class="sc">+</span></span>
-<span id="cb37-558"><a href="#cb37-558" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb37-559"><a href="#cb37-559" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb37-560"><a href="#cb37-560" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
-<span id="cb37-561"><a href="#cb37-561" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>))</span>
-<span id="cb37-562"><a href="#cb37-562" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-563"><a href="#cb37-563" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-564"><a href="#cb37-564" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-565"><a href="#cb37-565" aria-hidden="true" tabindex="-1"></a><span class="fu">## Software used</span></span>
-<span id="cb37-566"><a href="#cb37-566" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-569"><a href="#cb37-569" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-570"><a href="#cb37-570" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grateful)</span>
-<span id="cb37-571"><a href="#cb37-571" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">cite_packages</span>(<span class="at">cite.tidyverse =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb37-572"><a href="#cb37-572" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">"table"</span>,</span>
-<span id="cb37-573"><a href="#cb37-573" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bib.file =</span> <span class="st">"grateful-refs.bib"</span>,</span>
-<span id="cb37-574"><a href="#cb37-574" aria-hidden="true" tabindex="-1"></a>                      <span class="at">include.RStudio =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb37-575"><a href="#cb37-575" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(pkgs, </span>
-<span id="cb37-576"><a href="#cb37-576" aria-hidden="true" tabindex="-1"></a>            <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 14px; font-family: Lato; width: 80%"'</span>)</span>
-<span id="cb37-577"><a href="#cb37-577" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-578"><a href="#cb37-578" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-579"><a href="#cb37-579" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a>df.tree <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">0</span>, <span class="at">nrow =</span> <span class="fu">nrow</span>(df)))</span>
+<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a>df.tree<span class="sc">$</span>difdata <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(df)</span>
+<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a>df.tree<span class="sc">$</span>dif.gender <span class="ot">&lt;-</span> dif.gender</span>
+<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a>df.tree<span class="sc">$</span>dif.age<span class="ot">&lt;-</span> dif.age</span>
+<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a>pctree.out <span class="ot">&lt;-</span> <span class="fu">pctree</span>(difdata <span class="sc">~</span> dif.gender <span class="sc">+</span> dif.age, <span class="at">data =</span> df.tree)</span>
+<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pctree.out)</span>
+<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a>diffig <span class="ot">&lt;-</span> <span class="fu">itempar</span>(pctree.out) <span class="sc">%&gt;%</span></span>
+<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Mean location</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rowMeans</span>(.),</span>
+<span id="cb37-228"><a href="#cb37-228" aria-hidden="true" tabindex="-1"></a>    <span class="at">StDev =</span> <span class="fu">rowSds</span>(<span class="fu">as.matrix</span>(.))</span>
+<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MaxDiff =</span> (<span class="fu">max</span>(<span class="fu">c_across</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(.) <span class="sc">-</span> <span class="dv">2</span>))))) <span class="sc">-</span></span>
+<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a>    <span class="fu">min</span>(<span class="fu">c_across</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">ncol</span>(.) <span class="sc">-</span> <span class="dv">2</span>))))) <span class="sc">%&gt;%</span></span>
+<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">"Item"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Item =</span> <span class="fu">names</span>(df)) <span class="sc">%&gt;%</span></span>
+<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(MaxDiff, <span class="at">.after =</span> <span class="fu">last_col</span>())</span>
+<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">formattable</span>(diffig,</span>
+<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">MaxDiff =</span> <span class="fu">formatter</span>(<span class="st">"span"</span>,</span>
+<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> <span class="sc">~</span> <span class="fu">style</span>(<span class="at">color =</span> <span class="fu">ifelse</span>(MaxDiff <span class="sc">&lt;</span> <span class="sc">-</span>cutoff,</span>
+<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a>        <span class="st">"red"</span>, <span class="fu">ifelse</span>(MaxDiff <span class="sc">&gt;</span> cutoff, <span class="st">"red"</span>, <span class="st">"black"</span>)</span>
+<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a>      ))</span>
+<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.attr =</span> <span class="st">"class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style=</span><span class="sc">\"</span><span class="st">font-size: 15px; font-family: Lato</span><span class="sc">\"</span><span class="st">"</span></span>
+<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a>Only DIF between genders found, and none large enough to cause problems.</span>
+<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reliability</span></span>
+<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(df)</span>
+<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a>Item fit shows some minor issues, but we'll leave them as good enough for the primary goal of visualization. Do have a look at the item hierarchy and give it some thought?</span>
+<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimating latent scores</span></span>
+<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a>First, we need the item threshold locations to later estimate person scores.</span>
+<span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df, <span class="st">"mhcItemParams.csv"</span>)</span>
+<span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a>MHCitemParameters <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">read.csv</span>(<span class="st">"mhcItemParams.csv"</span>))</span>
+<span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-272"><a href="#cb37-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-273"><a href="#cb37-273" aria-hidden="true" tabindex="-1"></a>Actually, the function used to estimate person scores can automatically estimate the item paramters. But since this is a use case, and you might be interested in applying the item parameters on your own dataset (since I cannot share this data), I thought it worth mentioning and displaying the parameters.</span>
+<span id="cb37-274"><a href="#cb37-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-277"><a href="#cb37-277" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-278"><a href="#cb37-278" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>MHCscore <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df, <span class="at">itemParams =</span> MHCitemParameters, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb37-279"><a href="#cb37-279" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-280"><a href="#cb37-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-281"><a href="#cb37-281" aria-hidden="true" tabindex="-1"></a><span class="fu">### Plotting the distribution</span></span>
+<span id="cb37-282"><a href="#cb37-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-285"><a href="#cb37-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-286"><a href="#cb37-286" aria-hidden="true" tabindex="-1"></a><span class="co"># for visualization, we add Gender back to the df</span></span>
+<span id="cb37-287"><a href="#cb37-287" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gender <span class="ot">&lt;-</span> dif.gender</span>
+<span id="cb37-288"><a href="#cb37-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-289"><a href="#cb37-289" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df,<span class="fu">aes</span>(<span class="at">x =</span> MHCscore, <span class="at">y =</span> Gender, <span class="at">fill =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb37-290"><a href="#cb37-290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_slab</span>(</span>
+<span id="cb37-291"><a href="#cb37-291" aria-hidden="true" tabindex="-1"></a>    <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">show.legend =</span> F,</span>
+<span id="cb37-292"><a href="#cb37-292" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.7</span>, </span>
+<span id="cb37-293"><a href="#cb37-293" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill_ramp =</span> <span class="fu">after_stat</span>(level)),</span>
+<span id="cb37-294"><a href="#cb37-294" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>)</span>
+<span id="cb37-295"><a href="#cb37-295" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb37-296"><a href="#cb37-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun.data =</span> <span class="st">"mean_cl_normal"</span>,<span class="at">show.legend =</span> F, <span class="at">size =</span> .<span class="dv">4</span>,</span>
+<span id="cb37-297"><a href="#cb37-297" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> <span class="fu">position_dodge2nudge</span>(<span class="at">x=</span>.<span class="dv">05</span>,<span class="at">width =</span> .<span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb37-298"><a href="#cb37-298" aria-hidden="true" tabindex="-1"></a><span class="fu">scale_fill_ramp_discrete</span>(<span class="at">from=</span><span class="st">'black'</span>, <span class="at">aesthetics =</span> <span class="st">"fill_ramp"</span>) <span class="sc">+</span></span>
+<span id="cb37-299"><a href="#cb37-299" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-300"><a href="#cb37-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-301"><a href="#cb37-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"MHC-SF latent scores"</span>) <span class="sc">+</span></span>
+<span id="cb37-302"><a href="#cb37-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb37-303"><a href="#cb37-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb37-304"><a href="#cb37-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
+<span id="cb37-305"><a href="#cb37-305" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>))</span>
+<span id="cb37-306"><a href="#cb37-306" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-307"><a href="#cb37-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-308"><a href="#cb37-308" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preparing visualization</span></span>
+<span id="cb37-309"><a href="#cb37-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-310"><a href="#cb37-310" aria-hidden="true" tabindex="-1"></a>Let's use some sample values, based on distribution quintiles, as a starting point.</span>
+<span id="cb37-311"><a href="#cb37-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-314"><a href="#cb37-314" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-315"><a href="#cb37-315" aria-hidden="true" tabindex="-1"></a>quintiles <span class="ot">&lt;-</span> <span class="fu">quantile</span>(df<span class="sc">$</span>MHCscore, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.2</span>,<span class="fl">0.4</span>,<span class="fl">0.6</span>,<span class="fl">0.8</span>))</span>
+<span id="cb37-316"><a href="#cb37-316" aria-hidden="true" tabindex="-1"></a>quintiles</span>
+<span id="cb37-317"><a href="#cb37-317" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-318"><a href="#cb37-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-319"><a href="#cb37-319" aria-hidden="true" tabindex="-1"></a>Now we find the mode responses for each item based on the respondents in each quintile.</span>
+<span id="cb37-320"><a href="#cb37-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-321"><a href="#cb37-321" aria-hidden="true" tabindex="-1"></a>First, lets make groupings based on the quintile cutoff values.</span>
+<span id="cb37-322"><a href="#cb37-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-325"><a href="#cb37-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-326"><a href="#cb37-326" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb37-327"><a href="#cb37-327" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Q_group =</span> <span class="fu">case_when</span>(MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">1</span>] <span class="sc">~</span> <span class="st">"0-20"</span>,</span>
+<span id="cb37-328"><a href="#cb37-328" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">1</span>] <span class="sc">&amp;</span> MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">2</span>] <span class="sc">~</span> <span class="st">"20-40"</span>,</span>
+<span id="cb37-329"><a href="#cb37-329" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">2</span>] <span class="sc">&amp;</span> MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">3</span>] <span class="sc">~</span> <span class="st">"40-60"</span>,</span>
+<span id="cb37-330"><a href="#cb37-330" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">3</span>] <span class="sc">&amp;</span> MHCscore <span class="sc">&lt;</span> quintiles[<span class="dv">4</span>] <span class="sc">~</span> <span class="st">"60-80"</span>,</span>
+<span id="cb37-331"><a href="#cb37-331" aria-hidden="true" tabindex="-1"></a>                             MHCscore <span class="sc">&gt;=</span> quintiles[<span class="dv">4</span>] <span class="sc">~</span> <span class="st">"80-100"</span>,</span>
+<span id="cb37-332"><a href="#cb37-332" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>)</span>
+<span id="cb37-333"><a href="#cb37-333" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb37-334"><a href="#cb37-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-335"><a href="#cb37-335" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb37-336"><a href="#cb37-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Q_group) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-337"><a href="#cb37-337" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Q_group, <span class="at">y =</span> n, <span class="at">fill =</span> Q_group)) <span class="sc">+</span></span>
+<span id="cb37-338"><a href="#cb37-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb37-339"><a href="#cb37-339" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-340"><a href="#cb37-340" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb37-341"><a href="#cb37-341" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
+<span id="cb37-342"><a href="#cb37-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-343"><a href="#cb37-343" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-344"><a href="#cb37-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-345"><a href="#cb37-345" aria-hidden="true" tabindex="-1"></a>Identifying mode response categories for each item for each group is the next step</span>
+<span id="cb37-346"><a href="#cb37-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-349"><a href="#cb37-349" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-350"><a href="#cb37-350" aria-hidden="true" tabindex="-1"></a>Mode <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb37-351"><a href="#cb37-351" aria-hidden="true" tabindex="-1"></a>  ux <span class="ot">&lt;-</span> <span class="fu">unique</span>(x)</span>
+<span id="cb37-352"><a href="#cb37-352" aria-hidden="true" tabindex="-1"></a>  ux[<span class="fu">which.max</span>(<span class="fu">tabulate</span>(<span class="fu">match</span>(x, ux)))]</span>
+<span id="cb37-353"><a href="#cb37-353" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-354"><a href="#cb37-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-355"><a href="#cb37-355" aria-hidden="true" tabindex="-1"></a><span class="co"># a df with one row per group and one column per item</span></span>
+<span id="cb37-356"><a href="#cb37-356" aria-hidden="true" tabindex="-1"></a>modeResponses <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">9</span>, <span class="at">nrow =</span> <span class="dv">5</span>))</span>
+<span id="cb37-357"><a href="#cb37-357" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(modeResponses) <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb37-358"><a href="#cb37-358" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"mhc"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-359"><a href="#cb37-359" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>MHCscore) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-360"><a href="#cb37-360" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>()</span>
+<span id="cb37-361"><a href="#cb37-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-362"><a href="#cb37-362" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">names</span>(modeResponses)) {</span>
+<span id="cb37-363"><a href="#cb37-363" aria-hidden="true" tabindex="-1"></a>  q0 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"0-20"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
+<span id="cb37-364"><a href="#cb37-364" aria-hidden="true" tabindex="-1"></a>  q1 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"20-40"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
+<span id="cb37-365"><a href="#cb37-365" aria-hidden="true" tabindex="-1"></a>  q2 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"40-60"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
+<span id="cb37-366"><a href="#cb37-366" aria-hidden="true" tabindex="-1"></a>  q3 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"60-80"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
+<span id="cb37-367"><a href="#cb37-367" aria-hidden="true" tabindex="-1"></a>  q4 <span class="ot">&lt;-</span> <span class="fu">Mode</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Q_group <span class="sc">==</span> <span class="st">"80-100"</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(i) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> <span class="fu">pull</span>())</span>
+<span id="cb37-368"><a href="#cb37-368" aria-hidden="true" tabindex="-1"></a>  modeResponses[[i]] <span class="ot">&lt;-</span> <span class="fu">rbind</span>(q0,q1,q2,q3,q4)</span>
+<span id="cb37-369"><a href="#cb37-369" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-370"><a href="#cb37-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-371"><a href="#cb37-371" aria-hidden="true" tabindex="-1"></a><span class="co"># transform to dataframe with numeric variables for later extraction as vectors</span></span>
+<span id="cb37-372"><a href="#cb37-372" aria-hidden="true" tabindex="-1"></a>modeResponses <span class="ot">&lt;-</span> modeResponses <span class="sc">%&gt;%</span> </span>
+<span id="cb37-373"><a href="#cb37-373" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb37-374"><a href="#cb37-374" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb37-375"><a href="#cb37-375" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-376"><a href="#cb37-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-377"><a href="#cb37-377" aria-hidden="true" tabindex="-1"></a>Estimating the latent score and SEM for each group's mode response pattern.</span>
+<span id="cb37-378"><a href="#cb37-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-381"><a href="#cb37-381" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-382"><a href="#cb37-382" aria-hidden="true" tabindex="-1"></a><span class="co"># sorry for the copy+paste code here...</span></span>
+<span id="cb37-383"><a href="#cb37-383" aria-hidden="true" tabindex="-1"></a>avg1 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V1, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-384"><a href="#cb37-384" aria-hidden="true" tabindex="-1"></a>sem1 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg1, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V1, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-385"><a href="#cb37-385" aria-hidden="true" tabindex="-1"></a>avg2 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V2, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-386"><a href="#cb37-386" aria-hidden="true" tabindex="-1"></a>sem2 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg2, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V2, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-387"><a href="#cb37-387" aria-hidden="true" tabindex="-1"></a>avg3 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V3, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-388"><a href="#cb37-388" aria-hidden="true" tabindex="-1"></a>sem3 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg3, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V3, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-389"><a href="#cb37-389" aria-hidden="true" tabindex="-1"></a>avg4 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V4, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-390"><a href="#cb37-390" aria-hidden="true" tabindex="-1"></a>sem4 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg4, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V4, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-391"><a href="#cb37-391" aria-hidden="true" tabindex="-1"></a>avg5 <span class="ot">&lt;-</span> <span class="fu">thetaEst</span>(MHCitemParameters, modeResponses<span class="sc">$</span>V5, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-392"><a href="#cb37-392" aria-hidden="true" tabindex="-1"></a>sem5 <span class="ot">&lt;-</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> avg5, <span class="at">it =</span> MHCitemParameters, <span class="at">x =</span> modeResponses<span class="sc">$</span>V5, <span class="at">model =</span> <span class="st">"PCM"</span>, <span class="at">method =</span> <span class="st">"WL"</span>)</span>
+<span id="cb37-393"><a href="#cb37-393" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-394"><a href="#cb37-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-395"><a href="#cb37-395" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualization {#sec-visualization}</span></span>
+<span id="cb37-396"><a href="#cb37-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-399"><a href="#cb37-399" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-400"><a href="#cb37-400" aria-hidden="true" tabindex="-1"></a>respTable <span class="ot">&lt;-</span> <span class="cf">function</span>(qLevel) {</span>
+<span id="cb37-401"><a href="#cb37-401" aria-hidden="true" tabindex="-1"></a>    <span class="co"># typical response patterns for different risk levels</span></span>
+<span id="cb37-402"><a href="#cb37-402" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"0-20"</span>) {</span>
+<span id="cb37-403"><a href="#cb37-403" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V1 </span>
+<span id="cb37-404"><a href="#cb37-404" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"20-40"</span>) {</span>
+<span id="cb37-405"><a href="#cb37-405" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V2 </span>
+<span id="cb37-406"><a href="#cb37-406" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"40-60"</span>) {</span>
+<span id="cb37-407"><a href="#cb37-407" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V3 </span>
+<span id="cb37-408"><a href="#cb37-408" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"60-80"</span>) {</span>
+<span id="cb37-409"><a href="#cb37-409" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V4 </span>
+<span id="cb37-410"><a href="#cb37-410" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"80-100"</span>) {</span>
+<span id="cb37-411"><a href="#cb37-411" aria-hidden="true" tabindex="-1"></a>      p.resp <span class="ot">&lt;-</span> modeResponses<span class="sc">$</span>V5 </span>
+<span id="cb37-412"><a href="#cb37-412" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb37-413"><a href="#cb37-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-414"><a href="#cb37-414" aria-hidden="true" tabindex="-1"></a>    itemresponses <span class="sc">%&gt;%</span></span>
+<span id="cb37-415"><a href="#cb37-415" aria-hidden="true" tabindex="-1"></a>      <span class="fu">formattable</span>(.,</span>
+<span id="cb37-416"><a href="#cb37-416" aria-hidden="true" tabindex="-1"></a>        <span class="at">align =</span> <span class="fu">c</span>(<span class="st">"r"</span>, <span class="st">"l"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>, <span class="st">"c"</span>), <span class="fu">list</span>(</span>
+<span id="cb37-417"><a href="#cb37-417" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">1</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-418"><a href="#cb37-418" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">2</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-419"><a href="#cb37-419" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">3</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-420"><a href="#cb37-420" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">4</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-421"><a href="#cb37-421" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">5</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-422"><a href="#cb37-422" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">6</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">6</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-423"><a href="#cb37-423" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">7</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">7</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-424"><a href="#cb37-424" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">8</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">8</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>),</span>
+<span id="cb37-425"><a href="#cb37-425" aria-hidden="true" tabindex="-1"></a>          formattable<span class="sc">::</span><span class="fu">area</span>(<span class="at">row =</span> <span class="dv">9</span>, <span class="at">col =</span> <span class="dv">3</span> <span class="sc">+</span> p.resp[<span class="dv">9</span>]) <span class="sc">~</span> <span class="fu">color_tile</span>(<span class="st">"lightblue"</span>, <span class="st">"lightpink"</span>)</span>
+<span id="cb37-426"><a href="#cb37-426" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb37-427"><a href="#cb37-427" aria-hidden="true" tabindex="-1"></a>        <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 15px; font-family: Lato"'</span></span>
+<span id="cb37-428"><a href="#cb37-428" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb37-429"><a href="#cb37-429" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-430"><a href="#cb37-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-431"><a href="#cb37-431" aria-hidden="true" tabindex="-1"></a>respDist <span class="ot">&lt;-</span> <span class="cf">function</span>(qLevel) {</span>
+<span id="cb37-432"><a href="#cb37-432" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"0-20"</span>) {</span>
+<span id="cb37-433"><a href="#cb37-433" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg1</span>
+<span id="cb37-434"><a href="#cb37-434" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem1</span>
+<span id="cb37-435"><a href="#cb37-435" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"20-40"</span>) {</span>
+<span id="cb37-436"><a href="#cb37-436" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg2</span>
+<span id="cb37-437"><a href="#cb37-437" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem2</span>
+<span id="cb37-438"><a href="#cb37-438" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"40-60"</span>) {</span>
+<span id="cb37-439"><a href="#cb37-439" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg3</span>
+<span id="cb37-440"><a href="#cb37-440" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem3</span>
+<span id="cb37-441"><a href="#cb37-441" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"60-80"</span>) {</span>
+<span id="cb37-442"><a href="#cb37-442" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg4</span>
+<span id="cb37-443"><a href="#cb37-443" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem4</span>
+<span id="cb37-444"><a href="#cb37-444" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (qLevel <span class="sc">==</span> <span class="st">"80-100"</span>) {</span>
+<span id="cb37-445"><a href="#cb37-445" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> avg5</span>
+<span id="cb37-446"><a href="#cb37-446" aria-hidden="true" tabindex="-1"></a>      sem <span class="ot">&lt;-</span> sem5</span>
+<span id="cb37-447"><a href="#cb37-447" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb37-448"><a href="#cb37-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-449"><a href="#cb37-449" aria-hidden="true" tabindex="-1"></a>  qlabel <span class="ot">&lt;-</span> qLevel</span>
+<span id="cb37-450"><a href="#cb37-450" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> MHCscore, <span class="at">y =</span> Gender, <span class="at">fill =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb37-451"><a href="#cb37-451" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_slab</span>(</span>
+<span id="cb37-452"><a href="#cb37-452" aria-hidden="true" tabindex="-1"></a>    <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">show.legend =</span> F,</span>
+<span id="cb37-453"><a href="#cb37-453" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.8</span>, <span class="at">justification =</span> <span class="dv">0</span>,</span>
+<span id="cb37-454"><a href="#cb37-454" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill_ramp =</span> <span class="fu">after_stat</span>(level)),</span>
+<span id="cb37-455"><a href="#cb37-455" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>)</span>
+<span id="cb37-456"><a href="#cb37-456" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-457"><a href="#cb37-457" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb37-458"><a href="#cb37-458" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(</span>
+<span id="cb37-459"><a href="#cb37-459" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun.data =</span> <span class="st">"mean_cl_normal"</span>, <span class="at">show.legend =</span> F, <span class="at">size =</span> .<span class="dv">4</span>,</span>
+<span id="cb37-460"><a href="#cb37-460" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge2nudge</span>(<span class="at">x =</span> .<span class="dv">05</span>, <span class="at">width =</span> .<span class="dv">8</span>)</span>
+<span id="cb37-461"><a href="#cb37-461" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb37-462"><a href="#cb37-462" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_ramp_discrete</span>(<span class="at">from =</span> <span class="st">"black"</span>, <span class="at">aesthetics =</span> <span class="st">"fill_ramp"</span>) <span class="sc">+</span></span>
+<span id="cb37-463"><a href="#cb37-463" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-464"><a href="#cb37-464" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> score, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-465"><a href="#cb37-465" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> score <span class="sc">-</span> sem, <span class="at">xmax =</span> score <span class="sc">+</span> sem, <span class="at">alpha =</span> .<span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb37-466"><a href="#cb37-466" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> qlabel, <span class="at">x =</span> score<span class="fl">-0.12</span>, <span class="at">y =</span> <span class="fl">1.5</span>, </span>
+<span id="cb37-467"><a href="#cb37-467" aria-hidden="true" tabindex="-1"></a>           <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">family =</span> <span class="st">"Lato"</span>) <span class="sc">+</span></span>
+<span id="cb37-468"><a href="#cb37-468" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"MHC-SF latent scores"</span>) <span class="sc">+</span></span>
+<span id="cb37-469"><a href="#cb37-469" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb37-470"><a href="#cb37-470" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb37-471"><a href="#cb37-471" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">axissize =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb37-472"><a href="#cb37-472" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)) <span class="sc">+</span></span>
+<span id="cb37-473"><a href="#cb37-473" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="cb37-474"><a href="#cb37-474" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-475"><a href="#cb37-475" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-476"><a href="#cb37-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-477"><a href="#cb37-477" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb37-478"><a href="#cb37-478" aria-hidden="true" tabindex="-1"></a><span class="fu">### 0-20</span></span>
+<span id="cb37-479"><a href="#cb37-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-482"><a href="#cb37-482" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-483"><a href="#cb37-483" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"0-20"</span>)</span>
+<span id="cb37-484"><a href="#cb37-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-485"><a href="#cb37-485" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"0-20"</span>)</span>
+<span id="cb37-486"><a href="#cb37-486" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-487"><a href="#cb37-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-488"><a href="#cb37-488" aria-hidden="true" tabindex="-1"></a><span class="fu">### 20-40</span></span>
+<span id="cb37-489"><a href="#cb37-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-492"><a href="#cb37-492" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-493"><a href="#cb37-493" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"20-40"</span>)</span>
+<span id="cb37-494"><a href="#cb37-494" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"20-40"</span>)</span>
+<span id="cb37-495"><a href="#cb37-495" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-496"><a href="#cb37-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-497"><a href="#cb37-497" aria-hidden="true" tabindex="-1"></a><span class="fu">### 40-60</span></span>
+<span id="cb37-498"><a href="#cb37-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-501"><a href="#cb37-501" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-502"><a href="#cb37-502" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"40-60"</span>)</span>
+<span id="cb37-503"><a href="#cb37-503" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"40-60"</span>)</span>
+<span id="cb37-504"><a href="#cb37-504" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-505"><a href="#cb37-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-506"><a href="#cb37-506" aria-hidden="true" tabindex="-1"></a><span class="fu">### 60-80</span></span>
+<span id="cb37-507"><a href="#cb37-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-510"><a href="#cb37-510" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-511"><a href="#cb37-511" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"60-80"</span>)</span>
+<span id="cb37-512"><a href="#cb37-512" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"60-80"</span>)</span>
+<span id="cb37-513"><a href="#cb37-513" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-514"><a href="#cb37-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-515"><a href="#cb37-515" aria-hidden="true" tabindex="-1"></a><span class="fu">### 80-100</span></span>
+<span id="cb37-516"><a href="#cb37-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-519"><a href="#cb37-519" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-520"><a href="#cb37-520" aria-hidden="true" tabindex="-1"></a><span class="fu">respTable</span>(<span class="st">"80-100"</span>)</span>
+<span id="cb37-521"><a href="#cb37-521" aria-hidden="true" tabindex="-1"></a><span class="fu">respDist</span>(<span class="st">"80-100"</span>)</span>
+<span id="cb37-522"><a href="#cb37-522" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-523"><a href="#cb37-523" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb37-524"><a href="#cb37-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-525"><a href="#cb37-525" aria-hidden="true" tabindex="-1"></a><span class="fu">### All example scores together</span></span>
+<span id="cb37-526"><a href="#cb37-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-529"><a href="#cb37-529" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-530"><a href="#cb37-530" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> MHCscore, <span class="at">y =</span> Gender, <span class="at">fill =</span> Gender)) <span class="sc">+</span></span>
+<span id="cb37-531"><a href="#cb37-531" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_slab</span>(</span>
+<span id="cb37-532"><a href="#cb37-532" aria-hidden="true" tabindex="-1"></a>    <span class="at">side =</span> <span class="st">"right"</span>, <span class="at">show.legend =</span> F,</span>
+<span id="cb37-533"><a href="#cb37-533" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="fl">0.7</span>,</span>
+<span id="cb37-534"><a href="#cb37-534" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill_ramp =</span> <span class="fu">after_stat</span>(level)),</span>
+<span id="cb37-535"><a href="#cb37-535" aria-hidden="true" tabindex="-1"></a>    <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>)</span>
+<span id="cb37-536"><a href="#cb37-536" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb37-537"><a href="#cb37-537" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(</span>
+<span id="cb37-538"><a href="#cb37-538" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun.data =</span> <span class="st">"mean_cl_normal"</span>, <span class="at">show.legend =</span> F, <span class="at">size =</span> .<span class="dv">4</span>,</span>
+<span id="cb37-539"><a href="#cb37-539" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="fu">position_dodge2nudge</span>(<span class="at">x =</span> .<span class="dv">05</span>, <span class="at">width =</span> .<span class="dv">8</span>)</span>
+<span id="cb37-540"><a href="#cb37-540" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb37-541"><a href="#cb37-541" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_ramp_discrete</span>(<span class="at">from =</span> <span class="st">"black"</span>, <span class="at">aesthetics =</span> <span class="st">"fill_ramp"</span>) <span class="sc">+</span></span>
+<span id="cb37-542"><a href="#cb37-542" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">begin =</span> <span class="fl">0.4</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-543"><a href="#cb37-543" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg1, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-544"><a href="#cb37-544" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg1 <span class="sc">-</span> sem1, <span class="at">xmax =</span> avg1 <span class="sc">+</span> sem1, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-545"><a href="#cb37-545" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"0-20"</span>, <span class="at">x =</span> avg1<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb37-546"><a href="#cb37-546" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg2, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-547"><a href="#cb37-547" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg2 <span class="sc">-</span> sem2, <span class="at">xmax =</span> avg2 <span class="sc">+</span> sem2, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-548"><a href="#cb37-548" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"20-40"</span>, <span class="at">x =</span> avg2<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb37-549"><a href="#cb37-549" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg3, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-550"><a href="#cb37-550" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg3 <span class="sc">-</span> sem3, <span class="at">xmax =</span> avg3 <span class="sc">+</span> sem3, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-551"><a href="#cb37-551" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"40-60"</span>, <span class="at">x =</span> avg3<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb37-552"><a href="#cb37-552" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg4, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-553"><a href="#cb37-553" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"60-80"</span>, <span class="at">x =</span> avg4<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb37-554"><a href="#cb37-554" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg4 <span class="sc">-</span> sem4, <span class="at">xmax =</span> avg4 <span class="sc">+</span> sem4, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-555"><a href="#cb37-555" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> avg5, <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-556"><a href="#cb37-556" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">label =</span> <span class="st">"80-100"</span>, <span class="at">x =</span> avg5<span class="fl">-0.1</span>, <span class="at">y =</span> <span class="fl">1.5</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb37-557"><a href="#cb37-557" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">xmin =</span> avg5 <span class="sc">-</span> sem5, <span class="at">xmax =</span> avg5 <span class="sc">+</span> sem5, <span class="at">alpha =</span> .<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb37-558"><a href="#cb37-558" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"MHC-SF latent scores"</span>) <span class="sc">+</span></span>
+<span id="cb37-559"><a href="#cb37-559" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb37-560"><a href="#cb37-560" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb37-561"><a href="#cb37-561" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
+<span id="cb37-562"><a href="#cb37-562" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>))</span>
+<span id="cb37-563"><a href="#cb37-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-564"><a href="#cb37-564" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-565"><a href="#cb37-565" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-566"><a href="#cb37-566" aria-hidden="true" tabindex="-1"></a><span class="fu">## Software used</span></span>
+<span id="cb37-567"><a href="#cb37-567" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-570"><a href="#cb37-570" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-571"><a href="#cb37-571" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grateful)</span>
+<span id="cb37-572"><a href="#cb37-572" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">cite_packages</span>(<span class="at">cite.tidyverse =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb37-573"><a href="#cb37-573" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">"table"</span>,</span>
+<span id="cb37-574"><a href="#cb37-574" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bib.file =</span> <span class="st">"grateful-refs.bib"</span>,</span>
+<span id="cb37-575"><a href="#cb37-575" aria-hidden="true" tabindex="-1"></a>                      <span class="at">include.RStudio =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb37-576"><a href="#cb37-576" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(pkgs, </span>
+<span id="cb37-577"><a href="#cb37-577" aria-hidden="true" tabindex="-1"></a>            <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 14px; font-family: Lato; width: 80%"'</span>)</span>
+<span id="cb37-578"><a href="#cb37-578" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-579"><a href="#cb37-579" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-580"><a href="#cb37-580" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

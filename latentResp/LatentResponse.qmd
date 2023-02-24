@@ -163,7 +163,7 @@ RIloadLoc(df)
 ### Targeting
 
 ```{r}
-#| fig-height: 7
+#| fig-height: 6
 # increase fig-height above as needed, if you have many items
 RItargeting(df)
 ```
@@ -171,7 +171,7 @@ RItargeting(df)
 ### Item hierarchy
 
 ```{r}
-#| fig-height: 7
+#| fig-height: 6
 RIitemHierarchy(df)
 ```
 
@@ -180,6 +180,7 @@ RIitemHierarchy(df)
 Interaction between age and gender.
 
 ```{r}
+#| fig-height: 3
 df.tree <- data.frame(matrix(ncol = 0, nrow = nrow(df)))
 df.tree$difdata <- as.matrix(df)
 df.tree$dif.gender <- dif.gender
