@@ -20,6 +20,9 @@ website:
         menu:
          - parameterizedQ.qmd
          - latentResp/LatentResponse.qmd
+      - icon: github
+        href: https://github.com/pgmj/pgmj.github.io
+        aria-label: GitHub
 
 format:
   html:
