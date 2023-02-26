@@ -9,6 +9,7 @@ date: 2023-02-24
 citation:
   type: 'webpage'
 csl: ../apa.csl
+google-scholar: true
 format:
   html:
     code-fold: true
@@ -238,7 +239,7 @@ RIitemparams(df, "mhcItemParams.csv")
 MHCitemParameters <- as.matrix(read.csv("mhcItemParams.csv"))
 ```
 
-Actually, the function used to estimate person scores can automatically estimate the item paramters. But since this is a use case, and you might be interested in applying the item parameters on your own dataset (since I cannot share this data), I thought it worth mentioning and displaying the parameters.
+Actually, the function used to estimate person scores can automatically estimate the item parameters. But since this is just a practical use case, and you might be interested in applying the item parameters on your own dataset (since I cannot share this data), I thought it worth mentioning and displaying the parameters.
 
 ```{r}
 df$MHCscore <- RIestThetas2(df, itemParams = MHCitemParameters, cpu = 8)
