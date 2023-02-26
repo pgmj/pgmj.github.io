@@ -754,7 +754,7 @@ hist(df2$PersonScores, col = "#009ca6")
 
 ## Software used
 
-The `grateful` package is a nice way to give credit to the packages used in making the analysis. It is not available on CRAN, but can be installed directly from GitHub (see code below).
+The `grateful` package is a nice way to give credit to the packages used in making the analysis. It is not available on CRAN, but can be installed directly from GitHub (see code below). The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).
 
 ```{r}
 library(grateful) # devtools::install_github("Pakillo/grateful")

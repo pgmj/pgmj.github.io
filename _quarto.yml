@@ -4,7 +4,8 @@ project:
   
 website:
   title: "R, Rasch, etc"
-  site-url: "https://pgmj.github.io"
+  site-url: https://pgmj.github.io
+  repo-url: https://github.com/pgmj/pgmj.github.io
   open-graph: true
   twitter-card: true
   navbar: 
