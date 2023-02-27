@@ -4,6 +4,6 @@ title: "Home"
 
 When you work with open source tools such as R it comes with a community of users asking and answering questions, as well as many making helpful tutorials or blog posts freely available.
 
-I constantly learn from others and like to give something back from my own journey of learning, exploring and hopefully innovating and contributing a bit of my own. I have the opportunity to work with a lot of different data scenarios. Most often psychometrics is involved, as well as data analysis and visualization. 
+I constantly learn from others and like to give something back from my own journey of learning, exploring and hopefully innovating and contributing back to the community. I have the opportunity to work with a lot of different data scenarios. Most often psychometrics is involved, as well as data analysis and visualization. 
 
 My goal is to get better at documenting my own learning process and sharing it through this website. Content will be added intermittently under the Blog headline.

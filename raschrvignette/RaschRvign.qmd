@@ -38,7 +38,7 @@ You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to 
 
 ## Getting started
 
-Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEkbmRasch/blob/main/Quarto/RISEkbmRasch%20Quarto%20template.qmd) that can be useful to have handy for copy&paste when running a new analysis.
+Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEkbmRasch/blob/main/Quarto/RISEkbmRasch%20Quarto%20template.qmd) that can be useful to have handy for copy&paste when running a new analysis. You can also download a complete copy of the Quarto/R code to produce this document [here](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd).
 
 Loading the `RISEkbmRasch` package should also get all the dependencies loaded. You may need to make sure that ggplot2 is updated to version 3.4.0 or later. However, it could be desirable to explicitly load the packages used, to simplify the automatic creation of citations for them, using the `grateful` package.
 
@@ -69,7 +69,9 @@ library(foreach)
 We will use data from a recent paper investigating the "initial elevation effect" [@anvari2022], and focus on the 10 negative items from the PANAS. The data is available at the OSF website.
 
 ```{r}
-df.all <- read_csv("https://osf.io/download/6fbr5/?view_only=6ad4c2bb65d843bfb1470b8959913630")
+df.all <- read_csv("https://osf.io/download/6fbr5/")
+# if you have issues with the link, please try downloading manually using the same URL as above
+# and read the file from your local drive.
 
 # subset items and demographic variables
 df <- df.all %>% 
@@ -283,10 +285,10 @@ Most people will be familiar with the barplot, and this is probably most intuiti
 
 ```{r}
 #| column: margin
+#| code-fold: true
 
-# this code chunk creates a small table in the margin beside the panel-tabset output below,
-# showing all items currently in the df dataframe
-# the chunk option "#| column: margin" is necessary for the layout to work as intended
+# This code chunk creates a small table in the margin beside the panel-tabset output below, showing all items currently in the df dataframe.
+# The Quarto code chunk option "#| column: margin" is necessary for the layout to work as intended.
 RIlistItemsMargin(df, fontsize = 13)
 ```
 
@@ -369,9 +371,11 @@ RIlistItemsMargin(df, fontsize = 13)
 RIitemfitPCM2(df, 300, 32, cpu = 8)
 ```
 
-Since we have a sample size over 500, ZSTD item fit values would be inflated if we use the whole sample. To better estimate accurate ZSTD values the `RIitemfitPCM()` function allows for multiple subsampling. It is recommended to use a sample size between 250 and 500 [@hagell2016]. We will set the sample size to 300 and run 32 subsamples. For faster processing, `RIitemfitPCM2()` enables parallel processing with multiple CPUs/cores.
+Since we have a sample size over 500, ZSTD item fit values would be inflated if we use the whole sample. To better estimate accurate ZSTD values the `RIitemfitPCM()` function allows for multiple subsampling. It is recommended to use a sample size between 250 and 500 [@hagell2016]. We will set the sample size to 300 and run 32 subsamples. If you just want to test things out, I highly recommend lowering the number 32 to 4 to enable faster rendering.
 
-"Outfit" refers to item fit when person location is relatively far away from the item location, while "infit" provides estimates for when person and item locations are close together. MSQ should be close to 1, with lower and upper cutoffs by default set to 0.7 and 1.3, while ZSTD should be around 0, with cutoffs set to +/- 2.0. Infit is usually more important. You can change the cutoffs by using options in the function, see `?RIitemfitPCM` for details.
+For faster processing, `RIitemfitPCM2()` enables parallel processing with multiple CPUs/cores. You can check how many available cores you have by running `parallel::detectCores()`. It is recommended to not use all of them (leave 1 or 2 free). There may be issues with multicore parallel processing, especially when having few responses in some response categories. If you run in to errors, try increasing the sample size, or just use the single cpu/core function `RIitemfitPCM()` instead.
+
+"Outfit" refers to item fit when person location is relatively far away from the item location, while "infit" provides estimates for when person and item locations are close together. MSQ should be close to 1, with lower and upper cutoffs set to 0.7 and 1.3 as default values, while ZSTD should be around 0, with default cutoffs set to +/- 2.0. Infit is usually more important. You can change the cutoff values by using options in the function, see `?RIitemfitPCM` for details.
 
 A low item fit indicates that responses are too predictable and provide little information. A high item fit can indicate several things, most often multidimensionality or, for questionnaires, a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time.
 
@@ -435,7 +439,7 @@ RIitemHierarchy(df)
 :::
 :::
 
-Item 18 has issues with the second lowest category, which needs to be merged with the lowest category.
+Item 18 has issues with the second lowest category being disordered. It should probably be merged with the 3rd lowest category.
 
 Item 15 shows low item fit.
 
@@ -444,7 +448,7 @@ Two item-pairs show residual correlations above the cutoff value:
 -   15 and 16 (scared and afraid)
 -   17 and 18 (ashamed and guilty)
 
-Since item 15 also had low item fit, we will remove it. And since item 18 had problems with response categories, it will also be removed.
+Since item 15 also had low item fit, we will remove it. In the second pair, item 18 will be removed since it also had problems with disordered response categories.
 
 ```{r}
 removed.items <- c("PANAS_15","PANAS_18")
@@ -766,5 +770,9 @@ formattable(pkgs,
             table.attr = 'class=\"table table-striped\" style="font-size: 13px; font-family: Lato; width: 80%"')
 
 ```
+
+## Additional credits
+
+Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements) for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to [Mike Linacre](https://www.winsteps.com/linacre.htm) for gracefully providing useful feedback to improve this vignette.
 
 ## References
