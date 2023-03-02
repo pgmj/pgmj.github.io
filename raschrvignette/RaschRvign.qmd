@@ -758,6 +758,24 @@ Finally, we'll look at the distribution of person scores using a simple histogra
 hist(df2$PersonScores, col = "#009ca6")
 ```
 
+## Fonts and themes
+
+Most of the figures created by the functions can be styled by adding theme settings to them. You can use the standard ggplot function `theme()` and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.
+
+Below you will find a custom theme function, `theme_rise()`, which might be easier to use if you are not familiar with `theme()`.
+
+For instance, you might like to change the font to Palatino for the item hierarchy figure, and make the background transparent.
+
+```{r}
+# first remove the Person Scores variable
+df2$PersonScores <- NULL
+
+RIitemHierarchy(df2) +
+  theme_minimal() + # first apply the minimal theme
+  theme_rise(fontfamily = "Palatino") # then apply theme_rise, which simplifies making changes to all plot elements
+```
+
+If you only want to change the font and not the background, remove the line of code with `theme_minimal()`.
 
 ## Software used
 
