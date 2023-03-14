@@ -21,9 +21,9 @@ bibliography:
 - grateful-refs.bib
 ---
 
-This is a work-in-progress to create a proper vignette to introduce how to make use of the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch).
+This is an introduction to using the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch).
 
-Details on installation is at the package link above. This vignette will walk through a sample analysis using an open dataset with questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **\</\> CODE** at the top beside the table of contents. You should be able to use the source code as is and reproduce this document locally, as long as you have the required packages installed. This site is built using the open source publishing tool [Quarto](https://www.quarto.org).
+Details on installation are available at the [package GitHub page](https://github.com/pgmj/RISEkbmRasch). This vignette will walk through a sample analysis using an open dataset with polytomous questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **\</\> CODE** at the top beside the table of contents. You should be able to use the source code "as is" and reproduce this document locally, as long as you have the required packages installed. This page and this website are built using the open source publishing tool [Quarto](https://www.quarto.org).
 
 One of the aims with this package is to simplify psychometric analysis to shed light on the measurement properties of a scale. In a paper recently made available as a preprint [@johansson], our [research group](https://www.ri.se/en/what-we-do/projects/center-for-categorically-based-measurements) propose that the basic aspects of a psychometric analysis should include information about:
 
@@ -38,6 +38,14 @@ We'll include several ways to investigate these measurement properties, using Ra
 Please note that this is a sample analysis to showcase the R package. It is not intended as a "best practice" psychometric analysis example.
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
+
+::: {.callout-note icon=false}
+
+## Minimal changelog
+
+- 2023-03-14, package version 0.1.12, added functions `RImissing()` and `RIdifTable2()`
+
+:::
 
 ## Getting started
 
@@ -118,34 +126,18 @@ itemlabels
 
 Variables for invariance tests such as Differential Item Functioning (DIF) need to be separated into vectors (ideally as factors with specified labels and levels) with the same length as the number of rows in the dataset. This means that any kind of removal of respondents with missing data needs to be done before separating the DIF variables.
 
-Let's first see whether any data is missing.
+Let's first visualize the proportion of missing data on item level.
 
 ```{r}
-df %>%
-  select(starts_with("PAN")) %>% 
-  t() %>% 
-  as.data.frame() %>% 
-  mutate(Missing = rowSums(is.na(.))) %>% 
-  select(Missing) %>% 
-  arrange(desc(Missing)) %>% 
-  rownames_to_column(var = "Item") %>% 
-  mutate(Percentage = Missing/nrow(df)*100) %>% 
-  mutate(Item = factor(Item, levels = rev(Item))) %>%
-  ggplot(aes(x = Item, y = Percentage)) +
-  geom_col() +
-  coord_flip() +
-  ggtitle("Missing data per item") +
-  xlab("Items") +
-  ylab("Percentage of responses missing")
+RImissing(df, itemStart = "PAN")
 
 ```
 
-No missing data, which makes this easier. We also need to check how the `Sex` variable has been coded and which responses are present in the data.
+No missing data in this dataset. We also need to check how the `Sex` variable has been coded and which responses are present in the data.
 
 ```{r}
 df %>% 
   distinct(Sex)
-
 ```
 
 We'll recode all responses apart from Male/Female as missing (NA). 
@@ -573,18 +565,11 @@ And no DIF for group.
 
 ### Sex and age
 
-While it has not yet been implemented in this package, the `psychotree` package allows for DIF interaction analysis with multiple DIF variables. This will also serve as an example of how to look at and modify a package function, if needed. Use `View(RIdifTable)` to view the code in the function. Then we can copy the code needed and modify it.
+The `psychotree` package allows for DIF interaction analysis with multiple DIF variables. Use `RIdifTable2()` to input two DIF variables. 
 
 ```{r}
-dfin <- df2
+RIdifTable2(df2, dif.sex, dif.age)
 
-df.tree <- data.frame(matrix(ncol = 0, nrow = nrow(dfin)))
-df.tree$difdata <- as.matrix(dfin)
-df.tree$dif.sex <- dif.sex
-df.tree$dif.age <- dif.age
-
-pctree.out <- pctree(difdata ~ dif.sex + dif.age, data = df.tree)
-plot(pctree.out)
 ```
 
 No interaction effect found for sex and age. The analysis only shows the previously identified DIF for sex.
@@ -762,16 +747,16 @@ hist(df2$PersonScores, col = "#009ca6")
 
 Most of the figures created by the functions can be styled by adding theme settings to them. You can use the standard ggplot function `theme()` and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.
 
-Below you will find a custom theme function, `theme_rise()`, which might be easier to use if you are not familiar with `theme()`.
+A custom theme function, `theme_rise()`, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with `theme()`.
 
 For instance, you might like to change the font to Palatino for the item hierarchy figure, and make the background transparent.
 
 ```{r}
-# first remove the Person Scores variable
+# first remove the Person Scores variable from the dataframe, to ensure that it holds only item data
 df2$PersonScores <- NULL
 
 RIitemHierarchy(df2) +
-  theme_minimal() + # first apply the minimal theme
+  theme_minimal() + # first apply the minimal theme to make the background transparent
   theme_rise(fontfamily = "Palatino") # then apply theme_rise, which simplifies making changes to all plot elements
 ```
 
@@ -787,9 +772,10 @@ pkgs <- cite_packages(cite.tidyverse = TRUE,
                       output = "table",
                       bib.file = "grateful-refs.bib",
                       include.RStudio = TRUE)
+
 formattable(pkgs, 
             table.attr = 'class=\"table table-striped\" style="font-size: 13px; font-family: Lato; width: 80%"')
-
+# If kbl() is used to generate this table, the references will not be added to the Reference list. 
 ```
 
 ## Additional credits
