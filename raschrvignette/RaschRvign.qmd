@@ -760,7 +760,7 @@ RIitemHierarchy(df2) +
   theme_rise(fontfamily = "Palatino") # then apply theme_rise, which simplifies making changes to all plot elements
 ```
 
-If you only want to change the font and not the background, remove the line of code with `theme_minimal()`.
+If you only want to change the font and not the background, remove the line of code with `theme_minimal()`. Please note that `theme_rise()` includes changes to default settings for `geom_text()` and `geom_text_repel()` that apply for the whole session. A simple way to only change font family and font size would be to use `theme_minimal(base_family = "Calibri", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`
 
 ## Software used
 
