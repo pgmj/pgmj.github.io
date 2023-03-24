@@ -1,5 +1,5 @@
 ---
-title: "What's in a latent score?"
+title: "What's in a latent trait score?"
 author: 
   name: Magnus Johansson
   affiliation: RISE Research Institutes of Sweden
@@ -27,7 +27,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-We use questionnaires to measure latent variables based on multiple items/indicators, but the connection between item responses and a latent score is often unclear. Here, I will present a way to visualize item responses and their corresponding latent score and measurement uncertainty that hopefully makes what lies behind the latent score much easier to understand.
+We frequently use questionnaires to measure latent variables based on multiple items/indicators, but the connection between item responses and a latent trait score is often unclear. Here, I will present a way to visualize item responses and their corresponding latent score and measurement uncertainty that hopefully makes what lies behind the latent score much easier to understand.
+
+It should be noted that the term "latent trait score" is not entirely established. The intent is to refer to what in Item Response Theory and Rasch modeling is labelled "theta" - 𝜃 (also known as "person ability", "person location", or "person score"). For each participant, IRT/Rasch models make it possible to both estimate a latent trait score on an interval scale and a measurement error specific for each participant's score. The measurement error depends on the item properties and is not a constant value that is the same for all participants/scores.
+
+In classical test theory, latent trait scores may be estimated using factor analysis and used in structural equation models. However, I have never seen anyone "export" the actual latent trait scores for each participant in a dataset, based on a confirmatory factor analysis (CFA). What is usually done, based on classical test theory/CFA, is to use the raw ordinal sum score as a representation of the latent variable.
 
 Jump ahead to @sec-visualization to see the visualization and skip the psychometric background.
 
@@ -35,7 +39,7 @@ Jump ahead to @sec-visualization to see the visualization and skip the psychomet
 
 The Mental Health Continuum Short Form [@ryff1989; @ryff2014] will be used as an example. I have conducted a Rasch analysis and preliminary results indicate that some modifications are needed for the response categories, and some items need to be removed. This will be reported elsewhere in greater detail. Here, only a summary of the changes and the measurement properties of the final set of items will be reported.
 
-The analysis makes use of my R package for Rasch psychometric analysis, which in turn loads a lot of packages. See the [RISEkbmRasch vignette](https://pgmj.github.io/raschrvignette/RaschRvign.html) and [GitHub package repository](https://github.com/pgmj/RISEkbmRasch) for more details.
+The analysis makes use of my R package for Rasch psychometric analysis, which in turn depends on (and automatically loads) a lot of packages. See the [RISEkbmRasch vignette](https://pgmj.github.io/raschrvignette/RaschRvign.html) and [GitHub package repository](https://github.com/pgmj/RISEkbmRasch) for more details.
 
 ```{r}
 library(RISEkbmRasch)
@@ -190,6 +194,7 @@ df.tree$dif.age<- dif.age
 pctree.out <- pctree(difdata ~ dif.gender + dif.age, data = df.tree)
 plot(pctree.out)
 ```
+
 ```{r}
 cutoff <- 0.5
 diffig <- itempar(pctree.out) %>%
@@ -219,6 +224,7 @@ diffig <- itempar(pctree.out) %>%
     table.attr = "class=\"table table-striped\" style=\"font-size: 15px; font-family: Lato\""
   )
 ```
+
 Only DIF between genders found, and none large enough to cause problems.
 
 ### Reliability
@@ -470,7 +476,6 @@ respDist("80-100")
 
 ```
 
-
 ### All together
 
 ```{r}
@@ -516,6 +521,7 @@ ggplot(df, aes(x = MHCscore, y = Gender, fill = Gender)) +
 We can use the same set of scores and combine them with the previously reported figure for item hierarchy.
 
 ### Targeting example
+
 ```{r}
 RIitemHierarchy(df[,c(1:9)]) +
   geom_hline(aes(yintercept = avg4), linetype = 2, color = "red") +
@@ -526,7 +532,6 @@ RIitemHierarchy(df[,c(1:9)]) +
   annotate("text", label = "20-40", y = avg2-0.1, x = 9, angle = 90, size = 3, color = "darkorange") 
 
 ```
-
 
 ## Software used
 
