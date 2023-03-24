@@ -109,3 +109,30 @@ A far more complex example can be found here (and some of my code was
 adapted from there):
 <https://github.com/Pecners/sra_pullout/blob/main/render.R>
 :::
+
+## A slightly more complex example
+
+The earlier example only used a single vector of municipalities as a parameter. In a current project I'm working on the municipalities also want to specify who they want to compare themselves with, and the timespan in years that they want displayed in the report. We keep this information in a MS Excel file with three variables: `focusMuni`, `compMuni`, `yearsMuni`, which is read into a dataframe called `DIDparams` in the script below. To avoid issues with blank spaces in the cells, we'll remove them when importing. This is done with the `gsub()` function.
+
+``` r
+DIDparams <- read_excel("DIDreportParameters.xls") %>%
+  mutate(across(everything(), ~ gsub(" ","",.x)))
+```
+
+Then we loop through each row in the DIDparams dataframe. Each cell in the variables compMuni and YearsMuni will contain multiple values. We use `strsplit()` and `unlist()` in a pipe to convert these into vectors. Finally, we want to make sure that the variable containing years is coded as numeric.
+
+```r
+walk(1:nrow(DIDparams), function(i) {
+  this <- DIDparams[i,]
+
+  outfile <- glue("{Sys.Date()}_DIDrapport_{this$fokusKommun}.html")
+
+  quarto_render(input = "DIDreport.qmd",
+                execute_params = list("focusMuni" = this$focusMuni, # only contains one value
+                                      "compMuni" = this$compMuni %>% strsplit(",") %>% unlist(),
+                                      "yearsMuni" = this$yearsMuni %>% strsplit(",") %>% unlist() %>% as.numeric()
+                                      ),
+                output_file = outfile,
+                output_format = "html")
+})
+```
