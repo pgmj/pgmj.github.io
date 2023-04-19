@@ -130,7 +130,6 @@ Let's first visualize the proportion of missing data on item level.
 
 ```{r}
 RImissing(df, itemStart = "PAN")
-
 ```
 
 No missing data in this dataset. We also need to check how the `Sex` variable has been coded and which responses are present in the data.
@@ -298,7 +297,9 @@ RItileplot(df)
 #### Stacked bars
 
 ```{r}
-RIbarstack(df)
+RIbarstack(df) +
+  theme_minimal() + # theming is optional, see section 11 for more on this
+  theme_rise() 
 ```
 
 #### Barplots
@@ -417,13 +418,13 @@ Each response category for each item should have a curve that indicates it to be
 
 ```{r}
 #| fig-height: 6
-# increase fig-height above as needed, if you have many items
-RItargeting(df)
+# increase fig-height in the chunk option above if you have many items
+RItargeting(df, xlim = c(-5,4)) # xlim defaults to c(-5,6) if you omit this option
 ```
 
-This figure shows how well the items fit the respondents/persons. It is a sort of Wright Map that shows person and item threshold locations on the same logit scale.
+This figure shows how well the items fit the respondents/persons. It is a sort of [Wright Map](https://www.rasch.org/rmt/rmt253b.htm) that shows person locations and item threshold locations on the same logit scale.
 
-The top part shows person location histogram, the middle part a histogram of item threshold locations, and the bottom part shows individual item threshold locations. The histograms also show means and standard deviations.
+The top part shows person location histogram, the middle part an inverted histogram of item threshold locations, and the bottom part shows individual item threshold locations. The histograms also show means and standard deviations.
 
 ### Item hierarchy
 
@@ -775,7 +776,8 @@ pkgs <- cite_packages(cite.tidyverse = TRUE,
 
 formattable(pkgs, 
             table.attr = 'class=\"table table-striped\" style="font-size: 13px; font-family: Lato; width: 80%"')
-# If kbl() is used to generate this table, the references will not be added to the Reference list. 
+# If kbl() is used to generate this table, the references will not be added to the Reference list.
+
 ```
 
 ## Additional credits
