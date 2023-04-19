@@ -98,7 +98,7 @@ Questions in the MHC-SF are prefixed with ***How often during the past month did
 
 Six response categories were used, as specified in the original MHC-SF: ***every day, almost every day, about 2 or 3 times a week, about once a week, once or twice, never*** and the Rasch analysis found them disordered for all items. This means that some response categories do not contribute meaningful differential information to the latent score, compared to an adjacent response category - the categories are too similar to the respondents. After merging ***never*** with ***once or twice***, and ***about once a week*** with ***about 2 or 3 times a week***, the disordering was resolved. However, there are still quite small distances between item category thresholds, as shown in the ICC plots. This leaves us with 4 response categories for each item.
 
-The sample consists of 15 and 17 year old Swedish youth, in total `r nrow(df)` respondents.
+The sample consists of `r nrow(df)` respondents.
 
 ```{r}
 for (i in itemlabels$itemnr) {
