@@ -3631,7 +3631,7 @@ NA
 </div>
 </div>
 <p>In order to change font for text inside plots you will need to add an additional line of code.</p>
-<pre><code>update_geom_defaults("text", list(family = "Lato))</code></pre>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Please note that this updates the default settings for <code>geom_text()</code> for the whole session. Also, some functions, such as <code>RIloadLoc()</code> make use of <code>geom_text_repel()</code>, for which you would need to change the function above from “text” to “text_repel”.</p>
 <p>A simple way to only change font family and font size would be to use <code>theme_minimal(base_family = "Calibri", base_size = 14)</code>. Please see the <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">reference page</a> for default ggplot themes for alternatives to <code>theme_minimal()</code>.</p>
 </section>
@@ -4980,35 +4980,35 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb75-902"><a href="#cb75-902" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb75-903"><a href="#cb75-903" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb75-904"><a href="#cb75-904" aria-hidden="true" tabindex="-1"></a>In order to change font for text inside plots you will need to add an additional line of code.</span>
-<span id="cb75-905"><a href="#cb75-905" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb75-906"><a href="#cb75-906" aria-hidden="true" tabindex="-1"></a><span class="in">update_geom_defaults("text", list(family = "Lato))</span></span>
-<span id="cb75-907"><a href="#cb75-907" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb75-905"><a href="#cb75-905" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb75-906"><a href="#cb75-906" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato))</span></span>
+<span id="cb75-907"><a href="#cb75-907" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
 <span id="cb75-908"><a href="#cb75-908" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-909"><a href="#cb75-909" aria-hidden="true" tabindex="-1"></a>Please note that this updates the default settings for <span class="in">`geom_text()`</span> for the whole session. Also, some functions, such as <span class="in">`RIloadLoc()`</span> make use of <span class="in">`geom_text_repel()`</span>, for which you would need to change the function above from "text" to "text_repel".</span>
+<span id="cb75-909"><a href="#cb75-909" aria-hidden="true" tabindex="-1"></a><span class="st">Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "</span>text<span class="st">" to "</span>text_repel<span class="st">".</span></span>
 <span id="cb75-910"><a href="#cb75-910" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-911"><a href="#cb75-911" aria-hidden="true" tabindex="-1"></a>A simple way to only change font family and font size would be to use <span class="in">`theme_minimal(base_family = "Calibri", base_size = 14)`</span>. Please see the <span class="co">[</span><span class="ot">reference page</span><span class="co">](https://ggplot2.tidyverse.org/reference/ggtheme.html)</span> for default ggplot themes for alternatives to <span class="in">`theme_minimal()`</span>.</span>
+<span id="cb75-911"><a href="#cb75-911" aria-hidden="true" tabindex="-1"></a><span class="st">A simple way to only change font family and font size would be to use `theme_minimal(base_family = "</span>Calibri<span class="st">", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.</span></span>
 <span id="cb75-912"><a href="#cb75-912" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-913"><a href="#cb75-913" aria-hidden="true" tabindex="-1"></a><span class="fu">## Software used</span></span>
+<span id="cb75-913"><a href="#cb75-913" aria-hidden="true" tabindex="-1"></a><span class="st">## Software used</span></span>
 <span id="cb75-914"><a href="#cb75-914" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-915"><a href="#cb75-915" aria-hidden="true" tabindex="-1"></a>The <span class="in">`grateful`</span> package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span>
+<span id="cb75-915"><a href="#cb75-915" aria-hidden="true" tabindex="-1"></a><span class="st">The `grateful` package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span></span>
 <span id="cb75-916"><a href="#cb75-916" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb75-919"><a href="#cb75-919" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb75-920"><a href="#cb75-920" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grateful)</span>
-<span id="cb75-921"><a href="#cb75-921" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">cite_packages</span>(<span class="at">cite.tidyverse =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb75-922"><a href="#cb75-922" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">"table"</span>,</span>
-<span id="cb75-923"><a href="#cb75-923" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bib.file =</span> <span class="st">"grateful-refs.bib"</span>,</span>
-<span id="cb75-924"><a href="#cb75-924" aria-hidden="true" tabindex="-1"></a>                      <span class="at">include.RStudio =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb75-925"><a href="#cb75-925" aria-hidden="true" tabindex="-1"></a>                      <span class="at">out.dir =</span> <span class="fu">getwd</span>())</span>
-<span id="cb75-926"><a href="#cb75-926" aria-hidden="true" tabindex="-1"></a><span class="co"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
-<span id="cb75-927"><a href="#cb75-927" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(pkgs, </span>
-<span id="cb75-928"><a href="#cb75-928" aria-hidden="true" tabindex="-1"></a>            <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 13px; font-family: Lato; width: 80%"'</span>)</span>
-<span id="cb75-929"><a href="#cb75-929" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb75-920"><a href="#cb75-920" aria-hidden="true" tabindex="-1"></a><span class="st">library(grateful)</span></span>
+<span id="cb75-921"><a href="#cb75-921" aria-hidden="true" tabindex="-1"></a><span class="st">pkgs &lt;- cite_packages(cite.tidyverse = TRUE, </span></span>
+<span id="cb75-922"><a href="#cb75-922" aria-hidden="true" tabindex="-1"></a><span class="st">                      output = "</span>table<span class="st">",</span></span>
+<span id="cb75-923"><a href="#cb75-923" aria-hidden="true" tabindex="-1"></a><span class="st">                      bib.file = "</span>grateful<span class="sc">-</span>refs.bib<span class="st">",</span></span>
+<span id="cb75-924"><a href="#cb75-924" aria-hidden="true" tabindex="-1"></a><span class="st">                      include.RStudio = TRUE,</span></span>
+<span id="cb75-925"><a href="#cb75-925" aria-hidden="true" tabindex="-1"></a><span class="st">                      out.dir = getwd())</span></span>
+<span id="cb75-926"><a href="#cb75-926" aria-hidden="true" tabindex="-1"></a><span class="st"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
+<span id="cb75-927"><a href="#cb75-927" aria-hidden="true" tabindex="-1"></a><span class="st">formattable(pkgs, </span></span>
+<span id="cb75-928"><a href="#cb75-928" aria-hidden="true" tabindex="-1"></a><span class="st">            table.attr = 'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="</span>font<span class="sc">-</span>size<span class="sc">:</span> 13px; font<span class="sc">-</span>family<span class="sc">:</span> Lato; width<span class="sc">:</span> <span class="dv">80</span>%<span class="st">"')</span></span>
+<span id="cb75-929"><a href="#cb75-929" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
 <span id="cb75-930"><a href="#cb75-930" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-931"><a href="#cb75-931" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional credits</span></span>
+<span id="cb75-931"><a href="#cb75-931" aria-hidden="true" tabindex="-1"></a><span class="st">## Additional credits</span></span>
 <span id="cb75-932"><a href="#cb75-932" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-933"><a href="#cb75-933" aria-hidden="true" tabindex="-1"></a>Thanks to my <span class="co">[</span><span class="ot">colleagues at RISE</span><span class="co">](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements)</span> for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to <span class="co">[</span><span class="ot">Mike Linacre</span><span class="co">](https://www.winsteps.com/linacre.htm)</span> and <span class="co">[</span><span class="ot">Jeanette Melin</span><span class="co">](https://www.ri.se/en/person/jeanette-melin)</span> for providing useful feedback to improve this vignette.</span>
+<span id="cb75-933"><a href="#cb75-933" aria-hidden="true" tabindex="-1"></a><span class="st">Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements) for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to [Mike Linacre](https://www.winsteps.com/linacre.htm) and [Jeanette Melin](https://www.ri.se/en/person/jeanette-melin) for providing useful feedback to improve this vignette.</span></span>
 <span id="cb75-934"><a href="#cb75-934" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb75-935"><a href="#cb75-935" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb75-935"><a href="#cb75-935" aria-hidden="true" tabindex="-1"></a><span class="st">## References</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -763,7 +763,7 @@ RIitemHierarchy(df2) +
 ```
 
 In order to change font for text inside plots you will need to add an additional line of code.
-```
+``` r
 update_geom_defaults("text", list(family = "Lato))
 ```
 
