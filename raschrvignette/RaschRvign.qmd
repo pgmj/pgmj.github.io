@@ -1,6 +1,6 @@
 ---
-title: "RISEkbmRasch"
-subtitle: "An R package vignette"
+title: "RISEkbmRasch vignette"
+subtitle: "An R package for Rasch analysis"
 author: 
   name: Magnus Johansson
   affiliation: RISE Research Institutes of Sweden
@@ -19,9 +19,10 @@ execute:
 bibliography: 
 - references.bib
 - grateful-refs.bib
+csl: apa.csl
 ---
 
-This is an introduction to using the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch).
+This is an introduction to using the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch). A changelog for package updates is available [here](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md).
 
 Details on installation are available at the [package GitHub page](https://github.com/pgmj/RISEkbmRasch). This vignette will walk through a sample analysis using an open dataset with polytomous questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **\</\> CODE** at the top beside the table of contents. You should be able to use the source code "as is" and reproduce this document locally, as long as you have the required packages installed. This page and this website are built using the open source publishing tool [Quarto](https://www.quarto.org).
 
@@ -750,34 +751,40 @@ Most of the figures created by the functions can be styled by adding theme setti
 
 A custom theme function, `theme_rise()`, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with `theme()`.
 
-For instance, you might like to change the font to Palatino for the item hierarchy figure, and make the background transparent.
+For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.
 
 ```{r}
-# first remove the Person Scores variable from the dataframe, to ensure that it holds only item data
+# first we need to remove the `PersonScores` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.
 df2$PersonScores <- NULL
 
 RIitemHierarchy(df2) +
   theme_minimal() + # first apply the minimal theme to make the background transparent
-  theme_rise(fontfamily = "Palatino") # then apply theme_rise, which simplifies making changes to all plot elements
+  theme_rise(fontfamily = "Lato") # then apply theme_rise, which simplifies making changes to all plot elements
 ```
 
-If you only want to change the font and not the background, remove the line of code with `theme_minimal()`. Please note that `theme_rise()` includes changes to default settings for `geom_text()` and `geom_text_repel()` that apply for the whole session. A simple way to only change font family and font size would be to use `theme_minimal(base_family = "Calibri", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`
+In order to change font for text inside plots you will need to add an additional line of code.
+```
+update_geom_defaults("text", list(family = "Lato))
+```
+
+Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "text" to "text_repel".
+
+A simple way to only change font family and font size would be to use `theme_minimal(base_family = "Calibri", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.
 
 ## Software used
 
-The `grateful` package is a nice way to give credit to the packages used in making the analysis. It is not available on CRAN, but can be installed directly from GitHub (see code below). The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).
+The `grateful` package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).
 
 ```{r}
-library(grateful) # devtools::install_github("Pakillo/grateful")
+library(grateful)
 pkgs <- cite_packages(cite.tidyverse = TRUE, 
                       output = "table",
                       bib.file = "grateful-refs.bib",
-                      include.RStudio = TRUE)
-
+                      include.RStudio = TRUE,
+                      out.dir = getwd())
+# If kbl() is used to generate this table, the references will not be added to the Reference list.
 formattable(pkgs, 
             table.attr = 'class=\"table table-striped\" style="font-size: 13px; font-family: Lato; width: 80%"')
-# If kbl() is used to generate this table, the references will not be added to the Reference list.
-
 ```
 
 ## Additional credits
