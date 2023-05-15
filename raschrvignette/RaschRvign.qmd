@@ -627,7 +627,7 @@ RIitemHierarchy(df2)
 :::
 :::
 
-No problematic residual correlations, but item 12 is clearly low in item fit.
+No problematic residual correlations, but item 12 is a bit low in item fit.
 
 ## Rasch analysis 4
 
