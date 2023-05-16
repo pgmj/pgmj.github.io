@@ -20,6 +20,8 @@ bibliography:
 - references.bib
 - grateful-refs.bib
 csl: apa.csl
+editor_options: 
+  chunk_output_type: console
 ---
 
 This is an introduction to using the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch). A changelog for package updates is available [here](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md).
@@ -40,12 +42,11 @@ Please note that this is a sample analysis to showcase the R package. It is not 
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
 
-::: {.callout-note icon=false}
-
+::: {.callout-note icon="false"}
 ## Minimal changelog
 
 - 2023-03-14, package version 0.1.12, added functions `RImissing()` and `RIdifTable2()`
-
+- 2023-05-16, version 0.1.16.1, added DIF LRT functions, see @sec-diflrt
 :::
 
 ## Getting started
@@ -56,7 +57,7 @@ Loading the `RISEkbmRasch` package should also get all the dependencies loaded. 
 
 ```{r}
 library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch")
-library(grateful) # devtools::install_github("Pakillo/grateful")
+library(grateful)
 library(ggrepel)
 library(car)
 library(kableExtra)
@@ -100,7 +101,7 @@ The `glimpse()` function provides a quick overview of our dataframe.
 glimpse(df)
 ```
 
-We have `r nrow(df)` rows, ie. respondents. All variables except Sex and Group are of class `dbl`, which means they are numeric and can have decimals. Integer (numeric with no decimals) would also be fine for our purposes. The two demographic variables currently of class `chr` (character) will need to be converted to factors (`fct`), and we will do that later on. 
+We have `r nrow(df)` rows, ie. respondents. All variables except Sex and Group are of class `dbl`, which means they are numeric and can have decimals. Integer (numeric with no decimals) would also be fine for our purposes. The two demographic variables currently of class `chr` (character) will need to be converted to factors (`fct`), and we will do that later on.
 
 (If you import a dataset where item variables are of class character, you will need to recode to numeric.)
 
@@ -119,6 +120,7 @@ itemlabels <- df %>%
 ```
 
 The `itemlabels` dataframe looks like this.
+
 ```{r}
 itemlabels
 ```
@@ -136,19 +138,18 @@ RImissing(df, itemStart = "PAN")
 No missing data in this dataset. We also need to check how the `Sex` variable has been coded and which responses are present in the data.
 
 ```{r}
-df %>% 
-  distinct(Sex)
+table(df$Sex)
 ```
 
-We'll recode all responses apart from Male/Female as missing (NA). 
+Since there are only 5 respondents using labels outside of Female/Male (too few for meaningful statistical analysis), we will remove them to have a complete dataset for all variables in this example.
 
 ```{r}
-df$Sex <- car::recode(df$Sex,"'CONSENT REVOKED'=NA;
-                      'Prefer not to say'=NA;
-                      'DATA EXPIRED'=NA")
+df <- df %>% 
+  filter(Sex %in% c("Female","Male"))
 ```
 
 Let's make the variable a factor (instead of character class) and put in in a vector separate from the item dataframe.
+
 ```{r}
 dif.sex <- factor(df$Sex)
 ```
@@ -164,7 +165,6 @@ We can now make use of a very simple function included in this package!
 ```{r}
 RIdemographics(dif.sex, "Sex")
 ```
-
 
 Let's move on to the age variable.
 
@@ -238,7 +238,7 @@ This provides us with an overall picture of the data distribution, and any oddit
 RIallresp(df)
 ```
 
-Most R packages for the Rasch model require the lowest response category to be zero, which makes it necessary for us to recode our data, from 1-5 to 0-4.
+Most R packages for Rasch analysis require the lowest response category to be zero, which makes it necessary for us to recode our data, from 1-5 to 0-4.
 
 ```{r}
 
@@ -311,6 +311,7 @@ RIbarplot(df)
 ```
 
 #### Expected Value Curves
+
 ```{r}
 #| include: false
 library(TAM) # This and the next code chunk is a bit of tinkering to minimize the output from the TAM functions. The third one is only to show the code in the Quarto output.
@@ -433,7 +434,7 @@ RIitemHierarchy(df)
 :::
 :::
 
-Item 18 has issues with the second lowest category being disordered. It should probably be merged with the 3rd lowest category.
+Item 18 has issues with the second lowest category being disordered.
 
 Item 15 shows low item fit.
 
@@ -511,7 +512,9 @@ Items 16 and 19 have a residual correlation at about 0.25 above the average leve
 
 Let's look at DIF before taking action upon this information.
 
-## Invariance/DIF
+## DIF - differential item functioning
+
+We'll be looking at how/if item (threshold) locations are stable between demographic subgroups.
 
 ### Sex
 
@@ -544,9 +547,11 @@ RIdifFigThresh(df2, dif.sex)
 
 While no item shows problematic levels of DIF regarding item location, as shown by the table, there is an interesting pattern in the thresholds figure. The lowest threshold seems to be slightly lower for node 3 (Male) for all items.
 
-The results do not require any action since the difference is very small.
+The results do not require any action since the difference is small.
 
 ### Age
+
+The `psychotree` package uses a model-based recursive partitioning that is particularly useful when you have a continuous variable such as age in years and a large enough sample. It will test different ways to partition the age variable to determine potential group differences [@strobl2015; @strobl2021].
 
 ```{r}
 RIdifTable(df2, dif.age)
@@ -564,7 +569,7 @@ And no DIF for group.
 
 ### Sex and age
 
-The `psychotree` package allows for DIF interaction analysis with multiple DIF variables. Use `RIdifTable2()` to input two DIF variables. 
+The `psychotree` package also allows for DIF interaction analysis with multiple DIF variables. We can use `RIdifTable2()` to input two DIF variables.
 
 ```{r}
 RIdifTable2(df2, dif.sex, dif.age)
@@ -573,9 +578,47 @@ RIdifTable2(df2, dif.sex, dif.age)
 
 No interaction effect found for sex and age. The analysis only shows the previously identified DIF for sex.
 
+### LRT-based DIF example {#sec-diflrt}
+
+As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. A limitation, as far as I know, is that only two groups can be used in the DIF variable.
+
+We'll use the group variable as an example. First, we can simply run the test to get the overall result.
+
+```{r}
+erm.out <- PCM(df2)
+LRtest(erm.out, splitcr = dif.group)
+```
+
+```{r}
+#| column: margin
+#| echo: false
+RIlistItemsMargin(df2, fontsize = 13)
+```
+
+::: panel-tabset
+#### Item location table
+```{r}
+RIdifTableLR(df2, dif.group)
+```
+#### Item location figure
+```{r}
+RIdifFigureLR(df2, dif.group)
+```
+#### Item threshold table
+```{r}
+RIdifThreshTblLR(df2, dif.group)
+```
+#### Item threshold figure
+```{r}
+RIdifThreshFigLR(df2, dif.group)
+```
+:::
+
+The item threshold table shows us that the highest threshold for items 13 and 17 differs between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.
+
 ## Rasch analysis 3
 
-There were no issues with DIF for any item. We still need to address the previously identified problems
+While there were no significant issues with DIF for any item/subgroup combination, we need to address the previously identified problems
 
 Items 12 and 16 are a bit low in item fit ZSTD.
 
@@ -697,7 +740,7 @@ RIpfit(df2)
 
 ## Item parameters
 
-To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package. 
+To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package.
 
 It can also be done by using the new (as of 2023-02-04) `RIestTheta()` function in this package (does not yet work with dichotomous data), which uses `thetaEst()` across all the participants in your dataframe.
 
@@ -731,13 +774,16 @@ df2$PersonScores <- RIestThetas2(df2, cpu = 8)
 `RIestThetas()` can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
 
 If you would like to use an existing item matrix, this code may be helpful:
+
 ```{r}
 items <- as.matrix(read.csv("itemParameters.csv"))
 items
 ```
+
 As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.
 
 Finally, we'll look at the distribution of person scores using a simple histogram.
+
 ```{r}
 hist(df2$PersonScores, col = "#009ca6")
 ```
@@ -760,6 +806,7 @@ RIitemHierarchy(df2) +
 ```
 
 In order to change font for text inside plots you will need to add an additional line of code.
+
 ``` r
 update_geom_defaults("text", list(family = "Lato))
 ```
