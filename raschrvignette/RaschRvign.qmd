@@ -580,7 +580,7 @@ No interaction effect found for sex and age. The analysis only shows the previou
 
 ### LRT-based DIF example {#sec-diflrt}
 
-As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. A limitation of the current function in the `RISEkbmRasch` package is that only two groups can be used in the DIF variable. A future release will enable use of any number of groups.
+As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package.
 
 We'll use the group variable as an example. First, we can simply run the test to get the overall result.
 
@@ -602,7 +602,8 @@ RIdifTableLR(df2, dif.group)
 ```
 #### Item location figure
 ```{r}
-RIdifFigureLR(df2, dif.group)
+#| fig-height: 7
+RIdifFigureLR(df2, dif.group) + theme_rise()
 ```
 #### Item threshold table
 ```{r}
@@ -610,7 +611,8 @@ RIdifThreshTblLR(df2, dif.group)
 ```
 #### Item threshold figure
 ```{r}
-RIdifThreshFigLR(df2, dif.group)
+#| fig-height: 7
+RIdifThreshFigLR(df2, dif.group) + theme_rise()
 ```
 :::
 
