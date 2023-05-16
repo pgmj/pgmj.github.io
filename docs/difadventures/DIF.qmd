@@ -1,5 +1,6 @@
 ---
-title: "Exploring Differential Item Functioning"
+title: "Exploring DIF"
+subtitle: "Differential Item Functioning of item locations"
 author: 
   name: Magnus Johansson
   affiliation: RISE Research Institutes of Sweden
