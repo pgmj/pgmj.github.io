@@ -2,10 +2,10 @@
 title: "RISEkbmRasch vignette"
 subtitle: "An R package for Rasch analysis"
 author: 
-  name: Magnus Johansson
-  affiliation: RISE Research Institutes of Sweden
-  affiliation-url: https://www.ri.se/sv/vad-vi-gor/expertiser/kategoriskt-baserade-matningar
-  orcid: 0000-0003-1669-592X
+  name: 'Magnus Johansson'
+  affiliation: 'RISE Research Institutes of Sweden'
+  affiliation-url: 'https://www.ri.se/en/what-we-do/expertises/category-based-measurements'
+  orcid: '0000-0003-1669-592X'
 date: last-modified
 google-scholar: true
 citation: true
@@ -77,6 +77,11 @@ library(glue)
 library(foreach)
 ```
 
+::: {.callout-note icon="true"}
+## Note
+Quarto automatically adds links to R packages and functions throughout this document. However, this feature only works properly for packages available on [CRAN](https://cran.r-project.org/). Since the `RISEkbmRasch` package is not on CRAN the links related to functions starting with **RI** will not work.
+:::
+
 ### Loading data
 
 We will use data from a recent paper investigating the "initial elevation effect" [@anvari2022], and focus on the 10 negative items from the PANAS. The data is available at the OSF website.
@@ -127,15 +132,9 @@ itemlabels
 
 ### Demographics
 
-Variables for invariance tests such as Differential Item Functioning (DIF) need to be separated into vectors (ideally as factors with specified labels and levels) with the same length as the number of rows in the dataset. This means that any kind of removal of respondents with missing data needs to be done before separating the DIF variables.
+Variables for invariance tests such as Differential Item Functioning (DIF) need to be separated into vectors (ideally as factors with specified levels and labels) with the same length as the number of rows in the dataset. This means that any kind of removal of respondents/rows with missing data needs to be done before separating the DIF variables.
 
-Let's first visualize the proportion of missing data on item level.
-
-```{r}
-RImissing(df, itemStart = "PAN")
-```
-
-No missing data in this dataset. We also need to check how the `Sex` variable has been coded and which responses are present in the data.
+We need to check how the `Sex` variable has been coded and which responses are present in the data.
 
 ```{r}
 table(df$Sex)
@@ -148,7 +147,7 @@ df <- df %>%
   filter(Sex %in% c("Female","Male"))
 ```
 
-Let's make the variable a factor (instead of character class) and put in in a vector separate from the item dataframe.
+Let's make the variable a factor (instead of class "character") and put in in a vector separate from the item dataframe.
 
 ```{r}
 dif.sex <- factor(df$Sex)
@@ -187,13 +186,15 @@ ggplot(df) +
   geom_histogram(aes(x = age), 
                  fill = "#009ca6",
                  col = "black") +
+  # add the average as a vertical line
   geom_vline(xintercept = mean(df$age), 
              linewidth = 1.5,
              linetype = 2,
              col = "#ffe500") +
+  # add a light grey field indicating the standard deviation
   annotate("rect", ymin = 0, ymax = Inf, 
            xmin = (mean(df$age) - sd(df$age)), xmax = (mean(df$age) + sd(df$age)), 
-           alpha = .3) +
+           alpha = .2) +
   labs(title = "",
        x = "Age in years",
        y = "Number of respondents",
@@ -228,17 +229,27 @@ Now we are all set for the psychometric analysis!
 
 ## Descriptives
 
-First, let's familiarize ourselves with the data.
+Let's familiarize ourselves with the data before diving into the analysis.
+
+### Missing data
+
+First, we visualize the proportion of missing data on item level.
+
+```{r}
+RImissing(df)
+```
+
+No missing data in this dataset.
 
 ### Overall responses
 
-This provides us with an overall picture of the data distribution, and any oddities/mistakes made in recoding the item data from categories to numbers will be clearly visible.
+This provides us with an overall picture of the data distribution. As a bonus, any oddities/mistakes in recoding the item data from categories to numbers will be clearly visible.
 
 ```{r}
 RIallresp(df)
 ```
 
-Most R packages for Rasch analysis require the lowest response category to be zero, which makes it necessary for us to recode our data, from 1-5 to 0-4.
+Most R packages for Rasch analysis require the lowest response category to be zero, which makes it necessary for us to recode our data, from using the range of 1-5 to 0-4.
 
 ```{r}
 
@@ -265,10 +276,11 @@ We can see a floor effect with 11.8% of participants responding in the lowest ca
 While not really necessary, it could be interesting to see whether the response patterns follow a Guttman-like structure. Items and persons are sorted based on lower-\>higher responses, and we should see the color move from yellow in the lower left corner to blue in the upper right corner.
 
 ```{r}
-RIheatmap(df)
+RIheatmap(df) +
+  theme(axis.text.x = element_blank())
 ```
 
-In this data, we see the floor effect on the left, with 11.8% of respondents all yellow, and a rather weak Guttman structure. This could also be due to a low variation in item locations/difficulties.
+In this data, we see the floor effect on the left, with 11.8% of respondents all yellow, and a rather weak Guttman structure. This could also be due to a low variation in item locations/difficulties. Since we have a very large sample I added a `theme()` option to remove the x-axis text, which would anyway just be a blur of the `r nrow(df)` respondent row numbers. Each thin vertical slice in the figure is one respondent.
 
 ### Item level descriptives
 
@@ -295,6 +307,8 @@ RIlistItemsMargin(df, fontsize = 13)
 RItileplot(df)
 ```
 
+While response patterns are skewed for all items, there are more than 10 responses in each category for all items which is helpful for the analysis.
+
 #### Stacked bars
 
 ```{r}
@@ -313,33 +327,21 @@ RIbarplot(df)
 #### Expected Value Curves
 
 ```{r}
-#| include: false
-library(TAM) # This and the next code chunk is a bit of tinkering to minimize the output from the TAM functions. The third one is only to show the code in the Quarto output.
-tam1 <- tam(as.matrix(df), irtmodel = "PCM") # run TAM Rasch Partial Credit Model on our data
-```
-
-```{r}
 #| layout-ncol: 2
-#| echo: false
-plot(tam1) # create figures
-```
-
-```{r}
-#| eval: false
 library(TAM)
-tam1 <- tam(as.matrix(df), irtmodel = "PCM") # run TAM Rasch Partial Credit Model on our data
-plot(tam1) # create figures
+tam1 <- tam(as.matrix(df), irtmodel = "PCM", verbose = FALSE) # run TAM Rasch Partial Credit Model on our data, which uses Marginal Maximum Likelihood estimation
+plot(tam1) # create ICC plots
 ```
 
-The expected value curves are made using the [TAM](https://cran.r-project.org/web/packages/TAM/index.html) package, which uses Marginal Maximum Likelihood (MML) estimation. It is a good way to check if any of your items may need reversed response categories, amongst other things. However, it is rather verbose in its output (as you can see above), which doesn't look very nice when used with Quarto and you only want to see the figures in your output document.
+The expected value curves are made using the [TAM](https://cran.r-project.org/web/packages/TAM/index.html) package, which uses Marginal Maximum Likelihood (MML) estimation. It is a good way to check if any of your items may need reversed response categories, amongst other things.
 :::
 :::
 
-While response patterns are skewed for all items, there are more than 10 responses in each category for all items.
+
 
 ## Rasch analysis 1 {#sec-rasch}
 
-The eRm package and Conditional Maximum Likelihood (CML) estimation will be used primarily, with the Partial Credit Model.
+The eRm package and Conditional Maximum Likelihood (CML) estimation will be used primarily, with the Partial Credit Model since this is polytomous data.
 
 This is also where the [five basic psychometric aspects](https://doi.org/10.31219/osf.io/3htzc) are good to recall.
 
@@ -451,6 +453,8 @@ removed.items <- c("PANAS_15","PANAS_18")
 df2 <- df %>% 
   select(!any_of(removed.items))
 ```
+
+As seen in the code above, I chose to create a copy of the dataframe with the removed items omitted. This can be useful if, at a later stage in the analysis, I want to be able to quickly "go back" and reinstate an item.
 
 ## Rasch analysis 2
 
@@ -580,7 +584,7 @@ No interaction effect found for sex and age. The analysis only shows the previou
 
 ### LRT-based DIF example {#sec-diflrt}
 
-As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package.
+As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. These functions have not yet been extensively tested and may have issues depending on the dataset.
 
 We'll use the group variable as an example. First, we can simply run the test to get the overall result.
 
@@ -616,7 +620,7 @@ RIdifThreshFigLR(df2, dif.group) + theme_rise()
 ```
 :::
 
-The item threshold table shows us that the highest threshold for items 13 and 17 differs between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.
+The item threshold table shows that the highest thresholds for items 13 and 17 differ more than 0.5 logits between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.
 
 ## Rasch analysis 3
 
@@ -644,10 +648,10 @@ RIlistItemsMargin(df2, fontsize = 13)
 
 ::: column-page-left
 ::: panel-tabset
-### Item fit {.smaller}
+### Item fit
 
 ```{r}
-RIitemfitPCM2(df2, 300, 32, 8)
+RIitemfitPCM2(df2, 350, 32, 8)
 ```
 
 ### Residual correlations
@@ -692,10 +696,10 @@ RIlistItemsMargin(df2, fontsize = 13)
 
 ::: column-page-left
 ::: panel-tabset
-### Item fit {.smaller}
+### Item fit
 
 ```{r}
-RIitemfitPCM2(df2, 300, 32, 8)
+RIitemfitPCM2(df2, 350, 32, 8)
 ```
 
 ### Residual correlations

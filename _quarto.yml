@@ -36,6 +36,7 @@ format:
     code-overflow: wrap
     code-tools: true
     code-fold: show
+    code-link: true
     number-sections: true
     fig-dpi: 150
     layout-align: left
