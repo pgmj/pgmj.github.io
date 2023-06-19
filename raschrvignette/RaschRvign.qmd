@@ -42,12 +42,6 @@ Please note that this is a sample analysis to showcase the R package. It is not 
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
 
-::: {.callout-note icon="false"}
-## Minimal changelog
-
-- 2023-03-14, package version 0.1.12, added functions `RImissing()` and `RIdifTable2()`
-- 2023-05-16, version 0.1.16.1, added DIF LRT functions, see @sec-diflrt
-:::
 
 ## Getting started
 
@@ -293,6 +287,7 @@ Most people will be familiar with the barplot, and this is probably most intuiti
 ```{r}
 #| column: margin
 #| code-fold: true
+#| echo: fenced
 
 # This code chunk creates a small table in the margin beside the panel-tabset output below, showing all items currently in the df dataframe.
 # The Quarto code chunk option "#| column: margin" is necessary for the layout to work as intended.
@@ -584,7 +579,7 @@ No interaction effect found for sex and age. The analysis only shows the previou
 
 ### LRT-based DIF example {#sec-diflrt}
 
-As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. These functions have not yet been extensively tested and may have issues depending on the dataset.
+As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. These functions have not yet been extensively tested and may have issues depending on the dataset. It seems that the DIF size indicated by this function may be inflated.
 
 We'll use the group variable as an example. First, we can simply run the test to get the overall result.
 
@@ -672,6 +667,7 @@ RItargeting(df2)
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
+
 ```
 :::
 :::
@@ -720,6 +716,7 @@ RItargeting(df2)
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
+
 ```
 :::
 :::
