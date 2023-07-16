@@ -1,0 +1,427 @@
+---
+title: "Data retrieval with R using API calls"
+subtitle: "The Swedish National Agency for Education database API"
+  author:
+    - name: 'Magnus Johansson'
+      affiliation: 'RISE Research Institutes of Sweden'
+      affiliation-url: 'https://ri.se/shic'
+      orcid: '0000-0003-1669-592X'
+    - name: 'Jens Mattsson'
+      affiliation: 'RISE Research Institutes of Sweden'
+      affiliation-url: 'https://ri.se/shic'
+date: last-modified
+date-format: iso
+execute: 
+  cache: true
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## Background
+
+This is a post documenting explorative work to retrieve data using the [database API](https://www.skolverket.se/om-oss/oppna-data/api-for-skolenhetsregistret) maintained Swedish National Agency for Education. The conditions for using the API and database are described in the [CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/deed.en). The API is documented here: <https://api.skolverket.se/skolenhetsregistret/swagger-ui/index.html>.
+
+::: {.callout-note icon="true"}
+### Note
+Please note that this is just documentation of our work, not a guide. There will be mistakes and suboptimal routes taken. But in the end I hope we will produce something that may be useful to others. Not everyone will be interested in using the API for the same purpose as we had, so hopefully our troubleshooting will make the potential use wider.
+:::
+
+A lot of the output will be in Swedish, but you will probably be able to follow along even if your Swedish knowledge is limited. Basic word list:
+
+- school = skola
+- school unit code = Skolenhetskod
+
+The purpose of this is two-fold. First, various kinds of data on school and municipality levels are of interest in the project ["Data in dialogue"](https://www.ri.se/en/what-we-do/projects/data-in-dialogue-risk-and-protective-factors-for-children-and-youth). Second, in order to conduct analysis of missing data and selection bias we need demographic data about students at the schools participating in school surveys that are used to assess risk and protective factors.
+
+::: {.callout-note icon="false"}
+### Note
+While this blog post is written by me (Magnus), a lot of the initial trial and error work was done by my colleague Jens Mattsson.
+:::
+
+## Setting up
+
+```{r}
+library(httr)
+library(arrow)
+library(tidyverse)
+library(rjson)
+library(jsonlite)
+library(glue)
+library(readxl)
+```
+
+First, let's get a list of municipalities and their codes. The first two numbers in the four number code denotes the region. Sweden has 290 municipalities and 21 regions. For this project, we are interested in the regions of Stockholm and Uppsala, which have codes 01 and 03.
+
+```{r}
+municipalities <- read_parquet("SkolverketAPI/2023-03-28_KOLADA_Municipality_list.parquet") %>% 
+  filter(str_detect(id, "^01|^03")) %>% 
+  select(!type)
+
+glimpse(municipalities)
+```
+
+## Getting data for one municipality
+
+Looking at the specifications of the API, we should be able to get all schools in a municipality by doing a call according to `/v1/kommun/{municipalityCode}`. Unfortunately, the API does not seem to allow making one call for multiple municipalities. The base URL is `https://api.skolverket.se/skolenhetsregistret`.
+
+We'll start by getting data from one municipality.
+
+```{r}
+data <- GET("https://api.skolverket.se/skolenhetsregistret/v1/kommun/0127") %>% 
+  content("text") %>% 
+  fromJSON()
+
+glimpse(data)
+```
+
+We get a list of 3, where the data of interest seems to be within the nested dataframe `$Skolenheter`. Let's subset that into its own dataframe object.
+
+```{r}
+schools <- data$Skolenheter
+glimpse(schools)
+```
+
+Now, this is just a list of schools and their unit codes (`schools$Skolenhetskod`), it contains no data. But we need this list to know which school unit codes to retrieve data for. There is also a `Status` variable which seems to have the options of active or not.
+
+```{r}
+schools %>% 
+  count(Status)
+```
+
+There was also a third option for "planned". Not sure how to use this information at this point.
+
+### Data from one school
+
+We'll retrieve data for one school first.
+
+```{r}
+sdata <- GET("https://api.skolverket.se/skolenhetsregistret/v1/skolenhet/84411355") %>% 
+  content("text") %>% 
+  fromJSON()
+
+glimpse(sdata)
+```
+
+This provides a lot of information about the school itself, which can be useful. There is also a version 3 of the API, which contains more information:
+
+```{r}
+sdataV3 <- GET("https://api.skolverket.se/planned-educations/v3/school-units/84411355") %>% 
+  content("text") %>% 
+  fromJSON()
+
+glimpse(sdataV3)
+```
+
+Can we find statistics for the school?
+
+```{r}
+test <- GET("https://api.skolverket.se/planned-educations/v3/school-units/84411355/statistics") %>% 
+  content("text") %>% 
+  fromJSON()
+
+glimpse(test)
+```
+
+No data, but some clues:
+
+```{r}
+test$body$`_links`$`gr-statistics`
+```
+
+We'll try that URL.
+
+```{r}
+test <- GET("https://api.skolverket.se/planned-educations/v3/school-units/84411355/statistics/gr") %>% 
+  content("text") %>% 
+  fromJSON()
+
+glimpse(test)
+```
+
+It seems like we need to specify the type of school to retrieve the stats. In this case, "gr" for "grundskola", which corresponds to classes 1-9 in Sweden (ages ~ 7-15).
+
+### Data wrangling
+
+Some data wrangling will be needed to get the list() format data into a dataframe that can be used as a template for downloading and merging data for all schools we are interested in.
+
+```{r}
+stats <- test$body %>% 
+  pluck("ratioOfPupils9thGradeEligibleForNationalProgramNATE")
+
+```
+
+So that works to get one list out. Now let's do all that contain a variable named `value` and get them in a single dataframe. A relatively simple way to do this (in the current data) is to filter the list elements that contain more than one value.
+
+```{r}
+vars <- which(sapply(test$body, function(x) length(x) > 1))
+names(vars)
+```
+
+Then we can bind them together.
+
+```{r}
+
+# create empty dataframe to store output of loop in
+df_total <- data.frame()
+
+for (i in names(vars)){
+  tmp <- test$body %>% 
+    pluck(i) %>% 
+    add_column(variable = i)
+  df_total <- rbind(df_total,tmp)
+}
+
+glimpse(df_total)
+```
+
+Looks good, although there will probably be a lot of recoding needed later.
+
+### Getting data from multiple schools
+
+Since the API demands that we specify the type of school in the API call, we need to add this information to the list of schools. This means that we first need to retrieve the basic information for each school.
+
+```{r}
+sdataV3 <- GET("https://api.skolverket.se/planned-educations/v3/school-units/84411355") %>% 
+  content("text") %>% 
+  fromJSON()
+
+sdataV3$body$typeOfSchooling$code
+```
+
+So that is where we find the type code for each school.
+
+Check whether all schools have data in the database.
+
+```{r}
+schoolsAvailable <- data.frame()
+for (i in schools$Skolenhetskod) {
+  tmp <- http_status(GET(paste0("https://api.skolverket.se/planned-educations/v3/school-units/", i))) %>%
+    pluck("reason") %>%
+    as.data.frame(nm = "status") %>%
+    add_column(Skolenhetskod = i)
+  schoolsAvailable <- rbind(schoolsAvailable, tmp)
+}
+
+schoolsAvailable %>% 
+  count(status)
+
+```
+
+14 schools are not in the database and need to be removed from the list of schools before we retrieve data. Maybe they match up with the `Status` variable?
+```{r}
+schools %>% 
+  left_join(.,schoolsAvailable, by = "Skolenhetskod") %>% 
+  filter(!status == "OK")
+```
+Indeed, but not a perfect match, since the numbers don't add up when compared to this:
+
+```{r}
+schools %>% 
+  count(Status)
+```
+
+Proceeding to remove schools unavailable in database.
+
+```{r}
+
+schoolsFiltered <- schools %>% 
+  left_join(.,schoolsAvailable, by = "Skolenhetskod") %>% 
+  filter(status == "OK") %>% 
+  select(!status)
+
+schoolTypes <- data.frame()
+
+for (i in schoolsFiltered$Skolenhetskod) {
+  
+  tmp <- GET(paste0("https://api.skolverket.se/planned-educations/v3/school-units/", i)) %>% 
+    content("text") %>% 
+    fromJSON()
+  tmp2 <- data.frame(
+    type = tmp$body$typeOfSchooling$code,
+    Skolenhetskod = i)
+                     
+  schoolTypes <- rbind(schoolTypes,tmp2)
+}
+  
+glimpse(schoolTypes)
+```
+
+Hmm. We have 82 schools now, rather than 52. Maybe some schools have multiple types?
+
+```{r}
+schoolTypes %>% 
+  count(Skolenhetskod) %>% 
+  filter(n > 1)
+```
+
+Since we have two variables to loop over, we could use a nested `for()` loop, but we could also use `map2()` to retrieve data for all schools.
+
+```{r}
+schoolData <- map2(
+  .x = schoolTypes$Skolenhetskod,
+  .y = schoolTypes$type,
+  ~ GET(paste0("https://api.skolverket.se/planned-educations/v3/school-units/", .x,"/statistics/", .y)) %>%
+    content("text") %>%
+    fromJSON()
+)
+
+```
+
+Next step is to get each schools data from a list element to a dataframe, and then combine all of them. We already did the first part for one school, so let's expand on that.
+
+We'll define a function to get the data from one school.
+
+```{r}
+oneSchool <- function(listN) {
+  schoolUnit <- schoolData[[listN]]$body$schoolUnit
+  df_total <- data.frame()
+
+  for (i in names(vars)) {
+    tmp <- schoolData[[listN]]$body %>%
+      pluck(i) %>%
+      add_column(variable = i,
+                 Skolenhetskod = schoolUnit)
+    df_total <- rbind(df_total, tmp)
+  }
+  return(df_total)
+}
+```
+
+Test the function.
+
+```{r}
+oneSchool(1) %>% 
+  head(10)
+```
+
+Looks good.
+
+```{r}
+nestedOutput <- map(c(1:length(schoolData)), ~ oneSchool(.x))
+```
+
+Failing at index 2.
+
+### Troubleshooting
+
+```{r}
+schoolData[[2]]$body
+```
+
+Looks like not all schools have the same data variables. We'll have to work that into the function
+
+```{r}
+oneSchool <- function(listN) {
+  schoolUnit <- schoolData[[listN]]$body$schoolUnit
+  vars <- which(sapply(schoolData[[listN]]$body, function(x) length(x) > 1))
+  df_total <- data.frame()
+
+  for (i in names(vars)) {
+    tmp <- schoolData[[listN]]$body %>%
+      pluck(i) %>%
+      add_column(variable = i,
+                 Skolenhetskod = schoolUnit)
+    df_total <- rbind(df_total, tmp)
+  }
+  return(df_total)
+}
+
+nestedOutput <- map(c(1:length(schoolData)), ~ oneSchool(.x))
+
+```
+
+Failing at index 6...
+
+```{r}
+schoolData[[6]]$body$programMetrics %>% 
+  head(5)
+```
+
+There is a variable that has more than 3 columns.
+
+```{r}
+schoolData[[6]]$body$schoolUnit
+```
+
+No unit code in the data.
+
+```{r}
+schoolTypes %>% 
+  slice(6)
+```
+
+This is a Gymnasieskola.
+
+```{r}
+schoolTypes %>% 
+  rownames_to_column() %>% 
+  filter(type == "gy")
+```
+
+Looks like we have 5 of those. Maybe they all share the same structure?
+
+```{r}
+map(c(6,9,10,16,74), ~ names(schoolData[[.x]]$body))
+```
+
+We'll just filter those schools out for now.
+
+```{r}
+mapSchoolUnits <- schoolTypes %>% 
+  rownames_to_column() %>% 
+  filter(!type == "gy") %>% 
+  pull(rowname) %>% 
+  as.numeric()
+         
+nestedOutput <- map(mapSchoolUnits, ~ oneSchool(.x))
+
+```
+
+Index 19 error.
+
+```{r}
+schoolData[[mapSchoolUnits[19]]]
+```
+
+Strange that this school has no data when we tested that earlier. But alas, we'll just have to remove it. Note that the type is "vux". We should have filtered on types of interest earlier. This is not really a relevant type for our purposes.
+
+```{r}
+schoolTypes %>% 
+  count(type)
+```
+
+Let's get the full descriptions of these abbreviations.
+
+```{r}
+schoolTypes <- data.frame()
+
+for (i in schoolsFiltered$Skolenhetskod) {
+  
+  tmp <- GET(paste0("https://api.skolverket.se/planned-educations/v3/school-units/", i)) %>% 
+    content("text") %>% 
+    fromJSON()
+  tmp2 <- data.frame(
+    type = tmp$body$typeOfSchooling$code,
+    typeDesc = tmp$body$typeOfSchooling$displayName,
+    Skolenhetskod = i)
+                     
+  schoolTypes <- rbind(schoolTypes,tmp2)
+}
+
+schoolTypes %>% 
+  group_by(type) %>% 
+  count(typeDesc)
+```
+
+For our purposes, we are interested in fsk, gr and gy, not the rest. This filtering should of course have been done earlier, but this post was written on a Saturday after 2 weeks of vacation and my brain was not quite up to speed...
+
+### Filtering school types
+
+And check for variables of interest?
+
+
+
+
+
