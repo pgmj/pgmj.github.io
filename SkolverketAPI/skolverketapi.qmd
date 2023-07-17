@@ -1,14 +1,14 @@
 ---
 title: "Data retrieval with R using API calls"
 subtitle: "The Swedish National Agency for Education database API"
-  author:
-    - name: 'Magnus Johansson'
-      affiliation: 'RISE Research Institutes of Sweden'
-      affiliation-url: 'https://ri.se/shic'
-      orcid: '0000-0003-1669-592X'
-    - name: 'Jens Mattsson'
-      affiliation: 'RISE Research Institutes of Sweden'
-      affiliation-url: 'https://ri.se/shic'
+author:
+  - name: 'Magnus Johansson'
+    affiliation: 'RISE Research Institutes of Sweden'
+    affiliation-url: 'https://ri.se/shic'
+    orcid: '0000-0003-1669-592X'
+  - name: 'Jens Mattsson'
+    affiliation: 'RISE Research Institutes of Sweden'
+    affiliation-url: 'https://ri.se/shic'
 date: last-modified
 date-format: iso
 execute: 
@@ -55,7 +55,7 @@ library(readxl)
 First, let's get a list of municipalities and their codes. The first two numbers in the four number code denotes the region. Sweden has 290 municipalities and 21 regions. For this project, we are interested in the regions of Stockholm and Uppsala, which have codes 01 and 03.
 
 ```{r}
-municipalities <- read_parquet("SkolverketAPI/2023-03-28_KOLADA_Municipality_list.parquet") %>% 
+municipalities <- read_parquet("2023-03-28_KOLADA_Municipality_list.parquet") %>% 
   filter(str_detect(id, "^01|^03")) %>% 
   select(!type)
 
@@ -192,7 +192,7 @@ sdataV3$body$typeOfSchooling$code
 
 So that is where we find the type code for each school.
 
-Check whether all schools have data in the database.
+#### Check if all schools have data in the database.
 
 ```{r}
 schoolsAvailable <- data.frame()
@@ -256,6 +256,8 @@ schoolTypes %>%
   filter(n > 1)
 ```
 
+#### Data retrieval
+
 Since we have two variables to loop over, we could use a nested `for()` loop, but we could also use `map2()` to retrieve data for all schools.
 
 ```{r}
@@ -268,6 +270,8 @@ schoolData <- map2(
 )
 
 ```
+
+### Unnesting multiple lists
 
 Next step is to get each schools data from a list element to a dataframe, and then combine all of them. We already did the first part for one school, so let's expand on that.
 
@@ -299,10 +303,11 @@ oneSchool(1) %>%
 Looks good.
 
 ```{r}
+#| eval: false
 nestedOutput <- map(c(1:length(schoolData)), ~ oneSchool(.x))
 ```
 
-Failing at index 2.
+This fails at index 2. **(Code is not run since it won't allow the output to be rendered)**
 
 ### Troubleshooting
 
@@ -327,12 +332,16 @@ oneSchool <- function(listN) {
   }
   return(df_total)
 }
+```
 
+
+```{r}
+#| eval: false
 nestedOutput <- map(c(1:length(schoolData)), ~ oneSchool(.x))
 
 ```
 
-Failing at index 6...
+Failing at index 6... **(Code is not run since it won't allow the output to be rendered)**
 
 ```{r}
 schoolData[[6]]$body$programMetrics %>% 
@@ -366,7 +375,7 @@ Looks like we have 5 of those. Maybe they all share the same structure?
 map(c(6,9,10,16,74), ~ names(schoolData[[.x]]$body))
 ```
 
-We'll just filter those schools out for now.
+Indeed. We'll just filter those schools out for now.
 
 ```{r}
 mapSchoolUnits <- schoolTypes %>% 
@@ -374,7 +383,11 @@ mapSchoolUnits <- schoolTypes %>%
   filter(!type == "gy") %>% 
   pull(rowname) %>% 
   as.numeric()
-         
+```
+
+
+```{r}
+#| eval: false
 nestedOutput <- map(mapSchoolUnits, ~ oneSchool(.x))
 
 ```
@@ -411,17 +424,107 @@ for (i in schoolsFiltered$Skolenhetskod) {
 }
 
 schoolTypes %>% 
-  group_by(type) %>% 
-  count(typeDesc)
+  count(typeDesc,type)
 ```
 
-For our purposes, we are interested in fsk, gr and gy, not the rest. This filtering should of course have been done earlier, but this post was written on a Saturday after 2 weeks of vacation and my brain was not quite up to speed...
+For our purposes, we are primarily interested in gr and gy, and some stats from fsk, but not the rest. This filtering should of course have been done earlier, but the first part of this post was written on a Saturday after 2 weeks of vacation and my brain was not quite up to speed...
 
-### Filtering school types
+### Data retrieval with filtering on school types
 
-And check for variables of interest?
+We'll do them separately this time, starting with "gr" only.
+
+```{r}
+mapSchoolUnits <- schoolTypes %>% 
+  rownames_to_column() %>% 
+  filter(type == "gr") %>% 
+  pull(rowname) %>% 
+  as.numeric()
+         
+nestedOutputGR <- map(mapSchoolUnits, ~ oneSchool(.x))
+
+glimpse(nestedOutputGR[[1]])
+```
+
+Now each school has its own dataframe, stored within the list object `nestedOutputGR`. Next step is to combine them into one dataframe.
+
+### Combining dataframes
+
+```{r}
+unnestedOutputGR <- map_dfr(c(1:length(nestedOutputGR)), ~ do.call(bind_rows, nestedOutputGR[[.x]]))
+glimpse(unnestedOutputGR)
+```
+
+Data is now in long format, which will be useful for some uses, and we can use `pivot_wider()` to change format when needed.
+
+All variables are class "character", which is fine for some, but `timePeriod` is a date variable, and `value` has "." for missing and "," as decimal sign. This needs to be modified.
+
+## Variables
+
+Let's have a look at the variables available in the data.
+
+```{r}
+unnestedOutputGR %>% 
+  count(variable)
+```
+
+```{r}
+unnestedOutputGR %>% 
+  count(valueType)
+```
+
+Let's look at the value variable for the different valueTypes (except EXISTS).
+
+```{r}
+unnestedOutputGR %>% 
+  filter(!valueType == "EXISTS") %>% 
+  group_by(valueType) %>% 
+  distinct(value)
+```
+
+We need the value variable to be of class numeric, which means only numerics and NA values are allowed.
+
+### Recoding
+
+```{r}
+# create copy of dataframe prior to recoding
+df.gr <- unnestedOutputGR
+
+# recode . to NA
+df.gr$value <- car::recode(df.gr$value,"'.'=NA")
+# change decimal comma to decimal point
+df.gr$value <- gsub(pattern = ",",
+                    replacement = ".",
+                    df.gr$value)
+```
 
 
+```{r}
+# remaining cleanup
+df.gr$value <- car::recode(df.gr$value,"'..'=NA") # too few pupils
+df.gr$value <- car::recode(df.gr$value,"'*'=NA") # no req for teacher license
+df.gr$value <- gsub("cirka ", "", df.gr$value)
+df.gr$value <- gsub("~", "", df.gr$value)
 
+df.gr$value <- as.numeric(df.gr$value)
+```
+
+#### Date variable
+
+First remove the second part of the school year designation.
+```{r}
+# date variable
+df.gr$timePeriod <- str_extract(df.gr$timePeriod, "\\d{4}")
+df.gr$timePeriod <- as.integer(df.gr$timePeriod)
+
+df.gr %>% 
+  count(timePeriod)
+```
+
+We could transform this to a date format variable, but having dates as year numerics is fine for our intended use.
+
+```{r}
+df.gr %>% 
+  filter(value == "*")
+```
 
 
