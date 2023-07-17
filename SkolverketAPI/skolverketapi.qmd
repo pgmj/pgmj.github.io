@@ -23,7 +23,7 @@ editor_options:
 
 This is a post documenting explorative work to retrieve data using the [database API](https://www.skolverket.se/om-oss/oppna-data/api-for-skolenhetsregistret) maintained Swedish National Agency for Education. The conditions for using the API and database are described in the [CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/deed.en). The API is documented here: <https://api.skolverket.se/skolenhetsregistret/swagger-ui/index.html>.
 
-::: {.callout-note icon="true"}
+::: {.callout-note}
 ### Note
 Please note that this is just documentation of our work, not a guide. There will be mistakes and suboptimal routes taken. But in the end I hope we will produce something that may be useful to others. Not everyone will be interested in using the API for the same purpose as we had, so hopefully our troubleshooting will make the potential use wider.
 :::
@@ -35,7 +35,7 @@ A lot of the output will be in Swedish, but you will probably be able to follow 
 
 The purpose of this is two-fold. First, various kinds of data on school and municipality levels are of interest in the project ["Data in dialogue"](https://www.ri.se/en/what-we-do/projects/data-in-dialogue-risk-and-protective-factors-for-children-and-youth). Second, in order to conduct analysis of missing data and selection bias we need demographic data about students at the schools participating in school surveys that are used to assess risk and protective factors.
 
-::: {.callout-note icon="false"}
+::: {.callout-note}
 ### Note
 While this blog post is written by me (Magnus), a lot of the initial trial and error work was done by my colleague Jens Mattsson.
 :::
@@ -467,6 +467,8 @@ unnestedOutputGR %>%
   count(variable)
 ```
 
+### Types
+
 ```{r}
 unnestedOutputGR %>% 
   count(valueType)
@@ -510,7 +512,7 @@ df.gr$value <- as.numeric(df.gr$value)
 
 #### Date variable
 
-First remove the second part of the school year designation.
+First remove the second part of the school year designation (retain the first 4 digits).
 ```{r}
 # date variable
 df.gr$timePeriod <- str_extract(df.gr$timePeriod, "\\d{4}")
@@ -522,9 +524,5 @@ df.gr %>%
 
 We could transform this to a date format variable, but having dates as year numerics is fine for our intended use.
 
-```{r}
-df.gr %>% 
-  filter(value == "*")
-```
 
 
