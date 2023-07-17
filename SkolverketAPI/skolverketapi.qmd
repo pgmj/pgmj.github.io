@@ -512,7 +512,7 @@ df.gr$value <- as.numeric(df.gr$value)
 
 #### Date variable
 
-First remove the second part of the school year designation (retain the first 4 digits).
+First remove the second part of the school year designation (extract the first 4 digits).
 ```{r}
 # date variable
 df.gr$timePeriod <- str_extract(df.gr$timePeriod, "\\d{4}")
@@ -524,5 +524,157 @@ df.gr %>%
 
 We could transform this to a date format variable, but having dates as year numerics is fine for our intended use.
 
+## Visualizing data
 
+```{r}
+# we like to use school names instead of codes when creating figures
+df.gr <- left_join(df.gr,schools, by = "Skolenhetskod")
+```
+
+
+### Variable check
+
+```{r}
+library(gtsummary)
+
+df.gr %>% 
+  select(timePeriod,variable) %>% 
+  group_by(variable) %>% 
+  tbl_summary(timePeriod)
+
+```
+
+### Number of pupils per school
+
+```{r}
+df.gr %>% 
+  filter(variable == "totalNumberOfPupils") %>% 
+  ggplot(aes(x = factor(timePeriod), 
+             y = value, 
+             color = Skolenhetsnamn,
+             group = Skolenhetsnamn)) +
+  geom_point() +
+  geom_line() +
+  theme_bw()
+```
+
+Only data from 2022 for that variable. We need to look elsewhere for historical data, it seems. It would also be useful to have the number of pupils per class, since we want to make comparisons to survey data responses. However, the documentation of this variable indicates that number of pupils is rounded to nearest 10th:
+
+> "Antal elever på skolenheten, avrundat till tiotal.  1-14 elever ger 10, 15-24 elever ger 20, 25-34 elever ger 30, enkelprick förekommer om elever saknas.
+Uppgiften samlas in 15 oktober varje år och uppdatering sker i mars året efter insamling."
+
+Also, we can see that there are several school units that have very similar names, or represent parts of the same schools. This data is clearly quite complex in its structure.
+
+As a bonus item, here is a more suitable type of figure to illustrate data from a single year, 
+
+```{r}
+df.gr %>% 
+  filter(variable == "totalNumberOfPupils") %>% 
+  mutate(Skolenhetsnamn = factor(Skolenhetsnamn)) %>% 
+  ggplot(aes(x = fct_reorder(Skolenhetsnamn, desc(value)), 
+             y = value,
+             fill = value)) +
+  geom_col() +
+  theme_minimal() +
+  labs(x = "",
+       y = "Number of pupils") +
+  scale_fill_viridis_c(guide = "none") +
+  coord_flip()
+
+```
+
+### studentsPerTeacherQuota
+
+Here we have data from multiple school years.
+
+```{r}
+df.gr %>% 
+  filter(variable == "studentsPerTeacherQuota") %>% 
+  ggplot(aes(x = factor(timePeriod), 
+             y = value, 
+             color = Skolenhetsnamn,
+             group = Skolenhetsnamn)) +
+  geom_point() +
+  geom_line() +
+  theme_bw()
+```
+
+Huge variation, probably since there are schools in the data that seem to represent special education groups. Let's look at the average numbers across years and sort out the 10 with the lowest number of pupils per teacher.
+
+```{r}
+df.gr %>% 
+  filter(variable == "studentsPerTeacherQuota") %>% 
+  group_by(Skolenhetsnamn) %>% 
+  reframe(Average = mean(value)) %>% 
+  arrange(Average) %>% 
+  slice(1:10)
+```
+
+We'll remove the ones with "1GR" at the end of the school name.
+
+```{r}
+df.gr %>% 
+  filter(variable == "studentsPerTeacherQuota",
+         !str_detect(Skolenhetsnamn,"1GR")) %>% 
+  ggplot(aes(x = factor(timePeriod), 
+             y = value, 
+             color = Skolenhetsnamn
+             )) +
+  geom_point() +
+  geom_line(aes(group = Skolenhetsnamn)) +
+  theme_bw()
+```
+
+Let's update our information about the schools with some more variables.
+
+```{r}
+
+schoolUnitCodes <- schoolTypes %>% 
+  filter(type == "gr") %>% 
+  pull(Skolenhetskod)
+
+schoolTypes2 <- data.frame()
+
+for (i in schoolUnitCodes) {
+  
+  tmp <- GET(paste0("https://api.skolverket.se/planned-educations/v3/school-units/", i)) %>% 
+    content("text") %>% 
+    fromJSON()
+  
+  if (length(tmp$body$typeOfSchooling$code) > 1){ # if both fsk and gr
+  
+    tmp2 <- data.frame(
+    type = tmp$body$typeOfSchooling$code[2],
+    principalOrganizerType = tmp$body$principalOrganizerType,
+    companyForm = tmp$body$companyForm,
+    schoolYears = paste0(tmp$body$typeOfSchooling$schoolYears[2][[1]][1],"-",tmp$body$typeOfSchooling$schoolYears[2][[1]][length(tmp$body$typeOfSchooling$schoolYears[2][[1]])]),
+    corporationName = tmp$body$corporationName,
+    latitude = tmp$body$wgs84_Lat,
+    longitude = tmp$body$wgs84_Long,
+    zipCode = tmp$body$contactInfo$addresses$zipCode[2],
+    Skolenhetskod = i)
+                     
+  schoolTypes2 <- bind_rows(schoolTypes2,tmp2)
+  } else { # when schoolType only "gr"
+    tmp2 <- data.frame(
+    type = tmp$body$typeOfSchooling$code,
+    principalOrganizerType = tmp$body$principalOrganizerType,
+    companyForm = tmp$body$companyForm,
+    schoolYears = paste0(tmp$body$typeOfSchooling$schoolYears[1][[1]][1],"-",tmp$body$typeOfSchooling$schoolYears[1][[1]][length(tmp$body$typeOfSchooling$schoolYears[1][[1]])]),
+    corporationName = tmp$body$corporationName,
+    latitude = tmp$body$wgs84_Lat,
+    longitude = tmp$body$wgs84_Long,
+    zipCode = tmp$body$contactInfo$addresses$zipCode,
+    Skolenhetskod = i)
+                     
+  schoolTypes2 <- bind_rows(schoolTypes2,tmp2)
+    }
+}
+
+schoolTypes2 <- left_join(schoolTypes2,schools, by = "Skolenhetskod")
+
+glimpse(schoolTypes2)
+```
+
+Well, that was a handful to work out. And we only get "gr" schools, so a similar process will be necessary if we want to get the other school types.
 
