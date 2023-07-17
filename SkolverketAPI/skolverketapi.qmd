@@ -11,6 +11,9 @@ author:
     affiliation-url: 'https://ri.se/shic'
 date: last-modified
 date-format: iso
+format:
+  html:
+    css: api-styles.css
 execute: 
   cache: true
   warning: false
@@ -625,7 +628,7 @@ df.gr %>%
   theme_bw()
 ```
 
-Let's update our information about the schools with some more variables.
+Let's update our information about the schools with some more variables. This will get a bit complicated since an API call for a school unit that has more than one type will contain strings for some variables instead of single values. Also, the `schoolYear` variable is a string in itself, so we need to get the first and last value from that and combine into one value.
 
 ```{r}
 
@@ -633,7 +636,7 @@ schoolUnitCodes <- schoolTypes %>%
   filter(type == "gr") %>% 
   pull(Skolenhetskod)
 
-schoolTypes2 <- data.frame()
+schoolTypes2 <- data.frame() # making a new dataframe, to avoid overwriting the old one when we test things
 
 for (i in schoolUnitCodes) {
   
