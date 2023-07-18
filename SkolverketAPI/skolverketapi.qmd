@@ -51,7 +51,6 @@ library(arrow)
 library(tidyverse)
 library(rjson)
 library(jsonlite)
-library(glue)
 library(readxl)
 ```
 
@@ -679,5 +678,78 @@ schoolTypes2 <- left_join(schoolTypes2,schools, by = "Skolenhetskod")
 glimpse(schoolTypes2)
 ```
 
-Well, that was a handful to work out. And we only get "gr" schools, so a similar process will be necessary if we want to get the other school types.
+Well, that was a handful to work out. And we only get "gr" schools, so a similar process will be necessary if we want to get the other school types. It should at least be a lot quicker since we have worked out some solutions already, depending on the differences in data structure.
+
+## More demographics
+
+It seems that there are other types of data available for manual download that I am unable to find using the API documentation and exploration. I emailed Skolverket and asked them if it is possible to retrieve this data via API, and while waiting for a response I manually downloaded the files and combined them. The website URL for manual downloads is [here](https://www.skolverket.se/skolutveckling/statistik/sok-statistik-om-forskola-skola-och-vuxenutbildning?sok=SokD&niva=S&omr=elever&exp=6&lasar=2022&uttag=null)
+
+I've limited this example to the last five years, thus five files.
+
+First, let's read one file. I've already done some exploring here, which resulted in skipping the first five rows (which contains what should be meta-data basically) and using semi-colon for separation of data fields. Also, the amazing `janitor::clean_names()` is used, an empty variable is removed, and a year variable is added.
+
+Specifying "." and ".." as missing data indicators would seem accurate, but doing this when importing data screws up decimal points later, so we need a manual recode after import.
+
+```{r}
+library(janitor)
+library(car)
+
+read_delim("data/Grundskolan - Antal elever per årskurs 2022 Skolenhet.csv",
+                 skip = 5, delim = ";") %>%
+  clean_names() %>%
+  select(!x23) %>%
+  add_column(year = 2022) %>% 
+  glimpse()
+```
+
+Some recodings are in order.
+
+```{r}
+read_delim("data/Grundskolan - Antal elever per årskurs 2022 Skolenhet.csv",
+                 skip = 5, delim = ";") %>%
+  clean_names() %>%
+  select(!x23) %>%
+  add_column(year = 2022) %>% 
+  mutate(across(elever_forskoleklass:elever_arskurs_9, ~ car::recode(.x,"'.'=NA;'..'=NA"))) %>% 
+  mutate(across(starts_with("andel"), ~ gsub(",",".",.x))) %>% 
+  mutate(across(starts_with("andel"), ~ as.numeric(.x))) %>% 
+  mutate(elever_arskurs_1_9 = as.numeric(elever_arskurs_1_9),
+           skol_enhetskod = as.numeric(skol_enhetskod)) %>% 
+  glimpse()
+
+```
+
+And now, putting all files into the same dataframe.
+
+```{r}
+# get all filenames in the folder
+fileList <- list.files(path = "data/", full.names=TRUE)
+years <- c(2018:2022)
+# create an empty list to store data in
+data <- list()
+# loop over filenames to import them to the list object
+for (i in c(1:length(fileList))) {
+  data[[i]] <- read_delim(fileList[i],
+                 skip = 5, delim = ";") %>%
+  clean_names() %>%
+  select(!x23) %>%
+  add_column(year = years[i]) %>% 
+  mutate(across(elever_forskoleklass:elever_arskurs_9, ~ car::recode(.x,"'.'=NA;'..'=NA"))) %>% 
+  mutate(across(starts_with("andel"), ~ gsub(",",".",.x))) %>% 
+  mutate(across(starts_with("andel"), ~ as.numeric(.x))) %>% 
+  mutate(elever_arskurs_1_9 = as.numeric(elever_arskurs_1_9),
+           skol_enhetskod = as.numeric(skol_enhetskod))
+}
+
+### Combine all nested lists into one dataframe
+df <- map_dfr(c(1:5), ~ do.call(bind_rows, data[[.x]]))
+glimpse(df)
+```
+
+There we go. And now we can write to a compressed file if we want to.
+
+```{r}
+#| eval: false
+write_parquet(df,"SkolverketData.parquet")
+```
 
