@@ -427,6 +427,7 @@ The top part shows person location histogram, the middle part an inverted histog
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df)
+
 ```
 :::
 :::
@@ -501,6 +502,7 @@ RItargeting(df2)
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
+
 ```
 :::
 :::
@@ -579,7 +581,16 @@ No interaction effect found for sex and age. The analysis only shows the previou
 
 ### LRT-based DIF example {#sec-diflrt}
 
-As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. These functions have not yet been extensively tested and may have issues depending on the dataset. It seems that the DIF size indicated by this function may be inflated.
+::: {.callout-note}
+### Note
+I advice not to use these LRT-based functions, unless you are certain that you understand their output. The `LRtest()` itself is fine, but the functions have not yet been extensively tested and may have issues depending on the dataset. It seems that the DIF size indicated by these functions may be inflated.
+
+I wrote these when I found a bug in the `psychotree`-based functions that produced errors when mixing polytomous and dichotomous variables, but this has been fixed upstream now.
+
+At some point I hope to find time to update the "old" DIF-functions with some of the nice things I implemented below.
+:::
+
+As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package.
 
 We'll use the group variable as an example. First, we can simply run the test to get the overall result.
 

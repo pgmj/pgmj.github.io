@@ -11,6 +11,9 @@ author:
     affiliation-url: 'https://ri.se/shic'
 date: last-modified
 date-format: iso
+google-scholar: true
+citation:
+  type: 'webpage'
 format:
   html:
     css: api-styles.css
@@ -250,13 +253,15 @@ for (i in schoolsFiltered$Skolenhetskod) {
 glimpse(schoolTypes)
 ```
 
-Hmm. We have 82 schools now, rather than 52. Maybe some schools have multiple types?
+Hmm. We have 82 schools in this set, rather than 52. Maybe some schools have multiple types?
 
 ```{r}
 schoolTypes %>% 
   count(Skolenhetskod) %>% 
   filter(n > 1)
 ```
+
+Yes, most of them do.
 
 #### Data retrieval
 
@@ -322,7 +327,7 @@ Looks like not all schools have the same data variables. We'll have to work that
 ```{r}
 oneSchool <- function(listN) {
   schoolUnit <- schoolData[[listN]]$body$schoolUnit
-  vars <- which(sapply(schoolData[[listN]]$body, function(x) length(x) > 1))
+  vars <- which(sapply(schoolData[[listN]]$body, function(x) length(x) > 1)) # added line of code
   df_total <- data.frame()
 
   for (i in names(vars)) {
@@ -350,20 +355,20 @@ schoolData[[6]]$body$programMetrics %>%
   head(5)
 ```
 
-There is a variable that has more than 3 columns.
+There is a variable that has more than 3 columns, which doesn't fit into our data structure.
 
 ```{r}
 schoolData[[6]]$body$schoolUnit
 ```
 
-No unit code in the data.
+No unit code in the data, at least not at the position we expected it to be stored at. We can see the school unit code in the previous code chunk.
 
 ```{r}
 schoolTypes %>% 
   slice(6)
 ```
 
-This is a Gymnasieskola.
+This is "gy", a Gymnasieskola.
 
 ```{r}
 schoolTypes %>% 
@@ -374,33 +379,19 @@ schoolTypes %>%
 Looks like we have 5 of those. Maybe they all share the same structure?
 
 ```{r}
-map(c(6,9,10,16,74), ~ names(schoolData[[.x]]$body))
-```
 
-Indeed. We'll just filter those schools out for now.
-
-```{r}
-mapSchoolUnits <- schoolTypes %>% 
+gySchools <- schoolTypes %>% 
   rownames_to_column() %>% 
-  filter(!type == "gy") %>% 
+  filter(type == "gy") %>% 
   pull(rowname) %>% 
   as.numeric()
+
+map(gySchools, ~ names(schoolData[[.x]]$body))
 ```
 
+They do. Perhaps we should back up and just focus on one type of schools, and sort the differences out later on.
 
-```{r}
-#| eval: false
-nestedOutput <- map(mapSchoolUnits, ~ oneSchool(.x))
-
-```
-
-Index 19 error.
-
-```{r}
-schoolData[[mapSchoolUnits[19]]]
-```
-
-Strange that this school has no data when we tested that earlier. But alas, we'll just have to remove it. Note that the type is "vux". We should have filtered on types of interest earlier. This is not really a relevant type for our purposes.
+Which types are available?
 
 ```{r}
 schoolTypes %>% 
@@ -447,7 +438,7 @@ nestedOutputGR <- map(mapSchoolUnits, ~ oneSchool(.x))
 glimpse(nestedOutputGR[[1]])
 ```
 
-Now each school has its own dataframe, stored within the list object `nestedOutputGR`. Next step is to combine them into one dataframe.
+Now each school (of type "gr") has its own dataframe, stored within the list object `nestedOutputGR`. Next step is to combine them into one dataframe.
 
 ### Combining dataframes
 
@@ -680,9 +671,17 @@ glimpse(schoolTypes2)
 
 Well, that was a handful to work out. And we only get "gr" schools, so a similar process will be necessary if we want to get the other school types. It should at least be a lot quicker since we have worked out some solutions already, depending on the differences in data structure.
 
+## Todo
+
+A couple of things on the todo list:
+
+- getting data for school types "fsk" and "gy"
+- getting data for all municipalities in a region
+
+
 ## More demographics
 
-It seems that there are other types of data available for manual download that I am unable to find using the API documentation and exploration. I emailed Skolverket and asked them if it is possible to retrieve this data via API, and while waiting for a response I manually downloaded the files and combined them. The website URL for manual downloads is [here](https://www.skolverket.se/skolutveckling/statistik/sok-statistik-om-forskola-skola-och-vuxenutbildning?sok=SokD&niva=S&omr=elever&exp=6&lasar=2022&uttag=null)
+It seems that there are other types of data available for manual download. I have been unable to find these using the API documentation and exploration. I emailed Skolverket and asked them if it is possible to retrieve this data via API, and unfortunately it is not in the database made available by database. I manually downloaded the files and combined them. The website URL for manual downloads is [here](https://www.skolverket.se/skolutveckling/statistik/sok-statistik-om-forskola-skola-och-vuxenutbildning?sok=SokD&niva=S&omr=elever&exp=6&lasar=2022&uttag=null)
 
 I've limited this example to the last five years, thus five files.
 
@@ -746,7 +745,7 @@ df <- map_dfr(c(1:5), ~ do.call(bind_rows, data[[.x]]))
 glimpse(df)
 ```
 
-There we go. And now we can write to a compressed file if we want to.
+There we go. And now we can write the dataframe to a compressed file if we want to. Parquet is a really fast and efficient open format that is included in `library(arrow)`.
 
 ```{r}
 #| eval: false
