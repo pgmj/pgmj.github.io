@@ -9,3 +9,4 @@
 /.quarto/
 __*/**
 /Plots
+**/.~lock*

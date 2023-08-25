@@ -770,12 +770,15 @@ RIitemparams(df2)
 
 This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
 
+(An option will be added *later* to create this table based on only item parameters.)
 
 ```{r}
 RIscoreSE(df2)
 ```
 
-This figure can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.
+#### Figure
+
+The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.
 
 ```{r}
 RIscoreSE(df2, output = "figure")

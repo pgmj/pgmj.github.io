@@ -3660,6 +3660,7 @@ Jittery
 <section id="ordinal-sum-score-to-interval-score" class="level3" data-number="10.1"><h3 data-number="10.1" class="anchored" data-anchor-id="ordinal-sum-score-to-interval-score">
 <span class="header-section-number">10.1</span> Ordinal sum score to interval score</h3>
 <p>This table shows the corresponding “raw” ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="citation" data-cites="warm1989">(<a href="#ref-warm1989" role="doc-biblioref">Warm, 1989</a>)</span>.</p>
+<p>(An option will be added <em>later</em> to create this table based on only item parameters.)</p>
 <div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-70_29b27d1c234c880a7d04861970254c1c">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb73"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIscoreSE.html">RIscoreSE</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -3800,14 +3801,16 @@ Jittery
 </table>
 </div>
 </div>
-<p>This figure can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</p>
+<section id="figure" class="level4" data-number="10.1.1"><h4 data-number="10.1.1" class="anchored" data-anchor-id="figure">
+<span class="header-section-number">10.1.1</span> Figure</h4>
+<p>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</p>
 <div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-71_d159a53c25ea650bc7414ebda4568cb5">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIscoreSE.html">RIscoreSE</a></span><span class="op">(</span><span class="va">df2</span>, output <span class="op">=</span> <span class="st">"figure"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="RaschRvign_files/figure-html/unnamed-chunk-71-1.png" class="img-fluid" width="1050"></p>
 </div>
 </div>
-</section><section id="estimating-interval-level-person-scores" class="level3" data-number="10.2"><h3 data-number="10.2" class="anchored" data-anchor-id="estimating-interval-level-person-scores">
+</section></section><section id="estimating-interval-level-person-scores" class="level3" data-number="10.2"><h3 data-number="10.2" class="anchored" data-anchor-id="estimating-interval-level-person-scores">
 <span class="header-section-number">10.2</span> Estimating interval level person scores</h3>
 <p>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as “theta”). Similarly to the <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</p>
 <p><code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIestThetas.html">RIestThetas()</a></code> by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, it will use eRm’s CML PCM to calculate it based on the dataframe input.</p>
@@ -5207,96 +5210,99 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb82-907"><a href="#cb82-907" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb82-908"><a href="#cb82-908" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
 <span id="cb82-909"><a href="#cb82-909" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-910"><a href="#cb82-910" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-913"><a href="#cb82-913" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-914"><a href="#cb82-914" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2)</span>
-<span id="cb82-915"><a href="#cb82-915" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb82-916"><a href="#cb82-916" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-917"><a href="#cb82-917" aria-hidden="true" tabindex="-1"></a>This figure can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
-<span id="cb82-918"><a href="#cb82-918" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-921"><a href="#cb82-921" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-922"><a href="#cb82-922" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
-<span id="cb82-923"><a href="#cb82-923" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb82-924"><a href="#cb82-924" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-925"><a href="#cb82-925" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-926"><a href="#cb82-926" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
+<span id="cb82-910"><a href="#cb82-910" aria-hidden="true" tabindex="-1"></a>(An option will be added *later* to create this table based on only item parameters.)</span>
+<span id="cb82-911"><a href="#cb82-911" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-914"><a href="#cb82-914" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb82-915"><a href="#cb82-915" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2)</span>
+<span id="cb82-916"><a href="#cb82-916" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb82-917"><a href="#cb82-917" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-918"><a href="#cb82-918" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
+<span id="cb82-919"><a href="#cb82-919" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-920"><a href="#cb82-920" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
+<span id="cb82-921"><a href="#cb82-921" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-924"><a href="#cb82-924" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb82-925"><a href="#cb82-925" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
+<span id="cb82-926"><a href="#cb82-926" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb82-927"><a href="#cb82-927" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-928"><a href="#cb82-928" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the <span class="in">`RIitemfitPCM()`</span> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</span>
-<span id="cb82-929"><a href="#cb82-929" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-930"><a href="#cb82-930" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, it will use eRm's CML PCM to calculate it based on the dataframe input.</span>
-<span id="cb82-931"><a href="#cb82-931" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-934"><a href="#cb82-934" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-935"><a href="#cb82-935" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(furrr) <span class="co"># for a parallel processing version of purrr::map_dbl</span></span>
-<span id="cb82-936"><a href="#cb82-936" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>PersonScores <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df2, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb82-937"><a href="#cb82-937" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb82-938"><a href="#cb82-938" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-939"><a href="#cb82-939" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
-<span id="cb82-940"><a href="#cb82-940" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-941"><a href="#cb82-941" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item matrix, this code may be helpful:</span>
-<span id="cb82-942"><a href="#cb82-942" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-945"><a href="#cb82-945" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-946"><a href="#cb82-946" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">read.csv</span>(<span class="st">"itemParameters.csv"</span>))</span>
-<span id="cb82-947"><a href="#cb82-947" aria-hidden="true" tabindex="-1"></a>items</span>
-<span id="cb82-948"><a href="#cb82-948" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb82-949"><a href="#cb82-949" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-950"><a href="#cb82-950" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
-<span id="cb82-951"><a href="#cb82-951" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-952"><a href="#cb82-952" aria-hidden="true" tabindex="-1"></a>Finally, we'll look at the distribution of person scores using a simple histogram.</span>
-<span id="cb82-953"><a href="#cb82-953" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-956"><a href="#cb82-956" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-957"><a href="#cb82-957" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df2<span class="sc">$</span>PersonScores, <span class="at">col =</span> <span class="st">"#009ca6"</span>)</span>
-<span id="cb82-958"><a href="#cb82-958" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb82-959"><a href="#cb82-959" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-960"><a href="#cb82-960" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
-<span id="cb82-961"><a href="#cb82-961" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-962"><a href="#cb82-962" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
-<span id="cb82-963"><a href="#cb82-963" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-964"><a href="#cb82-964" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
-<span id="cb82-965"><a href="#cb82-965" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-966"><a href="#cb82-966" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
-<span id="cb82-967"><a href="#cb82-967" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-968"><a href="#cb82-968" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
-<span id="cb82-969"><a href="#cb82-969" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-972"><a href="#cb82-972" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-973"><a href="#cb82-973" aria-hidden="true" tabindex="-1"></a><span class="co"># first we need to remove the `PersonScores` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.</span></span>
-<span id="cb82-974"><a href="#cb82-974" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>PersonScores <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb82-975"><a href="#cb82-975" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-976"><a href="#cb82-976" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2) <span class="sc">+</span></span>
-<span id="cb82-977"><a href="#cb82-977" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
-<span id="cb82-978"><a href="#cb82-978" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
-<span id="cb82-979"><a href="#cb82-979" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb82-980"><a href="#cb82-980" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-981"><a href="#cb82-981" aria-hidden="true" tabindex="-1"></a>In order to change font for text inside plots you will need to add an additional line of code.</span>
-<span id="cb82-982"><a href="#cb82-982" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-983"><a href="#cb82-983" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb82-984"><a href="#cb82-984" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato))</span></span>
-<span id="cb82-985"><a href="#cb82-985" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
-<span id="cb82-986"><a href="#cb82-986" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-987"><a href="#cb82-987" aria-hidden="true" tabindex="-1"></a><span class="st">Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "</span>text<span class="st">" to "</span>text_repel<span class="st">".</span></span>
-<span id="cb82-988"><a href="#cb82-988" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-989"><a href="#cb82-989" aria-hidden="true" tabindex="-1"></a><span class="st">A simple way to only change font family and font size would be to use `theme_minimal(base_family = "</span>Calibri<span class="st">", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.</span></span>
-<span id="cb82-990"><a href="#cb82-990" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-991"><a href="#cb82-991" aria-hidden="true" tabindex="-1"></a><span class="st">## Software used</span></span>
-<span id="cb82-992"><a href="#cb82-992" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-993"><a href="#cb82-993" aria-hidden="true" tabindex="-1"></a><span class="st">The `grateful` package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span></span>
-<span id="cb82-994"><a href="#cb82-994" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-997"><a href="#cb82-997" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-998"><a href="#cb82-998" aria-hidden="true" tabindex="-1"></a><span class="st">library(grateful)</span></span>
-<span id="cb82-999"><a href="#cb82-999" aria-hidden="true" tabindex="-1"></a><span class="st">pkgs &lt;- cite_packages(cite.tidyverse = TRUE, </span></span>
-<span id="cb82-1000"><a href="#cb82-1000" aria-hidden="true" tabindex="-1"></a><span class="st">                      output = "</span>table<span class="st">",</span></span>
-<span id="cb82-1001"><a href="#cb82-1001" aria-hidden="true" tabindex="-1"></a><span class="st">                      bib.file = "</span>grateful<span class="sc">-</span>refs.bib<span class="st">",</span></span>
-<span id="cb82-1002"><a href="#cb82-1002" aria-hidden="true" tabindex="-1"></a><span class="st">                      include.RStudio = TRUE,</span></span>
-<span id="cb82-1003"><a href="#cb82-1003" aria-hidden="true" tabindex="-1"></a><span class="st">                      out.dir = getwd())</span></span>
-<span id="cb82-1004"><a href="#cb82-1004" aria-hidden="true" tabindex="-1"></a><span class="st"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
-<span id="cb82-1005"><a href="#cb82-1005" aria-hidden="true" tabindex="-1"></a><span class="st">formattable(pkgs, </span></span>
-<span id="cb82-1006"><a href="#cb82-1006" aria-hidden="true" tabindex="-1"></a><span class="st">            table.attr = 'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="</span>font<span class="sc">-</span>size<span class="sc">:</span> 13px; font<span class="sc">-</span>family<span class="sc">:</span> Lato; width<span class="sc">:</span> <span class="dv">80</span>%<span class="st">"')</span></span>
-<span id="cb82-1007"><a href="#cb82-1007" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
-<span id="cb82-1008"><a href="#cb82-1008" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-1009"><a href="#cb82-1009" aria-hidden="true" tabindex="-1"></a><span class="st">## Additional credits</span></span>
-<span id="cb82-1010"><a href="#cb82-1010" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-1011"><a href="#cb82-1011" aria-hidden="true" tabindex="-1"></a><span class="st">Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements) for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to [Mike Linacre](https://www.winsteps.com/linacre.htm) and [Jeanette Melin](https://www.ri.se/en/person/jeanette-melin) for providing useful feedback to improve this vignette.</span></span>
-<span id="cb82-1012"><a href="#cb82-1012" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-1013"><a href="#cb82-1013" aria-hidden="true" tabindex="-1"></a><span class="st">## References</span></span>
+<span id="cb82-928"><a href="#cb82-928" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-929"><a href="#cb82-929" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
+<span id="cb82-930"><a href="#cb82-930" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-931"><a href="#cb82-931" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the <span class="in">`RIitemfitPCM()`</span> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</span>
+<span id="cb82-932"><a href="#cb82-932" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-933"><a href="#cb82-933" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, it will use eRm's CML PCM to calculate it based on the dataframe input.</span>
+<span id="cb82-934"><a href="#cb82-934" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-937"><a href="#cb82-937" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb82-938"><a href="#cb82-938" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(furrr) <span class="co"># for a parallel processing version of purrr::map_dbl</span></span>
+<span id="cb82-939"><a href="#cb82-939" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>PersonScores <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df2, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb82-940"><a href="#cb82-940" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb82-941"><a href="#cb82-941" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-942"><a href="#cb82-942" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
+<span id="cb82-943"><a href="#cb82-943" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-944"><a href="#cb82-944" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item matrix, this code may be helpful:</span>
+<span id="cb82-945"><a href="#cb82-945" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-948"><a href="#cb82-948" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb82-949"><a href="#cb82-949" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">read.csv</span>(<span class="st">"itemParameters.csv"</span>))</span>
+<span id="cb82-950"><a href="#cb82-950" aria-hidden="true" tabindex="-1"></a>items</span>
+<span id="cb82-951"><a href="#cb82-951" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb82-952"><a href="#cb82-952" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-953"><a href="#cb82-953" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
+<span id="cb82-954"><a href="#cb82-954" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-955"><a href="#cb82-955" aria-hidden="true" tabindex="-1"></a>Finally, we'll look at the distribution of person scores using a simple histogram.</span>
+<span id="cb82-956"><a href="#cb82-956" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-959"><a href="#cb82-959" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb82-960"><a href="#cb82-960" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df2<span class="sc">$</span>PersonScores, <span class="at">col =</span> <span class="st">"#009ca6"</span>)</span>
+<span id="cb82-961"><a href="#cb82-961" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb82-962"><a href="#cb82-962" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-963"><a href="#cb82-963" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
+<span id="cb82-964"><a href="#cb82-964" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-965"><a href="#cb82-965" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
+<span id="cb82-966"><a href="#cb82-966" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-967"><a href="#cb82-967" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
+<span id="cb82-968"><a href="#cb82-968" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-969"><a href="#cb82-969" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
+<span id="cb82-970"><a href="#cb82-970" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-971"><a href="#cb82-971" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
+<span id="cb82-972"><a href="#cb82-972" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-975"><a href="#cb82-975" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb82-976"><a href="#cb82-976" aria-hidden="true" tabindex="-1"></a><span class="co"># first we need to remove the `PersonScores` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.</span></span>
+<span id="cb82-977"><a href="#cb82-977" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>PersonScores <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb82-978"><a href="#cb82-978" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-979"><a href="#cb82-979" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2) <span class="sc">+</span></span>
+<span id="cb82-980"><a href="#cb82-980" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
+<span id="cb82-981"><a href="#cb82-981" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
+<span id="cb82-982"><a href="#cb82-982" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb82-983"><a href="#cb82-983" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-984"><a href="#cb82-984" aria-hidden="true" tabindex="-1"></a>In order to change font for text inside plots you will need to add an additional line of code.</span>
+<span id="cb82-985"><a href="#cb82-985" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-986"><a href="#cb82-986" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb82-987"><a href="#cb82-987" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato))</span></span>
+<span id="cb82-988"><a href="#cb82-988" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
+<span id="cb82-989"><a href="#cb82-989" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-990"><a href="#cb82-990" aria-hidden="true" tabindex="-1"></a><span class="st">Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "</span>text<span class="st">" to "</span>text_repel<span class="st">".</span></span>
+<span id="cb82-991"><a href="#cb82-991" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-992"><a href="#cb82-992" aria-hidden="true" tabindex="-1"></a><span class="st">A simple way to only change font family and font size would be to use `theme_minimal(base_family = "</span>Calibri<span class="st">", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.</span></span>
+<span id="cb82-993"><a href="#cb82-993" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-994"><a href="#cb82-994" aria-hidden="true" tabindex="-1"></a><span class="st">## Software used</span></span>
+<span id="cb82-995"><a href="#cb82-995" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-996"><a href="#cb82-996" aria-hidden="true" tabindex="-1"></a><span class="st">The `grateful` package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span></span>
+<span id="cb82-997"><a href="#cb82-997" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-1000"><a href="#cb82-1000" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb82-1001"><a href="#cb82-1001" aria-hidden="true" tabindex="-1"></a><span class="st">library(grateful)</span></span>
+<span id="cb82-1002"><a href="#cb82-1002" aria-hidden="true" tabindex="-1"></a><span class="st">pkgs &lt;- cite_packages(cite.tidyverse = TRUE, </span></span>
+<span id="cb82-1003"><a href="#cb82-1003" aria-hidden="true" tabindex="-1"></a><span class="st">                      output = "</span>table<span class="st">",</span></span>
+<span id="cb82-1004"><a href="#cb82-1004" aria-hidden="true" tabindex="-1"></a><span class="st">                      bib.file = "</span>grateful<span class="sc">-</span>refs.bib<span class="st">",</span></span>
+<span id="cb82-1005"><a href="#cb82-1005" aria-hidden="true" tabindex="-1"></a><span class="st">                      include.RStudio = TRUE,</span></span>
+<span id="cb82-1006"><a href="#cb82-1006" aria-hidden="true" tabindex="-1"></a><span class="st">                      out.dir = getwd())</span></span>
+<span id="cb82-1007"><a href="#cb82-1007" aria-hidden="true" tabindex="-1"></a><span class="st"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
+<span id="cb82-1008"><a href="#cb82-1008" aria-hidden="true" tabindex="-1"></a><span class="st">formattable(pkgs, </span></span>
+<span id="cb82-1009"><a href="#cb82-1009" aria-hidden="true" tabindex="-1"></a><span class="st">            table.attr = 'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="</span>font<span class="sc">-</span>size<span class="sc">:</span> 13px; font<span class="sc">-</span>family<span class="sc">:</span> Lato; width<span class="sc">:</span> <span class="dv">80</span>%<span class="st">"')</span></span>
+<span id="cb82-1010"><a href="#cb82-1010" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
+<span id="cb82-1011"><a href="#cb82-1011" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-1012"><a href="#cb82-1012" aria-hidden="true" tabindex="-1"></a><span class="st">## Additional credits</span></span>
+<span id="cb82-1013"><a href="#cb82-1013" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-1014"><a href="#cb82-1014" aria-hidden="true" tabindex="-1"></a><span class="st">Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements) for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to [Mike Linacre](https://www.winsteps.com/linacre.htm) and [Jeanette Melin](https://www.ri.se/en/person/jeanette-melin) for providing useful feedback to improve this vignette.</span></span>
+<span id="cb82-1015"><a href="#cb82-1015" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-1016"><a href="#cb82-1016" aria-hidden="true" tabindex="-1"></a><span class="st">## References</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
