@@ -768,11 +768,19 @@ RIitemparams(df2)
 
 ### Ordinal sum score to interval score
 
-This table shows the corresponding sum score values and logit scores, with standard errors for each logit value.
+This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
+
 
 ```{r}
 RIscoreSE(df2)
 ```
+
+This figure can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.
+
+```{r}
+RIscoreSE(df2, output = "figure")
+```
+
 
 ### Estimating interval level person scores
 
@@ -802,9 +810,11 @@ Finally, we'll look at the distribution of person scores using a simple histogra
 hist(df2$PersonScores, col = "#009ca6")
 ```
 
-## Fonts and themes
+## Figure design
 
-Most of the figures created by the functions can be styled by adding theme settings to them. You can use the standard ggplot function `theme()` and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.
+Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function `theme()` and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.
+
+You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a `+` sign.
 
 A custom theme function, `theme_rise()`, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with `theme()`.
 
