@@ -766,17 +766,17 @@ RIitemparams(df2)
 
 `RIitemparams()` will automatically write a CSV-file called "itemParameters.csv". The filename can be specified manually.
 
-### Ordinal sum score to interval score
+## Ordinal sum score to interval score
 
 This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
 
 (An option will be added *later* to create this table based on only item parameters.)
 
 ```{r}
-RIscoreSE(df2)
+RIscoreSE(df2, width = 50) # the width option is passed on to `kbl_rise()` for table width
 ```
 
-#### Figure
+### Ordinal/interval figure
 
 The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.
 

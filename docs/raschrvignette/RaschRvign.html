@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.2.475">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2023-08-25">
+<meta name="dcterms.date" content="2023-08-30">
 <title>R, Rasch, etc - RISEkbmRasch vignette</title>
 <style>
 code{white-space: pre-wrap;}
@@ -147,10 +147,10 @@ div.csl-indent {
 <meta name="twitter:card" content="summary">
 <meta name="citation_title" content="RISEkbmRasch vignette">
 <meta name="citation_author" content="Magnus Johansson">
-<meta name="citation_publication_date" content="2023-08-25">
-<meta name="citation_cover_date" content="2023-08-25">
+<meta name="citation_publication_date" content="2023-08-30">
+<meta name="citation_cover_date" content="2023-08-30">
 <meta name="citation_year" content="2023">
-<meta name="citation_online_date" content="2023-08-25">
+<meta name="citation_online_date" content="2023-08-30">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Bias in Self-Reports: An Initial Elevation Phenomenon;,citation_author=Farid Anvari;,citation_author=Emir Efendić;,citation_author=Jerome Olsen;,citation_author=Ruben C. Arslan;,citation_author=Malte Elson;,citation_author=Iris K. Schneider;,citation_publication_date=2022-10-07;,citation_cover_date=2022-10-07;,citation_year=2022;,citation_fulltext_html_url=https://doi.org/10.1177/19485506221129160;,citation_doi=10.1177/19485506221129160;,citation_language=en;,citation_journal_title=Social Psychological and Personality Science;">
 <meta name="citation_reference" content="citation_title=Sample size and statistical conclusions from tests of fit to the rasch model according to the rasch unidimensional measurement model (RUMM) program in health outcome measurement;,citation_author=Peter Hagell;,citation_author=Albert Westergren;,citation_publication_date=2016;,citation_cover_date=2016;,citation_year=2016;,citation_issue=4;,citation_volume=17;,citation_journal_title=Journal of Applied Measurement;">
@@ -287,17 +287,18 @@ div.csl-indent {
   <li><a href="#rasch-analysis-4" id="toc-rasch-analysis-4" class="nav-link" data-scroll-target="#rasch-analysis-4"><span class="toc-section-number">7</span>  Rasch analysis 4</a></li>
   <li><a href="#reliability" id="toc-reliability" class="nav-link" data-scroll-target="#reliability"><span class="toc-section-number">8</span>  Reliability</a></li>
   <li><a href="#person-fit" id="toc-person-fit" class="nav-link" data-scroll-target="#person-fit"><span class="toc-section-number">9</span>  Person fit</a></li>
+  <li><a href="#item-parameters" id="toc-item-parameters" class="nav-link" data-scroll-target="#item-parameters"><span class="toc-section-number">10</span>  Item parameters</a></li>
   <li>
-<a href="#item-parameters" id="toc-item-parameters" class="nav-link" data-scroll-target="#item-parameters"><span class="toc-section-number">10</span>  Item parameters</a>
+<a href="#ordinal-sum-score-to-interval-score" id="toc-ordinal-sum-score-to-interval-score" class="nav-link" data-scroll-target="#ordinal-sum-score-to-interval-score"><span class="toc-section-number">11</span>  Ordinal sum score to interval score</a>
   <ul class="collapse">
-<li><a href="#ordinal-sum-score-to-interval-score" id="toc-ordinal-sum-score-to-interval-score" class="nav-link" data-scroll-target="#ordinal-sum-score-to-interval-score"><span class="toc-section-number">10.1</span>  Ordinal sum score to interval score</a></li>
-  <li><a href="#estimating-interval-level-person-scores" id="toc-estimating-interval-level-person-scores" class="nav-link" data-scroll-target="#estimating-interval-level-person-scores"><span class="toc-section-number">10.2</span>  Estimating interval level person scores</a></li>
+<li><a href="#ordinalinterval-figure" id="toc-ordinalinterval-figure" class="nav-link" data-scroll-target="#ordinalinterval-figure"><span class="toc-section-number">11.1</span>  Ordinal/interval figure</a></li>
+  <li><a href="#estimating-interval-level-person-scores" id="toc-estimating-interval-level-person-scores" class="nav-link" data-scroll-target="#estimating-interval-level-person-scores"><span class="toc-section-number">11.2</span>  Estimating interval level person scores</a></li>
   </ul>
 </li>
-  <li><a href="#figure-design" id="toc-figure-design" class="nav-link" data-scroll-target="#figure-design"><span class="toc-section-number">11</span>  Figure design</a></li>
-  <li><a href="#software-used" id="toc-software-used" class="nav-link" data-scroll-target="#software-used"><span class="toc-section-number">12</span>  Software used</a></li>
-  <li><a href="#additional-credits" id="toc-additional-credits" class="nav-link" data-scroll-target="#additional-credits"><span class="toc-section-number">13</span>  Additional credits</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">14</span>  References</a></li>
+  <li><a href="#figure-design" id="toc-figure-design" class="nav-link" data-scroll-target="#figure-design"><span class="toc-section-number">12</span>  Figure design</a></li>
+  <li><a href="#software-used" id="toc-software-used" class="nav-link" data-scroll-target="#software-used"><span class="toc-section-number">13</span>  Software used</a></li>
+  <li><a href="#additional-credits" id="toc-additional-credits" class="nav-link" data-scroll-target="#additional-credits"><span class="toc-section-number">14</span>  Additional credits</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">15</span>  References</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -329,7 +330,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 25, 2023</p>
+      <p class="date">August 30, 2023</p>
     </div>
   </div>
   
@@ -3657,15 +3658,15 @@ Jittery
 </div>
 </div>
 <p><code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemparams.html">RIitemparams()</a></code> will automatically write a CSV-file called “itemParameters.csv”. The filename can be specified manually.</p>
-<section id="ordinal-sum-score-to-interval-score" class="level3" data-number="10.1"><h3 data-number="10.1" class="anchored" data-anchor-id="ordinal-sum-score-to-interval-score">
-<span class="header-section-number">10.1</span> Ordinal sum score to interval score</h3>
+</section><section id="ordinal-sum-score-to-interval-score" class="level2" data-number="11"><h2 data-number="11" class="anchored" data-anchor-id="ordinal-sum-score-to-interval-score">
+<span class="header-section-number">11</span> Ordinal sum score to interval score</h2>
 <p>This table shows the corresponding “raw” ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="citation" data-cites="warm1989">(<a href="#ref-warm1989" role="doc-biblioref">Warm, 1989</a>)</span>.</p>
 <p>(An option will be added <em>later</em> to create this table based on only item parameters.)</p>
-<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-70_29b27d1c234c880a7d04861970254c1c">
-<details open=""><summary>Code</summary><div class="sourceCode" id="cb73"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIscoreSE.html">RIscoreSE</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-70_414ae02f9c43e819e24038057ac79aca">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb73"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIscoreSE.html">RIscoreSE</a></span><span class="op">(</span><span class="va">df2</span>, width <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="co"># the width option is passed on to `kbl_rise()` for table width</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 
-<table style="width:65%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
+<table style="width:50%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
 <thead><tr>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Ordinal sum score </th>
    <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Logit score </th>
@@ -3801,8 +3802,8 @@ Jittery
 </table>
 </div>
 </div>
-<section id="figure" class="level4" data-number="10.1.1"><h4 data-number="10.1.1" class="anchored" data-anchor-id="figure">
-<span class="header-section-number">10.1.1</span> Figure</h4>
+<section id="ordinalinterval-figure" class="level3" data-number="11.1"><h3 data-number="11.1" class="anchored" data-anchor-id="ordinalinterval-figure">
+<span class="header-section-number">11.1</span> Ordinal/interval figure</h3>
 <p>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</p>
 <div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-71_d159a53c25ea650bc7414ebda4568cb5">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIscoreSE.html">RIscoreSE</a></span><span class="op">(</span><span class="va">df2</span>, output <span class="op">=</span> <span class="st">"figure"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3810,8 +3811,8 @@ Jittery
 <p><img src="RaschRvign_files/figure-html/unnamed-chunk-71-1.png" class="img-fluid" width="1050"></p>
 </div>
 </div>
-</section></section><section id="estimating-interval-level-person-scores" class="level3" data-number="10.2"><h3 data-number="10.2" class="anchored" data-anchor-id="estimating-interval-level-person-scores">
-<span class="header-section-number">10.2</span> Estimating interval level person scores</h3>
+</section><section id="estimating-interval-level-person-scores" class="level3" data-number="11.2"><h3 data-number="11.2" class="anchored" data-anchor-id="estimating-interval-level-person-scores">
+<span class="header-section-number">11.2</span> Estimating interval level person scores</h3>
 <p>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as “theta”). Similarly to the <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</p>
 <p><code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIestThetas.html">RIestThetas()</a></code> by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, it will use eRm’s CML PCM to calculate it based on the dataframe input.</p>
 <div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-72_cb816924bea33a2d5ec6498cedcd50a1">
@@ -3842,8 +3843,8 @@ Jittery
 <p><img src="RaschRvign_files/figure-html/unnamed-chunk-74-1.png" class="img-fluid" width="1050"></p>
 </div>
 </div>
-</section></section><section id="figure-design" class="level2" data-number="11"><h2 data-number="11" class="anchored" data-anchor-id="figure-design">
-<span class="header-section-number">11</span> Figure design</h2>
+</section></section><section id="figure-design" class="level2" data-number="12"><h2 data-number="12" class="anchored" data-anchor-id="figure-design">
+<span class="header-section-number">12</span> Figure design</h2>
 <p>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <code><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme()</a></code> and related theme-functions. As usual it is possible to “stack” theme functions, as seen in the example below.</p>
 <p>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <code>+</code> sign.</p>
 <p>A custom theme function, <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/theme_rise.html">theme_rise()</a></code>, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with <code><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme()</a></code>.</p>
@@ -3863,8 +3864,8 @@ Jittery
 <div class="sourceCode" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Please note that this updates the default settings for <code><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text()</a></code> for the whole session. Also, some functions, such as <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIloadLoc.html">RIloadLoc()</a></code> make use of <code><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_text_repel()</a></code>, for which you would need to change the function above from “text” to “text_repel”.</p>
 <p>A simple way to only change font family and font size would be to use <code>theme_minimal(base_family = "Calibri", base_size = 14)</code>. Please see the <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">reference page</a> for default ggplot themes for alternatives to <code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal()</a></code>.</p>
-</section><section id="software-used" class="level2" data-number="12"><h2 data-number="12" class="anchored" data-anchor-id="software-used">
-<span class="header-section-number">12</span> Software used</h2>
+</section><section id="software-used" class="level2" data-number="13"><h2 data-number="13" class="anchored" data-anchor-id="software-used">
+<span class="header-section-number">13</span> Software used</h2>
 <p>The <code>grateful</code> package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</p>
 <div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-76_9155f920b105864a5ca5a675146ddd3f">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb81"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pakillo.github.io/grateful/">grateful</a></span><span class="op">)</span></span>
@@ -4115,17 +4116,17 @@ tidyverse
 </table>
 </div>
 </div>
-</section><section id="additional-credits" class="level2" data-number="13"><h2 data-number="13" class="anchored" data-anchor-id="additional-credits">
-<span class="header-section-number">13</span> Additional credits</h2>
+</section><section id="additional-credits" class="level2" data-number="14"><h2 data-number="14" class="anchored" data-anchor-id="additional-credits">
+<span class="header-section-number">14</span> Additional credits</h2>
 <p>Thanks to my <a href="https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements">colleagues at RISE</a> for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to <a href="https://www.winsteps.com/linacre.htm">Mike Linacre</a> and <a href="https://www.ri.se/en/person/jeanette-melin">Jeanette Melin</a> for providing useful feedback to improve this vignette.</p>
-</section><section id="references" class="level2" data-number="14">
+</section><section id="references" class="level2" data-number="15">
 
 
 <!-- -->
 
 
 </section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">
-14 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="doc-bibliography">
+15 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-line-spacing="2" role="doc-bibliography">
 <div id="ref-rmarkdown2023" class="csl-entry" role="doc-biblioentry">
 Allaire, J., Xie, Y., Dervieux, C., McPherson, J., Luraschi, J., Ushey, K., Atkins, A., Wickham, H., Cheng, J., Chang, W., &amp; Iannone, R. (2023). <em><span class="nocase">rmarkdown</span>: Dynamic documents for r</em>. <a href="https://github.com/rstudio/rmarkdown">https://github.com/rstudio/rmarkdown</a>
 </div>
@@ -4249,12 +4250,12 @@ Zhu, H. (2021). <em><span class="nocase">kableExtra</span>: Construct complex ta
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{johansson2023,
   author = {Magnus Johansson},
   title = {RISEkbmRasch Vignette},
-  date = {2023-08-25},
+  date = {2023-08-30},
   url = {https://pgmj.github.io/raschrvignette/RaschRvign.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2023" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Magnus Johansson. (2023, August 25). <em>RISEkbmRasch vignette</em>. <a href="https://pgmj.github.io/raschrvignette/RaschRvign.html">https://pgmj.github.io/raschrvignette/RaschRvign.html</a>
+Magnus Johansson. (2023, August 30). <em>RISEkbmRasch vignette</em>. <a href="https://pgmj.github.io/raschrvignette/RaschRvign.html">https://pgmj.github.io/raschrvignette/RaschRvign.html</a>
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -5206,17 +5207,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb82-903"><a href="#cb82-903" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb82-904"><a href="#cb82-904" aria-hidden="true" tabindex="-1"></a><span class="in">`RIitemparams()`</span> will automatically write a CSV-file called "itemParameters.csv". The filename can be specified manually.</span>
 <span id="cb82-905"><a href="#cb82-905" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-906"><a href="#cb82-906" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal sum score to interval score</span></span>
+<span id="cb82-906"><a href="#cb82-906" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordinal sum score to interval score</span></span>
 <span id="cb82-907"><a href="#cb82-907" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb82-908"><a href="#cb82-908" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
 <span id="cb82-909"><a href="#cb82-909" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb82-910"><a href="#cb82-910" aria-hidden="true" tabindex="-1"></a>(An option will be added *later* to create this table based on only item parameters.)</span>
 <span id="cb82-911"><a href="#cb82-911" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb82-914"><a href="#cb82-914" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb82-915"><a href="#cb82-915" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2)</span>
+<span id="cb82-915"><a href="#cb82-915" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2, <span class="at">width =</span> <span class="dv">50</span>) <span class="co"># the width option is passed on to `kbl_rise()` for table width</span></span>
 <span id="cb82-916"><a href="#cb82-916" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb82-917"><a href="#cb82-917" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb82-918"><a href="#cb82-918" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
+<span id="cb82-918"><a href="#cb82-918" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal/interval figure</span></span>
 <span id="cb82-919"><a href="#cb82-919" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb82-920"><a href="#cb82-920" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
 <span id="cb82-921"><a href="#cb82-921" aria-hidden="true" tabindex="-1"></a></span>
