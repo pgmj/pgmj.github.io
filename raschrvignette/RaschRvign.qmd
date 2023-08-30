@@ -776,6 +776,8 @@ This table shows the corresponding "raw" ordinal sum score values and logit scor
 RIscoreSE(df2, width = 50) # the width option is passed on to `kbl_rise()` for table width
 ```
 
+Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option `sdx` from the default setting of `5`. Also, if you find the the default range of logit scores is insufficient, it can be adjusted by changing the option `score_range` (default is `c(-4,4)`).
+
 ### Ordinal/interval figure
 
 The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.
@@ -783,7 +785,6 @@ The figure below can also be generated to illustrate the relationship between or
 ```{r}
 RIscoreSE(df2, output = "figure")
 ```
-
 
 ### Estimating interval level person scores
 
@@ -796,7 +797,7 @@ library(furrr) # for a parallel processing version of purrr::map_dbl
 df2$PersonScores <- RIestThetas2(df2, cpu = 8)
 ```
 
-`RIestThetas()` can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
+`RIestThetas()` can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989]. Similarly to `RIscoreSE()` you can change the range of logit scores, using the option `theta_range` (default is `c(-4,4)`).
 
 If you would like to use an existing item matrix, this code may be helpful:
 
