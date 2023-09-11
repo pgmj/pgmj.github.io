@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
 <meta name="dcterms.date" content="2023-09-11">
-<title>R, Rasch, etc - Using WLS to account for measurement uncertainties</title>
+<title>R, Rasch, etc - Using Rasch and WLS to account for measurement uncertainties in regression models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -119,11 +119,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script><script src="site_libs/kePrint-0.0.1/kePrint.js"></script><link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="R, Rasch, etc - Using WLS to account for measurement uncertainties">
-<meta property="og:description" content="PreventOSA, describe analyses briefly and link to full analysis.">
+<meta property="og:title" content="R, Rasch, etc - Using Rasch and WLS to account for measurement uncertainties in regression models">
+<meta property="og:description" content="There are several reasons for putting this blog post together.">
 <meta property="og:site-name" content="R, Rasch, etc">
-<meta name="twitter:title" content="R, Rasch, etc - Using WLS to account for measurement uncertainties">
-<meta name="twitter:description" content="PreventOSA, describe analyses briefly and link to full analysis.">
+<meta name="twitter:title" content="R, Rasch, etc - Using Rasch and WLS to account for measurement uncertainties in regression models">
+<meta name="twitter:description" content="There are several reasons for putting this blog post together.">
 <meta name="twitter:card" content="summary">
 </head>
 <body class="nav-fixed">
@@ -187,21 +187,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="toc-section-number">1</span>  Background</a></li>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">1</span>  Introduction</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">2</span>  Data</a></li>
   <li><a href="#measurement-properties" id="toc-measurement-properties" class="nav-link" data-scroll-target="#measurement-properties"><span class="toc-section-number">3</span>  Measurement properties</a></li>
-  <li><a href="#estimate-person-scorelocations." id="toc-estimate-person-scorelocations." class="nav-link" data-scroll-target="#estimate-person-scorelocations."><span class="toc-section-number">4</span>  Estimate person score/locations.</a></li>
   <li>
-<a href="#visualizing-data" id="toc-visualizing-data" class="nav-link" data-scroll-target="#visualizing-data"><span class="toc-section-number">5</span>  Visualizing data</a>
+<a href="#estimating-person-scorelocations." id="toc-estimating-person-scorelocations." class="nav-link" data-scroll-target="#estimating-person-scorelocations."><span class="toc-section-number">4</span>  Estimating person score/locations.</a>
+  <ul class="collapse">
+<li><a href="#plot-relationship-ordinalinterval" id="toc-plot-relationship-ordinalinterval" class="nav-link" data-scroll-target="#plot-relationship-ordinalinterval"><span class="toc-section-number">4.1</span>  Plot relationship ordinal/interval</a></li>
+  <li><a href="#measurement-uncertainties" id="toc-measurement-uncertainties" class="nav-link" data-scroll-target="#measurement-uncertainties"><span class="toc-section-number">4.2</span>  Measurement uncertainties</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-viz" id="toc-sec-viz" class="nav-link" data-scroll-target="#sec-viz"><span class="toc-section-number">5</span>  Visualizing data</a>
   <ul class="collapse">
 <li><a href="#histograms" id="toc-histograms" class="nav-link" data-scroll-target="#histograms"><span class="toc-section-number">5.1</span>  Histograms</a></li>
   <li><a href="#sem" id="toc-sem" class="nav-link" data-scroll-target="#sem"><span class="toc-section-number">5.2</span>  SEM</a></li>
-  <li><a href="#correlations" id="toc-correlations" class="nav-link" data-scroll-target="#correlations"><span class="toc-section-number">5.3</span>  Correlations</a></li>
+  <li><a href="#scatter-plots" id="toc-scatter-plots" class="nav-link" data-scroll-target="#scatter-plots"><span class="toc-section-number">5.3</span>  Scatter plots</a></li>
   </ul>
 </li>
   <li><a href="#weights-for-wls-regression" id="toc-weights-for-wls-regression" class="nav-link" data-scroll-target="#weights-for-wls-regression"><span class="toc-section-number">6</span>  Weights for WLS regression</a></li>
   <li>
-<a href="#regression-models" id="toc-regression-models" class="nav-link" data-scroll-target="#regression-models"><span class="toc-section-number">7</span>  Regression models</a>
+<a href="#sec-lmm" id="toc-sec-lmm" class="nav-link" data-scroll-target="#sec-lmm"><span class="toc-section-number">7</span>  Linear regression models</a>
   <ul class="collapse">
 <li><a href="#linear-model-comparison" id="toc-linear-model-comparison" class="nav-link" data-scroll-target="#linear-model-comparison"><span class="toc-section-number">7.1</span>  Linear model comparison</a></li>
   </ul>
@@ -209,15 +215,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li>
 <a href="#quantile-regression" id="toc-quantile-regression" class="nav-link" data-scroll-target="#quantile-regression"><span class="toc-section-number">8</span>  Quantile regression</a>
   <ul class="collapse">
-<li><a href="#qr-parameters" id="toc-qr-parameters" class="nav-link" data-scroll-target="#qr-parameters"><span class="toc-section-number">8.1</span>  QR parameters</a></li>
-  <li><a href="#qr-plots" id="toc-qr-plots" class="nav-link" data-scroll-target="#qr-plots"><span class="toc-section-number">8.2</span>  QR plots</a></li>
+<li><a href="#qr-parameter-plots" id="toc-qr-parameter-plots" class="nav-link" data-scroll-target="#qr-parameter-plots"><span class="toc-section-number">8.1</span>  QR parameter plots</a></li>
+  <li><a href="#quantile-regression-scatter-plots" id="toc-quantile-regression-scatter-plots" class="nav-link" data-scroll-target="#quantile-regression-scatter-plots"><span class="toc-section-number">8.2</span>  Quantile regression scatter plots</a></li>
   </ul>
 </li>
   </ul></nav>
     </div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Using WLS to account for measurement uncertainties</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Using Rasch and WLS to account for measurement uncertainties in regression models</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -230,7 +236,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
     <div class="quarto-title-meta-contents">
         <p class="affiliation">
-            <a href="https://www.ri.se/sv/vad-vi-gor/expertiser/kategoriskt-baserade-matningar">
+            <a href="https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements">
             RISE Research Institutes of Sweden
             </a>
           </p>
@@ -251,11 +257,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
-</header><section id="background" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="background">
-<span class="header-section-number">1</span> Background</h2>
+</header><section id="introduction" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="introduction">
+<span class="header-section-number">1</span> Introduction</h2>
+<p>There are several reasons for putting this blog post together. The larger issue is to investigate ways to analyze relationships between measures that have varying levels of measurement uncertainty across their respective range or continuum. This is relevant to any kind of latent variable measurement that uses multiple indicators/items/questions as a way to assess a latent variable.</p>
+<p>In classical test theory (CTT; i.e.&nbsp;factor analysis) the assumption is generally that the measurement error is a single value, constant across the scale and across participants. Modern test theory (Rasch Measurement Theory (RMT) or Item Response Theory (IRT)) has tools to describe the varying uncertainties of the measure itself, and also allows for estimation of measurement uncertainty for each individual, based on the item properties.</p>
+<p>In the “business-as-usual” approach, no matter which types of measurement uncertainty are ignored. The simple case of have two variables and an ordinary least squares (OLS) linear regression model will take the input from each variable as a perfect measurement. Bayesians may have another take on this, and I will look into that at a later point, so for now this is relevant for frequentist statistics.</p>
+<p>“Business-as-usual” also makes use of ordinal sum scores disguised as interval scores. There is a seemingly wide-spread idea that estimated person interval scores is not significantly different from ordinal sum scores, and we’ll look further into that as well by including ordinal sum scores.</p>
+<p>One way to take measurement uncertainty into account in a linear regression model is to use Weighted Least Squares (WLS) instead of OLS. However, this approach only allows weights for one variable. The weights will be based on the measurement uncertainty for the interval scores.</p>
+<p>Additionally, we will use Quantile Regression, with and without weights.</p>
 </section><section id="data" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="data">
 <span class="header-section-number">2</span> Data</h2>
-<p>PreventOSA, describe analyses briefly and link to full analysis.</p>
+<p>The data used were collected for a project evaluating multiple work environment questionnaires. Two of the analyzed scales will be used in our example. More information is available at the GitHub <a href="https://github.com/pgmj/PreventOSA">repository</a> and <a href="https://pgmj.github.io/PreventOSA/">website</a>.</p>
+<p>The two questionnaires cover the domains of “recovery” and “agency”, where the latter refers to workers’ perceived control over their work situation. Our analyses will look at how “agency” affects “recovery”. We will retain an interval scale score for the “recovery” scale throughout, while varying the “agency” between ordinal sum score, interval score, and interval score with weights.</p>
+<p>Variables will be named <code>SEM</code> for standard error of measurement, <code>Score</code> for interval scores, and <code>SumScore</code> for ordinal sum scores.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This analysis is intended to be fully reproducible, which means some data wrangling is done initially. Please jump ahead to <a href="#sec-viz">Section&nbsp;5</a> for data visualizations or <a href="#sec-lmm">Section&nbsp;7</a> for the regression model output.</p>
+</div>
+</div>
 <div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-1_09bbbaaf320a6a3b156ebcc6c7b56d71">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pgmj/RISEkbmRasch">RISEkbmRasch</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/foreign/">foreign</a></span><span class="op">)</span></span>
@@ -280,12 +307,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="va">itemlabels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">"data/PreventOSAitemlabels.xlsx"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>“Möjlighet att påverka” och “Återhämtning” används som exempel.</p>
-<p>We’ll only change the predictor variable (“agency”, translation may be changed to “perceived control”)</p>
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-3_0af9d24cec871db6ed94460616c3fdc9">
-<details open=""><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">agencyItems</span> <span class="op">&lt;-</span> <span class="va">itemlabels</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-3_0804e798cd88ead4bf44e67d10e3f94d">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># vector of items</span></span>
+<span><span class="va">agencyItems</span> <span class="op">&lt;-</span> <span class="va">itemlabels</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">Dimension</span> <span class="op">==</span> <span class="st">"Möjlighet att påverka"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="op">!</span><span class="va">Dimension</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># data import, with recode of response categories to numerics</span></span>
 <span><span class="va">agencyData</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"q0007"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">everything</span><span class="op">(</span><span class="op">)</span>, <span class="op">~</span> <span class="fu">car</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/recode.html">recode</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"'Aldrig'=0;</span></span>
@@ -306,10 +334,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="va">agencyData</span><span class="op">$</span><span class="va">mp5</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/recode.html">recode</a></span><span class="op">(</span><span class="va">agencyData</span><span class="op">$</span><span class="va">mp5</span>,<span class="st">"2=1;3=2;4=3;5=4"</span>,as.factor<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-4_1fa1ccbefac1c9c4ea8dd071ea3ec86c">
-<details open=""><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">recoveryItems</span> <span class="op">&lt;-</span> <span class="va">itemlabels</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-4_656e206ac66934afeaf2bc9cc87489eb">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># vector of items</span></span>
+<span><span class="va">recoveryItems</span> <span class="op">&lt;-</span> <span class="va">itemlabels</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">Dimension</span> <span class="op">==</span> <span class="st">"Återhämtning"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="op">!</span><span class="va">Dimension</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># data import, with recode of response categories to numerics</span></span>
 <span><span class="va">recoveryData</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="fu">starts_with</span><span class="op">(</span><span class="st">"q0009"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">everything</span><span class="op">(</span><span class="op">)</span>, <span class="op">~</span> <span class="fu">car</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/car/man/recode.html">recode</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"'Aldrig'=0;</span></span>
@@ -376,8 +407,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-</section><section id="estimate-person-scorelocations." class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="estimate-person-scorelocations.">
-<span class="header-section-number">4</span> Estimate person score/locations.</h2>
+</section><section id="estimating-person-scorelocations." class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="estimating-person-scorelocations.">
+<span class="header-section-number">4</span> Estimating person score/locations.</h2>
 <div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-9_788b6cf0881c68b103b1be46ffa6c241">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span><span class="op">$</span><span class="va">agencyScore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIestThetas.html">RIestThetas</a></span><span class="op">(</span><span class="va">agencyData</span>, theta_range <span class="op">=</span> <span class="va">agencyRange</span><span class="op">)</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">agencyScore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">agencyScore</span>,<span class="fl">3</span><span class="op">)</span></span>
@@ -386,7 +417,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="va">df</span><span class="op">$</span><span class="va">recoveryScore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">recoveryScore</span>,<span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Plot relationship ordinal/interval</p>
+<section id="plot-relationship-ordinalinterval" class="level3" data-number="4.1"><h3 data-number="4.1" class="anchored" data-anchor-id="plot-relationship-ordinalinterval">
+<span class="header-section-number">4.1</span> Plot relationship ordinal/interval</h3>
 <div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-10_b406c2572025dc84b77676fea6ce4fdb">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIscoreSE.html">RIscoreSE</a></span><span class="op">(</span><span class="va">recoveryData</span>, sdx <span class="op">=</span> <span class="fl">15</span>, score_range <span class="op">=</span> <span class="va">recoveryRange</span>, output <span class="op">=</span> <span class="st">"figure"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -400,7 +432,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#RIscoreSE(agencyData, sdx = 10, score_range = agencyRange, output = "table")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Get info about measurement uncertainties</p>
+</section><section id="measurement-uncertainties" class="level3" data-number="4.2"><h3 data-number="4.2" class="anchored" data-anchor-id="measurement-uncertainties">
+<span class="header-section-number">4.2</span> Measurement uncertainties</h3>
 <div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-11_7b8dac35d0ea6939e4392a17d6858438">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">recoveryTable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIscoreSE.html">RIscoreSE</a></span><span class="op">(</span><span class="va">recoveryData</span>, sdx <span class="op">=</span> <span class="fl">15</span>, width <span class="op">=</span> <span class="fl">50</span>, score_range <span class="op">=</span> <span class="va">recoveryRange</span>, output <span class="op">=</span> <span class="st">"dataframe"</span><span class="op">)</span> </span>
 <span><span class="va">recoveryTable</span> <span class="op">&lt;-</span> <span class="va">recoveryTable</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -444,7 +477,7 @@ $ agencySEM        &lt;dbl&gt; 0.737, 0.582, 0.737, 0.885, 0.680, 0.803, 0.582, 
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section><section id="visualizing-data" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="visualizing-data">
+</section></section><section id="sec-viz" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="sec-viz">
 <span class="header-section-number">5</span> Visualizing data</h2>
 <section id="histograms" class="level3" data-number="5.1"><h3 data-number="5.1" class="anchored" data-anchor-id="histograms">
 <span class="header-section-number">5.1</span> Histograms</h3>
@@ -455,7 +488,7 @@ $ agencySEM        &lt;dbl&gt; 0.737, 0.582, 0.737, 0.885, 0.680, 0.803, 0.582, 
 </ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-14_774df734c182ef22f6bf7a92a31a0ee2">
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-14_8d6753e2ace0440ca4bfc0025f0f5446">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"agencyScore"</span>,<span class="st">"recoveryScore"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -468,7 +501,7 @@ $ agencySEM        &lt;dbl&gt; 0.737, 0.582, 0.737, 0.885, 0.680, 0.803, 0.582, 
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-15_e9646b6e07404a4c7eaa652feebc95ef">
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-15_33cffe3f70a04efe149087f51afca7be">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"agencySumScore"</span>,<span class="st">"recoverySumScore"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -487,34 +520,38 @@ $ agencySEM        &lt;dbl&gt; 0.737, 0.582, 0.737, 0.885, 0.680, 0.803, 0.582, 
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Agency</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Reccovery</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Recovery</a></li>
 </ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-16_88adc05a119130000d4836a9744f33d3">
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-16_8e649d692d97455bf783543f7f0acc85">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">agencySEM</span>, </span>
 <span>             x <span class="op">=</span> <span class="va">agencyScore</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.54</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/theme_rise.html">theme_rise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="fu">str_wrap</span><span class="op">(</span><span class="st">"Note. Lower SEM = improved reliability. A SEM at 0.54 (dashed line) corresponds to a reliability coefficient of 0.7 on a 0 to 1 scale. SEM = 0.45 corresponds to reliability 0.8"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="WLSregr_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="1050"></p>
 </div>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-17_e08f97e09b9fc240987be5aa487603cc">
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-17_9bf74fc2dca5c46ce410ee5a816a6632">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">recoverySEM</span>, </span>
 <span>             x <span class="op">=</span> <span class="va">recoveryScore</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.54</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/theme_rise.html">theme_rise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="fu">str_wrap</span><span class="op">(</span><span class="st">"Note. Lower SEM = improved reliability. A SEM at 0.54 (dashed line) corresponds to a reliability coefficient of 0.7 on a 0 to 1 scale. SEM = 0.45 corresponds to reliability 0.8"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="WLSregr_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="1050"></p>
 </div>
@@ -522,8 +559,8 @@ $ agencySEM        &lt;dbl&gt; 0.737, 0.582, 0.737, 0.885, 0.680, 0.803, 0.582, 
 </div>
 </div>
 </div>
-</section><section id="correlations" class="level3" data-number="5.3"><h3 data-number="5.3" class="anchored" data-anchor-id="correlations">
-<span class="header-section-number">5.3</span> Correlations</h3>
+</section><section id="scatter-plots" class="level3" data-number="5.3"><h3 data-number="5.3" class="anchored" data-anchor-id="scatter-plots">
+<span class="header-section-number">5.3</span> Scatter plots</h3>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Interval score</a></li>
@@ -560,13 +597,14 @@ $ agencySEM        &lt;dbl&gt; 0.737, 0.582, 0.737, 0.885, 0.680, 0.803, 0.582, 
 </div>
 </section></section><section id="weights-for-wls-regression" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="weights-for-wls-regression">
 <span class="header-section-number">6</span> Weights for WLS regression</h2>
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-20_adfa9f64d76c356a97c07d3d674dbc41">
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-20_4cc462adc5ed29f020aeeb9d094c93c9">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>weights <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="va">agencySEM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">agencySEM</span>, </span>
 <span>             y <span class="op">=</span> <span class="va">weights</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/theme_rise.html">theme_rise</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/theme_rise.html">theme_rise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="WLSregr_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="1050"></p>
 </div>
@@ -596,8 +634,8 @@ $ agencySEM        &lt;dbl&gt; 0.737, 0.582, 0.737, 0.885, 0.680, 0.803, 0.582, 
 16 0.6045949     1.654</code></pre>
 </div>
 </div>
-</section><section id="regression-models" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="regression-models">
-<span class="header-section-number">7</span> Regression models</h2>
+</section><section id="sec-lmm" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="sec-lmm">
+<span class="header-section-number">7</span> Linear regression models</h2>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">OLS interval score</a></li>
@@ -718,7 +756,7 @@ F-statistic: 262.6 on 1 and 433 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <section id="linear-model-comparison" class="level3" data-number="7.1"><h3 data-number="7.1" class="anchored" data-anchor-id="linear-model-comparison">
 <span class="header-section-number">7.1</span> Linear model comparison</h3>
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-24_328d4a755d282a3480ec56d46789452b">
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-24_05911d21d18c5cbeeeeda4026df17852">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"OLSinterval"</span>,<span class="st">"WLSinterval"</span>,<span class="st">"OLSordinal"</span><span class="op">)</span></span>
 <span></span>
@@ -806,9 +844,9 @@ F-statistic: 262.6 on 1 and 433 DF,  p-value: &lt; 2.2e-16</code></pre>
 </tbody>
 </table>
 </div>
-<details open=""><summary>Code</summary><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">olsInt</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>      <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">wlsInt</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>      <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">olsOrd</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">olsInt</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">wlsInt</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">(</span><span class="va">olsOrd</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">add_column</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">models</span>, each <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, .before <span class="op">=</span> <span class="st">"r.squared"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">.x</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/kbl_rise.html">kbl_rise</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -882,6 +920,7 @@ F-statistic: 262.6 on 1 and 433 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </section></section><section id="quantile-regression" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="quantile-regression">
 <span class="header-section-number">8</span> Quantile regression</h2>
+<p>We can use any set of quantiles using the <code>tau</code> option. Here, we choose 0.25, 0.5, and 0.75. Tau = 0.5 is the same as “median regression”.</p>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">Interval</a></li>
@@ -971,10 +1010,8 @@ agencyScore 0.59272      0.40623  0.76771 </code></pre>
 </div>
 </div>
 <div id="tabset-6-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-3-tab">
-<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-27_a25fbb01b43cbc7648ec68f04b1069d4">
-<details open=""><summary>Code</summary><div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># https://www.r-bloggers.com/2019/01/quantile-regression-in-r-2/</span></span>
-<span></span>
-<span><span class="va">olsOrdQ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/quantreg/man/rq.html">rq</a></span><span class="op">(</span><span class="va">recoveryScore</span> <span class="op">~</span> <span class="va">agencySumScore</span>, </span>
+<div class="cell" data-hash="WLSregr_cache/html/unnamed-chunk-27_2d0282753348431ccfb9386ce6470820">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">olsOrdQ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/quantreg/man/rq.html">rq</a></span><span class="op">(</span><span class="va">recoveryScore</span> <span class="op">~</span> <span class="va">agencySumScore</span>, </span>
 <span>              tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span><span class="op">)</span>,</span>
 <span>              data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">olsOrdQ</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1014,8 +1051,8 @@ agencySumScore  0.26579      0.22391  0.32334</code></pre>
 </div>
 </div>
 </div>
-<section id="qr-parameters" class="level3" data-number="8.1"><h3 data-number="8.1" class="anchored" data-anchor-id="qr-parameters">
-<span class="header-section-number">8.1</span> QR parameters</h3>
+<section id="qr-parameter-plots" class="level3" data-number="8.1"><h3 data-number="8.1" class="anchored" data-anchor-id="qr-parameter-plots">
+<span class="header-section-number">8.1</span> QR parameter plots</h3>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">Interval OLS</a></li>
@@ -1062,8 +1099,8 @@ agencySumScore  0.26579      0.22391  0.32334</code></pre>
 </div>
 </div>
 </div>
-</section><section id="qr-plots" class="level3" data-number="8.2"><h3 data-number="8.2" class="anchored" data-anchor-id="qr-plots">
-<span class="header-section-number">8.2</span> QR plots</h3>
+</section><section id="quantile-regression-scatter-plots" class="level3" data-number="8.2"><h3 data-number="8.2" class="anchored" data-anchor-id="quantile-regression-scatter-plots">
+<span class="header-section-number">8.2</span> Quantile regression scatter plots</h3>
 <p>Haven’t figured out how to make ggplot use weighted model.</p>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
@@ -1103,14 +1140,15 @@ agencySumScore  0.26579      0.22391  0.32334</code></pre>
 
 </section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{johansson2023,
   author = {Magnus Johansson},
-  title = {Using {WLS} to Account for Measurement Uncertainties},
+  title = {Using {Rasch} and {WLS} to Account for Measurement
+    Uncertainties in Regression Models},
   date = {2023-09-11},
   url = {https://pgmj.github.io/WLSregr.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2023" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Magnus Johansson. (2023, September 11). <em>Using WLS to account for
-measurement uncertainties</em>. <a href="https://pgmj.github.io/WLSregr.html">https://pgmj.github.io/WLSregr.html</a>
+Magnus Johansson. (2023, September 11). <em>Using Rasch and WLS to
+account for measurement uncertainties in regression models</em>. <a href="https://pgmj.github.io/WLSregr.html">https://pgmj.github.io/WLSregr.html</a>
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -1296,11 +1334,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb54" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Using WLS to account for measurement uncertainties"</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Using Rasch and WLS to account for measurement uncertainties in regression models"</span></span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> </span></span>
 <span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co">  name: Magnus Johansson</span></span>
 <span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: RISE Research Institutes of Sweden</span></span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: https://www.ri.se/sv/vad-vi-gor/expertiser/kategoriskt-baserade-matningar</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements</span></span>
 <span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="co">  orcid: 0000-0003-1669-592X</span></span>
 <span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
 <span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="an">citation:</span></span>
@@ -1317,411 +1355,436 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
 <span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Background</span></span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
 <span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a>There are several reasons for putting this blog post together. The larger issue is to investigate ways to analyze relationships between measures that have varying levels of measurement uncertainty across their respective range or continuum. This is  relevant to any kind of latent variable measurement that uses multiple indicators/items/questions as a way to assess a latent variable. </span>
 <span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>PreventOSA, describe analyses briefly and link to full analysis.</span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>In classical test theory (CTT; i.e. factor analysis) the assumption is generally that the measurement error is a single value, constant across the scale and across participants. Modern test theory (Rasch Measurement Theory (RMT) or Item Response Theory (IRT)) has tools to describe the varying uncertainties of the measure itself, and also allows for estimation of measurement uncertainty for each individual, based on the item properties.</span>
 <span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-32"><a href="#cb54-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RISEkbmRasch)</span>
-<span id="cb54-33"><a href="#cb54-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
-<span id="cb54-34"><a href="#cb54-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb54-35"><a href="#cb54-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span>
-<span id="cb54-36"><a href="#cb54-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
-<span id="cb54-37"><a href="#cb54-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantreg)</span>
-<span id="cb54-38"><a href="#cb54-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-39"><a href="#cb54-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-29"><a href="#cb54-29" aria-hidden="true" tabindex="-1"></a>In the "business-as-usual" approach, no matter which  types of measurement uncertainty are ignored. The simple case of have two variables and an ordinary least squares (OLS) linear regression model will take the input from each variable as a perfect measurement. Bayesians may have another take on this, and I will look into that at a later point, so for now this is relevant for frequentist statistics. </span>
+<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a>"Business-as-usual" also makes use of ordinal sum scores disguised as interval scores. There is a seemingly wide-spread idea that estimated person interval scores is not significantly different from ordinal sum scores, and we'll look further into that as well by including ordinal sum scores.</span>
+<span id="cb54-32"><a href="#cb54-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-33"><a href="#cb54-33" aria-hidden="true" tabindex="-1"></a>One way to take measurement uncertainty into account in a linear regression model is to use Weighted Least Squares (WLS) instead of OLS. However, this approach only allows weights for one variable. The weights will be based on the measurement uncertainty for the interval scores.</span>
+<span id="cb54-34"><a href="#cb54-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-35"><a href="#cb54-35" aria-hidden="true" tabindex="-1"></a>Additionally, we will use Quantile Regression, with and without weights.</span>
+<span id="cb54-36"><a href="#cb54-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-37"><a href="#cb54-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb54-38"><a href="#cb54-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-39"><a href="#cb54-39" aria-hidden="true" tabindex="-1"></a>The data used were collected for a project evaluating multiple work environment questionnaires. Two of the analyzed scales will be used in our example. More information is available at the GitHub <span class="co">[</span><span class="ot">repository</span><span class="co">](https://github.com/pgmj/PreventOSA)</span> and <span class="co">[</span><span class="ot">website</span><span class="co">](https://pgmj.github.io/PreventOSA/)</span>.</span>
 <span id="cb54-40"><a href="#cb54-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-43"><a href="#cb54-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-44"><a href="#cb54-44" aria-hidden="true" tabindex="-1"></a><span class="do">### some commands exist in multiple packages, here we define preferred ones that are frequently used</span></span>
-<span id="cb54-45"><a href="#cb54-45" aria-hidden="true" tabindex="-1"></a>select <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>select</span>
-<span id="cb54-46"><a href="#cb54-46" aria-hidden="true" tabindex="-1"></a>count <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>count</span>
-<span id="cb54-47"><a href="#cb54-47" aria-hidden="true" tabindex="-1"></a>recode <span class="ot">&lt;-</span> car<span class="sc">::</span>recode</span>
-<span id="cb54-48"><a href="#cb54-48" aria-hidden="true" tabindex="-1"></a>rename <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>rename</span>
-<span id="cb54-49"><a href="#cb54-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-50"><a href="#cb54-50" aria-hidden="true" tabindex="-1"></a><span class="co"># read full dataset, remove ppl w missing data</span></span>
-<span id="cb54-51"><a href="#cb54-51" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.spss</span>(<span class="st">"data/PreventOSAspss.sav"</span>,</span>
-<span id="cb54-52"><a href="#cb54-52" aria-hidden="true" tabindex="-1"></a>                <span class="at">to.data.frame =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-53"><a href="#cb54-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
-<span id="cb54-54"><a href="#cb54-54" aria-hidden="true" tabindex="-1"></a><span class="co"># and item information</span></span>
-<span id="cb54-55"><a href="#cb54-55" aria-hidden="true" tabindex="-1"></a>itemlabels <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/PreventOSAitemlabels.xlsx"</span>)</span>
-<span id="cb54-56"><a href="#cb54-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-57"><a href="#cb54-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-58"><a href="#cb54-58" aria-hidden="true" tabindex="-1"></a>"Möjlighet att påverka" och "Återhämtning" används som exempel.</span>
+<span id="cb54-41"><a href="#cb54-41" aria-hidden="true" tabindex="-1"></a>The two questionnaires cover the domains of "recovery" and "agency", where the latter refers to workers' perceived control over their work situation. Our analyses will look at how "agency" affects "recovery". We will retain an interval scale score for the "recovery" scale throughout, while varying the "agency" between ordinal sum score, interval score, and interval score with weights.</span>
+<span id="cb54-42"><a href="#cb54-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-43"><a href="#cb54-43" aria-hidden="true" tabindex="-1"></a>Variables will be named <span class="in">`SEM`</span> for standard error of measurement, <span class="in">`Score`</span> for interval scores, and <span class="in">`SumScore`</span> for ordinal sum scores.</span>
+<span id="cb54-44"><a href="#cb54-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-45"><a href="#cb54-45" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb54-46"><a href="#cb54-46" aria-hidden="true" tabindex="-1"></a>This analysis is intended to be fully reproducible, which means some data wrangling is done initially. Please jump ahead to @sec-viz for data visualizations or @sec-lmm for the regression model output.</span>
+<span id="cb54-47"><a href="#cb54-47" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-48"><a href="#cb54-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-51"><a href="#cb54-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-52"><a href="#cb54-52" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RISEkbmRasch)</span>
+<span id="cb54-53"><a href="#cb54-53" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb54-54"><a href="#cb54-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb54-55"><a href="#cb54-55" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span>
+<span id="cb54-56"><a href="#cb54-56" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb54-57"><a href="#cb54-57" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantreg)</span>
+<span id="cb54-58"><a href="#cb54-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb54-59"><a href="#cb54-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-60"><a href="#cb54-60" aria-hidden="true" tabindex="-1"></a>We'll only change the predictor variable ("agency", translation may be changed to "perceived control")</span>
-<span id="cb54-61"><a href="#cb54-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-62"><a href="#cb54-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-63"><a href="#cb54-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-66"><a href="#cb54-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-67"><a href="#cb54-67" aria-hidden="true" tabindex="-1"></a>agencyItems <span class="ot">&lt;-</span> itemlabels <span class="sc">%&gt;%</span></span>
-<span id="cb54-68"><a href="#cb54-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Dimension <span class="sc">==</span> <span class="st">"Möjlighet att påverka"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb54-69"><a href="#cb54-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Dimension)</span>
-<span id="cb54-70"><a href="#cb54-70" aria-hidden="true" tabindex="-1"></a>agencyData <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb54-71"><a href="#cb54-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"q0007"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb54-72"><a href="#cb54-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"'Aldrig'=0;</span></span>
-<span id="cb54-73"><a href="#cb54-73" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Sällan' =1;</span></span>
-<span id="cb54-74"><a href="#cb54-74" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ibland'=2;</span></span>
-<span id="cb54-75"><a href="#cb54-75" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ganska ofta'=3;</span></span>
-<span id="cb54-76"><a href="#cb54-76" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Mycket ofta'=4;</span></span>
-<span id="cb54-77"><a href="#cb54-77" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Alltid'=5"</span>,</span>
-<span id="cb54-78"><a href="#cb54-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">as.factor =</span> <span class="cn">FALSE</span></span>
-<span id="cb54-79"><a href="#cb54-79" aria-hidden="true" tabindex="-1"></a>  )))</span>
-<span id="cb54-80"><a href="#cb54-80" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(agencyData) <span class="ot">&lt;-</span> agencyItems<span class="sc">$</span>itemnr</span>
-<span id="cb54-81"><a href="#cb54-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-82"><a href="#cb54-82" aria-hidden="true" tabindex="-1"></a><span class="co"># adjustments based on psychometric analysis</span></span>
-<span id="cb54-83"><a href="#cb54-83" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp4 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb54-84"><a href="#cb54-84" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp1<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp1,<span class="st">"1=0;2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
-<span id="cb54-85"><a href="#cb54-85" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp3<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp3,<span class="st">"1=0;2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
-<span id="cb54-86"><a href="#cb54-86" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp2<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp2,<span class="st">"1=0;2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
-<span id="cb54-87"><a href="#cb54-87" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp5<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp5,<span class="st">"2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
-<span id="cb54-88"><a href="#cb54-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-89"><a href="#cb54-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-90"><a href="#cb54-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-93"><a href="#cb54-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-94"><a href="#cb54-94" aria-hidden="true" tabindex="-1"></a>recoveryItems <span class="ot">&lt;-</span> itemlabels <span class="sc">%&gt;%</span></span>
-<span id="cb54-95"><a href="#cb54-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Dimension <span class="sc">==</span> <span class="st">"Återhämtning"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb54-96"><a href="#cb54-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Dimension)</span>
-<span id="cb54-97"><a href="#cb54-97" aria-hidden="true" tabindex="-1"></a>recoveryData <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb54-98"><a href="#cb54-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"q0009"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb54-99"><a href="#cb54-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"'Aldrig'=0;</span></span>
-<span id="cb54-100"><a href="#cb54-100" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Sällan' =1;</span></span>
-<span id="cb54-101"><a href="#cb54-101" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ibland'=2;</span></span>
-<span id="cb54-102"><a href="#cb54-102" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ganska ofta'=3;</span></span>
-<span id="cb54-103"><a href="#cb54-103" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Mycket ofta'=4;</span></span>
-<span id="cb54-104"><a href="#cb54-104" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Alltid'=5"</span>,</span>
-<span id="cb54-105"><a href="#cb54-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">as.factor =</span> <span class="cn">FALSE</span></span>
-<span id="cb54-106"><a href="#cb54-106" aria-hidden="true" tabindex="-1"></a>  )))</span>
-<span id="cb54-107"><a href="#cb54-107" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(recoveryData) <span class="ot">&lt;-</span> recoveryItems<span class="sc">$</span>itemnr</span>
-<span id="cb54-108"><a href="#cb54-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-109"><a href="#cb54-109" aria-hidden="true" tabindex="-1"></a><span class="co"># adjustments based on psychometric analysis</span></span>
-<span id="cb54-110"><a href="#cb54-110" aria-hidden="true" tabindex="-1"></a>recoveryData<span class="sc">$</span>å2 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb54-111"><a href="#cb54-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-112"><a href="#cb54-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-113"><a href="#cb54-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## Measurement properties</span></span>
-<span id="cb54-114"><a href="#cb54-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-115"><a href="#cb54-115" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset} </span>
-<span id="cb54-116"><a href="#cb54-116" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting recovery</span></span>
-<span id="cb54-119"><a href="#cb54-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-120"><a href="#cb54-120" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(recoveryData)</span>
-<span id="cb54-121"><a href="#cb54-121" aria-hidden="true" tabindex="-1"></a>recoveryRange <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">6</span>)</span>
-<span id="cb54-122"><a href="#cb54-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-123"><a href="#cb54-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-124"><a href="#cb54-124" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting agency</span></span>
-<span id="cb54-127"><a href="#cb54-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-128"><a href="#cb54-128" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(agencyData)</span>
-<span id="cb54-129"><a href="#cb54-129" aria-hidden="true" tabindex="-1"></a>agencyRange <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">6</span>)</span>
-<span id="cb54-130"><a href="#cb54-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-131"><a href="#cb54-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-132"><a href="#cb54-132" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reliability recovery</span></span>
-<span id="cb54-135"><a href="#cb54-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-136"><a href="#cb54-136" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(recoveryData)</span>
-<span id="cb54-137"><a href="#cb54-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-138"><a href="#cb54-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reliability agency</span></span>
-<span id="cb54-141"><a href="#cb54-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-142"><a href="#cb54-142" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(agencyData, <span class="at">cutoff =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
-<span id="cb54-143"><a href="#cb54-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">2.5</span>, </span>
-<span id="cb54-144"><a href="#cb54-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#e83c63"</span>, <span class="at">linetype =</span> <span class="dv">5</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
-<span id="cb54-145"><a href="#cb54-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-146"><a href="#cb54-146" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb54-147"><a href="#cb54-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-148"><a href="#cb54-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-62"><a href="#cb54-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-63"><a href="#cb54-63" aria-hidden="true" tabindex="-1"></a><span class="do">### some commands exist in multiple packages, here we define preferred ones that are frequently used</span></span>
+<span id="cb54-64"><a href="#cb54-64" aria-hidden="true" tabindex="-1"></a>select <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>select</span>
+<span id="cb54-65"><a href="#cb54-65" aria-hidden="true" tabindex="-1"></a>count <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>count</span>
+<span id="cb54-66"><a href="#cb54-66" aria-hidden="true" tabindex="-1"></a>recode <span class="ot">&lt;-</span> car<span class="sc">::</span>recode</span>
+<span id="cb54-67"><a href="#cb54-67" aria-hidden="true" tabindex="-1"></a>rename <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>rename</span>
+<span id="cb54-68"><a href="#cb54-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-69"><a href="#cb54-69" aria-hidden="true" tabindex="-1"></a><span class="co"># read full dataset, remove ppl w missing data</span></span>
+<span id="cb54-70"><a href="#cb54-70" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.spss</span>(<span class="st">"data/PreventOSAspss.sav"</span>,</span>
+<span id="cb54-71"><a href="#cb54-71" aria-hidden="true" tabindex="-1"></a>                <span class="at">to.data.frame =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-72"><a href="#cb54-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb54-73"><a href="#cb54-73" aria-hidden="true" tabindex="-1"></a><span class="co"># and item information</span></span>
+<span id="cb54-74"><a href="#cb54-74" aria-hidden="true" tabindex="-1"></a>itemlabels <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/PreventOSAitemlabels.xlsx"</span>)</span>
+<span id="cb54-75"><a href="#cb54-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-76"><a href="#cb54-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-79"><a href="#cb54-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-80"><a href="#cb54-80" aria-hidden="true" tabindex="-1"></a><span class="co"># vector of items</span></span>
+<span id="cb54-81"><a href="#cb54-81" aria-hidden="true" tabindex="-1"></a>agencyItems <span class="ot">&lt;-</span> itemlabels <span class="sc">%&gt;%</span></span>
+<span id="cb54-82"><a href="#cb54-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Dimension <span class="sc">==</span> <span class="st">"Möjlighet att påverka"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-83"><a href="#cb54-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Dimension)</span>
+<span id="cb54-84"><a href="#cb54-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-85"><a href="#cb54-85" aria-hidden="true" tabindex="-1"></a><span class="co"># data import, with recode of response categories to numerics</span></span>
+<span id="cb54-86"><a href="#cb54-86" aria-hidden="true" tabindex="-1"></a>agencyData <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb54-87"><a href="#cb54-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"q0007"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb54-88"><a href="#cb54-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"'Aldrig'=0;</span></span>
+<span id="cb54-89"><a href="#cb54-89" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Sällan' =1;</span></span>
+<span id="cb54-90"><a href="#cb54-90" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ibland'=2;</span></span>
+<span id="cb54-91"><a href="#cb54-91" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ganska ofta'=3;</span></span>
+<span id="cb54-92"><a href="#cb54-92" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Mycket ofta'=4;</span></span>
+<span id="cb54-93"><a href="#cb54-93" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Alltid'=5"</span>,</span>
+<span id="cb54-94"><a href="#cb54-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">as.factor =</span> <span class="cn">FALSE</span></span>
+<span id="cb54-95"><a href="#cb54-95" aria-hidden="true" tabindex="-1"></a>  )))</span>
+<span id="cb54-96"><a href="#cb54-96" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(agencyData) <span class="ot">&lt;-</span> agencyItems<span class="sc">$</span>itemnr</span>
+<span id="cb54-97"><a href="#cb54-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-98"><a href="#cb54-98" aria-hidden="true" tabindex="-1"></a><span class="co"># adjustments based on psychometric analysis</span></span>
+<span id="cb54-99"><a href="#cb54-99" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp4 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb54-100"><a href="#cb54-100" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp1<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp1,<span class="st">"1=0;2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
+<span id="cb54-101"><a href="#cb54-101" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp3<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp3,<span class="st">"1=0;2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
+<span id="cb54-102"><a href="#cb54-102" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp2<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp2,<span class="st">"1=0;2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
+<span id="cb54-103"><a href="#cb54-103" aria-hidden="true" tabindex="-1"></a>agencyData<span class="sc">$</span>mp5<span class="ot">&lt;-</span><span class="fu">recode</span>(agencyData<span class="sc">$</span>mp5,<span class="st">"2=1;3=2;4=3;5=4"</span>,<span class="at">as.factor=</span><span class="cn">FALSE</span>)</span>
+<span id="cb54-104"><a href="#cb54-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-105"><a href="#cb54-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-108"><a href="#cb54-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-109"><a href="#cb54-109" aria-hidden="true" tabindex="-1"></a><span class="co"># vector of items</span></span>
+<span id="cb54-110"><a href="#cb54-110" aria-hidden="true" tabindex="-1"></a>recoveryItems <span class="ot">&lt;-</span> itemlabels <span class="sc">%&gt;%</span></span>
+<span id="cb54-111"><a href="#cb54-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Dimension <span class="sc">==</span> <span class="st">"Återhämtning"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-112"><a href="#cb54-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Dimension)</span>
+<span id="cb54-113"><a href="#cb54-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-114"><a href="#cb54-114" aria-hidden="true" tabindex="-1"></a><span class="co"># data import, with recode of response categories to numerics</span></span>
+<span id="cb54-115"><a href="#cb54-115" aria-hidden="true" tabindex="-1"></a>recoveryData <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb54-116"><a href="#cb54-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"q0009"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb54-117"><a href="#cb54-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"'Aldrig'=0;</span></span>
+<span id="cb54-118"><a href="#cb54-118" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Sällan' =1;</span></span>
+<span id="cb54-119"><a href="#cb54-119" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ibland'=2;</span></span>
+<span id="cb54-120"><a href="#cb54-120" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Ganska ofta'=3;</span></span>
+<span id="cb54-121"><a href="#cb54-121" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Mycket ofta'=4;</span></span>
+<span id="cb54-122"><a href="#cb54-122" aria-hidden="true" tabindex="-1"></a><span class="st">                                            'Alltid'=5"</span>,</span>
+<span id="cb54-123"><a href="#cb54-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">as.factor =</span> <span class="cn">FALSE</span></span>
+<span id="cb54-124"><a href="#cb54-124" aria-hidden="true" tabindex="-1"></a>  )))</span>
+<span id="cb54-125"><a href="#cb54-125" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(recoveryData) <span class="ot">&lt;-</span> recoveryItems<span class="sc">$</span>itemnr</span>
+<span id="cb54-126"><a href="#cb54-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-127"><a href="#cb54-127" aria-hidden="true" tabindex="-1"></a><span class="co"># adjustments based on psychometric analysis</span></span>
+<span id="cb54-128"><a href="#cb54-128" aria-hidden="true" tabindex="-1"></a>recoveryData<span class="sc">$</span>å2 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb54-129"><a href="#cb54-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-130"><a href="#cb54-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-131"><a href="#cb54-131" aria-hidden="true" tabindex="-1"></a><span class="fu">## Measurement properties</span></span>
+<span id="cb54-132"><a href="#cb54-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-133"><a href="#cb54-133" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset} </span>
+<span id="cb54-134"><a href="#cb54-134" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting recovery</span></span>
+<span id="cb54-137"><a href="#cb54-137" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-138"><a href="#cb54-138" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(recoveryData)</span>
+<span id="cb54-139"><a href="#cb54-139" aria-hidden="true" tabindex="-1"></a>recoveryRange <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">6</span>)</span>
+<span id="cb54-140"><a href="#cb54-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-141"><a href="#cb54-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-142"><a href="#cb54-142" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting agency</span></span>
+<span id="cb54-145"><a href="#cb54-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-146"><a href="#cb54-146" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(agencyData)</span>
+<span id="cb54-147"><a href="#cb54-147" aria-hidden="true" tabindex="-1"></a>agencyRange <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">6</span>)</span>
+<span id="cb54-148"><a href="#cb54-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb54-149"><a href="#cb54-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-150"><a href="#cb54-150" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimate person score/locations.</span></span>
-<span id="cb54-151"><a href="#cb54-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-154"><a href="#cb54-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-155"><a href="#cb54-155" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>agencyScore <span class="ot">&lt;-</span> <span class="fu">RIestThetas</span>(agencyData, <span class="at">theta_range =</span> agencyRange)</span>
-<span id="cb54-156"><a href="#cb54-156" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>agencyScore <span class="ot">&lt;-</span> <span class="fu">round</span>(df<span class="sc">$</span>agencyScore,<span class="dv">3</span>)</span>
-<span id="cb54-157"><a href="#cb54-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-158"><a href="#cb54-158" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>recoveryScore <span class="ot">&lt;-</span> <span class="fu">RIestThetas</span>(recoveryData, <span class="at">theta_range =</span> recoveryRange)</span>
-<span id="cb54-159"><a href="#cb54-159" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>recoveryScore <span class="ot">&lt;-</span> <span class="fu">round</span>(df<span class="sc">$</span>recoveryScore,<span class="dv">3</span>)</span>
-<span id="cb54-160"><a href="#cb54-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-161"><a href="#cb54-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-162"><a href="#cb54-162" aria-hidden="true" tabindex="-1"></a>Plot relationship ordinal/interval</span>
-<span id="cb54-163"><a href="#cb54-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-166"><a href="#cb54-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-167"><a href="#cb54-167" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(recoveryData, <span class="at">sdx =</span> <span class="dv">15</span>, <span class="at">score_range =</span> recoveryRange, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
-<span id="cb54-168"><a href="#cb54-168" aria-hidden="true" tabindex="-1"></a><span class="co">#RIscoreSE(recoveryData, sdx = 15, score_range = recoveryRange)</span></span>
-<span id="cb54-169"><a href="#cb54-169" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(agencyData, <span class="at">sdx =</span> <span class="dv">10</span>, <span class="at">score_range =</span> agencyRange, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
-<span id="cb54-170"><a href="#cb54-170" aria-hidden="true" tabindex="-1"></a><span class="co">#RIscoreSE(agencyData, sdx = 10, score_range = agencyRange, output = "table")</span></span>
-<span id="cb54-171"><a href="#cb54-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-172"><a href="#cb54-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-150"><a href="#cb54-150" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reliability recovery</span></span>
+<span id="cb54-153"><a href="#cb54-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-154"><a href="#cb54-154" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(recoveryData)</span>
+<span id="cb54-155"><a href="#cb54-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-156"><a href="#cb54-156" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reliability agency</span></span>
+<span id="cb54-159"><a href="#cb54-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-160"><a href="#cb54-160" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(agencyData, <span class="at">cutoff =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb54-161"><a href="#cb54-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">2.5</span>, </span>
+<span id="cb54-162"><a href="#cb54-162" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"#e83c63"</span>, <span class="at">linetype =</span> <span class="dv">5</span>, <span class="at">size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb54-163"><a href="#cb54-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-164"><a href="#cb54-164" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-165"><a href="#cb54-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-166"><a href="#cb54-166" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimating person score/locations.</span></span>
+<span id="cb54-167"><a href="#cb54-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-170"><a href="#cb54-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-171"><a href="#cb54-171" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>agencyScore <span class="ot">&lt;-</span> <span class="fu">RIestThetas</span>(agencyData, <span class="at">theta_range =</span> agencyRange)</span>
+<span id="cb54-172"><a href="#cb54-172" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>agencyScore <span class="ot">&lt;-</span> <span class="fu">round</span>(df<span class="sc">$</span>agencyScore,<span class="dv">3</span>)</span>
 <span id="cb54-173"><a href="#cb54-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-174"><a href="#cb54-174" aria-hidden="true" tabindex="-1"></a>Get info about measurement uncertainties</span>
-<span id="cb54-177"><a href="#cb54-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-178"><a href="#cb54-178" aria-hidden="true" tabindex="-1"></a>recoveryTable <span class="ot">&lt;-</span> <span class="fu">RIscoreSE</span>(recoveryData, <span class="at">sdx =</span> <span class="dv">15</span>, <span class="at">width =</span> <span class="dv">50</span>, <span class="at">score_range =</span> recoveryRange, <span class="at">output =</span> <span class="st">"dataframe"</span>) </span>
-<span id="cb54-179"><a href="#cb54-179" aria-hidden="true" tabindex="-1"></a>recoveryTable <span class="ot">&lt;-</span> recoveryTable <span class="sc">%&gt;%</span> </span>
-<span id="cb54-180"><a href="#cb54-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">recoverySEM =</span> <span class="st">`</span><span class="at">Logit std.error</span><span class="st">`</span>,</span>
-<span id="cb54-181"><a href="#cb54-181" aria-hidden="true" tabindex="-1"></a>         <span class="at">recoveryScore =</span> <span class="st">`</span><span class="at">Logit score</span><span class="st">`</span>,</span>
-<span id="cb54-182"><a href="#cb54-182" aria-hidden="true" tabindex="-1"></a>         <span class="at">recoverySumScore =</span> <span class="st">`</span><span class="at">Ordinal sum score</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-183"><a href="#cb54-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">recoveryScore =</span> <span class="fu">round</span>(recoveryScore,<span class="dv">3</span>))</span>
-<span id="cb54-184"><a href="#cb54-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-185"><a href="#cb54-185" aria-hidden="true" tabindex="-1"></a>agencyTable <span class="ot">&lt;-</span> <span class="fu">RIscoreSE</span>(agencyData, <span class="at">width =</span> <span class="dv">50</span>, <span class="at">sdx =</span> <span class="dv">10</span>, <span class="at">score_range =</span> agencyRange, <span class="at">output =</span> <span class="st">"dataframe"</span>)</span>
-<span id="cb54-186"><a href="#cb54-186" aria-hidden="true" tabindex="-1"></a>agencyTable <span class="ot">&lt;-</span> agencyTable <span class="sc">%&gt;%</span> </span>
-<span id="cb54-187"><a href="#cb54-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">agencySEM =</span> <span class="st">`</span><span class="at">Logit std.error</span><span class="st">`</span>,</span>
-<span id="cb54-188"><a href="#cb54-188" aria-hidden="true" tabindex="-1"></a>         <span class="at">agencyScore =</span> <span class="st">`</span><span class="at">Logit score</span><span class="st">`</span>,</span>
-<span id="cb54-189"><a href="#cb54-189" aria-hidden="true" tabindex="-1"></a>         <span class="at">agencySumScore =</span> <span class="st">`</span><span class="at">Ordinal sum score</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-190"><a href="#cb54-190" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">agencyScore =</span> <span class="fu">round</span>(agencyScore,<span class="dv">3</span>))</span>
-<span id="cb54-191"><a href="#cb54-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-192"><a href="#cb54-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-193"><a href="#cb54-193" aria-hidden="true" tabindex="-1"></a>Join SEM values to df based on scores</span>
-<span id="cb54-194"><a href="#cb54-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-197"><a href="#cb54-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-198"><a href="#cb54-198" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb54-199"><a href="#cb54-199" aria-hidden="true" tabindex="-1"></a>  <span class="at">agencyScore =</span> df<span class="sc">$</span>agencyScore,</span>
-<span id="cb54-200"><a href="#cb54-200" aria-hidden="true" tabindex="-1"></a>  <span class="at">recoveryScore =</span> df<span class="sc">$</span>recoveryScore</span>
-<span id="cb54-201"><a href="#cb54-201" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb54-202"><a href="#cb54-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-203"><a href="#cb54-203" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(data,recoveryTable, <span class="at">by =</span> <span class="st">"recoveryScore"</span>)</span>
-<span id="cb54-204"><a href="#cb54-204" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(data,agencyTable, <span class="at">by =</span> <span class="st">"agencyScore"</span>)</span>
-<span id="cb54-205"><a href="#cb54-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-206"><a href="#cb54-206" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span>
+<span id="cb54-174"><a href="#cb54-174" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>recoveryScore <span class="ot">&lt;-</span> <span class="fu">RIestThetas</span>(recoveryData, <span class="at">theta_range =</span> recoveryRange)</span>
+<span id="cb54-175"><a href="#cb54-175" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>recoveryScore <span class="ot">&lt;-</span> <span class="fu">round</span>(df<span class="sc">$</span>recoveryScore,<span class="dv">3</span>)</span>
+<span id="cb54-176"><a href="#cb54-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-177"><a href="#cb54-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-178"><a href="#cb54-178" aria-hidden="true" tabindex="-1"></a><span class="fu">### Plot relationship ordinal/interval</span></span>
+<span id="cb54-179"><a href="#cb54-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-182"><a href="#cb54-182" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-183"><a href="#cb54-183" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(recoveryData, <span class="at">sdx =</span> <span class="dv">15</span>, <span class="at">score_range =</span> recoveryRange, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
+<span id="cb54-184"><a href="#cb54-184" aria-hidden="true" tabindex="-1"></a><span class="co">#RIscoreSE(recoveryData, sdx = 15, score_range = recoveryRange)</span></span>
+<span id="cb54-185"><a href="#cb54-185" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(agencyData, <span class="at">sdx =</span> <span class="dv">10</span>, <span class="at">score_range =</span> agencyRange, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
+<span id="cb54-186"><a href="#cb54-186" aria-hidden="true" tabindex="-1"></a><span class="co">#RIscoreSE(agencyData, sdx = 10, score_range = agencyRange, output = "table")</span></span>
+<span id="cb54-187"><a href="#cb54-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-188"><a href="#cb54-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-189"><a href="#cb54-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-190"><a href="#cb54-190" aria-hidden="true" tabindex="-1"></a><span class="fu">### Measurement uncertainties</span></span>
+<span id="cb54-193"><a href="#cb54-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-194"><a href="#cb54-194" aria-hidden="true" tabindex="-1"></a>recoveryTable <span class="ot">&lt;-</span> <span class="fu">RIscoreSE</span>(recoveryData, <span class="at">sdx =</span> <span class="dv">15</span>, <span class="at">width =</span> <span class="dv">50</span>, <span class="at">score_range =</span> recoveryRange, <span class="at">output =</span> <span class="st">"dataframe"</span>) </span>
+<span id="cb54-195"><a href="#cb54-195" aria-hidden="true" tabindex="-1"></a>recoveryTable <span class="ot">&lt;-</span> recoveryTable <span class="sc">%&gt;%</span> </span>
+<span id="cb54-196"><a href="#cb54-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">recoverySEM =</span> <span class="st">`</span><span class="at">Logit std.error</span><span class="st">`</span>,</span>
+<span id="cb54-197"><a href="#cb54-197" aria-hidden="true" tabindex="-1"></a>         <span class="at">recoveryScore =</span> <span class="st">`</span><span class="at">Logit score</span><span class="st">`</span>,</span>
+<span id="cb54-198"><a href="#cb54-198" aria-hidden="true" tabindex="-1"></a>         <span class="at">recoverySumScore =</span> <span class="st">`</span><span class="at">Ordinal sum score</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-199"><a href="#cb54-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">recoveryScore =</span> <span class="fu">round</span>(recoveryScore,<span class="dv">3</span>))</span>
+<span id="cb54-200"><a href="#cb54-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-201"><a href="#cb54-201" aria-hidden="true" tabindex="-1"></a>agencyTable <span class="ot">&lt;-</span> <span class="fu">RIscoreSE</span>(agencyData, <span class="at">width =</span> <span class="dv">50</span>, <span class="at">sdx =</span> <span class="dv">10</span>, <span class="at">score_range =</span> agencyRange, <span class="at">output =</span> <span class="st">"dataframe"</span>)</span>
+<span id="cb54-202"><a href="#cb54-202" aria-hidden="true" tabindex="-1"></a>agencyTable <span class="ot">&lt;-</span> agencyTable <span class="sc">%&gt;%</span> </span>
+<span id="cb54-203"><a href="#cb54-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">agencySEM =</span> <span class="st">`</span><span class="at">Logit std.error</span><span class="st">`</span>,</span>
+<span id="cb54-204"><a href="#cb54-204" aria-hidden="true" tabindex="-1"></a>         <span class="at">agencyScore =</span> <span class="st">`</span><span class="at">Logit score</span><span class="st">`</span>,</span>
+<span id="cb54-205"><a href="#cb54-205" aria-hidden="true" tabindex="-1"></a>         <span class="at">agencySumScore =</span> <span class="st">`</span><span class="at">Ordinal sum score</span><span class="st">`</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-206"><a href="#cb54-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">agencyScore =</span> <span class="fu">round</span>(agencyScore,<span class="dv">3</span>))</span>
 <span id="cb54-207"><a href="#cb54-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-208"><a href="#cb54-208" aria-hidden="true" tabindex="-1"></a>We have some respondents with unexpected responses and thetas outside what we have generic SEM info about. It is possible to estimate individual SEM but this has not yet been implemented in the RISEkbmRasch package and for this exercise it'll be sufficient to use those with </span>
-<span id="cb54-209"><a href="#cb54-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-212"><a href="#cb54-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-213"><a href="#cb54-213" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(data)</span>
-<span id="cb54-214"><a href="#cb54-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-215"><a href="#cb54-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-216"><a href="#cb54-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualizing data</span></span>
-<span id="cb54-217"><a href="#cb54-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-218"><a href="#cb54-218" aria-hidden="true" tabindex="-1"></a><span class="fu">### Histograms</span></span>
-<span id="cb54-219"><a href="#cb54-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-220"><a href="#cb54-220" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb54-221"><a href="#cb54-221" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval score</span></span>
-<span id="cb54-224"><a href="#cb54-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-225"><a href="#cb54-225" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb54-226"><a href="#cb54-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"agencyScore"</span>,<span class="st">"recoveryScore"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb54-227"><a href="#cb54-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
-<span id="cb54-228"><a href="#cb54-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
-<span id="cb54-229"><a href="#cb54-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name) <span class="sc">+</span></span>
-<span id="cb54-230"><a href="#cb54-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
-<span id="cb54-231"><a href="#cb54-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-232"><a href="#cb54-232" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-233"><a href="#cb54-233" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal sum score</span></span>
-<span id="cb54-236"><a href="#cb54-236" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-237"><a href="#cb54-237" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb54-238"><a href="#cb54-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"agencySumScore"</span>,<span class="st">"recoverySumScore"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb54-239"><a href="#cb54-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
-<span id="cb54-240"><a href="#cb54-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
-<span id="cb54-241"><a href="#cb54-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name) <span class="sc">+</span></span>
-<span id="cb54-242"><a href="#cb54-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
-<span id="cb54-243"><a href="#cb54-243" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-244"><a href="#cb54-244" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb54-245"><a href="#cb54-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-246"><a href="#cb54-246" aria-hidden="true" tabindex="-1"></a><span class="fu">### SEM</span></span>
-<span id="cb54-247"><a href="#cb54-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-248"><a href="#cb54-248" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb54-249"><a href="#cb54-249" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Agency</span></span>
-<span id="cb54-252"><a href="#cb54-252" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-253"><a href="#cb54-253" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb54-254"><a href="#cb54-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-255"><a href="#cb54-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> agencySEM, </span>
-<span id="cb54-256"><a href="#cb54-256" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> agencyScore)) <span class="sc">+</span></span>
-<span id="cb54-257"><a href="#cb54-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-258"><a href="#cb54-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb54-259"><a href="#cb54-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
-<span id="cb54-260"><a href="#cb54-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span>
-<span id="cb54-261"><a href="#cb54-261" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-262"><a href="#cb54-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-263"><a href="#cb54-263" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Reccovery</span></span>
-<span id="cb54-266"><a href="#cb54-266" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-267"><a href="#cb54-267" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb54-268"><a href="#cb54-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-269"><a href="#cb54-269" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> recoverySEM, </span>
-<span id="cb54-270"><a href="#cb54-270" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> recoveryScore)) <span class="sc">+</span></span>
-<span id="cb54-271"><a href="#cb54-271" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-272"><a href="#cb54-272" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb54-273"><a href="#cb54-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
-<span id="cb54-274"><a href="#cb54-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span>
-<span id="cb54-275"><a href="#cb54-275" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-276"><a href="#cb54-276" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb54-277"><a href="#cb54-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-278"><a href="#cb54-278" aria-hidden="true" tabindex="-1"></a><span class="fu">### Correlations</span></span>
-<span id="cb54-279"><a href="#cb54-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-280"><a href="#cb54-280" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb54-281"><a href="#cb54-281" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval score </span></span>
-<span id="cb54-282"><a href="#cb54-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-285"><a href="#cb54-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-286"><a href="#cb54-286" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
-<span id="cb54-287"><a href="#cb54-287" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencyScore,</span>
-<span id="cb54-288"><a href="#cb54-288" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
-<span id="cb54-289"><a href="#cb54-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-290"><a href="#cb54-290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb54-291"><a href="#cb54-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
-<span id="cb54-292"><a href="#cb54-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-293"><a href="#cb54-293" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal sum score </span></span>
-<span id="cb54-294"><a href="#cb54-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-297"><a href="#cb54-297" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-298"><a href="#cb54-298" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
-<span id="cb54-299"><a href="#cb54-299" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencySumScore,</span>
-<span id="cb54-300"><a href="#cb54-300" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
-<span id="cb54-301"><a href="#cb54-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-302"><a href="#cb54-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb54-303"><a href="#cb54-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
-<span id="cb54-304"><a href="#cb54-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-305"><a href="#cb54-305" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb54-306"><a href="#cb54-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-307"><a href="#cb54-307" aria-hidden="true" tabindex="-1"></a><span class="fu">## Weights for WLS regression</span></span>
-<span id="cb54-308"><a href="#cb54-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-311"><a href="#cb54-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-312"><a href="#cb54-312" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb54-313"><a href="#cb54-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>agencySEM) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-314"><a href="#cb54-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> agencySEM, </span>
-<span id="cb54-315"><a href="#cb54-315" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> weights)) <span class="sc">+</span></span>
-<span id="cb54-316"><a href="#cb54-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-317"><a href="#cb54-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
-<span id="cb54-318"><a href="#cb54-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-319"><a href="#cb54-319" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
-<span id="cb54-320"><a href="#cb54-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>agencySEM) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-321"><a href="#cb54-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(weights,agencySEM) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-322"><a href="#cb54-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb54-323"><a href="#cb54-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(agencySEM) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-324"><a href="#cb54-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">20</span>)</span>
-<span id="cb54-325"><a href="#cb54-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-326"><a href="#cb54-326" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb54-327"><a href="#cb54-327" aria-hidden="true" tabindex="-1"></a><span class="fu">## Regression models</span></span>
-<span id="cb54-328"><a href="#cb54-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-329"><a href="#cb54-329" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb54-330"><a href="#cb54-330" aria-hidden="true" tabindex="-1"></a><span class="fu">### OLS interval score</span></span>
-<span id="cb54-333"><a href="#cb54-333" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-334"><a href="#cb54-334" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb54-335"><a href="#cb54-335" aria-hidden="true" tabindex="-1"></a>olsInt <span class="ot">&lt;-</span> <span class="fu">lm</span>(recoveryScore <span class="sc">~</span> agencyScore, <span class="at">data =</span> data)</span>
-<span id="cb54-336"><a href="#cb54-336" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsInt)</span>
-<span id="cb54-337"><a href="#cb54-337" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(olsInt)</span>
-<span id="cb54-338"><a href="#cb54-338" aria-hidden="true" tabindex="-1"></a><span class="fu">dwtest</span>(olsInt)</span>
-<span id="cb54-339"><a href="#cb54-339" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(olsInt)</span>
-<span id="cb54-340"><a href="#cb54-340" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-341"><a href="#cb54-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-342"><a href="#cb54-342" aria-hidden="true" tabindex="-1"></a><span class="fu">### WLS interval score </span></span>
-<span id="cb54-345"><a href="#cb54-345" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-346"><a href="#cb54-346" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb54-347"><a href="#cb54-347" aria-hidden="true" tabindex="-1"></a>wlsInt <span class="ot">&lt;-</span> <span class="fu">lm</span>(recoveryScore <span class="sc">~</span> agencyScore, </span>
-<span id="cb54-348"><a href="#cb54-348" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> data,</span>
-<span id="cb54-349"><a href="#cb54-349" aria-hidden="true" tabindex="-1"></a>         <span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>data<span class="sc">$</span>agencySEM)</span>
-<span id="cb54-350"><a href="#cb54-350" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wlsInt)</span>
-<span id="cb54-351"><a href="#cb54-351" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(wlsInt)</span>
-<span id="cb54-352"><a href="#cb54-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-353"><a href="#cb54-353" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-354"><a href="#cb54-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-355"><a href="#cb54-355" aria-hidden="true" tabindex="-1"></a><span class="fu">### OLS ordinal score</span></span>
+<span id="cb54-208"><a href="#cb54-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-209"><a href="#cb54-209" aria-hidden="true" tabindex="-1"></a>Join SEM values to df based on scores</span>
+<span id="cb54-210"><a href="#cb54-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-213"><a href="#cb54-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-214"><a href="#cb54-214" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb54-215"><a href="#cb54-215" aria-hidden="true" tabindex="-1"></a>  <span class="at">agencyScore =</span> df<span class="sc">$</span>agencyScore,</span>
+<span id="cb54-216"><a href="#cb54-216" aria-hidden="true" tabindex="-1"></a>  <span class="at">recoveryScore =</span> df<span class="sc">$</span>recoveryScore</span>
+<span id="cb54-217"><a href="#cb54-217" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-218"><a href="#cb54-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-219"><a href="#cb54-219" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(data,recoveryTable, <span class="at">by =</span> <span class="st">"recoveryScore"</span>)</span>
+<span id="cb54-220"><a href="#cb54-220" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(data,agencyTable, <span class="at">by =</span> <span class="st">"agencyScore"</span>)</span>
+<span id="cb54-221"><a href="#cb54-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-222"><a href="#cb54-222" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span>
+<span id="cb54-223"><a href="#cb54-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-224"><a href="#cb54-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-225"><a href="#cb54-225" aria-hidden="true" tabindex="-1"></a>We have some respondents with unexpected responses and thetas outside what we have generic SEM info about. It is possible to estimate individual SEM but this has not yet been implemented in the RISEkbmRasch package and for this exercise it'll be sufficient to use those with </span>
+<span id="cb54-226"><a href="#cb54-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-229"><a href="#cb54-229" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-230"><a href="#cb54-230" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(data)</span>
+<span id="cb54-231"><a href="#cb54-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-232"><a href="#cb54-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-233"><a href="#cb54-233" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualizing data {#sec-viz}</span></span>
+<span id="cb54-234"><a href="#cb54-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-235"><a href="#cb54-235" aria-hidden="true" tabindex="-1"></a><span class="fu">### Histograms</span></span>
+<span id="cb54-236"><a href="#cb54-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-237"><a href="#cb54-237" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-238"><a href="#cb54-238" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval score</span></span>
+<span id="cb54-241"><a href="#cb54-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-242"><a href="#cb54-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb54-243"><a href="#cb54-243" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-244"><a href="#cb54-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"agencyScore"</span>,<span class="st">"recoveryScore"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb54-245"><a href="#cb54-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
+<span id="cb54-246"><a href="#cb54-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb54-247"><a href="#cb54-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name) <span class="sc">+</span></span>
+<span id="cb54-248"><a href="#cb54-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
+<span id="cb54-249"><a href="#cb54-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-250"><a href="#cb54-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-251"><a href="#cb54-251" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal sum score</span></span>
+<span id="cb54-254"><a href="#cb54-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-255"><a href="#cb54-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb54-256"><a href="#cb54-256" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-257"><a href="#cb54-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"agencySumScore"</span>,<span class="st">"recoverySumScore"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb54-258"><a href="#cb54-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span></span>
+<span id="cb54-259"><a href="#cb54-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>) <span class="sc">+</span></span>
+<span id="cb54-260"><a href="#cb54-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name) <span class="sc">+</span></span>
+<span id="cb54-261"><a href="#cb54-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
+<span id="cb54-262"><a href="#cb54-262" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-263"><a href="#cb54-263" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-264"><a href="#cb54-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-265"><a href="#cb54-265" aria-hidden="true" tabindex="-1"></a><span class="fu">### SEM</span></span>
+<span id="cb54-266"><a href="#cb54-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-267"><a href="#cb54-267" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-268"><a href="#cb54-268" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Agency</span></span>
+<span id="cb54-271"><a href="#cb54-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-272"><a href="#cb54-272" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb54-273"><a href="#cb54-273" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-274"><a href="#cb54-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-275"><a href="#cb54-275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> agencySEM, </span>
+<span id="cb54-276"><a href="#cb54-276" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> agencyScore)) <span class="sc">+</span></span>
+<span id="cb54-277"><a href="#cb54-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-278"><a href="#cb54-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb54-279"><a href="#cb54-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.54</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-280"><a href="#cb54-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
+<span id="cb54-281"><a href="#cb54-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb54-282"><a href="#cb54-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"Note. Lower SEM = improved reliability. A SEM at 0.54 (dashed line) corresponds to a reliability coefficient of 0.7 on a 0 to 1 scale. SEM = 0.45 corresponds to reliability 0.8"</span>))</span>
+<span id="cb54-283"><a href="#cb54-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-284"><a href="#cb54-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-285"><a href="#cb54-285" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Recovery</span></span>
+<span id="cb54-288"><a href="#cb54-288" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-289"><a href="#cb54-289" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb54-290"><a href="#cb54-290" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-291"><a href="#cb54-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-292"><a href="#cb54-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> recoverySEM, </span>
+<span id="cb54-293"><a href="#cb54-293" aria-hidden="true" tabindex="-1"></a>             <span class="at">x =</span> recoveryScore)) <span class="sc">+</span></span>
+<span id="cb54-294"><a href="#cb54-294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-295"><a href="#cb54-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb54-296"><a href="#cb54-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.54</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-297"><a href="#cb54-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
+<span id="cb54-298"><a href="#cb54-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb54-299"><a href="#cb54-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"Note. Lower SEM = improved reliability. A SEM at 0.54 (dashed line) corresponds to a reliability coefficient of 0.7 on a 0 to 1 scale. SEM = 0.45 corresponds to reliability 0.8"</span>))</span>
+<span id="cb54-300"><a href="#cb54-300" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-301"><a href="#cb54-301" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-302"><a href="#cb54-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-303"><a href="#cb54-303" aria-hidden="true" tabindex="-1"></a><span class="fu">### Scatter plots</span></span>
+<span id="cb54-304"><a href="#cb54-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-305"><a href="#cb54-305" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-306"><a href="#cb54-306" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval score </span></span>
+<span id="cb54-307"><a href="#cb54-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-310"><a href="#cb54-310" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-311"><a href="#cb54-311" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
+<span id="cb54-312"><a href="#cb54-312" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencyScore,</span>
+<span id="cb54-313"><a href="#cb54-313" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
+<span id="cb54-314"><a href="#cb54-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-315"><a href="#cb54-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb54-316"><a href="#cb54-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
+<span id="cb54-317"><a href="#cb54-317" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-318"><a href="#cb54-318" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal sum score </span></span>
+<span id="cb54-321"><a href="#cb54-321" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-322"><a href="#cb54-322" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
+<span id="cb54-323"><a href="#cb54-323" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencySumScore,</span>
+<span id="cb54-324"><a href="#cb54-324" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
+<span id="cb54-325"><a href="#cb54-325" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-326"><a href="#cb54-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb54-327"><a href="#cb54-327" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>()</span>
+<span id="cb54-328"><a href="#cb54-328" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-329"><a href="#cb54-329" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-330"><a href="#cb54-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-331"><a href="#cb54-331" aria-hidden="true" tabindex="-1"></a><span class="fu">## Weights for WLS regression</span></span>
+<span id="cb54-332"><a href="#cb54-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-335"><a href="#cb54-335" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-336"><a href="#cb54-336" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-337"><a href="#cb54-337" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>agencySEM) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-338"><a href="#cb54-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> agencySEM, </span>
+<span id="cb54-339"><a href="#cb54-339" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> weights)) <span class="sc">+</span></span>
+<span id="cb54-340"><a href="#cb54-340" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-341"><a href="#cb54-341" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>() <span class="sc">+</span></span>
+<span id="cb54-342"><a href="#cb54-342" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2</span>))</span>
+<span id="cb54-343"><a href="#cb54-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-344"><a href="#cb54-344" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-345"><a href="#cb54-345" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>agencySEM) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-346"><a href="#cb54-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(weights,agencySEM) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-347"><a href="#cb54-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb54-348"><a href="#cb54-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(agencySEM) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-349"><a href="#cb54-349" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">20</span>)</span>
+<span id="cb54-350"><a href="#cb54-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-351"><a href="#cb54-351" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb54-352"><a href="#cb54-352" aria-hidden="true" tabindex="-1"></a><span class="fu">## Linear regression models {#sec-lmm}</span></span>
+<span id="cb54-353"><a href="#cb54-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-354"><a href="#cb54-354" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-355"><a href="#cb54-355" aria-hidden="true" tabindex="-1"></a><span class="fu">### OLS interval score</span></span>
 <span id="cb54-358"><a href="#cb54-358" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb54-359"><a href="#cb54-359" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb54-360"><a href="#cb54-360" aria-hidden="true" tabindex="-1"></a>olsOrd <span class="ot">&lt;-</span> <span class="fu">lm</span>(recoveryScore <span class="sc">~</span> agencySumScore, <span class="at">data =</span> data)</span>
-<span id="cb54-361"><a href="#cb54-361" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsOrd)</span>
-<span id="cb54-362"><a href="#cb54-362" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(olsOrd)</span>
-<span id="cb54-363"><a href="#cb54-363" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-364"><a href="#cb54-364" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb54-365"><a href="#cb54-365" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-366"><a href="#cb54-366" aria-hidden="true" tabindex="-1"></a><span class="fu">### Linear model comparison</span></span>
-<span id="cb54-367"><a href="#cb54-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-360"><a href="#cb54-360" aria-hidden="true" tabindex="-1"></a>olsInt <span class="ot">&lt;-</span> <span class="fu">lm</span>(recoveryScore <span class="sc">~</span> agencyScore, <span class="at">data =</span> data)</span>
+<span id="cb54-361"><a href="#cb54-361" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsInt)</span>
+<span id="cb54-362"><a href="#cb54-362" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(olsInt)</span>
+<span id="cb54-363"><a href="#cb54-363" aria-hidden="true" tabindex="-1"></a><span class="fu">dwtest</span>(olsInt)</span>
+<span id="cb54-364"><a href="#cb54-364" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(olsInt)</span>
+<span id="cb54-365"><a href="#cb54-365" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-366"><a href="#cb54-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-367"><a href="#cb54-367" aria-hidden="true" tabindex="-1"></a><span class="fu">### WLS interval score </span></span>
 <span id="cb54-370"><a href="#cb54-370" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-371"><a href="#cb54-371" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
-<span id="cb54-372"><a href="#cb54-372" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"OLSinterval"</span>,<span class="st">"WLSinterval"</span>,<span class="st">"OLSordinal"</span>)</span>
-<span id="cb54-373"><a href="#cb54-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-374"><a href="#cb54-374" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">tidy</span>(olsInt, <span class="at">conf.int =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb54-375"><a href="#cb54-375" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tidy</span>(wlsInt, <span class="at">conf.int =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb54-376"><a href="#cb54-376" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tidy</span>(olsOrd, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-377"><a href="#cb54-377" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">model =</span> <span class="fu">rep</span>(models, <span class="at">each =</span> <span class="dv">2</span>), <span class="at">.before =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-378"><a href="#cb54-378" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-379"><a href="#cb54-379" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(term) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-380"><a href="#cb54-380" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl_rise</span>()</span>
-<span id="cb54-381"><a href="#cb54-381" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-382"><a href="#cb54-382" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">glance</span>(olsInt, <span class="at">conf.int =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb54-383"><a href="#cb54-383" aria-hidden="true" tabindex="-1"></a>      <span class="fu">glance</span>(wlsInt, <span class="at">conf.int =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb54-384"><a href="#cb54-384" aria-hidden="true" tabindex="-1"></a>      <span class="fu">glance</span>(olsOrd, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-385"><a href="#cb54-385" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">model =</span> <span class="fu">rep</span>(models, <span class="at">each =</span> <span class="dv">1</span>), <span class="at">.before =</span> <span class="st">"r.squared"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-386"><a href="#cb54-386" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-387"><a href="#cb54-387" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl_rise</span>()</span>
-<span id="cb54-388"><a href="#cb54-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-389"><a href="#cb54-389" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-371"><a href="#cb54-371" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb54-372"><a href="#cb54-372" aria-hidden="true" tabindex="-1"></a>wlsInt <span class="ot">&lt;-</span> <span class="fu">lm</span>(recoveryScore <span class="sc">~</span> agencyScore, </span>
+<span id="cb54-373"><a href="#cb54-373" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> data,</span>
+<span id="cb54-374"><a href="#cb54-374" aria-hidden="true" tabindex="-1"></a>         <span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>data<span class="sc">$</span>agencySEM)</span>
+<span id="cb54-375"><a href="#cb54-375" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wlsInt)</span>
+<span id="cb54-376"><a href="#cb54-376" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(wlsInt)</span>
+<span id="cb54-377"><a href="#cb54-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-378"><a href="#cb54-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-379"><a href="#cb54-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-380"><a href="#cb54-380" aria-hidden="true" tabindex="-1"></a><span class="fu">### OLS ordinal score</span></span>
+<span id="cb54-383"><a href="#cb54-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-384"><a href="#cb54-384" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb54-385"><a href="#cb54-385" aria-hidden="true" tabindex="-1"></a>olsOrd <span class="ot">&lt;-</span> <span class="fu">lm</span>(recoveryScore <span class="sc">~</span> agencySumScore, <span class="at">data =</span> data)</span>
+<span id="cb54-386"><a href="#cb54-386" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsOrd)</span>
+<span id="cb54-387"><a href="#cb54-387" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(olsOrd)</span>
+<span id="cb54-388"><a href="#cb54-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-389"><a href="#cb54-389" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb54-390"><a href="#cb54-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-391"><a href="#cb54-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-392"><a href="#cb54-392" aria-hidden="true" tabindex="-1"></a><span class="fu">## Quantile regression</span></span>
-<span id="cb54-393"><a href="#cb54-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-394"><a href="#cb54-394" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb54-395"><a href="#cb54-395" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interval</span></span>
-<span id="cb54-398"><a href="#cb54-398" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-399"><a href="#cb54-399" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb54-400"><a href="#cb54-400" aria-hidden="true" tabindex="-1"></a>olsIntQ <span class="ot">&lt;-</span> <span class="fu">rq</span>(recoveryScore <span class="sc">~</span> agencyScore, </span>
-<span id="cb54-401"><a href="#cb54-401" aria-hidden="true" tabindex="-1"></a>              <span class="at">tau =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
-<span id="cb54-402"><a href="#cb54-402" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data)</span>
-<span id="cb54-403"><a href="#cb54-403" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsIntQ)</span>
-<span id="cb54-404"><a href="#cb54-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-405"><a href="#cb54-405" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-406"><a href="#cb54-406" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interval weighted</span></span>
-<span id="cb54-409"><a href="#cb54-409" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-410"><a href="#cb54-410" aria-hidden="true" tabindex="-1"></a>wlsIntQ <span class="ot">&lt;-</span> <span class="fu">rq</span>(recoveryScore <span class="sc">~</span> agencyScore, </span>
-<span id="cb54-411"><a href="#cb54-411" aria-hidden="true" tabindex="-1"></a>              <span class="at">tau =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
-<span id="cb54-412"><a href="#cb54-412" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data,</span>
-<span id="cb54-413"><a href="#cb54-413" aria-hidden="true" tabindex="-1"></a>              <span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>data<span class="sc">$</span>agencySEM)</span>
-<span id="cb54-414"><a href="#cb54-414" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wlsIntQ)</span>
-<span id="cb54-415"><a href="#cb54-415" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-391"><a href="#cb54-391" aria-hidden="true" tabindex="-1"></a><span class="fu">### Linear model comparison</span></span>
+<span id="cb54-392"><a href="#cb54-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-395"><a href="#cb54-395" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-396"><a href="#cb54-396" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb54-397"><a href="#cb54-397" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"OLSinterval"</span>,<span class="st">"WLSinterval"</span>,<span class="st">"OLSordinal"</span>)</span>
+<span id="cb54-398"><a href="#cb54-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-399"><a href="#cb54-399" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">tidy</span>(olsInt, <span class="at">conf.int =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb54-400"><a href="#cb54-400" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tidy</span>(wlsInt, <span class="at">conf.int =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb54-401"><a href="#cb54-401" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tidy</span>(olsOrd, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-402"><a href="#cb54-402" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">model =</span> <span class="fu">rep</span>(models, <span class="at">each =</span> <span class="dv">2</span>), <span class="at">.before =</span> <span class="st">"term"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-403"><a href="#cb54-403" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-404"><a href="#cb54-404" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(term) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-405"><a href="#cb54-405" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl_rise</span>()</span>
+<span id="cb54-406"><a href="#cb54-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-407"><a href="#cb54-407" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">glance</span>(olsInt),</span>
+<span id="cb54-408"><a href="#cb54-408" aria-hidden="true" tabindex="-1"></a>      <span class="fu">glance</span>(wlsInt),</span>
+<span id="cb54-409"><a href="#cb54-409" aria-hidden="true" tabindex="-1"></a>      <span class="fu">glance</span>(olsOrd)) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-410"><a href="#cb54-410" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">model =</span> <span class="fu">rep</span>(models, <span class="at">each =</span> <span class="dv">1</span>), <span class="at">.before =</span> <span class="st">"r.squared"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-411"><a href="#cb54-411" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-412"><a href="#cb54-412" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl_rise</span>()</span>
+<span id="cb54-413"><a href="#cb54-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-414"><a href="#cb54-414" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-415"><a href="#cb54-415" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb54-416"><a href="#cb54-416" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-417"><a href="#cb54-417" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal</span></span>
-<span id="cb54-420"><a href="#cb54-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-421"><a href="#cb54-421" aria-hidden="true" tabindex="-1"></a><span class="co"># https://www.r-bloggers.com/2019/01/quantile-regression-in-r-2/</span></span>
-<span id="cb54-422"><a href="#cb54-422" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-423"><a href="#cb54-423" aria-hidden="true" tabindex="-1"></a>olsOrdQ <span class="ot">&lt;-</span> <span class="fu">rq</span>(recoveryScore <span class="sc">~</span> agencySumScore, </span>
-<span id="cb54-424"><a href="#cb54-424" aria-hidden="true" tabindex="-1"></a>              <span class="at">tau =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
-<span id="cb54-425"><a href="#cb54-425" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data)</span>
-<span id="cb54-426"><a href="#cb54-426" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsOrdQ)</span>
-<span id="cb54-427"><a href="#cb54-427" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-428"><a href="#cb54-428" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb54-429"><a href="#cb54-429" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-430"><a href="#cb54-430" aria-hidden="true" tabindex="-1"></a><span class="fu">### QR parameters</span></span>
-<span id="cb54-431"><a href="#cb54-431" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-432"><a href="#cb54-432" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb54-433"><a href="#cb54-433" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval OLS</span></span>
+<span id="cb54-417"><a href="#cb54-417" aria-hidden="true" tabindex="-1"></a><span class="fu">## Quantile regression</span></span>
+<span id="cb54-418"><a href="#cb54-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-419"><a href="#cb54-419" aria-hidden="true" tabindex="-1"></a>We can use any set of quantiles using the <span class="in">`tau`</span> option. Here, we choose 0.25, 0.5, and 0.75. Tau = 0.5 is the same as "median regression".</span>
+<span id="cb54-420"><a href="#cb54-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-421"><a href="#cb54-421" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-422"><a href="#cb54-422" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interval</span></span>
+<span id="cb54-425"><a href="#cb54-425" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-426"><a href="#cb54-426" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb54-427"><a href="#cb54-427" aria-hidden="true" tabindex="-1"></a>olsIntQ <span class="ot">&lt;-</span> <span class="fu">rq</span>(recoveryScore <span class="sc">~</span> agencyScore, </span>
+<span id="cb54-428"><a href="#cb54-428" aria-hidden="true" tabindex="-1"></a>              <span class="at">tau =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
+<span id="cb54-429"><a href="#cb54-429" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data)</span>
+<span id="cb54-430"><a href="#cb54-430" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsIntQ)</span>
+<span id="cb54-431"><a href="#cb54-431" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-432"><a href="#cb54-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-433"><a href="#cb54-433" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interval weighted</span></span>
 <span id="cb54-436"><a href="#cb54-436" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-437"><a href="#cb54-437" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(olsIntQ)) <span class="sc">+</span></span>
-<span id="cb54-438"><a href="#cb54-438" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb54-439"><a href="#cb54-439" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.6</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb54-440"><a href="#cb54-440" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"OLS quantile regression with interval predictor"</span>,</span>
-<span id="cb54-441"><a href="#cb54-441" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Note. Dashed lines indicate 0.5 and 0.6."</span>) <span class="sc">+</span></span>
-<span id="cb54-442"><a href="#cb54-442" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.7</span>))</span>
-<span id="cb54-443"><a href="#cb54-443" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-444"><a href="#cb54-444" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval WLS</span></span>
+<span id="cb54-437"><a href="#cb54-437" aria-hidden="true" tabindex="-1"></a>wlsIntQ <span class="ot">&lt;-</span> <span class="fu">rq</span>(recoveryScore <span class="sc">~</span> agencyScore, </span>
+<span id="cb54-438"><a href="#cb54-438" aria-hidden="true" tabindex="-1"></a>              <span class="at">tau =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
+<span id="cb54-439"><a href="#cb54-439" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data,</span>
+<span id="cb54-440"><a href="#cb54-440" aria-hidden="true" tabindex="-1"></a>              <span class="at">weights =</span> <span class="dv">1</span><span class="sc">/</span>data<span class="sc">$</span>agencySEM)</span>
+<span id="cb54-441"><a href="#cb54-441" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wlsIntQ)</span>
+<span id="cb54-442"><a href="#cb54-442" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-443"><a href="#cb54-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-444"><a href="#cb54-444" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal</span></span>
 <span id="cb54-447"><a href="#cb54-447" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-448"><a href="#cb54-448" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(wlsIntQ)) <span class="sc">+</span></span>
-<span id="cb54-449"><a href="#cb54-449" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb54-450"><a href="#cb54-450" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.6</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb54-451"><a href="#cb54-451" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"WLS quantile regression with interval predictor"</span>,</span>
-<span id="cb54-452"><a href="#cb54-452" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Note. Dashed lines indicate 0.5 and 0.6."</span>) <span class="sc">+</span>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.7</span>))</span>
-<span id="cb54-453"><a href="#cb54-453" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-454"><a href="#cb54-454" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal OLS</span></span>
-<span id="cb54-457"><a href="#cb54-457" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-458"><a href="#cb54-458" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(olsOrdQ)) <span class="sc">+</span></span>
-<span id="cb54-459"><a href="#cb54-459" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.25</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb54-460"><a href="#cb54-460" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"OLS quantile regression with ordinal sum score predictor"</span>,</span>
-<span id="cb54-461"><a href="#cb54-461" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Note. Dashed line indicates 0.25."</span>) <span class="sc">+</span></span>
-<span id="cb54-462"><a href="#cb54-462" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.4</span>))</span>
-<span id="cb54-463"><a href="#cb54-463" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-464"><a href="#cb54-464" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb54-465"><a href="#cb54-465" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-466"><a href="#cb54-466" aria-hidden="true" tabindex="-1"></a><span class="fu">### QR plots</span></span>
-<span id="cb54-467"><a href="#cb54-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-468"><a href="#cb54-468" aria-hidden="true" tabindex="-1"></a>Haven't figured out how to make ggplot use weighted model.</span>
-<span id="cb54-469"><a href="#cb54-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-470"><a href="#cb54-470" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb54-471"><a href="#cb54-471" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval OLS</span></span>
-<span id="cb54-474"><a href="#cb54-474" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-475"><a href="#cb54-475" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
-<span id="cb54-476"><a href="#cb54-476" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencyScore, <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
-<span id="cb54-477"><a href="#cb54-477" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-478"><a href="#cb54-478" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_quantile</span>(<span class="at">quantiles =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
-<span id="cb54-479"><a href="#cb54-479" aria-hidden="true" tabindex="-1"></a>                <span class="at">method =</span> <span class="st">"rq"</span>)</span>
-<span id="cb54-480"><a href="#cb54-480" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-481"><a href="#cb54-481" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal OLS</span></span>
-<span id="cb54-484"><a href="#cb54-484" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-485"><a href="#cb54-485" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
-<span id="cb54-486"><a href="#cb54-486" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencySumScore, <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
-<span id="cb54-487"><a href="#cb54-487" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb54-488"><a href="#cb54-488" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_quantile</span>(<span class="at">quantiles =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
-<span id="cb54-489"><a href="#cb54-489" aria-hidden="true" tabindex="-1"></a>                <span class="at">method =</span> <span class="st">"rq"</span>)</span>
-<span id="cb54-490"><a href="#cb54-490" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb54-491"><a href="#cb54-491" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-448"><a href="#cb54-448" aria-hidden="true" tabindex="-1"></a>olsOrdQ <span class="ot">&lt;-</span> <span class="fu">rq</span>(recoveryScore <span class="sc">~</span> agencySumScore, </span>
+<span id="cb54-449"><a href="#cb54-449" aria-hidden="true" tabindex="-1"></a>              <span class="at">tau =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
+<span id="cb54-450"><a href="#cb54-450" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> data)</span>
+<span id="cb54-451"><a href="#cb54-451" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(olsOrdQ)</span>
+<span id="cb54-452"><a href="#cb54-452" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-453"><a href="#cb54-453" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-454"><a href="#cb54-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-455"><a href="#cb54-455" aria-hidden="true" tabindex="-1"></a><span class="fu">### QR parameter plots</span></span>
+<span id="cb54-456"><a href="#cb54-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-457"><a href="#cb54-457" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-458"><a href="#cb54-458" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval OLS</span></span>
+<span id="cb54-461"><a href="#cb54-461" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-462"><a href="#cb54-462" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(olsIntQ)) <span class="sc">+</span></span>
+<span id="cb54-463"><a href="#cb54-463" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-464"><a href="#cb54-464" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.6</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-465"><a href="#cb54-465" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"OLS quantile regression with interval predictor"</span>,</span>
+<span id="cb54-466"><a href="#cb54-466" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Note. Dashed lines indicate 0.5 and 0.6."</span>) <span class="sc">+</span></span>
+<span id="cb54-467"><a href="#cb54-467" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.7</span>))</span>
+<span id="cb54-468"><a href="#cb54-468" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-469"><a href="#cb54-469" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval WLS</span></span>
+<span id="cb54-472"><a href="#cb54-472" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-473"><a href="#cb54-473" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(wlsIntQ)) <span class="sc">+</span></span>
+<span id="cb54-474"><a href="#cb54-474" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-475"><a href="#cb54-475" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.6</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-476"><a href="#cb54-476" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"WLS quantile regression with interval predictor"</span>,</span>
+<span id="cb54-477"><a href="#cb54-477" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"Note. Dashed lines indicate 0.5 and 0.6."</span>) <span class="sc">+</span>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.7</span>))</span>
+<span id="cb54-478"><a href="#cb54-478" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-479"><a href="#cb54-479" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal OLS</span></span>
+<span id="cb54-482"><a href="#cb54-482" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-483"><a href="#cb54-483" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(olsOrdQ)) <span class="sc">+</span></span>
+<span id="cb54-484"><a href="#cb54-484" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.25</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb54-485"><a href="#cb54-485" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"OLS quantile regression with ordinal sum score predictor"</span>,</span>
+<span id="cb54-486"><a href="#cb54-486" aria-hidden="true" tabindex="-1"></a>        <span class="at">caption =</span> <span class="st">"Note. Dashed line indicates 0.25."</span>) <span class="sc">+</span></span>
+<span id="cb54-487"><a href="#cb54-487" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.4</span>))</span>
+<span id="cb54-488"><a href="#cb54-488" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-489"><a href="#cb54-489" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-490"><a href="#cb54-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-491"><a href="#cb54-491" aria-hidden="true" tabindex="-1"></a><span class="fu">### Quantile regression scatter plots</span></span>
+<span id="cb54-492"><a href="#cb54-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-493"><a href="#cb54-493" aria-hidden="true" tabindex="-1"></a>Haven't figured out how to make ggplot use weighted model.</span>
+<span id="cb54-494"><a href="#cb54-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-495"><a href="#cb54-495" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-496"><a href="#cb54-496" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Interval OLS</span></span>
+<span id="cb54-499"><a href="#cb54-499" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-500"><a href="#cb54-500" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
+<span id="cb54-501"><a href="#cb54-501" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencyScore, <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
+<span id="cb54-502"><a href="#cb54-502" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-503"><a href="#cb54-503" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_quantile</span>(<span class="at">quantiles =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
+<span id="cb54-504"><a href="#cb54-504" aria-hidden="true" tabindex="-1"></a>                <span class="at">method =</span> <span class="st">"rq"</span>)</span>
+<span id="cb54-505"><a href="#cb54-505" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-506"><a href="#cb54-506" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ordinal OLS</span></span>
+<span id="cb54-509"><a href="#cb54-509" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-510"><a href="#cb54-510" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data,</span>
+<span id="cb54-511"><a href="#cb54-511" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> agencySumScore, <span class="at">y =</span> recoveryScore)) <span class="sc">+</span></span>
+<span id="cb54-512"><a href="#cb54-512" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-513"><a href="#cb54-513" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_quantile</span>(<span class="at">quantiles =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>),</span>
+<span id="cb54-514"><a href="#cb54-514" aria-hidden="true" tabindex="-1"></a>                <span class="at">method =</span> <span class="st">"rq"</span>)</span>
+<span id="cb54-515"><a href="#cb54-515" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-516"><a href="#cb54-516" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
