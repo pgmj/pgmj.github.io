@@ -1,0 +1,428 @@
+---
+title: "Using WLS to account for measurement uncertainties"
+author: 
+  name: Magnus Johansson
+  affiliation: RISE Research Institutes of Sweden
+  affiliation-url: https://www.ri.se/sv/vad-vi-gor/expertiser/kategoriskt-baserade-matningar
+  orcid: 0000-0003-1669-592X
+date: last-modified
+citation:
+  type: 'webpage'
+csl: apa.csl
+execute: 
+  cache: true
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+editor_options: 
+  chunk_output_type: console
+---
+
+## Background
+
+## Data
+
+PreventOSA, describe analyses briefly and link to full analysis.
+
+```{r}
+library(RISEkbmRasch)
+library(foreign)
+library(readxl)
+library(easystats)
+library(lmtest)
+library(quantreg)
+```
+
+
+```{r}
+### some commands exist in multiple packages, here we define preferred ones that are frequently used
+select <- dplyr::select
+count <- dplyr::count
+recode <- car::recode
+rename <- dplyr::rename
+
+# read full dataset, remove ppl w missing data
+df <- read.spss("data/PreventOSAspss.sav",
+                to.data.frame = TRUE) %>% 
+  na.omit()
+# and item information
+itemlabels <- read_excel("data/PreventOSAitemlabels.xlsx")
+```
+
+"Möjlighet att påverka" och "Återhämtning" används som exempel.
+
+We'll only change the predictor variable ("agency", translation may be changed to "perceived control")
+
+
+
+```{r}
+agencyItems <- itemlabels %>%
+  filter(Dimension == "Möjlighet att påverka") %>%
+  select(!Dimension)
+agencyData <- df %>%
+  select(starts_with("q0007")) %>%
+  mutate(across(everything(), ~ car::recode(.x, "'Aldrig'=0;
+                                            'Sällan' =1;
+                                            'Ibland'=2;
+                                            'Ganska ofta'=3;
+                                            'Mycket ofta'=4;
+                                            'Alltid'=5",
+    as.factor = FALSE
+  )))
+names(agencyData) <- agencyItems$itemnr
+
+# adjustments based on psychometric analysis
+agencyData$mp4 <- NULL
+agencyData$mp1<-recode(agencyData$mp1,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
+agencyData$mp3<-recode(agencyData$mp3,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
+agencyData$mp2<-recode(agencyData$mp2,"1=0;2=1;3=2;4=3;5=4",as.factor=FALSE)
+agencyData$mp5<-recode(agencyData$mp5,"2=1;3=2;4=3;5=4",as.factor=FALSE)
+```
+
+
+```{r}
+recoveryItems <- itemlabels %>%
+  filter(Dimension == "Återhämtning") %>%
+  select(!Dimension)
+recoveryData <- df %>%
+  select(starts_with("q0009")) %>%
+  mutate(across(everything(), ~ car::recode(.x, "'Aldrig'=0;
+                                            'Sällan' =1;
+                                            'Ibland'=2;
+                                            'Ganska ofta'=3;
+                                            'Mycket ofta'=4;
+                                            'Alltid'=5",
+    as.factor = FALSE
+  )))
+names(recoveryData) <- recoveryItems$itemnr
+
+# adjustments based on psychometric analysis
+recoveryData$å2 <- NULL
+```
+
+## Measurement properties
+
+::: {.panel-tabset} 
+### Targeting recovery
+```{r}
+RItargeting(recoveryData)
+recoveryRange <- c(-4,6)
+```
+
+### Targeting agency
+```{r}
+RItargeting(agencyData)
+agencyRange <- c(-4,6)
+```
+
+### Reliability recovery
+```{r}
+RItif(recoveryData)
+```
+### Reliability agency
+```{r}
+RItif(agencyData, cutoff = 2.5) +
+  geom_hline(yintercept = 2.5, 
+    color = "#e83c63", linetype = 5, size = 0.5)
+```
+:::
+
+
+
+## Estimate person score/locations.
+
+```{r}
+df$agencyScore <- RIestThetas(agencyData, theta_range = agencyRange)
+df$agencyScore <- round(df$agencyScore,3)
+
+df$recoveryScore <- RIestThetas(recoveryData, theta_range = recoveryRange)
+df$recoveryScore <- round(df$recoveryScore,3)
+```
+
+Plot relationship ordinal/interval
+
+```{r}
+RIscoreSE(recoveryData, sdx = 15, score_range = recoveryRange, output = "figure")
+#RIscoreSE(recoveryData, sdx = 15, score_range = recoveryRange)
+RIscoreSE(agencyData, sdx = 10, score_range = agencyRange, output = "figure")
+#RIscoreSE(agencyData, sdx = 10, score_range = agencyRange, output = "table")
+
+```
+
+Get info about measurement uncertainties
+```{r}
+recoveryTable <- RIscoreSE(recoveryData, sdx = 15, width = 50, score_range = recoveryRange, output = "dataframe") 
+recoveryTable <- recoveryTable %>% 
+  rename(recoverySEM = `Logit std.error`,
+         recoveryScore = `Logit score`,
+         recoverySumScore = `Ordinal sum score`) %>% 
+  mutate(recoveryScore = round(recoveryScore,3))
+
+agencyTable <- RIscoreSE(agencyData, width = 50, sdx = 10, score_range = agencyRange, output = "dataframe")
+agencyTable <- agencyTable %>% 
+  rename(agencySEM = `Logit std.error`,
+         agencyScore = `Logit score`,
+         agencySumScore = `Ordinal sum score`) %>% 
+  mutate(agencyScore = round(agencyScore,3))
+```
+
+Join SEM values to df based on scores
+
+```{r}
+
+data <- data.frame(
+  agencyScore = df$agencyScore,
+  recoveryScore = df$recoveryScore
+)
+
+data <- left_join(data,recoveryTable, by = "recoveryScore")
+data <- left_join(data,agencyTable, by = "agencyScore")
+
+glimpse(data)
+```
+We have some respondents with unexpected responses and thetas outside what we have generic SEM info about. It is possible to estimate individual SEM but this has not yet been implemented in the RISEkbmRasch package and for this exercise it'll be sufficient to use those with 
+
+```{r}
+data <- na.omit(data)
+```
+
+## Visualizing data
+
+### Histograms
+
+::: panel-tabset
+#### Interval score
+```{r}
+data %>% 
+  pivot_longer(cols = c("agencyScore","recoveryScore")) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 20) +
+  facet_wrap(~name) +
+  theme_rise()
+
+```
+#### Ordinal sum score
+```{r}
+data %>% 
+  pivot_longer(cols = c("agencySumScore","recoverySumScore")) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 20) +
+  facet_wrap(~name) +
+  theme_rise()
+```
+:::
+
+### SEM
+
+::: panel-tabset
+#### Agency
+```{r}
+data %>% 
+
+  ggplot(aes(y = agencySEM, 
+             x = agencyScore)) +
+  geom_point() +
+  geom_line(aes(group = 1)) +
+  theme_rise() +
+  coord_cartesian(ylim = c(0,2))
+```
+
+#### Reccovery
+```{r}
+data %>% 
+
+  ggplot(aes(y = recoverySEM, 
+             x = recoveryScore)) +
+  geom_point() +
+  geom_line(aes(group = 1)) +
+  theme_rise() +
+  coord_cartesian(ylim = c(0,2))
+```
+:::
+
+### Correlations
+
+::: panel-tabset
+#### Interval score 
+
+```{r}
+ggplot(data,
+       aes(x = agencyScore,
+           y = recoveryScore)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_rise()
+```
+#### Ordinal sum score 
+
+```{r}
+ggplot(data,
+       aes(x = agencySumScore,
+           y = recoveryScore)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_rise()
+```
+:::
+
+## Weights for WLS regression
+
+```{r}
+data %>% 
+  mutate(weights = 1/agencySEM) %>% 
+  ggplot(aes(x = agencySEM, 
+             y = weights)) +
+  geom_point() +
+  theme_rise()
+
+data %>% 
+  mutate(weights = 1/agencySEM) %>% 
+  select(weights,agencySEM) %>% 
+  unique() %>% 
+  arrange(agencySEM) %>% 
+  head(20)
+```
+  
+## Regression models
+
+::: panel-tabset
+### OLS interval score
+```{r}
+#| fig-height: 7
+olsInt <- lm(recoveryScore ~ agencyScore, data = data)
+summary(olsInt)
+bptest(olsInt)
+dwtest(olsInt)
+check_model(olsInt)
+```
+
+### WLS interval score 
+```{r}
+#| fig-height: 7
+wlsInt <- lm(recoveryScore ~ agencyScore, 
+         data = data,
+         weights = 1/data$agencySEM)
+summary(wlsInt)
+check_model(wlsInt)
+
+```
+
+### OLS ordinal score
+```{r}
+#| fig-height: 7
+olsOrd <- lm(recoveryScore ~ agencySumScore, data = data)
+summary(olsOrd)
+check_model(olsOrd)
+```
+:::
+
+### Linear model comparison
+
+```{r}
+library(broom)
+models <- c("OLSinterval","WLSinterval","OLSordinal")
+
+rbind(tidy(olsInt, conf.int = TRUE),
+      tidy(wlsInt, conf.int = TRUE),
+      tidy(olsOrd, conf.int = TRUE)) %>% 
+  add_column(model = rep(models, each = 2), .before = "term") %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3))) %>% 
+  arrange(term) %>% 
+  kbl_rise()
+
+rbind(glance(olsInt, conf.int = TRUE),
+      glance(wlsInt, conf.int = TRUE),
+      glance(olsOrd, conf.int = TRUE)) %>% 
+  add_column(model = rep(models, each = 1), .before = "r.squared") %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3))) %>% 
+  kbl_rise()
+
+```
+
+
+## Quantile regression
+
+::: panel-tabset
+### Interval
+```{r}
+#| fig-height: 7
+olsIntQ <- rq(recoveryScore ~ agencyScore, 
+              tau = c(0.25,0.5,0.75),
+              data = data)
+summary(olsIntQ)
+```
+
+### Interval weighted
+```{r}
+wlsIntQ <- rq(recoveryScore ~ agencyScore, 
+              tau = c(0.25,0.5,0.75),
+              data = data,
+              weights = 1/data$agencySEM)
+summary(wlsIntQ)
+```
+
+### Ordinal
+```{r}
+# https://www.r-bloggers.com/2019/01/quantile-regression-in-r-2/
+
+olsOrdQ <- rq(recoveryScore ~ agencySumScore, 
+              tau = c(0.25,0.5,0.75),
+              data = data)
+summary(olsOrdQ)
+```
+:::
+
+### QR parameters
+
+::: panel-tabset
+#### Interval OLS
+```{r}
+plot(parameters(olsIntQ)) +
+  geom_vline(xintercept = 0.5, linetype = 2) +
+  geom_vline(xintercept = 0.6, linetype = 2) +
+  labs(title = "OLS quantile regression with interval predictor",
+       caption = "Note. Dashed lines indicate 0.5 and 0.6.") +
+  coord_cartesian(xlim = c(0,0.7))
+```
+#### Interval WLS
+```{r}
+plot(parameters(wlsIntQ)) +
+  geom_vline(xintercept = 0.5, linetype = 2) +
+  geom_vline(xintercept = 0.6, linetype = 2) +
+  labs(title = "WLS quantile regression with interval predictor",
+       caption = "Note. Dashed lines indicate 0.5 and 0.6.") +  coord_cartesian(xlim = c(0,0.7))
+```
+#### Ordinal OLS
+```{r}
+plot(parameters(olsOrdQ)) +
+  geom_vline(xintercept = 0.25, linetype = 2) +
+  labs(title = "OLS quantile regression with ordinal sum score predictor",
+        caption = "Note. Dashed line indicates 0.25.") +
+  coord_cartesian(xlim = c(0,0.4))
+```
+:::
+
+### QR plots
+
+Haven't figured out how to make ggplot use weighted model.
+
+::: panel-tabset
+#### Interval OLS
+```{r}
+ggplot(data,
+       aes(x = agencyScore, y = recoveryScore)) +
+  geom_point() +
+  geom_quantile(quantiles = c(0.25,0.5,0.75),
+                method = "rq")
+```
+#### Ordinal OLS
+```{r}
+ggplot(data,
+       aes(x = agencySumScore, y = recoveryScore)) +
+  geom_point() +
+  geom_quantile(quantiles = c(0.25,0.5,0.75),
+                method = "rq")
+```
+:::
