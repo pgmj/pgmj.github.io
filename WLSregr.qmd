@@ -371,6 +371,36 @@ rbind(glance(olsInt),
 
 We can use any set of quantiles using the `tau` option. Here, we choose 0.25, 0.5, and 0.75. Tau = 0.5 is the same as "median regression".
 
+### Visualization
+
+```{r}
+dviz <- data %>%
+  add_column(id = seq(1, nrow(data), by = 1)) %>% 
+  pivot_longer(c("agencyScore","recoveryScore")) %>% 
+  group_by(name) %>%
+  mutate(qgroup = case_when(value < quantile(value, probs = .25) ~ "lower",
+                            value >= quantile(value, probs = .25) & value < quantile(value, probs = .75) ~ "middle",
+                            value >= quantile(value, probs = .75) ~ "upper")) %>% 
+  ungroup() %>% 
+  pivot_wider(id_cols = "id", 
+              names_from = "name", 
+              values_from = c("value","qgroup"))
+
+dviz %>%
+  ggplot(aes(
+    x = value_agencyScore,
+    y = value_recoveryScore,
+    color = qgroup_recoveryScore
+  )) +
+  geom_point() +
+  theme_rise() +
+  scale_color_brewer(type = "qual", palette = "Dark2") +
+  theme(legend.position = "none") +
+  labs(x = "Agency Score",
+       y = "Recovery Score")
+```
+
+
 ::: panel-tabset
 ### Interval
 ```{r}
@@ -431,10 +461,10 @@ plot(parameters(olsOrdQ)) +
 
 ### Quantile regression scatter plots
 
-Haven't figured out how to make ggplot use weighted model.
+I haven't figured out how to make ggplot use weighted model, so these are only unweighted.
 
 ::: panel-tabset
-#### Interval OLS
+#### Interval OLS quartiles
 ```{r}
 ggplot(data,
        aes(x = agencyScore, y = recoveryScore)) +
@@ -442,12 +472,28 @@ ggplot(data,
   geom_quantile(quantiles = c(0.25,0.5,0.75),
                 method = "rq")
 ```
-#### Ordinal OLS
+#### Ordinal OLS quartiles
 ```{r}
 ggplot(data,
        aes(x = agencySumScore, y = recoveryScore)) +
   geom_point() +
   geom_quantile(quantiles = c(0.25,0.5,0.75),
+                method = "rq")
+```
+#### Interval OLS quintiles
+```{r}
+ggplot(data,
+       aes(x = agencyScore, y = recoveryScore)) +
+  geom_point() +
+  geom_quantile(quantiles = c(0.2,0.4,0.6,0.8),
+                method = "rq")
+```
+#### Ordinal OLS quintiles
+```{r}
+ggplot(data,
+       aes(x = agencySumScore, y = recoveryScore)) +
+  geom_point() +
+  geom_quantile(quantiles = c(0.2,0.4,0.6,0.8),
                 method = "rq")
 ```
 :::
