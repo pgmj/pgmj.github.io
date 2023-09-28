@@ -10,7 +10,7 @@ citation:
   type: 'webpage'
 csl: apa.csl
 execute: 
-  cache: false
+  cache: true
   warning: false
   message: false
 editor: 

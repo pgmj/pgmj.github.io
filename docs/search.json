@@ -103,5 +103,40 @@
     "title": "RISEkbmRasch vignette",
     "section": "\n14 Additional credits",
     "text": "14 Additional credits\nThanks to my colleagues at RISE for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to Mike Linacre and Jeanette Melin for providing useful feedback to improve this vignette."
+  },
+  {
+    "objectID": "powerviz.html",
+    "href": "powerviz.html",
+    "title": "Power analysis for multilevel models",
+    "section": "",
+    "text": "I recently needed to do a power analysis for a longitudinal study, and since I always document my explorative work in a Quarto file it seemed reasonable to take a few minutes to share my experiences.\nThe starting point for me was the “Basic example” made by the author of the powerlmm package.\nI made some changes in the example regarding time points, clusters and icc’s. Below is a test run for one combination of parameter settings."
+  },
+  {
+    "objectID": "powerviz.html#creating-a-function",
+    "href": "powerviz.html#creating-a-function",
+    "title": "Power analysis for multilevel models",
+    "section": "\n1 Creating a function",
+    "text": "1 Creating a function\nWe want to be able to vary some of the parameters and compare the resulting power analysis output.\nFor this example, we will create a function that allows us to vary three of the input parameters:\n\nthe number of participants per cluster\nattrition/dropout rate\neffect size\n\n\nCodepowerFunc <- function(samplesize = 15, dropoutrate = 0.25, effectsize = -0.8) {\n  d <- per_treatment(\n    control = dropout_weibull(dropoutrate, 1),\n    treatment = dropout_weibull(dropoutrate, 1)\n  )\n\n  p <- study_parameters(\n    n1 = 5, # time points\n    n2 = samplesize, # subjects per cluster\n    n3 = 4, # clusters per treatment arm\n    icc_pre_subject = 0.5,\n    icc_pre_cluster = 0.2,\n    icc_slope = 0.05,\n    var_ratio = 0.02,\n    dropout = d,\n    cohend = effectsize\n  )\n  paout <- get_power(p)\n  return(paout$power)\n}\n\n\nLet’s test the function.\n\nCodepowerFunc()\n\n[1] 0.893534"
+  },
+  {
+    "objectID": "powerviz.html#specifying-parameter-variations",
+    "href": "powerviz.html#specifying-parameter-variations",
+    "title": "Power analysis for multilevel models",
+    "section": "\n2 Specifying parameter variations",
+    "text": "2 Specifying parameter variations\nNext, we will define variables with the parameter variations we want to look at.\n\nCode# set sample sizes\nsampleSizes <- c(10, 12, 14, 16, 18, 20)\n# set dropout rates\ndropoutRates <- c(0.20, 0.25, 0.30)\n# set effect sizes\neffectSizes <- c(-0.6, -0.7, -0.8)\n\n\nAnd now we utilize the magic of expand_grid() to create a dataframe with all combinations of the three variables.\n\nCode# make a dataframe with all combinations\ncombinations <- expand_grid(sampleSizes, dropoutRates, effectSizes)"
+  },
+  {
+    "objectID": "powerviz.html#power-analysis",
+    "href": "powerviz.html#power-analysis",
+    "title": "Power analysis for multilevel models",
+    "section": "\n3 Power analysis",
+    "text": "3 Power analysis\nWe’ll make use of pmap() from the purrr:map() family since we need to input more than two variables.\n\nCode# use pmap to iterate over all combinations\npowerList <- pmap(\n  list(\n    combinations$sampleSizes,\n    combinations$dropoutRates,\n    combinations$effectSizes\n  ),\n  powerFunc\n) %>%\n  # set readable names for each output list object, to later separate into variables\n  set_names(paste0(\n    combinations$sampleSizes, \"_\",\n    combinations$dropoutRates, \"_\",\n    combinations$effectSizes\n  ))\n\n\nThe names we set at the end of the chunk above will help us to create separate variables next.\n\nCode# combine into dataframe for visualization\ndf.power <- powerList %>%\n  bind_rows() %>%\n  t() %>%\n  as.data.frame() %>%\n  rownames_to_column(\"split_this\") %>%\n  rename(power = V1) %>%\n  separate(split_this,\n    into = c(\"samplesize\", \"dropoutrate\", \"effectsize\"),\n    sep = \"_\"\n  ) %>%\n  mutate(across(everything(), ~ as.numeric(.x)))\n\nglimpse(df.power)\n\nRows: 54\nColumns: 4\n$ samplesize  <dbl> 10, 10, 10, 10, 10, 10, 10, 10, 10, 12, 12, 12, 12, 12, 12…\n$ dropoutrate <dbl> 0.20, 0.20, 0.20, 0.25, 0.25, 0.25, 0.30, 0.30, 0.30, 0.20…\n$ effectsize  <dbl> -0.6, -0.7, -0.8, -0.6, -0.7, -0.8, -0.6, -0.7, -0.8, -0.6…\n$ power       <dbl> 0.5410107, 0.6698096, 0.7805511, 0.5242486, 0.6513902, 0.7…"
+  },
+  {
+    "objectID": "powerviz.html#visualization",
+    "href": "powerviz.html#visualization",
+    "title": "Power analysis for multilevel models",
+    "section": "\n4 Visualization",
+    "text": "4 Visualization\n\nCodedf.power %>%\n  mutate(dropoutrate = factor(dropoutrate,\n                              labels = c(\"20%\",\"25%\",\"30%\")),\n         effectsize = fct_rev(factor(effectsize))) %>%\n  \n  ggplot(aes(\n    x = samplesize,\n    y = power,\n    color = dropoutrate,\n    group = dropoutrate\n  )) +\n  geom_point() +\n  geom_line() +\n  scale_x_continuous(breaks = sampleSizes) +\n  scale_y_continuous(\n    limits = c(0, 1),\n    breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1)\n  ) +\n  labs(\n    x = \"Cluster sample size\",\n    y = \"Statistical power\",\n    title = \"Power analysis\",\n    subtitle = \"For different effect sizes (Cohen's d)\",\n    caption = \"Note. There are four clusters per treatment arm and five time points.\"\n  ) +\n  theme_minimal(\n    base_family = \"Lato\",\n    base_size = 14\n  ) +\n  facet_wrap(~effectsize) +\n  geom_hline(\n    yintercept = 0.8,\n    linetype = 2\n  ) +\n  scale_color_viridis_d('Dropout rate') +\n  theme_rise()\n\n\n\n\nI added a reference line for power = 0.80."
   }
 ]

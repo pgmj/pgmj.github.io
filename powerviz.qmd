@@ -23,7 +23,7 @@ editor_options:
 ---
 
 
-I recently needed to do a power analysis for a longitudinal study, and since I always do my explorative/learning in a Quarto file it seemed reasonable to take a few minutes to share my experiences.
+I recently needed to do a power analysis for a longitudinal study, and since I always document my explorative work in a Quarto file it seemed reasonable to take a few minutes to share my experiences.
 
 The starting point for me was the ["Basic example"](https://rpsychologist.com/introducing-powerlmm#a-basic-example) made by the author of the `powerlmm` package.
 
@@ -68,8 +68,7 @@ theme_rise <- function(fontfamily = "Lato", axissize = 13, titlesize = 15,
 
 ```
 
-
-I made some changes in the example, regarding time points, clusters and icc's. Below is a test run for one combination of variable settings.
+I made some changes in the example regarding time points, clusters and icc's. Below is a test run for one combination of parameter settings.
 
 ```{r}
 # dropout per treatment group
@@ -91,11 +90,13 @@ powerAnalysis <- get_power(p)
 powerAnalysis$power
 ```
 
+## Creating a function
+
 We want to be able to vary some of the parameters and compare the resulting power analysis output.
 
-For this example, we will create a function that allows us to vary some of the input parameters: 
+For this example, we will create a function that allows us to vary three of the input parameters: 
 
-- the number of participants per sample
+- the number of participants per cluster
 - attrition/dropout rate
 - effect size
 
@@ -128,8 +129,9 @@ Let's test the function.
 powerFunc()
 ```
 
-Next, we will define the parameter variations we want to look at.
+## Specifying parameter variations
 
+Next, we will define variables with the parameter variations we want to look at.
 ```{r}
 # set sample sizes
 sampleSizes <- c(10, 12, 14, 16, 18, 20)
@@ -139,14 +141,15 @@ dropoutRates <- c(0.20, 0.25, 0.30)
 effectSizes <- c(-0.6, -0.7, -0.8)
 ```
 
-And now the magic of `expand_grid()` to create a dataframe with all combinations of the three variables.
+And now we utilize the magic of `expand_grid()` to create a dataframe with all combinations of the three variables.
 ```{r}
 # make a dataframe with all combinations
 combinations <- expand_grid(sampleSizes, dropoutRates, effectSizes)
 ```
 
-We'll make use of `pmap()` since we need to input more than 2 variables.
+## Power analysis
 
+We'll make use of `pmap()` from the `purrr:map()` family since we need to input more than two variables.
 ```{r}
 # use pmap to iterate over all combinations
 powerList <- pmap(
@@ -184,6 +187,8 @@ df.power <- powerList %>%
 glimpse(df.power)
 ```
 
+## Visualization
+
 ```{r}
 df.power %>%
   mutate(dropoutrate = factor(dropoutrate,
@@ -208,7 +213,7 @@ df.power %>%
     y = "Statistical power",
     title = "Power analysis",
     subtitle = "For different effect sizes (Cohen's d)",
-    caption = "Note. There are four clusters and five time points."
+    caption = "Note. There are four clusters per treatment arm and five time points."
   ) +
   theme_minimal(
     base_family = "Lato",
@@ -224,6 +229,6 @@ df.power %>%
 
 ```
 
-
+I added a reference line for power = 0.80.
 
 
