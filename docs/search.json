@@ -138,5 +138,47 @@
     "title": "Power analysis for multilevel models",
     "section": "\n4 Visualization",
     "text": "4 Visualization\n\nCodedf.power %>%\n  mutate(dropoutrate = factor(dropoutrate,\n                              labels = c(\"20%\",\"25%\",\"30%\")),\n         effectsize = fct_rev(factor(effectsize))) %>%\n  \n  ggplot(aes(\n    x = samplesize,\n    y = power,\n    color = dropoutrate,\n    group = dropoutrate\n  )) +\n  geom_point() +\n  geom_line() +\n  scale_x_continuous(breaks = sampleSizes) +\n  scale_y_continuous(\n    limits = c(0, 1),\n    breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1)\n  ) +\n  labs(\n    x = \"Cluster sample size\",\n    y = \"Statistical power\",\n    title = \"Power analysis\",\n    subtitle = \"For different effect sizes (Cohen's d)\",\n    caption = \"Note. There are four clusters per treatment arm and five time points.\"\n  ) +\n  theme_minimal(\n    base_family = \"Lato\",\n    base_size = 14\n  ) +\n  facet_wrap(~effectsize) +\n  geom_hline(\n    yintercept = 0.8,\n    linetype = 2\n  ) +\n  scale_color_viridis_d('Dropout rate') +\n  theme_rise()\n\n\n\n\nI added a reference line for power = 0.80."
+  },
+  {
+    "objectID": "datawrangling.html",
+    "href": "datawrangling.html",
+    "title": "Data wrangling for psychometrics in R",
+    "section": "",
+    "text": "While the RISEkbmRasch package simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the “R for data science” book. This guide focuses on common data wrangling issues that occur in psychometric analyses.\nThis page will be updated intermittently. The planned content includes:"
+  },
+  {
+    "objectID": "datawrangling.html#dividing-a-dataset",
+    "href": "datawrangling.html#dividing-a-dataset",
+    "title": "Data wrangling for psychometrics in R",
+    "section": "1 Dividing a dataset",
+    "text": "1 Dividing a dataset"
+  },
+  {
+    "objectID": "datawrangling.html#recoding-response-categories",
+    "href": "datawrangling.html#recoding-response-categories",
+    "title": "Data wrangling for psychometrics in R",
+    "section": "2 Recoding response categories",
+    "text": "2 Recoding response categories\nMany options are available. I have settled on primarily using car::recode() from library(car) since I find the syntax to be logical and consistent. Another option to consider is dplyr::recode().\nThe basic syntax of car::recode() (henceforth referred to as only recode()) is this:\nrecode(variable_to_recode, \"newvalue1=oldvalue1;newvalue2=oldvalue2\", as.factor = FALSE/TRUE)\nAs you can see, semi-colon ; is used to separate recodings. When numbers are recoded, you just write them out as 1=0. When characters are involved, you need the single quote symbol to enclose the character string, i.e 'Never'=0 for recoding to numerics (which also necessitates the option as.factor = FALSE if you want the recoded variable to be numeric), or 'Never'='Nevver' when you need to correct misspelled response options.\n\n\n\n\n\n\nTip\n\n\n\nRemember to define your preferred recoding function in your script to avoid headaches due to unexpected error messages. This is done by using the assignment operator <-. Example below.\nrecode <- car::recode\n\n\nThere are some more or less clever ways to use recode(). You can simply copy&paste code for each variable, such as:\ndf$q1 <- recode(df$q1, \"0=1;2=1;3=2\", as.factor = FALSE)\ndf$q2 <- recode(df$q2, \"0=1;2=1;3=2\", as.factor = FALSE)\ndf$q3 <- recode(df$q3, \"0=1;2=1;3=2\", as.factor = FALSE)\ndf$q4 <- recode(df$q4, \"0=1;2=1;3=2\", as.factor = FALSE)\ndf$q5 <- recode(df$q5, \"0=1;2=1;3=2\", as.factor = FALSE)\nSuch an approach might actually be sensible if each variable needed different recodings. But when you want to make the same changes to many variables, there are of course more efficient strategies. The code above could be rewritten as:\ndf %>% \n  mutate(across(q1:q5, ~ car::recode(.x, \"0=1;2=1;3=2\", as.factor = FALSE)))\nOr, in this case, where we only want to recode our scale from the range of 1-3 to 0-2, i.e. subtract one:\ndf %>% \n  mutate(across(q1:q5, ~ .x - 1))\nThe syntax in these two examples is related to how tidyverse uses unnamed functions by the combination of ~ and .x, where the latter becomes a placeholder for the variables defined in the first term of across().\nBelow is another example, where we have multiple cell contents that we want to make into NA value to ensure that R interprets them as missing data. We want to recode three different things:\n\nall the numbers from 990 to 999 (usually a way to differentiate between types of missing data)\nblank cells\n“Don’t know” responses\n\ndf$q45 <- recode(df$q45,\"990:999=NA;''=NA;'Don't know'=NA\")\nThe : means that all numbers from 990 to 999 will be recoded into NA."
+  },
+  {
+    "objectID": "datawrangling.html#item-split",
+    "href": "datawrangling.html#item-split",
+    "title": "Data wrangling for psychometrics in R",
+    "section": "3 Item split",
+    "text": "3 Item split\nIt can be desirable to split an item due to issues with DIF. This refers to taking a variable and creating two (or more) replacement variables, one for each demographic group. For each variable, data will be missing for the other group. Often this is relevant for gender DIF, which we will use in this example.\nThis example assumes that there is a (DIF) vector variable dif.gender with the gender data, which has the same length as the number of rows in the dataset df. We’ll create a new dataframe to store the dataset with the item split. Item q10 is the one we want to split.\ndf.q10split <- df %>% \n  add_column(gender = dif.gender) %>% \n  mutate(q10f = if_else(gender == \"Female\", q10, NA), # create variable q10f when gender is \"Female\"\n         q10m = if_else(gender == \"Male\", q10, NA)\n         ) %>% \n  select(!gender) %>% # remove gender and q10 variables from the dataset\n  select(!q10)\n\n# check the data\nRItileplot(df.q10split)\nThe if_else() function used within mutate() has three inputs/options in the example above:\n\ncondition (logical statement)\nassignment if the condition true\nassignment if false"
+  },
+  {
+    "objectID": "datawrangling.html#item-merge",
+    "href": "datawrangling.html#item-merge",
+    "title": "Data wrangling for psychometrics in R",
+    "section": "4 Item merge",
+    "text": "4 Item merge"
+  },
+  {
+    "objectID": "datawrangling.html#links",
+    "href": "datawrangling.html#links",
+    "title": "Data wrangling for psychometrics in R",
+    "section": "5 Links",
+    "text": "5 Links\nhttps://github.com/Cghlewis/data-wrangling-functions/wiki"
   }
 ]

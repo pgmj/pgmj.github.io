@@ -86,6 +86,29 @@ The `:` means that all numbers from 990 to 999 will be recoded into `NA`.
 
 ## Item split
 
+It can be desirable to split an item due to issues with DIF. This refers to taking a variable and creating two (or more) replacement variables, one for each demographic group. For each variable, data will be missing for the other group. Often this is relevant for gender DIF, which we will use in this example.
+
+This example assumes that there is a (DIF) vector variable `dif.gender` with the gender data, which has the same length as the number of rows in the dataset `df`. We'll create a new dataframe to store the dataset with the item split. Item q10 is the one we want to split.
+
+``` r
+df.q10split <- df %>% 
+  add_column(gender = dif.gender) %>% 
+  mutate(q10f = if_else(gender == "Female", q10, NA), # create variable q10f when gender is "Female"
+         q10m = if_else(gender == "Male", q10, NA)
+         ) %>% 
+  select(!gender) %>% # remove gender and q10 variables from the dataset
+  select(!q10)
+
+# check the data
+RItileplot(df.q10split)
+```
+
+The `if_else()` function used within `mutate()` has three inputs/options in the example above:
+
+- condition (logical statement)
+- assignment if the condition true
+- assignment if false
+
 ## Item merge
 
 ## Links
