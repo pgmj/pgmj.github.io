@@ -348,7 +348,7 @@ Tip
 </section>
 <section id="checking-response-distribution-prior-to-dif-analysis" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="checking-response-distribution-prior-to-dif-analysis"><span class="header-section-number">5</span> Checking response distribution prior to DIF analysis</h2>
-<p>This example assumes that you have previously created a DIF variable (vector) for gender with two groups (Female/Male).</p>
+<p>This example assumes that you have previously created a DIF variable (vector) for gender with two groups. The variable is a factor with the labels “Female” and “Male”.</p>
 <p>The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
@@ -357,7 +357,7 @@ Tip
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. If you have the gender variable as a factor (recommended), you will find it written out as a text string in the title of the tile plot.</p>
+<p>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset.</p>
 </section>
 <section id="links" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="links"><span class="header-section-number">6</span> Links</h2>
@@ -687,7 +687,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="fu">## Checking response distribution prior to DIF analysis</span></span>
 <span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a>This example assumes that you have previously created a DIF variable (vector) for gender with two groups (Female/Male).</span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a>This example assumes that you have previously created a DIF variable (vector) for gender with two groups. The variable is a factor with the labels "Female" and "Male".</span>
 <span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a>The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.</span>
 <span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a></span>
@@ -700,7 +700,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span>
 <span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. If you have the gender variable as a factor (recommended), you will find it written out as a text string in the title of the tile plot.</span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset.</span>
 <span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a><span class="fu">## Links</span></span>
 <span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a></span>
