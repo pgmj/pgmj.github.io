@@ -18,6 +18,8 @@ editor_options:
 
 While the [RISEkbmRasch](https://github.com/pgmj/RISEkbmRasch) package simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the ["R for data science"](https://r4ds.had.co.nz/) book. This guide focuses on common data wrangling issues that occur in psychometric analyses.
 
+I will rely heavily on `library(tidyverse)` functions in most examples.
+
 This page will be updated intermittently. The planned content includes:
 
 - dividing a set of items into two or more dataframes in order to run separate analyses (for instance based on an exploratory analysis of a large item set, or based on a demographic variable)
@@ -110,6 +112,39 @@ The `if_else()` function used within `mutate()` has three inputs/options in the 
 - assignment if false
 
 ## Item merge
+
+Sometimes it is desirable to merge two items into one. This is often done when there is a high residual correlation between two items. This is called a testlet. The items are merged into a new variable, and the original items are removed from the dataset.
+
+It is usually a good idea to create a new dataframe with the merged variable, in case you need to go back to the original dataset.
+
+``` r
+df2 <- df %>% 
+  mutate(sdq2_15 = sdq2 + sdq15) %>% # create variable by adding them
+  select(!sdq2) %>% 
+  select(!sdq15)
+```
+
+Then you should check the ICC curves for the merged item:
+
+``` r
+RIitemCats(df2, item = "sdq2_15")
+```
+
+## Checking response distribution prior to DIF analysis
+
+This example assumes that you have previously created a DIF variable (vector) for gender with two groups (Female/Male).
+
+The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.
+
+``` r
+difGenderTileplots <- df %>% 
+  add_column(gender = dif.gender) %>% 
+  split(.$gender) %>%
+  map(~ RItileplot(.x %>% select(!gender)))
+  
+library(patchwork)
+difGenderTileplots$Female + difGenderTileplots$Male
+```
 
 ## Links
 

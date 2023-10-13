@@ -144,7 +144,7 @@
     "href": "datawrangling.html",
     "title": "Data wrangling for psychometrics in R",
     "section": "",
-    "text": "While the RISEkbmRasch package simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the “R for data science” book. This guide focuses on common data wrangling issues that occur in psychometric analyses.\nThis page will be updated intermittently. The planned content includes:"
+    "text": "While the RISEkbmRasch package simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the “R for data science” book. This guide focuses on common data wrangling issues that occur in psychometric analyses.\nI will rely heavily on library(tidyverse) functions in most examples.\nThis page will be updated intermittently. The planned content includes:"
   },
   {
     "objectID": "datawrangling.html#dividing-a-dataset",
@@ -172,13 +172,20 @@
     "href": "datawrangling.html#item-merge",
     "title": "Data wrangling for psychometrics in R",
     "section": "4 Item merge",
-    "text": "4 Item merge"
+    "text": "4 Item merge\nSometimes it is desirable to merge two items into one. This is often done when there is a high residual correlation between two items. This is called a testlet. The items are merged into a new variable, and the original items are removed from the dataset.\nIt is usually a good idea to create a new dataframe with the merged variable, in case you need to go back to the original dataset.\ndf2 <- df %>% \n  mutate(sdq2_15 = sdq2 + sdq15) %>% # create variable by adding them\n  select(!sdq2) %>% \n  select(!sdq15)\nThen you should check the ICC curves for the merged item:\nRIitemCats(df2, item = \"sdq2_15\")"
   },
   {
     "objectID": "datawrangling.html#links",
     "href": "datawrangling.html#links",
     "title": "Data wrangling for psychometrics in R",
-    "section": "5 Links",
-    "text": "5 Links\nhttps://github.com/Cghlewis/data-wrangling-functions/wiki"
+    "section": "6 Links",
+    "text": "6 Links\nhttps://github.com/Cghlewis/data-wrangling-functions/wiki"
+  },
+  {
+    "objectID": "datawrangling.html#checking-response-distribution-prior-to-dif-analysis",
+    "href": "datawrangling.html#checking-response-distribution-prior-to-dif-analysis",
+    "title": "Data wrangling for psychometrics in R",
+    "section": "5 Checking response distribution prior to DIF analysis",
+    "text": "5 Checking response distribution prior to DIF analysis\nThis example assumes that you have previously created a DIF variable (vector) for gender with two groups (Female/Male).\nThe reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.\ndifGenderTileplots <- df %>% \n  add_column(gender = dif.gender) %>% \n  split(.$gender) %>%\n  map(~ RItileplot(.x %>% select(!gender)))\n  \nlibrary(patchwork)\ndifGenderTileplots$Female + difGenderTileplots$Male"
   }
 ]
