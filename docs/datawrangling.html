@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2023-10-13">
+<meta name="dcterms.date" content="2023-10-19">
 
 <title>R, Rasch, etc - Data wrangling for psychometrics in R</title>
 <style>
@@ -250,7 +250,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-10-13</p>
+      <p class="date">2023-10-19</p>
     </div>
   </div>
   
@@ -353,11 +353,11 @@ Tip
 <div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender)))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset.</p>
+<p>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.</p>
 </section>
 <section id="links" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="links"><span class="header-section-number">6</span> Links</h2>
@@ -695,12 +695,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
 <span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
 <span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
-<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender)))</span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
 <span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span>
 <span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset.</span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.</span>
 <span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a><span class="fu">## Links</span></span>
 <span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a></span>

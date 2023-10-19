@@ -140,12 +140,12 @@ The reason for doing this is making sure that there are no empty cells (particul
 difGenderTileplots <- df %>% 
   add_column(gender = dif.gender) %>% 
   split(.$gender) %>%
-  map(~ RItileplot(.x %>% select(!gender) + labs(title = .x$gender)))
+  map(~ RItileplot(.x %>% select(!gender)) + labs(title = .x$gender))
   
 library(patchwork)
 difGenderTileplots$Female + difGenderTileplots$Male
 ```
-The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset.
+The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.
 
 ## Links
 

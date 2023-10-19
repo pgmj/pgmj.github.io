@@ -790,7 +790,7 @@ RIscoreSE(df2, output = "figure")
 
 Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the `RIitemfitPCM()` function there is also a parallel processing version of the function available, which makes use of 4 cores by default.
 
-`RIestThetas()` by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, it will use eRm's CML PCM to calculate it based on the dataframe input.
+`RIestThetas()` by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.
 
 ```{r}
 library(furrr) # for a parallel processing version of purrr::map_dbl
@@ -802,8 +802,9 @@ df2$PersonScores <- RIestThetas2(df2, cpu = 8)
 If you would like to use an existing item matrix, this code may be helpful:
 
 ```{r}
-items <- as.matrix(read.csv("itemParameters.csv"))
-items
+itemParameters <- read_csv("itemParameters.csv") %>% 
+  as.matrix()
+itemParameters
 ```
 
 As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.
@@ -813,6 +814,21 @@ Finally, we'll look at the distribution of person scores using a simple histogra
 ```{r}
 hist(df2$PersonScores, col = "#009ca6")
 ```
+
+#### Estimating individual measurement error
+
+Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be calculated using the following code, using the `semTheta()` function from `library(catR)`:
+
+```{r}
+df2$personSEM <- map_vec(df2$PersonScores, ~ semTheta(thEst = .x,
+                                                      it = itemParameters,
+                                                      model = "PCM",
+                                                      method = "WL",
+                                                      range = c(-4, 4)
+                                                      ))
+```
+
+The function `map_vec()` allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the `semTheta()` function from `catR` to calculate the standard error of measurement for each individual. The `it` argument is the item parameters matrix, and the `range` argument is the range of logit scores. The range should match the range set when estimating the person locations with `RIestThetas()`, and -4 to 4 is the default setting for both functions.
 
 ## Figure design
 
