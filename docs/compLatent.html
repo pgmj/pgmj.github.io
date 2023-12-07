@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Magnus Johansson">
+<meta name="dcterms.date" content="2023-10-17">
+<title>R, Rasch, etc - Using Rasch and WLS to account for measurement uncertainties in regression models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="R, Rasch, etc - Using Rasch and WLS to account for measurement uncertainties in regression models">
+<meta property="og:description" content="There are several reasons for putting this blog post together.">
+<meta property="og:site-name" content="R, Rasch, etc">
+<meta name="twitter:title" content="R, Rasch, etc - Using Rasch and WLS to account for measurement uncertainties in regression models">
+<meta name="twitter:description" content="There are several reasons for putting this blog post together.">
+<meta name="twitter:card" content="summary">
+</head>
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">R, Rasch, etc</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="./index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./raschrvignette/RaschRvign.html">
+ <span class="menu-text">RISEkbmRasch vignette</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-blog" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Blog</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-blog">
+<li>
+    <a class="dropdown-item" href="./parameterizedQ.html">
+ <span class="dropdown-text">Automating reports with Quarto</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./latentResp/LatentResponse.html">
+ <span class="dropdown-text">What’s in a latent trait score?</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./SkolverketAPI/skolverketapi.html">
+ <span class="dropdown-text">Data retrieval with R using API calls</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./powerviz.html">
+ <span class="dropdown-text">Power analysis for multilevel models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./datawrangling.html">
+ <span class="dropdown-text">Data wrangling for psychometrics in R</span></a>
+  </li>  
+    </ul>
+</li>
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/pgmj/pgmj.github.io"><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">1</span>  Introduction</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">2</span>  Data</a></li>
+  <li>
+<a href="#simulating-data-n-800" id="toc-simulating-data-n-800" class="nav-link" data-scroll-target="#simulating-data-n-800"><span class="toc-section-number">3</span>  Simulating data n = 800</a>
+  <ul class="collapse">
+<li><a href="#scatter-plot" id="toc-scatter-plot" class="nav-link" data-scroll-target="#scatter-plot"><span class="toc-section-number">3.1</span>  Scatter plot</a></li>
+  <li><a href="#reference-lmm-results-from-the-simulated-theta-values" id="toc-reference-lmm-results-from-the-simulated-theta-values" class="nav-link" data-scroll-target="#reference-lmm-results-from-the-simulated-theta-values"><span class="toc-section-number">3.2</span>  Reference LMM results from the simulated theta values</a></li>
+  <li><a href="#simulating-polytomous-data" id="toc-simulating-polytomous-data" class="nav-link" data-scroll-target="#simulating-polytomous-data"><span class="toc-section-number">3.3</span>  Simulating polytomous data</a></li>
+  <li><a href="#classical-test-theory" id="toc-classical-test-theory" class="nav-link" data-scroll-target="#classical-test-theory"><span class="toc-section-number">3.4</span>  Classical test theory</a></li>
+  <li><a href="#estimate-person-thetaslatent-scores" id="toc-estimate-person-thetaslatent-scores" class="nav-link" data-scroll-target="#estimate-person-thetaslatent-scores"><span class="toc-section-number">3.5</span>  Estimate person thetas/latent scores</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#statistical-analyses" id="toc-statistical-analyses" class="nav-link" data-scroll-target="#statistical-analyses"><span class="toc-section-number">4</span>  Statistical analyses</a>
+  <ul class="collapse">
+<li><a href="#lmm-with-estimated-theta" id="toc-lmm-with-estimated-theta" class="nav-link" data-scroll-target="#lmm-with-estimated-theta"><span class="toc-section-number">4.1</span>  LMM with estimated theta</a></li>
+  <li><a href="#weighted-lmm-with-estimated-theta" id="toc-weighted-lmm-with-estimated-theta" class="nav-link" data-scroll-target="#weighted-lmm-with-estimated-theta"><span class="toc-section-number">4.2</span>  Weighted LMM with estimated theta</a></li>
+  <li><a href="#lmm-with-ordinal-sum-score" id="toc-lmm-with-ordinal-sum-score" class="nav-link" data-scroll-target="#lmm-with-ordinal-sum-score"><span class="toc-section-number">4.3</span>  LMM with ordinal sum score</a></li>
+  <li><a href="#lmm-with-weighted-ordinal-sum-score" id="toc-lmm-with-weighted-ordinal-sum-score" class="nav-link" data-scroll-target="#lmm-with-weighted-ordinal-sum-score"><span class="toc-section-number">4.4</span>  LMM with weighted ordinal sum score</a></li>
+  </ul>
+</li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">5</span>  Summary</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Using Rasch and WLS to account for measurement uncertainties in regression models</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    Magnus Johansson <a href="https://orcid.org/0000-0003-1669-592X" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a>
+  </div>
+    <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            <a href="https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements">
+            RISE Research Institutes of Sweden
+            </a>
+          </p>
+      </div>
+    </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 17, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header><section id="introduction" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="introduction">
+<span class="header-section-number">1</span> Introduction</h2>
+<p>There are several reasons for putting this blog post together. The larger issue is to investigate ways to analyze relationships between measures that have varying levels of measurement uncertainty across their respective range or continuum. This is relevant to any kind of latent variable measurement that uses multiple indicators/items/questions as a way to assess a latent variable.</p>
+<p>In classical test theory (CTT; i.e.&nbsp;factor analysis) the assumption is generally that the measurement error is a single value, constant across the scale and across participants. Modern test theory (Rasch Measurement Theory (RMT) or Item Response Theory (IRT)) has tools to describe the varying uncertainties of the measure itself, and also allows for estimation of measurement uncertainty for each individual, based on the item properties.</p>
+<p>In the “business-as-usual” approach, no matter which types of measurement uncertainty are ignored. The simple case of have two variables and an ordinary least squares (OLS) linear regression model will take the input from each variable as a perfect measurement. Bayesians may have another take on this, and I will look into that at a later point, so for now this is relevant for frequentist statistics.</p>
+<p>“Business-as-usual” also makes use of ordinal sum scores disguised as interval scores. There is a seemingly wide-spread idea that estimated person interval scores is not significantly different from ordinal sum scores, and we’ll look further into that as well by including ordinal sum scores.</p>
+<p>One way to take measurement uncertainty into account in a linear regression model is to use Weighted Least Squares (WLS) instead of OLS. However, this approach only allows weights for one variable. The weights will be based on the measurement uncertainty for the interval scores.</p>
+<p>Additionally, we will use Quantile Regression, with and without weights.</p>
+</section><section id="data" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="data">
+<span class="header-section-number">2</span> Data</h2>
+<p>Data were collected for a project evaluating multiple work environment questionnaires. Two of the analyzed scales will be used in our example, as a foundation for simulated data. More information is available at the GitHub <a href="https://github.com/pgmj/PreventOSA">repository</a> and <a href="https://pgmj.github.io/PreventOSA/">website</a>.</p>
+<p>The two questionnaires cover the domains of “recovery” and “agency”, where the latter refers to workers’ perceived control over their work situation. Our analyses will look at how “agency” affects “recovery”. We will retain an interval scale score for the “recovery” scale throughout, while varying the “agency” between ordinal sum score, interval score, and interval score with weights, and check how these three reproduce the true simulated relationship between the two scales.</p>
+<p>Variables will be named <code>SEM</code> for standard error of measurement, <code>Theta</code> for interval theta/scores/locations, and <code>SumScore</code> for ordinal sum scores.</p>
+<p>We’ll also add analyses using structural equation modeling and weighted sum scores (based on confirmatory factor analysis factor loadings).</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/pgmj/RISEkbmRasch">RISEkbmRasch</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://easystats.github.io/easystats/">easystats</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.r-project.org">quantreg</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/debruine/faux">faux</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbolker/broom.mixed">broom.mixed</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lavaan.ugent.be">lavaan</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://andrisignorell.github.io/DescTools/">DescTools</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/">lme4</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">### some commands exist in multiple packages, here we define preferred ones that are frequently used</span></span>
+<span><span class="va">select</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="va"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span></span>
+<span><span class="va">count</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="va"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span></span>
+<span><span class="va">recode</span> <span class="op">&lt;-</span> <span class="fu">car</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/car/man/recode.html">recode</a></span></span>
+<span><span class="va">rename</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="va"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="simulating-data-n-800" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="simulating-data-n-800">
+<span class="header-section-number">3</span> Simulating data n = 800</h2>
+<p>We’ll pretend that we have n = 400 that are measured at two time points, with a specified correlation between measurements of 0.5. The difference in group means is set to 1 logit, and the standard deviation will be 1 logit for both points of measurement.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1523</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/faux/man/rnorm_multi.html">rnorm_multi</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, </span>
+<span>                  mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.5</span>, <span class="op">+</span><span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>                  sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>                  r <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>, </span>
+<span>                  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pre"</span>, <span class="st">"post"</span><span class="op">)</span>,</span>
+<span>                  empirical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cor_test</span><span class="op">(</span><span class="st">"pre"</span>, <span class="st">"post"</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Parameter1 | Parameter2 |    r |       95% CI | t(98) |         p
+-----------------------------------------------------------------
+pre        |       post | 0.55 | [0.39, 0.67] |  6.49 | &lt; .001***
+
+Observations: 100</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># light wrangling to get long format and an id variable</span></span>
+<span><span class="va">data_long</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_column</span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pre"</span>, <span class="st">"post"</span><span class="op">)</span>, </span>
+<span>               names_to <span class="op">=</span> <span class="st">"time"</span>, </span>
+<span>               values_to <span class="op">=</span> <span class="st">"theta"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">theta</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>         time <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">time</span>, <span class="st">"pre"</span> <span class="op">=</span> <span class="fl">0</span>, <span class="st">"post"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#write_csv(data, "data800simPrePost.csv")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="scatter-plot" class="level3" data-number="3.1"><h3 data-number="3.1" class="anchored" data-anchor-id="scatter-plot">
+<span class="header-section-number">3.1</span> Scatter plot</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pre</span>, y <span class="op">=</span> <span class="va">post</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span>, se <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="compLatent_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="1050"></p>
+</div>
+</div>
+</section><section id="reference-lmm-results-from-the-simulated-theta-values" class="level3" data-number="3.2"><h3 data-number="3.2" class="anchored" data-anchor-id="reference-lmm-results-from-the-simulated-theta-values">
+<span class="header-section-number">3.2</span> Reference LMM results from the simulated theta values</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lmm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">data_long</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">lmm0</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">round</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  effect   group    term         estimate std.error statistic conf.low conf.high
+  &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 fixed    &lt;NA&gt;     (Intercept)    -0.436    0.0902     -4.83   -0.613    -0.259
+2 fixed    &lt;NA&gt;     time            0.872    0.0857     10.2     0.704     1.04 
+3 ran_pars id       sd__(Interc…    0.668   NA          NA      NA        NA    
+4 ran_pars Residual sd__Observa…    0.606   NA          NA      NA        NA    </code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">icc</span><span class="op">(</span><span class="va">lmm0</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Intraclass Correlation Coefficient
+
+    Adjusted ICC: 0.548
+  Unadjusted ICC: 0.444</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://andrisignorell.github.io/DescTools/reference/StdCoef.html">StdCoef</a></span><span class="op">(</span><span class="va">lmm0</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>            Estimate* Std. Error*  df
+(Intercept) 0.0000000  0.00000000 196
+time        0.4370146  0.04297825 196
+attr(,"class")
+[1] "coefTable" "matrix"   </code></pre>
+</div>
+</div>
+<p>The standardized coefficient of time is 0.424. This will be our reference value for comparison with the other analyses since ordinal sum scores and estimated theta scores will not be on the same scale.</p>
+</section><section id="simulating-polytomous-data" class="level3" data-number="3.3"><h3 data-number="3.3" class="anchored" data-anchor-id="simulating-polytomous-data">
+<span class="header-section-number">3.3</span> Simulating polytomous data</h3>
+<p>Prepare the input item parameters.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># item parameters</span></span>
+<span><span class="va">agencyParams</span> <span class="op">&lt;-</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"AgencyItemParameters.csv"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># put item parameters for agency into a list object</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">agencyParams</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span></span>
+<span><span class="va">tlist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">agencyParams</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">agencyParams</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># simulate polytomous data</span></span>
+<span><span class="va">simData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/SimPartialScore.html">SimPartialScore</a></span><span class="op">(</span></span>
+<span>  deltaslist <span class="op">=</span> <span class="va">tlist</span>,</span>
+<span>  thetavec <span class="op">=</span> <span class="va">data_long</span><span class="op">$</span><span class="va">theta</span></span>
+<span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>A brief look at the simulated data.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># distribution</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIbarstack.html">RIbarstack</a></span><span class="op">(</span><span class="va">simData</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="compLatent_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="1050"></p>
+</div>
+</div>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># reliability/test information</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RItif.html">RItif</a></span><span class="op">(</span><span class="va">simData</span>, cutoff <span class="op">=</span> <span class="fl">2.5</span>, samplePSI <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="compLatent_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="1050"></p>
+</div>
+</div>
+<p>TIF 2.5 = PSI 0.6</p>
+</section><section id="classical-test-theory" class="level3" data-number="3.4"><h3 data-number="3.4" class="anchored" data-anchor-id="classical-test-theory">
+<span class="header-section-number">3.4</span> Classical test theory</h3>
+<p>Confirmatory factor analysis (CFA) is used to estimate model fit.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># specify model</span></span>
+<span><span class="va">cfa1</span> <span class="op">&lt;-</span> <span class="st">'agencyCFA =~ V1 + V2 + V3 + V4'</span></span>
+<span><span class="co"># estimate model</span></span>
+<span><span class="va">cfa1.fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lavaan/man/cfa.html">cfa</a></span><span class="op">(</span><span class="va">cfa1</span>, </span>
+<span>                ordered <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                estimator <span class="op">=</span> <span class="st">"DWLS"</span>,</span>
+<span>                data <span class="op">=</span> <span class="va">simData</span><span class="op">)</span></span>
+<span><span class="co"># get fit indices etc</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">cfa1.fit</span>, fit.measures <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6.15 ended normally after 13 iterations
+
+  Estimator                                       DWLS
+  Optimization method                           NLMINB
+  Number of model parameters                        20
+
+  Number of observations                           200
+
+Model Test User Model:
+                                                      
+  Test statistic                                 1.426
+  Degrees of freedom                                 2
+  P-value (Chi-square)                           0.490
+
+Model Test Baseline Model:
+
+  Test statistic                               441.330
+  Degrees of freedom                                 6
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000
+  Tucker-Lewis Index (TLI)                       1.004
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.000
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.127
+  P-value H_0: RMSEA &lt;= 0.050                    0.639
+  P-value H_0: RMSEA &gt;= 0.080                    0.209
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.023
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model        Unstructured
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+  agencyCFA =~                                        
+    V1                1.000                           
+    V2                0.918    0.109    8.403    0.000
+    V3                1.179    0.138    8.542    0.000
+    V4                0.942    0.110    8.576    0.000
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+   .V1                0.000                           
+   .V2                0.000                           
+   .V3                0.000                           
+   .V4                0.000                           
+    agencyCFA         0.000                           
+
+Thresholds:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    V1|t1            -0.613    0.095   -6.438    0.000
+    V1|t2             0.088    0.089    0.987    0.323
+    V1|t3             0.842    0.101    8.310    0.000
+    V1|t4             2.326    0.265    8.791    0.000
+    V2|t1            -0.842    0.101   -8.310    0.000
+    V2|t2            -0.088    0.089   -0.987    0.323
+    V2|t3             0.824    0.101    8.180    0.000
+    V2|t4             1.881    0.178   10.583    0.000
+    V3|t1            -0.896    0.103   -8.694    0.000
+    V3|t2            -0.292    0.090   -3.240    0.001
+    V3|t3             0.332    0.091    3.661    0.000
+    V3|t4             1.645    0.150   10.980    0.000
+    V4|t1            -1.282    0.121  -10.576    0.000
+    V4|t2             0.151    0.089    1.692    0.091
+    V4|t3             1.036    0.109    9.547    0.000
+    V4|t4             2.054    0.205   10.020    0.000
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+   .V1                0.507                           
+   .V2                0.585                           
+   .V3                0.315                           
+   .V4                0.563                           
+    agencyCFA         0.493    0.074    6.682    0.000
+
+Scales y*:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)
+    V1                1.000                           
+    V2                1.000                           
+    V3                1.000                           
+    V4                1.000                           </code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># get standardized factor loadings</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/lavaan/man/lavInspect.html">inspect</a></span><span class="op">(</span><span class="va">cfa1.fit</span>,what<span class="op">=</span><span class="st">"std"</span><span class="op">)</span><span class="op">$</span><span class="va">lambda</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>   agnCFA
+V1  0.702
+V2  0.644
+V3  0.828
+V4  0.661</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># save factor loadings to a vector</span></span>
+<span><span class="va">cfa1_loadings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lavaan/man/lavInspect.html">inspect</a></span><span class="op">(</span><span class="va">cfa1.fit</span>,what<span class="op">=</span><span class="st">"std"</span><span class="op">)</span><span class="op">$</span><span class="va">lambda</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">pull</span><span class="op">(</span><span class="va">agencyCFA</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># CTT reliability</span></span>
+<span><span class="fu">psych</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/psych/man/alpha.html">alpha</a></span><span class="op">(</span><span class="va">simData</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>
+Reliability analysis   
+Call: psych::alpha(x = simData)
+
+  raw_alpha std.alpha G6(smc) average_r S/N   ase mean   sd median_r
+      0.76      0.76    0.72      0.45 3.2 0.027  1.6 0.83     0.45
+
+    95% confidence boundaries 
+         lower alpha upper
+Feldt     0.71  0.76  0.81
+Duhachek  0.71  0.76  0.82
+
+ Reliability if an item is dropped:
+   raw_alpha std.alpha G6(smc) average_r S/N alpha se  var.r med.r
+V1      0.70      0.71    0.62      0.44 2.4    0.035 0.0071  0.46
+V2      0.72      0.73    0.64      0.47 2.7    0.033 0.0010  0.46
+V3      0.66      0.67    0.57      0.40 2.0    0.041 0.0024  0.40
+V4      0.73      0.73    0.65      0.48 2.7    0.033 0.0047  0.51
+
+ Item statistics 
+     n raw.r std.r r.cor r.drop mean   sd
+V1 200  0.77  0.77  0.65   0.57  1.4 1.11
+V2 200  0.75  0.74  0.61   0.53  1.6 1.09
+V3 200  0.83  0.81  0.74   0.64  1.9 1.20
+V4 200  0.71  0.74  0.60   0.52  1.5 0.91
+
+Non missing response frequency for each item
+      0    1    2    3    4 miss
+V1 0.27 0.26 0.26 0.19 0.01    0
+V2 0.20 0.26 0.33 0.17 0.03    0
+V3 0.18 0.20 0.24 0.32 0.05    0
+V4 0.10 0.46 0.29 0.13 0.02    0</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">psych</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/psych/man/omega.html">omega</a></span><span class="op">(</span><span class="va">simData</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="compLatent_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="1050"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Omega 
+Call: omegah(m = m, nfactors = nfactors, fm = fm, key = key, flip = flip, 
+    digits = digits, title = title, sl = sl, labels = labels, 
+    plot = plot, n.obs = n.obs, rotate = rotate, Phi = Phi, option = option, 
+    covar = covar)
+Alpha:                 0.76 
+G.6:                   0.72 
+Omega Hierarchical:    0.7 
+Omega H asymptotic:    0.89 
+Omega Total            0.78 
+
+Schmid Leiman Factor loadings greater than  0.2 
+      g   F1* F2* F3*   h2   u2   p2
+V1 0.73               0.49 0.51 1.08
+V2 0.52  0.39         0.43 0.57 0.62
+V3 0.66  0.45         0.64 0.36 0.69
+V4 0.66               0.41 0.59 1.04
+
+With Sums of squares  of:
+   g  F1*  F2*  F3* 
+1.67 0.36 0.00 0.00 
+
+general/max  4.69   max/min =   Inf
+mean percent general =  0.86    with sd =  0.24 and cv of  0.28 
+Explained Common Variance of the general factor =  0.82 
+
+The degrees of freedom are -3  and the fit is  0 
+The number of observations was  200  with Chi Square =  0  with prob &lt;  NA
+The root mean square of the residuals is  0 
+The df corrected root mean square of the residuals is  NA
+
+Compare this with the adequacy of just a general factor and no group factors
+The degrees of freedom for just the general factor are 2  and the fit is  0.06 
+The number of observations was  200  with Chi Square =  11.68  with prob &lt;  0.0029
+The root mean square of the residuals is  0.08 
+The df corrected root mean square of the residuals is  0.13 
+
+RMSEA index =  0.155  and the 10 % confidence intervals are  0.078 0.248
+BIC =  1.08 
+
+Measures of factor score adequacy             
+                                                 g   F1* F2*   F3*
+Correlation of scores with factors            0.86  0.60   0  0.08
+Multiple R square of scores with factors      0.73  0.36   0  0.01
+Minimum correlation of factor score estimates 0.46 -0.28  -1 -0.99
+
+ Total, General and Subset omega for each subset
+                                                 g  F1* F2*  F3*
+Omega total for total scores and subscales    0.78 0.69  NA 0.66
+Omega general for total scores and subscales  0.70 0.46  NA 0.66
+Omega group for total scores and subscales    0.08 0.23  NA 0.00</code></pre>
+</div>
+</div>
+</section><section id="estimate-person-thetaslatent-scores" class="level3" data-number="3.5"><h3 data-number="3.5" class="anchored" data-anchor-id="estimate-person-thetaslatent-scores">
+<span class="header-section-number">3.5</span> Estimate person thetas/latent scores</h3>
+<p>Next step is to estimate person thetas/scores/locations based on the pre-specified item parameters.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># estimate person thetas</span></span>
+<span><span class="va">personThetas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIestThetas.html">RIestThetas</a></span><span class="op">(</span><span class="va">simData</span>,itemParams <span class="op">=</span> <span class="va">agencyParams</span><span class="op">)</span></span>
+<span><span class="co"># estimate person theta SEM</span></span>
+<span><span class="va">personSEM</span> <span class="op">&lt;-</span> <span class="fu">map_vec</span><span class="op">(</span><span class="va">personThetas</span>, <span class="op">~</span> <span class="fu">catR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/catR/man/semTheta.html">semTheta</a></span><span class="op">(</span><span class="va">.x</span>, it <span class="op">=</span> <span class="va">agencyParams</span>, method <span class="op">=</span> <span class="st">"WL"</span>, model <span class="op">=</span> <span class="st">"PCM"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># add person thetas to the simulated data</span></span>
+<span><span class="va">simData</span><span class="op">$</span><span class="va">estTheta</span> <span class="op">&lt;-</span> <span class="va">personThetas</span></span>
+<span><span class="va">simData</span><span class="op">$</span><span class="va">estSEM</span> <span class="op">&lt;-</span> <span class="va">personSEM</span></span>
+<span><span class="co"># add ordinal sum scores to the simulated data</span></span>
+<span><span class="va">simData</span> <span class="op">&lt;-</span> <span class="va">simData</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>SumScore <span class="op">=</span> <span class="va">V1</span><span class="op">+</span><span class="va">V2</span><span class="op">+</span><span class="va">V3</span><span class="op">+</span><span class="va">V4</span><span class="op">)</span></span>
+<span><span class="co"># add weighted ordinal sum scores to the simulated data</span></span>
+<span><span class="va">simData</span><span class="op">$</span><span class="va">weightedSumScore</span> <span class="op">&lt;-</span> <span class="va">simData</span><span class="op">$</span><span class="va">V1</span><span class="op">*</span><span class="va">cfa1_loadings</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> </span>
+<span>  <span class="va">simData</span><span class="op">$</span><span class="va">V2</span><span class="op">*</span><span class="va">cfa1_loadings</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> </span>
+<span>  <span class="va">simData</span><span class="op">$</span><span class="va">V3</span><span class="op">*</span><span class="va">cfa1_loadings</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">+</span> </span>
+<span>  <span class="va">simData</span><span class="op">$</span><span class="va">V4</span><span class="op">*</span><span class="va">cfa1_loadings</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># add simulated theta values to the simData</span></span>
+<span><span class="va">simData</span><span class="op">$</span><span class="va">simTheta</span> <span class="op">&lt;-</span> <span class="va">data_long</span><span class="op">$</span><span class="va">theta</span></span>
+<span><span class="co"># add id variable</span></span>
+<span><span class="va">simData</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="va">data_long</span><span class="op">$</span><span class="va">id</span></span>
+<span><span class="co"># create grouping variable for quintiles</span></span>
+<span><span class="va">simData</span><span class="op">$</span><span class="va">quintile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu">ntile</span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">simTheta</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add time variable to data</span></span>
+<span><span class="va">simData</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="va">data_long</span><span class="op">$</span><span class="va">time</span></span>
+<span></span>
+<span><span class="fu">write_csv</span><span class="op">(</span><span class="va">simData</span>, <span class="st">"simData.csv"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">simTheta</span>, col <span class="op">=</span> <span class="st">"lightblue"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">estTheta</span>, col <span class="op">=</span> <span class="st">"lightpink"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">SumScore</span>, col <span class="op">=</span> <span class="st">"lightgreen"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">weightedSumScore</span>, col <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="compLatent_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="1050"></p>
+<p></p><figcaption class="figure-caption">Histograms of generated and estimated theta values, ordinal sum scores, and weighted ordinal sum scores</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="compLatent_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="1050"></p>
+<p></p><figcaption class="figure-caption">Histograms of generated and estimated theta values, ordinal sum scores, and weighted ordinal sum scores</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="compLatent_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid figure-img" width="1050"></p>
+<p></p><figcaption class="figure-caption">Histograms of generated and estimated theta values, ordinal sum scores, and weighted ordinal sum scores</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="compLatent_files/figure-html/unnamed-chunk-10-4.png" class="img-fluid figure-img" width="1050"></p>
+<p></p><figcaption class="figure-caption">Histograms of generated and estimated theta values, ordinal sum scores, and weighted ordinal sum scores</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># density plot for all four of the above histograms, facet_wrapped by time</span></span>
+<span><span class="va">simData</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"simTheta"</span>, <span class="st">"estTheta"</span>, <span class="st">"SumScore"</span>, <span class="st">"weightedSumScore"</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"simTheta"</span>, <span class="st">"estTheta"</span>, <span class="st">"SumScore"</span>, <span class="st">"weightedSumScore"</span><span class="op">)</span>, </span>
+<span>               names_to <span class="op">=</span> <span class="st">"variable"</span>, </span>
+<span>               values_to <span class="op">=</span> <span class="st">"value"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">value</span>, fill <span class="op">=</span> <span class="va">variable</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html">geom_density</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">time</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_d</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Value"</span>, y <span class="op">=</span> <span class="st">"Density"</span>, fill <span class="op">=</span> <span class="st">"Variable"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Split by timepoint 0 and 1"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="compLatent_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="1050"></p>
+<p></p><figcaption class="figure-caption">Density plot of scaled values for all four variables</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="statistical-analyses" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="statistical-analyses">
+<span class="header-section-number">4</span> Statistical analyses</h2>
+<section id="lmm-with-estimated-theta" class="level3" data-number="4.1"><h3 data-number="4.1" class="anchored" data-anchor-id="lmm-with-estimated-theta">
+<span class="header-section-number">4.1</span> LMM with estimated theta</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lmm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">estTheta</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">simData</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">lmm1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">round</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  effect   group    term         estimate std.error statistic conf.low conf.high
+  &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 fixed    &lt;NA&gt;     (Intercept)    -0.347    0.094      -3.70   -0.532    -0.163
+2 fixed    &lt;NA&gt;     time            0.695    0.0998      6.96    0.499     0.890
+3 ran_pars id       sd__(Interc…    0.620   NA          NA      NA        NA    
+4 ran_pars Residual sd__Observa…    0.706   NA          NA      NA        NA    </code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">icc</span><span class="op">(</span><span class="va">lmm1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Intraclass Correlation Coefficient
+
+    Adjusted ICC: 0.436
+  Unadjusted ICC: 0.383</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://andrisignorell.github.io/DescTools/reference/StdCoef.html">StdCoef</a></span><span class="op">(</span><span class="va">lmm1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>            Estimate* Std. Error*  df
+(Intercept) 0.0000000   0.0000000 196
+time        0.3481564   0.0500326 196
+attr(,"class")
+[1] "coefTable" "matrix"   </code></pre>
+</div>
+</div>
+<p>0.37 (SE = 0.026) compared with 0.42.</p>
+</section><section id="weighted-lmm-with-estimated-theta" class="level3" data-number="4.2"><h3 data-number="4.2" class="anchored" data-anchor-id="weighted-lmm-with-estimated-theta">
+<span class="header-section-number">4.2</span> Weighted LMM with estimated theta</h3>
+<p>We’ll use the estimated theta SEM as weights.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># plot range of estSEM across estTheta</span></span>
+<span><span class="va">simData</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">estTheta</span>, y <span class="op">=</span> <span class="va">estSEM</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Estimated theta"</span>, y <span class="op">=</span> <span class="st">"Estimated theta SEM"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="compLatent_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="1050"></p>
+<p></p><figcaption class="figure-caption">Plot of estimated theta SEM against estimated theta</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lmm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">estTheta</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">simData</span>,</span>
+<span>             weights <span class="op">=</span> <span class="va">estSEM</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">lmm2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">round</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  effect   group    term         estimate std.error statistic conf.low conf.high
+  &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 fixed    &lt;NA&gt;     (Intercept)    -0.429    0.101      -4.27   -0.626    -0.232
+2 fixed    &lt;NA&gt;     time            0.798    0.0992      8.04    0.603     0.992
+3 ran_pars id       sd__(Interc…    0.731   NA          NA      NA        NA    
+4 ran_pars Residual sd__Observa…    0.571   NA          NA      NA        NA    </code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">icc</span><span class="op">(</span><span class="va">lmm2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Intraclass Correlation Coefficient
+
+    Adjusted ICC: 0.622
+  Unadjusted ICC: 0.524</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://andrisignorell.github.io/DescTools/reference/StdCoef.html">StdCoef</a></span><span class="op">(</span><span class="va">lmm2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>            Estimate* Std. Error*  df
+(Intercept)  0.000000  0.00000000 196
+time         0.399825  0.04970946 196
+attr(,"class")
+[1] "coefTable" "matrix"   </code></pre>
+</div>
+</div>
+<p>0.414 (SE = 0.026) compared with 0.42.</p>
+</section><section id="lmm-with-ordinal-sum-score" class="level3" data-number="4.3"><h3 data-number="4.3" class="anchored" data-anchor-id="lmm-with-ordinal-sum-score">
+<span class="header-section-number">4.3</span> LMM with ordinal sum score</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lmm3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">SumScore</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">simData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lmm3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">round</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  effect   group    term         estimate std.error statistic conf.low conf.high
+  &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 fixed    &lt;NA&gt;     (Intercept)    -0.336    0.0944     -3.57   -0.522    -0.152
+2 fixed    &lt;NA&gt;     time            0.673    0.101       6.64    0.474     0.872
+3 ran_pars id       sd__(Interc…    0.614   NA          NA      NA        NA    
+4 ran_pars Residual sd__Observa…    0.717   NA          NA      NA        NA    </code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">icc</span><span class="op">(</span><span class="va">lmm3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Intraclass Correlation Coefficient
+
+    Adjusted ICC: 0.423
+  Unadjusted ICC: 0.375</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://andrisignorell.github.io/DescTools/reference/StdCoef.html">StdCoef</a></span><span class="op">(</span><span class="va">lmm3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>            Estimate* Std. Error*  df
+(Intercept) 0.0000000  0.00000000 196
+time        0.3373715  0.05083355 196
+attr(,"class")
+[1] "coefTable" "matrix"   </code></pre>
+</div>
+</div>
+<p>0.373 (SE = 0.026) compared with 0.42.</p>
+</section><section id="lmm-with-weighted-ordinal-sum-score" class="level3" data-number="4.4"><h3 data-number="4.4" class="anchored" data-anchor-id="lmm-with-weighted-ordinal-sum-score">
+<span class="header-section-number">4.4</span> LMM with weighted ordinal sum score</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lmm4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">weightedSumScore</span><span class="op">)</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">simData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">lmm4</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span><span class="fu">across</span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">round</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 8
+  effect   group    term         estimate std.error statistic conf.low conf.high
+  &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 fixed    &lt;NA&gt;     (Intercept)    -0.333    0.0945     -3.53   -0.518    -0.148
+2 fixed    &lt;NA&gt;     time            0.666    0.102       6.54    0.467     0.866
+3 ran_pars id       sd__(Interc…    0.611   NA          NA      NA        NA    
+4 ran_pars Residual sd__Observa…    0.720   NA          NA      NA        NA    </code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">icc</span><span class="op">(</span><span class="va">lmm4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># Intraclass Correlation Coefficient
+
+    Adjusted ICC: 0.419
+  Unadjusted ICC: 0.372</code></pre>
+</div>
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://andrisignorell.github.io/DescTools/reference/StdCoef.html">StdCoef</a></span><span class="op">(</span><span class="va">lmm4</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>            Estimate* Std. Error*  df
+(Intercept) 0.0000000  0.00000000 196
+time        0.3339848  0.05107553 196
+attr(,"class")
+[1] "coefTable" "matrix"   </code></pre>
+</div>
+</div>
+<p>0.373 (SE = 0.026) compared with 0.424.</p>
+</section></section><section id="summary" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">5</span> Summary</h2>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rbind together lmm0 to lmm4 in one dataframe</span></span>
+<span><span class="va">lmm_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">lmm0</span><span class="op">)</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">lmm1</span><span class="op">)</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">lmm2</span><span class="op">)</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">lmm3</span><span class="op">)</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">lmm4</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">add_column</span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lmm0"</span>, <span class="st">"lmm1estTheta"</span>, <span class="st">"lmm2weightedTheta"</span>, <span class="st">"lmm3sumscore"</span>, <span class="st">"lmm4weighted Sumscore"</span><span class="op">)</span>,each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">lmm_summary</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">term</span> <span class="op">==</span> <span class="st">"time"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">write_csv</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">n</span>,<span class="st">"_lmm_summary.csv"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># check ICC vs correlation pre/post for estTheta</span></span>
+<span><span class="va">simData</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">time</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pre"</span>,<span class="st">"post"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">pivot_wider</span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">time</span>, values_from <span class="op">=</span> <span class="va">estTheta</span>, id_cols <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">cor_test</span><span class="op">(</span><span class="st">"pre"</span>,<span class="st">"post"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Parameter1 | Parameter2 |    r |       95% CI | t(98) |         p
+-----------------------------------------------------------------
+pre        |       post | 0.44 | [0.26, 0.58] |  4.80 | &lt; .001***
+
+Observations: 100</code></pre>
+</div>
+</div>
+
+
+<!-- -->
+
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{johansson2023,
+  author = {Magnus Johansson},
+  title = {Using {Rasch} and {WLS} to Account for Measurement
+    Uncertainties in Regression Models},
+  date = {2023-10-17},
+  url = {https://pgmj.github.io/compLatent.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2023" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Magnus Johansson. (2023, October 17). <em>Using Rasch and WLS to account
+for measurement uncertainties in regression models</em>. <a href="https://pgmj.github.io/compLatent.html">https://pgmj.github.io/compLatent.html</a>
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb54" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Using Rasch and WLS to account for measurement uncertainties in regression models"</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> </span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co">  name: Magnus Johansson</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: RISE Research Institutes of Sweden</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="co">  orcid: 0000-0003-1669-592X</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="an">citation:</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="co">  type: 'webpage'</span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="an">csl:</span><span class="co"> apa.csl</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: false</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> </span></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: 72</span></span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a>There are several reasons for putting this blog post together. The larger issue is to investigate ways to analyze relationships between measures that have varying levels of measurement uncertainty across their respective range or continuum. This is  relevant to any kind of latent variable measurement that uses multiple indicators/items/questions as a way to assess a latent variable. </span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>In classical test theory (CTT; i.e. factor analysis) the assumption is generally that the measurement error is a single value, constant across the scale and across participants. Modern test theory (Rasch Measurement Theory (RMT) or Item Response Theory (IRT)) has tools to describe the varying uncertainties of the measure itself, and also allows for estimation of measurement uncertainty for each individual, based on the item properties.</span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-29"><a href="#cb54-29" aria-hidden="true" tabindex="-1"></a>In the "business-as-usual" approach, no matter which  types of measurement uncertainty are ignored. The simple case of have two variables and an ordinary least squares (OLS) linear regression model will take the input from each variable as a perfect measurement. Bayesians may have another take on this, and I will look into that at a later point, so for now this is relevant for frequentist statistics. </span>
+<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a>"Business-as-usual" also makes use of ordinal sum scores disguised as interval scores. There is a seemingly wide-spread idea that estimated person interval scores is not significantly different from ordinal sum scores, and we'll look further into that as well by including ordinal sum scores.</span>
+<span id="cb54-32"><a href="#cb54-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-33"><a href="#cb54-33" aria-hidden="true" tabindex="-1"></a>One way to take measurement uncertainty into account in a linear regression model is to use Weighted Least Squares (WLS) instead of OLS. However, this approach only allows weights for one variable. The weights will be based on the measurement uncertainty for the interval scores.</span>
+<span id="cb54-34"><a href="#cb54-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-35"><a href="#cb54-35" aria-hidden="true" tabindex="-1"></a>Additionally, we will use Quantile Regression, with and without weights.</span>
+<span id="cb54-36"><a href="#cb54-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-37"><a href="#cb54-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb54-38"><a href="#cb54-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-39"><a href="#cb54-39" aria-hidden="true" tabindex="-1"></a>Data were collected for a project evaluating multiple work environment questionnaires. Two of the analyzed scales will be used in our example, as a foundation for simulated data. More information is available at the GitHub <span class="co">[</span><span class="ot">repository</span><span class="co">](https://github.com/pgmj/PreventOSA)</span> and <span class="co">[</span><span class="ot">website</span><span class="co">](https://pgmj.github.io/PreventOSA/)</span>.</span>
+<span id="cb54-40"><a href="#cb54-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-41"><a href="#cb54-41" aria-hidden="true" tabindex="-1"></a>The two questionnaires cover the domains of "recovery" and "agency", where the latter refers to workers' perceived control over their work situation. Our analyses will look at how "agency" affects "recovery". We will retain an interval scale score for the "recovery" scale throughout, while varying the "agency" between ordinal sum score, interval score, and interval score with weights, and check how these three reproduce the true simulated relationship between the two scales.</span>
+<span id="cb54-42"><a href="#cb54-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-43"><a href="#cb54-43" aria-hidden="true" tabindex="-1"></a>Variables will be named <span class="in">`SEM`</span> for standard error of measurement, <span class="in">`Theta`</span> for interval theta/scores/locations, and <span class="in">`SumScore`</span> for ordinal sum scores.</span>
+<span id="cb54-44"><a href="#cb54-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-45"><a href="#cb54-45" aria-hidden="true" tabindex="-1"></a>We'll also add analyses using structural equation modeling and weighted sum scores (based on confirmatory factor analysis factor loadings).</span>
+<span id="cb54-46"><a href="#cb54-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-49"><a href="#cb54-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-50"><a href="#cb54-50" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RISEkbmRasch)</span>
+<span id="cb54-51"><a href="#cb54-51" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(easystats)</span>
+<span id="cb54-52"><a href="#cb54-52" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quantreg)</span>
+<span id="cb54-53"><a href="#cb54-53" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(faux)</span>
+<span id="cb54-54"><a href="#cb54-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom.mixed)</span>
+<span id="cb54-55"><a href="#cb54-55" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb54-56"><a href="#cb54-56" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DescTools)</span>
+<span id="cb54-57"><a href="#cb54-57" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb54-58"><a href="#cb54-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-59"><a href="#cb54-59" aria-hidden="true" tabindex="-1"></a><span class="do">### some commands exist in multiple packages, here we define preferred ones that are frequently used</span></span>
+<span id="cb54-60"><a href="#cb54-60" aria-hidden="true" tabindex="-1"></a>select <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>select</span>
+<span id="cb54-61"><a href="#cb54-61" aria-hidden="true" tabindex="-1"></a>count <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>count</span>
+<span id="cb54-62"><a href="#cb54-62" aria-hidden="true" tabindex="-1"></a>recode <span class="ot">&lt;-</span> car<span class="sc">::</span>recode</span>
+<span id="cb54-63"><a href="#cb54-63" aria-hidden="true" tabindex="-1"></a>rename <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>rename</span>
+<span id="cb54-64"><a href="#cb54-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-65"><a href="#cb54-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-66"><a href="#cb54-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Simulating data n = 800</span></span>
+<span id="cb54-67"><a href="#cb54-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-68"><a href="#cb54-68" aria-hidden="true" tabindex="-1"></a>We'll pretend that we have n = 400 that are measured at two time points, with a specified correlation between measurements of 0.5. The difference in group means is set to 1 logit, and the standard deviation will be 1 logit for both points of measurement.</span>
+<span id="cb54-69"><a href="#cb54-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-72"><a href="#cb54-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-73"><a href="#cb54-73" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1523</span>)</span>
+<span id="cb54-74"><a href="#cb54-74" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb54-75"><a href="#cb54-75" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">rnorm_multi</span>(<span class="at">n =</span> n, </span>
+<span id="cb54-76"><a href="#cb54-76" aria-hidden="true" tabindex="-1"></a>                  <span class="at">mu =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="sc">+</span><span class="fl">0.5</span>),</span>
+<span id="cb54-77"><a href="#cb54-77" aria-hidden="true" tabindex="-1"></a>                  <span class="at">sd =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb54-78"><a href="#cb54-78" aria-hidden="true" tabindex="-1"></a>                  <span class="at">r =</span> <span class="fu">c</span>(<span class="fl">0.5</span>), </span>
+<span id="cb54-79"><a href="#cb54-79" aria-hidden="true" tabindex="-1"></a>                  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"pre"</span>, <span class="st">"post"</span>),</span>
+<span id="cb54-80"><a href="#cb54-80" aria-hidden="true" tabindex="-1"></a>                  <span class="at">empirical =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb54-81"><a href="#cb54-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-82"><a href="#cb54-82" aria-hidden="true" tabindex="-1"></a><span class="fu">cor_test</span>(<span class="st">"pre"</span>, <span class="st">"post"</span>, <span class="at">data =</span> data)</span>
+<span id="cb54-83"><a href="#cb54-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-84"><a href="#cb54-84" aria-hidden="true" tabindex="-1"></a><span class="co"># light wrangling to get long format and an id variable</span></span>
+<span id="cb54-85"><a href="#cb54-85" aria-hidden="true" tabindex="-1"></a>data_long <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-86"><a href="#cb54-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">nrow</span>(.))) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-87"><a href="#cb54-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"pre"</span>, <span class="st">"post"</span>), </span>
+<span id="cb54-88"><a href="#cb54-88" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"time"</span>, </span>
+<span id="cb54-89"><a href="#cb54-89" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"theta"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-90"><a href="#cb54-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">theta =</span> <span class="fu">round</span>(theta, <span class="dv">4</span>),</span>
+<span id="cb54-91"><a href="#cb54-91" aria-hidden="true" tabindex="-1"></a>         <span class="at">time =</span> dplyr<span class="sc">::</span><span class="fu">recode</span>(time, <span class="st">"pre"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"post"</span> <span class="ot">=</span> <span class="dv">1</span>))</span>
+<span id="cb54-92"><a href="#cb54-92" aria-hidden="true" tabindex="-1"></a><span class="co">#write_csv(data, "data800simPrePost.csv")</span></span>
+<span id="cb54-93"><a href="#cb54-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-94"><a href="#cb54-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-95"><a href="#cb54-95" aria-hidden="true" tabindex="-1"></a><span class="fu">### Scatter plot</span></span>
+<span id="cb54-96"><a href="#cb54-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-99"><a href="#cb54-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-100"><a href="#cb54-100" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb54-101"><a href="#cb54-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pre, <span class="at">y =</span> post)) <span class="sc">+</span></span>
+<span id="cb54-102"><a href="#cb54-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-103"><a href="#cb54-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb54-104"><a href="#cb54-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb54-105"><a href="#cb54-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-106"><a href="#cb54-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-107"><a href="#cb54-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-108"><a href="#cb54-108" aria-hidden="true" tabindex="-1"></a><span class="fu">### Reference LMM results from the simulated theta values</span></span>
+<span id="cb54-109"><a href="#cb54-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-112"><a href="#cb54-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-113"><a href="#cb54-113" aria-hidden="true" tabindex="-1"></a>lmm0 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(<span class="fu">scale</span>(theta) <span class="sc">~</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> data_long) </span>
+<span id="cb54-114"><a href="#cb54-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-115"><a href="#cb54-115" aria-hidden="true" tabindex="-1"></a>lmm0 <span class="sc">%&gt;%</span></span>
+<span id="cb54-116"><a href="#cb54-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-117"><a href="#cb54-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">4</span>))</span>
+<span id="cb54-118"><a href="#cb54-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-119"><a href="#cb54-119" aria-hidden="true" tabindex="-1"></a><span class="fu">icc</span>(lmm0)</span>
+<span id="cb54-120"><a href="#cb54-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-121"><a href="#cb54-121" aria-hidden="true" tabindex="-1"></a><span class="fu">StdCoef</span>(lmm0)</span>
+<span id="cb54-122"><a href="#cb54-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-123"><a href="#cb54-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-124"><a href="#cb54-124" aria-hidden="true" tabindex="-1"></a>The standardized coefficient of time is 0.424. This will be our reference value for comparison with the other analyses since ordinal sum scores and estimated theta scores will not be on the same scale.</span>
+<span id="cb54-125"><a href="#cb54-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-126"><a href="#cb54-126" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulating polytomous data</span></span>
+<span id="cb54-127"><a href="#cb54-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-128"><a href="#cb54-128" aria-hidden="true" tabindex="-1"></a>Prepare the input item parameters.</span>
+<span id="cb54-129"><a href="#cb54-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-132"><a href="#cb54-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-133"><a href="#cb54-133" aria-hidden="true" tabindex="-1"></a><span class="co"># item parameters</span></span>
+<span id="cb54-134"><a href="#cb54-134" aria-hidden="true" tabindex="-1"></a>agencyParams <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"AgencyItemParameters.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-135"><a href="#cb54-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb54-136"><a href="#cb54-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-137"><a href="#cb54-137" aria-hidden="true" tabindex="-1"></a><span class="co"># put item parameters for agency into a list object</span></span>
+<span id="cb54-138"><a href="#cb54-138" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(agencyParams) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb54-139"><a href="#cb54-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-140"><a href="#cb54-140" aria-hidden="true" tabindex="-1"></a>tlist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(agencyParams), <span class="cf">function</span>(i) {</span>
+<span id="cb54-141"><a href="#cb54-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.list</span>(agencyParams[i, ])</span>
+<span id="cb54-142"><a href="#cb54-142" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb54-143"><a href="#cb54-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-144"><a href="#cb54-144" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate polytomous data</span></span>
+<span id="cb54-145"><a href="#cb54-145" aria-hidden="true" tabindex="-1"></a>simData <span class="ot">&lt;-</span> <span class="fu">SimPartialScore</span>(</span>
+<span id="cb54-146"><a href="#cb54-146" aria-hidden="true" tabindex="-1"></a>  <span class="at">deltaslist =</span> tlist,</span>
+<span id="cb54-147"><a href="#cb54-147" aria-hidden="true" tabindex="-1"></a>  <span class="at">thetavec =</span> data_long<span class="sc">$</span>theta</span>
+<span id="cb54-148"><a href="#cb54-148" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-149"><a href="#cb54-149" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb54-150"><a href="#cb54-150" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-151"><a href="#cb54-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-152"><a href="#cb54-152" aria-hidden="true" tabindex="-1"></a>A brief look at the simulated data.</span>
+<span id="cb54-153"><a href="#cb54-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-156"><a href="#cb54-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-157"><a href="#cb54-157" aria-hidden="true" tabindex="-1"></a><span class="co"># distribution</span></span>
+<span id="cb54-158"><a href="#cb54-158" aria-hidden="true" tabindex="-1"></a><span class="fu">RIbarstack</span>(simData)</span>
+<span id="cb54-159"><a href="#cb54-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-160"><a href="#cb54-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-161"><a href="#cb54-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-164"><a href="#cb54-164" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-165"><a href="#cb54-165" aria-hidden="true" tabindex="-1"></a><span class="co"># reliability/test information</span></span>
+<span id="cb54-166"><a href="#cb54-166" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(simData, <span class="at">cutoff =</span> <span class="fl">2.5</span>, <span class="at">samplePSI =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb54-167"><a href="#cb54-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-168"><a href="#cb54-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-169"><a href="#cb54-169" aria-hidden="true" tabindex="-1"></a>TIF 2.5 = PSI 0.6</span>
+<span id="cb54-170"><a href="#cb54-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-171"><a href="#cb54-171" aria-hidden="true" tabindex="-1"></a><span class="fu">### Classical test theory</span></span>
+<span id="cb54-172"><a href="#cb54-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-173"><a href="#cb54-173" aria-hidden="true" tabindex="-1"></a>Confirmatory factor analysis (CFA) is used to estimate model fit.</span>
+<span id="cb54-174"><a href="#cb54-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-177"><a href="#cb54-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-178"><a href="#cb54-178" aria-hidden="true" tabindex="-1"></a><span class="co"># specify model</span></span>
+<span id="cb54-179"><a href="#cb54-179" aria-hidden="true" tabindex="-1"></a>cfa1 <span class="ot">&lt;-</span> <span class="st">'agencyCFA =~ V1 + V2 + V3 + V4'</span></span>
+<span id="cb54-180"><a href="#cb54-180" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate model</span></span>
+<span id="cb54-181"><a href="#cb54-181" aria-hidden="true" tabindex="-1"></a>cfa1.fit <span class="ot">&lt;-</span> <span class="fu">cfa</span>(cfa1, </span>
+<span id="cb54-182"><a href="#cb54-182" aria-hidden="true" tabindex="-1"></a>                <span class="at">ordered =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb54-183"><a href="#cb54-183" aria-hidden="true" tabindex="-1"></a>                <span class="at">estimator =</span> <span class="st">"DWLS"</span>,</span>
+<span id="cb54-184"><a href="#cb54-184" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> simData)</span>
+<span id="cb54-185"><a href="#cb54-185" aria-hidden="true" tabindex="-1"></a><span class="co"># get fit indices etc</span></span>
+<span id="cb54-186"><a href="#cb54-186" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cfa1.fit, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb54-187"><a href="#cb54-187" aria-hidden="true" tabindex="-1"></a><span class="co"># get standardized factor loadings</span></span>
+<span id="cb54-188"><a href="#cb54-188" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(cfa1.fit,<span class="at">what=</span><span class="st">"std"</span>)<span class="sc">$</span>lambda</span>
+<span id="cb54-189"><a href="#cb54-189" aria-hidden="true" tabindex="-1"></a><span class="co"># save factor loadings to a vector</span></span>
+<span id="cb54-190"><a href="#cb54-190" aria-hidden="true" tabindex="-1"></a>cfa1_loadings <span class="ot">&lt;-</span> <span class="fu">inspect</span>(cfa1.fit,<span class="at">what=</span><span class="st">"std"</span>)<span class="sc">$</span>lambda <span class="sc">%&gt;%</span> </span>
+<span id="cb54-191"><a href="#cb54-191" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb54-192"><a href="#cb54-192" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(agencyCFA)</span>
+<span id="cb54-193"><a href="#cb54-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-194"><a href="#cb54-194" aria-hidden="true" tabindex="-1"></a><span class="co"># CTT reliability</span></span>
+<span id="cb54-195"><a href="#cb54-195" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">alpha</span>(simData)</span>
+<span id="cb54-196"><a href="#cb54-196" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">omega</span>(simData)</span>
+<span id="cb54-197"><a href="#cb54-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-198"><a href="#cb54-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-199"><a href="#cb54-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-200"><a href="#cb54-200" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimate person thetas/latent scores</span></span>
+<span id="cb54-201"><a href="#cb54-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-202"><a href="#cb54-202" aria-hidden="true" tabindex="-1"></a>Next step is to estimate person thetas/scores/locations based on the pre-specified item parameters.</span>
+<span id="cb54-203"><a href="#cb54-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-206"><a href="#cb54-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-207"><a href="#cb54-207" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate person thetas</span></span>
+<span id="cb54-208"><a href="#cb54-208" aria-hidden="true" tabindex="-1"></a>personThetas <span class="ot">&lt;-</span> <span class="fu">RIestThetas</span>(simData,<span class="at">itemParams =</span> agencyParams)</span>
+<span id="cb54-209"><a href="#cb54-209" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate person theta SEM</span></span>
+<span id="cb54-210"><a href="#cb54-210" aria-hidden="true" tabindex="-1"></a>personSEM <span class="ot">&lt;-</span> <span class="fu">map_vec</span>(personThetas, <span class="sc">~</span> catR<span class="sc">::</span><span class="fu">semTheta</span>(.x, <span class="at">it =</span> agencyParams, <span class="at">method =</span> <span class="st">"WL"</span>, <span class="at">model =</span> <span class="st">"PCM"</span>))</span>
+<span id="cb54-211"><a href="#cb54-211" aria-hidden="true" tabindex="-1"></a><span class="co"># add person thetas to the simulated data</span></span>
+<span id="cb54-212"><a href="#cb54-212" aria-hidden="true" tabindex="-1"></a>simData<span class="sc">$</span>estTheta <span class="ot">&lt;-</span> personThetas</span>
+<span id="cb54-213"><a href="#cb54-213" aria-hidden="true" tabindex="-1"></a>simData<span class="sc">$</span>estSEM <span class="ot">&lt;-</span> personSEM</span>
+<span id="cb54-214"><a href="#cb54-214" aria-hidden="true" tabindex="-1"></a><span class="co"># add ordinal sum scores to the simulated data</span></span>
+<span id="cb54-215"><a href="#cb54-215" aria-hidden="true" tabindex="-1"></a>simData <span class="ot">&lt;-</span> simData <span class="sc">%&gt;%</span> </span>
+<span id="cb54-216"><a href="#cb54-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SumScore =</span> V1<span class="sc">+</span>V2<span class="sc">+</span>V3<span class="sc">+</span>V4)</span>
+<span id="cb54-217"><a href="#cb54-217" aria-hidden="true" tabindex="-1"></a><span class="co"># add weighted ordinal sum scores to the simulated data</span></span>
+<span id="cb54-218"><a href="#cb54-218" aria-hidden="true" tabindex="-1"></a>simData<span class="sc">$</span>weightedSumScore <span class="ot">&lt;-</span> simData<span class="sc">$</span>V1<span class="sc">*</span>cfa1_loadings[<span class="dv">1</span>] <span class="sc">+</span> </span>
+<span id="cb54-219"><a href="#cb54-219" aria-hidden="true" tabindex="-1"></a>  simData<span class="sc">$</span>V2<span class="sc">*</span>cfa1_loadings[<span class="dv">2</span>] <span class="sc">+</span> </span>
+<span id="cb54-220"><a href="#cb54-220" aria-hidden="true" tabindex="-1"></a>  simData<span class="sc">$</span>V3<span class="sc">*</span>cfa1_loadings[<span class="dv">3</span>] <span class="sc">+</span> </span>
+<span id="cb54-221"><a href="#cb54-221" aria-hidden="true" tabindex="-1"></a>  simData<span class="sc">$</span>V4<span class="sc">*</span>cfa1_loadings[<span class="dv">4</span>]</span>
+<span id="cb54-222"><a href="#cb54-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-223"><a href="#cb54-223" aria-hidden="true" tabindex="-1"></a><span class="co"># add simulated theta values to the simData</span></span>
+<span id="cb54-224"><a href="#cb54-224" aria-hidden="true" tabindex="-1"></a>simData<span class="sc">$</span>simTheta <span class="ot">&lt;-</span> data_long<span class="sc">$</span>theta</span>
+<span id="cb54-225"><a href="#cb54-225" aria-hidden="true" tabindex="-1"></a><span class="co"># add id variable</span></span>
+<span id="cb54-226"><a href="#cb54-226" aria-hidden="true" tabindex="-1"></a>simData<span class="sc">$</span>id <span class="ot">&lt;-</span> data_long<span class="sc">$</span>id</span>
+<span id="cb54-227"><a href="#cb54-227" aria-hidden="true" tabindex="-1"></a><span class="co"># create grouping variable for quintiles</span></span>
+<span id="cb54-228"><a href="#cb54-228" aria-hidden="true" tabindex="-1"></a>simData<span class="sc">$</span>quintile <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ntile</span>(simData<span class="sc">$</span>simTheta, <span class="dv">5</span>))</span>
+<span id="cb54-229"><a href="#cb54-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-230"><a href="#cb54-230" aria-hidden="true" tabindex="-1"></a><span class="co"># add time variable to data</span></span>
+<span id="cb54-231"><a href="#cb54-231" aria-hidden="true" tabindex="-1"></a>simData<span class="sc">$</span>time <span class="ot">&lt;-</span> data_long<span class="sc">$</span>time</span>
+<span id="cb54-232"><a href="#cb54-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-233"><a href="#cb54-233" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simData, <span class="st">"simData.csv"</span>)</span>
+<span id="cb54-234"><a href="#cb54-234" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-235"><a href="#cb54-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-238"><a href="#cb54-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-239"><a href="#cb54-239" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
+<span id="cb54-240"><a href="#cb54-240" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Histograms of generated and estimated theta values, ordinal sum scores, and weighted ordinal sum scores"</span></span>
+<span id="cb54-241"><a href="#cb54-241" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(simData<span class="sc">$</span>simTheta, <span class="at">col =</span> <span class="st">"lightblue"</span>)</span>
+<span id="cb54-242"><a href="#cb54-242" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(simData<span class="sc">$</span>estTheta, <span class="at">col =</span> <span class="st">"lightpink"</span>)</span>
+<span id="cb54-243"><a href="#cb54-243" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(simData<span class="sc">$</span>SumScore, <span class="at">col =</span> <span class="st">"lightgreen"</span>)</span>
+<span id="cb54-244"><a href="#cb54-244" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(simData<span class="sc">$</span>weightedSumScore, <span class="at">col =</span> <span class="st">"darkgreen"</span>)</span>
+<span id="cb54-245"><a href="#cb54-245" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-246"><a href="#cb54-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-247"><a href="#cb54-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-250"><a href="#cb54-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-251"><a href="#cb54-251" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Density plot of scaled values for all four variables"</span></span>
+<span id="cb54-252"><a href="#cb54-252" aria-hidden="true" tabindex="-1"></a><span class="co"># density plot for all four of the above histograms, facet_wrapped by time</span></span>
+<span id="cb54-253"><a href="#cb54-253" aria-hidden="true" tabindex="-1"></a>simData <span class="sc">%&gt;%</span> </span>
+<span id="cb54-254"><a href="#cb54-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">"simTheta"</span>, <span class="st">"estTheta"</span>, <span class="st">"SumScore"</span>, <span class="st">"weightedSumScore"</span>), <span class="sc">~</span> <span class="fu">scale</span>(.x))) <span class="sc">%&gt;%</span></span>
+<span id="cb54-255"><a href="#cb54-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"simTheta"</span>, <span class="st">"estTheta"</span>, <span class="st">"SumScore"</span>, <span class="st">"weightedSumScore"</span>), </span>
+<span id="cb54-256"><a href="#cb54-256" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"variable"</span>, </span>
+<span id="cb54-257"><a href="#cb54-257" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-258"><a href="#cb54-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> variable)) <span class="sc">+</span></span>
+<span id="cb54-259"><a href="#cb54-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb54-260"><a href="#cb54-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>time) <span class="sc">+</span></span>
+<span id="cb54-261"><a href="#cb54-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb54-262"><a href="#cb54-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>() <span class="sc">+</span></span>
+<span id="cb54-263"><a href="#cb54-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Value"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="st">"Variable"</span>,</span>
+<span id="cb54-264"><a href="#cb54-264" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Split by timepoint 0 and 1"</span>)</span>
+<span id="cb54-265"><a href="#cb54-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-266"><a href="#cb54-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-267"><a href="#cb54-267" aria-hidden="true" tabindex="-1"></a><span class="fu">## Statistical analyses</span></span>
+<span id="cb54-268"><a href="#cb54-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-269"><a href="#cb54-269" aria-hidden="true" tabindex="-1"></a><span class="fu">### LMM with estimated theta</span></span>
+<span id="cb54-270"><a href="#cb54-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-273"><a href="#cb54-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-274"><a href="#cb54-274" aria-hidden="true" tabindex="-1"></a>lmm1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(<span class="fu">scale</span>(estTheta) <span class="sc">~</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> simData) </span>
+<span id="cb54-275"><a href="#cb54-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-276"><a href="#cb54-276" aria-hidden="true" tabindex="-1"></a>lmm1 <span class="sc">%&gt;%</span></span>
+<span id="cb54-277"><a href="#cb54-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-278"><a href="#cb54-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">4</span>))</span>
+<span id="cb54-279"><a href="#cb54-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-280"><a href="#cb54-280" aria-hidden="true" tabindex="-1"></a><span class="fu">icc</span>(lmm1)</span>
+<span id="cb54-281"><a href="#cb54-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-282"><a href="#cb54-282" aria-hidden="true" tabindex="-1"></a><span class="fu">StdCoef</span>(lmm1)</span>
+<span id="cb54-283"><a href="#cb54-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-284"><a href="#cb54-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-285"><a href="#cb54-285" aria-hidden="true" tabindex="-1"></a>0.37 (SE = 0.026) compared with 0.42.</span>
+<span id="cb54-286"><a href="#cb54-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-287"><a href="#cb54-287" aria-hidden="true" tabindex="-1"></a><span class="fu">### Weighted LMM with estimated theta</span></span>
+<span id="cb54-288"><a href="#cb54-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-289"><a href="#cb54-289" aria-hidden="true" tabindex="-1"></a>We'll use the estimated theta SEM as weights.</span>
+<span id="cb54-290"><a href="#cb54-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-293"><a href="#cb54-293" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-294"><a href="#cb54-294" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Plot of estimated theta SEM against estimated theta"</span></span>
+<span id="cb54-295"><a href="#cb54-295" aria-hidden="true" tabindex="-1"></a><span class="co"># plot range of estSEM across estTheta</span></span>
+<span id="cb54-296"><a href="#cb54-296" aria-hidden="true" tabindex="-1"></a>simData <span class="sc">%&gt;%</span> </span>
+<span id="cb54-297"><a href="#cb54-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> estTheta, <span class="at">y =</span> estSEM)) <span class="sc">+</span></span>
+<span id="cb54-298"><a href="#cb54-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb54-299"><a href="#cb54-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">group =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb54-300"><a href="#cb54-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb54-301"><a href="#cb54-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Estimated theta"</span>, <span class="at">y =</span> <span class="st">"Estimated theta SEM"</span>)</span>
+<span id="cb54-302"><a href="#cb54-302" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-303"><a href="#cb54-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-306"><a href="#cb54-306" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-307"><a href="#cb54-307" aria-hidden="true" tabindex="-1"></a>lmm2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(<span class="fu">scale</span>(estTheta) <span class="sc">~</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> simData,</span>
+<span id="cb54-308"><a href="#cb54-308" aria-hidden="true" tabindex="-1"></a>             <span class="at">weights =</span> estSEM) </span>
+<span id="cb54-309"><a href="#cb54-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-310"><a href="#cb54-310" aria-hidden="true" tabindex="-1"></a>lmm2 <span class="sc">%&gt;%</span></span>
+<span id="cb54-311"><a href="#cb54-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-312"><a href="#cb54-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">4</span>))</span>
+<span id="cb54-313"><a href="#cb54-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-314"><a href="#cb54-314" aria-hidden="true" tabindex="-1"></a><span class="fu">icc</span>(lmm2)</span>
+<span id="cb54-315"><a href="#cb54-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-316"><a href="#cb54-316" aria-hidden="true" tabindex="-1"></a><span class="fu">StdCoef</span>(lmm2)</span>
+<span id="cb54-317"><a href="#cb54-317" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-318"><a href="#cb54-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-319"><a href="#cb54-319" aria-hidden="true" tabindex="-1"></a>0.414 (SE = 0.026) compared with 0.42.</span>
+<span id="cb54-320"><a href="#cb54-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-321"><a href="#cb54-321" aria-hidden="true" tabindex="-1"></a><span class="fu">### LMM with ordinal sum score</span></span>
+<span id="cb54-322"><a href="#cb54-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-325"><a href="#cb54-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-326"><a href="#cb54-326" aria-hidden="true" tabindex="-1"></a>lmm3 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(<span class="fu">scale</span>(SumScore) <span class="sc">~</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> simData)</span>
+<span id="cb54-327"><a href="#cb54-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-328"><a href="#cb54-328" aria-hidden="true" tabindex="-1"></a>lmm3 <span class="sc">%&gt;%</span></span>
+<span id="cb54-329"><a href="#cb54-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-330"><a href="#cb54-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">4</span>))</span>
+<span id="cb54-331"><a href="#cb54-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-332"><a href="#cb54-332" aria-hidden="true" tabindex="-1"></a><span class="fu">icc</span>(lmm3)</span>
+<span id="cb54-333"><a href="#cb54-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-334"><a href="#cb54-334" aria-hidden="true" tabindex="-1"></a><span class="fu">StdCoef</span>(lmm3)</span>
+<span id="cb54-335"><a href="#cb54-335" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-336"><a href="#cb54-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-337"><a href="#cb54-337" aria-hidden="true" tabindex="-1"></a>0.373 (SE = 0.026) compared with 0.42.</span>
+<span id="cb54-338"><a href="#cb54-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-339"><a href="#cb54-339" aria-hidden="true" tabindex="-1"></a><span class="fu">### LMM with weighted ordinal sum score</span></span>
+<span id="cb54-340"><a href="#cb54-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-343"><a href="#cb54-343" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-344"><a href="#cb54-344" aria-hidden="true" tabindex="-1"></a>lmm4 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(<span class="fu">scale</span>(weightedSumScore) <span class="sc">~</span> time <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> id), <span class="at">data =</span> simData)</span>
+<span id="cb54-345"><a href="#cb54-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-346"><a href="#cb54-346" aria-hidden="true" tabindex="-1"></a>lmm4 <span class="sc">%&gt;%</span></span>
+<span id="cb54-347"><a href="#cb54-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-348"><a href="#cb54-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), round, <span class="dv">4</span>))</span>
+<span id="cb54-349"><a href="#cb54-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-350"><a href="#cb54-350" aria-hidden="true" tabindex="-1"></a><span class="fu">icc</span>(lmm4)</span>
+<span id="cb54-351"><a href="#cb54-351" aria-hidden="true" tabindex="-1"></a><span class="fu">StdCoef</span>(lmm4)</span>
+<span id="cb54-352"><a href="#cb54-352" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-353"><a href="#cb54-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-354"><a href="#cb54-354" aria-hidden="true" tabindex="-1"></a>0.373 (SE = 0.026) compared with 0.424.</span>
+<span id="cb54-355"><a href="#cb54-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-356"><a href="#cb54-356" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb54-357"><a href="#cb54-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-360"><a href="#cb54-360" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-361"><a href="#cb54-361" aria-hidden="true" tabindex="-1"></a><span class="co"># rbind together lmm0 to lmm4 in one dataframe</span></span>
+<span id="cb54-362"><a href="#cb54-362" aria-hidden="true" tabindex="-1"></a>lmm_summary <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">tidy</span>(lmm0), <span class="fu">tidy</span>(lmm1), <span class="fu">tidy</span>(lmm2), <span class="fu">tidy</span>(lmm3), <span class="fu">tidy</span>(lmm4)) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-363"><a href="#cb54-363" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">model =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"lmm0"</span>, <span class="st">"lmm1estTheta"</span>, <span class="st">"lmm2weightedTheta"</span>, <span class="st">"lmm3sumscore"</span>, <span class="st">"lmm4weighted Sumscore"</span>),<span class="at">each =</span> <span class="dv">4</span>))</span>
+<span id="cb54-364"><a href="#cb54-364" aria-hidden="true" tabindex="-1"></a>lmm_summary <span class="sc">%&gt;%</span> </span>
+<span id="cb54-365"><a href="#cb54-365" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"time"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-366"><a href="#cb54-366" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="fu">paste0</span>(n,<span class="st">"_lmm_summary.csv"</span>))</span>
+<span id="cb54-367"><a href="#cb54-367" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-368"><a href="#cb54-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-371"><a href="#cb54-371" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-372"><a href="#cb54-372" aria-hidden="true" tabindex="-1"></a><span class="co"># check ICC vs correlation pre/post for estTheta</span></span>
+<span id="cb54-373"><a href="#cb54-373" aria-hidden="true" tabindex="-1"></a>simData <span class="sc">%&gt;%</span> </span>
+<span id="cb54-374"><a href="#cb54-374" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">time =</span> <span class="fu">factor</span>(time, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"pre"</span>,<span class="st">"post"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-375"><a href="#cb54-375" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> time, <span class="at">values_from =</span> estTheta, <span class="at">id_cols =</span> <span class="st">"id"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb54-376"><a href="#cb54-376" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor_test</span>(<span class="st">"pre"</span>,<span class="st">"post"</span>)</span>
+<span id="cb54-377"><a href="#cb54-377" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-378"><a href="#cb54-378" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -42,6 +42,10 @@ Please note that this is a sample analysis to showcase the R package. It is not 
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
 
+::: {.callout-note icon="true"}
+## Note
+Quarto version 1.3 introduced changes that make the tables in this document look a bit different than intended. The width settings are disregarded and other oddities. This will be fixed in a future update.
+:::
 
 ## Getting started
 
@@ -65,7 +69,7 @@ library(psychotree)
 library(matrixStats)
 library(reshape)
 library(knitr)
-library(cowplot)
+library(patchwork)
 library(formattable) 
 library(glue)
 library(foreach)
@@ -184,7 +188,7 @@ ggplot(df) +
   geom_vline(xintercept = mean(df$age), 
              linewidth = 1.5,
              linetype = 2,
-             col = "#ffe500") +
+             col = "orange") +
   # add a light grey field indicating the standard deviation
   annotate("rect", ymin = 0, ymax = Inf, 
            xmin = (mean(df$age) - sd(df$age)), xmax = (mean(df$age) + sd(df$age)), 
@@ -233,7 +237,7 @@ First, we visualize the proportion of missing data on item level.
 RImissing(df)
 ```
 
-No missing data in this dataset.
+No missing data in this dataset. If we had missing data, we could also use `RImissingP()` to look at which respondents have missing data and how much.
 
 ### Overall responses
 
@@ -410,10 +414,20 @@ RIitemCats(df, xlims = c(-5,5))
 
 Each response category for each item should have a curve that indicates it to be the most probably response at some point on the latent variable (x axis in the figure).
 
+### Response categories MIRT
+
+For a more compact figure.
+
+```{r}
+mirt(df, model=1, itemtype='Rasch', verbose = FALSE) %>% 
+  plot(type="trace", as.table = TRUE, 
+       theta_lim = c(-5,5))
+```
+
 ### Targeting
 
 ```{r}
-#| fig-height: 6
+#| fig-height: 7
 # increase fig-height in the chunk option above if you have many items
 RItargeting(df, xlim = c(-5,4)) # xlim defaults to c(-5,6) if you omit this option
 ```
@@ -424,10 +438,11 @@ The top part shows person location histogram, the middle part an inverted histog
 
 ### Item hierarchy
 
-```{r}
-#| fig-height: 5
-RIitemHierarchy(df)
+Here the items are sorted on their average threshold location (black diamonds). 95% confidence intervals are shown around each item threshold location. For further details, see the caption text below the figure.
 
+```{r}
+#| fig-height: 6
+RIitemHierarchy(df)
 ```
 :::
 :::
@@ -670,7 +685,7 @@ RIresidcorr(df2, cutoff = 0.2)
 
 ```{r}
 #| fig-height: 5
-RItargeting(df2)
+RItargeting(df2, bins = 45)
 ```
 
 ### Item hierarchy
@@ -678,7 +693,6 @@ RItargeting(df2)
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
-
 ```
 :::
 :::
@@ -727,7 +741,6 @@ RItargeting(df2)
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df2)
-
 ```
 :::
 :::
@@ -764,7 +777,13 @@ First, we'll output the parameters into a table.
 RIitemparams(df2)
 ```
 
-`RIitemparams()` will automatically write a CSV-file called "itemParameters.csv". The filename can be specified manually.
+We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the `RIitemparams()` function with the option `detail = all`.
+
+```{r}
+RIitemparams(df2, detail = "all")
+```
+
+The parameters can also be output to a dataframe or a file, using the option `output = "dataframe"` or `output = "file"`.
 
 ## Ordinal sum score to interval score
 
@@ -773,7 +792,7 @@ This table shows the corresponding "raw" ordinal sum score values and logit scor
 (An option will be added *later* to create this table based on only item parameters.)
 
 ```{r}
-RIscoreSE(df2, width = 50) # the width option is passed on to `kbl_rise()` for table width
+RIscoreSE(df2)
 ```
 
 Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option `sdx` from the default setting of `5`. Also, if you find the the default range of logit scores is insufficient, it can be adjusted by changing the option `score_range` (default is `c(-4,4)`).
@@ -794,7 +813,7 @@ Based on the Rasch analysis output of item parameters, we can estimate each indi
 
 ```{r}
 library(furrr) # for a parallel processing version of purrr::map_dbl
-df2$PersonScores <- RIestThetas2(df2, cpu = 8)
+df2$personScores <- RIestThetas2(df2, cpu = 8)
 ```
 
 `RIestThetas()` can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989]. Similarly to `RIscoreSE()` you can change the range of logit scores, using the option `theta_range` (default is `c(-4,4)`).
@@ -812,7 +831,7 @@ As you can see, this is a matrix object (not a dataframe), with each item as a r
 Finally, we'll look at the distribution of person scores using a simple histogram.
 
 ```{r}
-hist(df2$PersonScores, col = "#009ca6")
+hist(df2$personScores, col = "#009ca6")
 ```
 
 #### Estimating individual measurement error
@@ -820,7 +839,7 @@ hist(df2$PersonScores, col = "#009ca6")
 Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be calculated using the following code, using the `semTheta()` function from `library(catR)`:
 
 ```{r}
-df2$personSEM <- map_vec(df2$PersonScores, ~ semTheta(thEst = .x,
+df2$personSEM <- map_vec(df2$personScores, ~ semTheta(thEst = .x,
                                                       it = itemParameters,
                                                       model = "PCM",
                                                       method = "WL",
@@ -841,13 +860,16 @@ A custom theme function, `theme_rise()`, is included in the RISEkbmRasch package
 For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.
 
 ```{r}
-# first we need to remove the `PersonScores` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.
-df2$PersonScores <- NULL
+# first we need to remove the `personScores` and `personSEM` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.
+df2$personScores <- NULL
+df2$personSEM <- NULL
 
 RIitemHierarchy(df2) +
   theme_minimal() + # first apply the minimal theme to make the background transparent
   theme_rise(fontfamily = "Lato") # then apply theme_rise, which simplifies making changes to all plot elements
 ```
+
+As of package version 0.1.30.0, the `RItargeting()` function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the [NEWS](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300) file for more details.
 
 In order to change font for text inside plots you will need to add an additional line of code.
 
