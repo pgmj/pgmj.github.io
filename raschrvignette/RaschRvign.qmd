@@ -42,11 +42,6 @@ Please note that this is a sample analysis to showcase the R package. It is not 
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
 
-::: {.callout-note icon="true"}
-## Note
-Quarto version 1.3 introduced changes that make the tables in this document look a bit different than intended. The width settings are disregarded and other oddities. This will be fixed in a future update.
-:::
-
 ## Getting started
 
 Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEkbmRasch/blob/main/Quarto/RISEkbmRasch%20Quarto%20template.qmd) that can be useful to have handy for copy&paste when running a new analysis. You can also download a complete copy of the Quarto/R code to produce this document [here](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd).
@@ -510,7 +505,7 @@ RIloadLoc(df2)
 ```{r}
 #| fig-height: 5
 # increase fig-height above as needed, if you have many items
-RItargeting(df2)
+RItargeting(df2, xlim = c(-4,4), bins = 45)
 ```
 
 ### Item hierarchy
