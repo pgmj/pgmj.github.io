@@ -1543,7 +1543,7 @@ Jittery
 <div id="tabset-2-8" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-8-tab">
 <p>Here the items are sorted on their average threshold location (black diamonds). 95% confidence intervals are shown around each item threshold location. For further details, see the caption text below the figure.</p>
 <p>The numbers displayed in the plot can be disabled using the option <code>numbers = FALSE</code>.</p>
-<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-34_4a8d01fd7b32f2bf68d609341a0fada6">
+<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-34_e90027428b841de8803e842ef54e2b06">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemHierarchy.html">RIitemHierarchy</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="RaschRvign_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="1050"></p>
@@ -1895,9 +1895,8 @@ Jittery
 </div>
 </div>
 <div id="tabset-3-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-5-tab">
-<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-41_646ac7bcf0937823456ee49564d32b33">
-<details open=""><summary>Code</summary><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># increase fig-height above as needed, if you have many items</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RItargeting.html">RItargeting</a></span><span class="op">(</span><span class="va">df2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="fl">4</span><span class="op">)</span>, bins <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-41_543b92a1d1a80bb8a4d0a3ec3748fd34">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RItargeting.html">RItargeting</a></span><span class="op">(</span><span class="va">df2</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="fl">4</span><span class="op">)</span>, bins <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <p><img src="RaschRvign_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="1050"></p>
 </div>
@@ -3607,155 +3606,167 @@ Jittery
 <p>To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the <code><a href="https://rdrr.io/pkg/catR/man/thetaEst.html">thetaEst()</a></code> function from the <code>catR</code> package.</p>
 <p>It can also be done by using the new (as of 2023-02-04) <code>RIestTheta()</code> function in this package (does not yet work with dichotomous data), which uses <code><a href="https://rdrr.io/pkg/catR/man/thetaEst.html">thetaEst()</a></code> across all the participants in your dataframe.</p>
 <p>First, we’ll output the parameters into a table.</p>
-<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-70_f433009a6f45064c3c503ec1db909b35">
+<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-70_99d67c98fb47069388898d644ca2564e">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb73"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemparams.html">RIitemparams</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<table class="table table-striped table-hover lightable-classic table-sm small" data-quarto-postprocess="true">
-<thead><tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;"></th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 1</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 2</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 3</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 4</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">Item location</th>
-</tr></thead>
+
+<table data-quarto-disable-processing="true" style="width:90%; font-size: 15px; width: auto !important;  font-family: Lato; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;border-bottom: 0;" class="table table-striped table-hover lightable-classic table">
+<thead><tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">   </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 4 </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Item location </th>
+  </tr></thead>
 <tbody>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">PANAS_11</td>
-<td style="text-align: right;">-1.24</td>
-<td style="text-align: right;">-0.33</td>
-<td style="text-align: right;">0.07</td>
-<td style="text-align: right;">1.47</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">-0.01</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">PANAS_13</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.15</td>
-<td style="text-align: right;">0.82</td>
-<td style="text-align: right;">1.77</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.7</span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">PANAS_14</td>
-<td style="text-align: right;">-0.99</td>
-<td style="text-align: right;">-0.26</td>
-<td style="text-align: right;">0.12</td>
-<td style="text-align: right;">1.12</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">PANAS_16</td>
-<td style="text-align: right;">-0.22</td>
-<td style="text-align: right;">-0.12</td>
-<td style="text-align: right;">0.21</td>
-<td style="text-align: right;">1.32</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.3</span></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">PANAS_17</td>
-<td style="text-align: right;">0.29</td>
-<td style="text-align: right;">0.31</td>
-<td style="text-align: right;">0.73</td>
-<td style="text-align: right;">1.17</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.62</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">PANAS_20</td>
-<td style="text-align: right;">-0.89</td>
-<td style="text-align: right;">-0.29</td>
-<td style="text-align: right;">0.63</td>
-<td style="text-align: right;">1.57</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.26</span></td>
-</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_11 </td>
+   <td style="text-align:right;"> -1.24 </td>
+   <td style="text-align:right;"> -0.33 </td>
+   <td style="text-align:right;"> 0.07 </td>
+   <td style="text-align:right;"> 1.47 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">-0.01</span> </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_13 </td>
+   <td style="text-align:right;"> 0.06 </td>
+   <td style="text-align:right;"> 0.15 </td>
+   <td style="text-align:right;"> 0.82 </td>
+   <td style="text-align:right;"> 1.77 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.7</span> </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_14 </td>
+   <td style="text-align:right;"> -0.99 </td>
+   <td style="text-align:right;"> -0.26 </td>
+   <td style="text-align:right;"> 0.12 </td>
+   <td style="text-align:right;"> 1.12 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0</span> </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_16 </td>
+   <td style="text-align:right;"> -0.22 </td>
+   <td style="text-align:right;"> -0.12 </td>
+   <td style="text-align:right;"> 0.21 </td>
+   <td style="text-align:right;"> 1.32 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.3</span> </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_17 </td>
+   <td style="text-align:right;"> 0.29 </td>
+   <td style="text-align:right;"> 0.31 </td>
+   <td style="text-align:right;"> 0.73 </td>
+   <td style="text-align:right;"> 1.17 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.62</span> </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_20 </td>
+   <td style="text-align:right;"> -0.89 </td>
+   <td style="text-align:right;"> -0.29 </td>
+   <td style="text-align:right;"> 0.63 </td>
+   <td style="text-align:right;"> 1.57 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.26</span> </td>
+  </tr>
 </tbody>
+<tfoot>
+<tr><td style="padding: 0; " colspan="100%"><span style="font-style: italic;">Note: </span></td></tr>
+<tr><td style="padding: 0; " colspan="100%">
+<sup></sup> Item location is the average of the thresholds for each item.</td></tr>
+</tfoot>
 </table>
 </div>
 </div>
 <p>We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemparams.html">RIitemparams()</a></code> function with the option <code>detail = all</code>.</p>
-<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-71_f959ee0b04153ef141eaab353abd8ef1">
+<div class="cell" data-hash="RaschRvign_cache/html/unnamed-chunk-71_cd6cdc77025ae4e7c94c46a00a99ccb4">
 <details open=""><summary>Code</summary><div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemparams.html">RIitemparams</a></span><span class="op">(</span><span class="va">df2</span>, detail <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<table class="table table-striped table-hover lightable-classic table-sm small" data-quarto-postprocess="true">
-<thead><tr class="header">
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">itemnr</th>
-<th data-quarto-table-cell-role="th" style="text-align: left; position: sticky; top: 0; background-color: #FFFFFF;">Item location</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 1</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 2</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 3</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Threshold 4</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Relative item location</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Relative lowest threshold</th>
-<th data-quarto-table-cell-role="th" style="text-align: right; position: sticky; top: 0; background-color: #FFFFFF;">Relative highest threshold</th>
-</tr></thead>
+
+<table data-quarto-disable-processing="true" style="width:90%; font-size: 15px; width: auto !important;  font-family: Lato; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;border-bottom: 0;" class="table table-striped table-hover lightable-classic table">
+<thead><tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> itemnr </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> Item location </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 1 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 2 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 3 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Threshold 4 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Relative item location </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Relative lowest threshold </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> Relative highest threshold </th>
+  </tr></thead>
 <tbody>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">PANAS_11</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">-0.01</span></td>
-<td style="text-align: right;">-1.24</td>
-<td style="text-align: right;">-0.33</td>
-<td style="text-align: right;">0.07</td>
-<td style="text-align: right;">1.47</td>
-<td style="text-align: right;">-0.32</td>
-<td style="text-align: right;">-1.55</td>
-<td style="text-align: right;">1.47</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">PANAS_13</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.7</span></td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.15</td>
-<td style="text-align: right;">0.82</td>
-<td style="text-align: right;">1.77</td>
-<td style="text-align: right;">0.39</td>
-<td style="text-align: right;">-0.25</td>
-<td style="text-align: right;">1.77</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">PANAS_14</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0</span></td>
-<td style="text-align: right;">-0.99</td>
-<td style="text-align: right;">-0.26</td>
-<td style="text-align: right;">0.12</td>
-<td style="text-align: right;">1.12</td>
-<td style="text-align: right;">-0.31</td>
-<td style="text-align: right;">-1.30</td>
-<td style="text-align: right;">1.12</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">PANAS_16</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.3</span></td>
-<td style="text-align: right;">-0.22</td>
-<td style="text-align: right;">-0.12</td>
-<td style="text-align: right;">0.21</td>
-<td style="text-align: right;">1.32</td>
-<td style="text-align: right;">-0.01</td>
-<td style="text-align: right;">-0.53</td>
-<td style="text-align: right;">1.32</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left; font-weight: bold;">PANAS_17</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.62</span></td>
-<td style="text-align: right;">0.29</td>
-<td style="text-align: right;">0.31</td>
-<td style="text-align: right;">0.73</td>
-<td style="text-align: right;">1.17</td>
-<td style="text-align: right;">0.31</td>
-<td style="text-align: right;">-0.02</td>
-<td style="text-align: right;">1.17</td>
-</tr>
-<tr class="even">
-<td style="text-align: left; font-weight: bold;">PANAS_20</td>
-<td style="text-align: left;"><span style=" font-weight: bold;    text-align: right;">0.26</span></td>
-<td style="text-align: right;">-0.89</td>
-<td style="text-align: right;">-0.29</td>
-<td style="text-align: right;">0.63</td>
-<td style="text-align: right;">1.57</td>
-<td style="text-align: right;">-0.06</td>
-<td style="text-align: right;">-1.20</td>
-<td style="text-align: right;">1.57</td>
-</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_11 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">-0.01</span> </td>
+   <td style="text-align:right;"> -1.24 </td>
+   <td style="text-align:right;"> -0.33 </td>
+   <td style="text-align:right;"> 0.07 </td>
+   <td style="text-align:right;"> 1.47 </td>
+   <td style="text-align:right;"> -0.32 </td>
+   <td style="text-align:right;"> -1.55 </td>
+   <td style="text-align:right;"> 1.15 </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_13 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.7</span> </td>
+   <td style="text-align:right;"> 0.06 </td>
+   <td style="text-align:right;"> 0.15 </td>
+   <td style="text-align:right;"> 0.82 </td>
+   <td style="text-align:right;"> 1.77 </td>
+   <td style="text-align:right;"> 0.39 </td>
+   <td style="text-align:right;"> -0.25 </td>
+   <td style="text-align:right;"> 1.46 </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_14 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0</span> </td>
+   <td style="text-align:right;"> -0.99 </td>
+   <td style="text-align:right;"> -0.26 </td>
+   <td style="text-align:right;"> 0.12 </td>
+   <td style="text-align:right;"> 1.12 </td>
+   <td style="text-align:right;"> -0.31 </td>
+   <td style="text-align:right;"> -1.30 </td>
+   <td style="text-align:right;"> 0.81 </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_16 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.3</span> </td>
+   <td style="text-align:right;"> -0.22 </td>
+   <td style="text-align:right;"> -0.12 </td>
+   <td style="text-align:right;"> 0.21 </td>
+   <td style="text-align:right;"> 1.32 </td>
+   <td style="text-align:right;"> -0.01 </td>
+   <td style="text-align:right;"> -0.53 </td>
+   <td style="text-align:right;"> 1.01 </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_17 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.62</span> </td>
+   <td style="text-align:right;"> 0.29 </td>
+   <td style="text-align:right;"> 0.31 </td>
+   <td style="text-align:right;"> 0.73 </td>
+   <td style="text-align:right;"> 1.17 </td>
+   <td style="text-align:right;"> 0.31 </td>
+   <td style="text-align:right;"> -0.02 </td>
+   <td style="text-align:right;"> 0.85 </td>
+  </tr>
+<tr>
+<td style="text-align:left;font-weight: bold;"> PANAS_20 </td>
+   <td style="text-align:left;"> <span style=" font-weight: bold;    text-align: right;">0.26</span> </td>
+   <td style="text-align:right;"> -0.89 </td>
+   <td style="text-align:right;"> -0.29 </td>
+   <td style="text-align:right;"> 0.63 </td>
+   <td style="text-align:right;"> 1.57 </td>
+   <td style="text-align:right;"> -0.06 </td>
+   <td style="text-align:right;"> -1.20 </td>
+   <td style="text-align:right;"> 1.26 </td>
+  </tr>
 </tbody>
+<tfoot>
+<tr><td style="padding: 0; " colspan="100%"><span style="font-style: italic;">Note: </span></td></tr>
+<tr><td style="padding: 0; " colspan="100%">
+<sup></sup> Item location is the average of the thresholds for each item.<br>      Relative item location is the difference between the item location and the average of the item locations for all items.<br>               Relative lowest threshold is the difference between the lowest threshold and the average of all item locations.<br>               Relative highest threshold is the difference between the highest threshold and the average of all item locations.</td></tr>
+</tfoot>
 </table>
 </div>
 </div>
@@ -5096,72 +5107,72 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb85-506"><a href="#cb85-506" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb85-507"><a href="#cb85-507" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
 <span id="cb85-508"><a href="#cb85-508" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df)</span>
-<span id="cb85-509"><a href="#cb85-509" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-510"><a href="#cb85-510" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb85-511"><a href="#cb85-511" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-512"><a href="#cb85-512" aria-hidden="true" tabindex="-1"></a><span class="fu">### Analysis 1 comments</span></span>
-<span id="cb85-513"><a href="#cb85-513" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-514"><a href="#cb85-514" aria-hidden="true" tabindex="-1"></a>Item 18 has issues with the second lowest category being disordered.</span>
-<span id="cb85-515"><a href="#cb85-515" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-516"><a href="#cb85-516" aria-hidden="true" tabindex="-1"></a>Item 15 shows low item fit.</span>
-<span id="cb85-517"><a href="#cb85-517" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-518"><a href="#cb85-518" aria-hidden="true" tabindex="-1"></a>Two item-pairs show residual correlations above the cutoff value:</span>
-<span id="cb85-519"><a href="#cb85-519" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-520"><a href="#cb85-520" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>15 and 16 (scared and afraid)</span>
-<span id="cb85-521"><a href="#cb85-521" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>17 and 18 (ashamed and guilty)</span>
-<span id="cb85-522"><a href="#cb85-522" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-523"><a href="#cb85-523" aria-hidden="true" tabindex="-1"></a>Since item 15 also had low item fit, we will remove it. In the second pair, item 18 will be removed since it also had problems with disordered response categories.</span>
-<span id="cb85-524"><a href="#cb85-524" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-527"><a href="#cb85-527" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-528"><a href="#cb85-528" aria-hidden="true" tabindex="-1"></a>removed.items <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"PANAS_15"</span>,<span class="st">"PANAS_18"</span>)</span>
-<span id="cb85-529"><a href="#cb85-529" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-530"><a href="#cb85-530" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb85-531"><a href="#cb85-531" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">any_of</span>(removed.items))</span>
-<span id="cb85-532"><a href="#cb85-532" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-533"><a href="#cb85-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-534"><a href="#cb85-534" aria-hidden="true" tabindex="-1"></a>As seen in the code above, I chose to create a copy of the dataframe with the removed items omitted. This can be useful if, at a later stage in the analysis, I want to be able to quickly "go back" and reinstate an item.</span>
-<span id="cb85-535"><a href="#cb85-535" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-536"><a href="#cb85-536" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rasch analysis 2</span></span>
-<span id="cb85-537"><a href="#cb85-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-538"><a href="#cb85-538" aria-hidden="true" tabindex="-1"></a>With items 15 and 18 removed.</span>
-<span id="cb85-539"><a href="#cb85-539" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-542"><a href="#cb85-542" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-543"><a href="#cb85-543" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
-<span id="cb85-544"><a href="#cb85-544" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb85-545"><a href="#cb85-545" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
-<span id="cb85-546"><a href="#cb85-546" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-547"><a href="#cb85-547" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-548"><a href="#cb85-548" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb85-549"><a href="#cb85-549" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit {.smaller}</span></span>
-<span id="cb85-550"><a href="#cb85-550" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-553"><a href="#cb85-553" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-554"><a href="#cb85-554" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfitPCM2</span>(df2, <span class="dv">300</span>, <span class="dv">32</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb85-555"><a href="#cb85-555" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-556"><a href="#cb85-556" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-557"><a href="#cb85-557" aria-hidden="true" tabindex="-1"></a><span class="fu">### PCA</span></span>
-<span id="cb85-558"><a href="#cb85-558" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-561"><a href="#cb85-561" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-562"><a href="#cb85-562" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "PCA of Rasch model residuals"</span></span>
-<span id="cb85-563"><a href="#cb85-563" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpcmPCA</span>(df2)</span>
-<span id="cb85-564"><a href="#cb85-564" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-565"><a href="#cb85-565" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-566"><a href="#cb85-566" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residual correlations</span></span>
-<span id="cb85-567"><a href="#cb85-567" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-570"><a href="#cb85-570" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-571"><a href="#cb85-571" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(df2, <span class="at">cutoff =</span> <span class="fl">0.2</span>)</span>
-<span id="cb85-572"><a href="#cb85-572" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-573"><a href="#cb85-573" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-574"><a href="#cb85-574" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1st contrast loadings</span></span>
-<span id="cb85-575"><a href="#cb85-575" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-578"><a href="#cb85-578" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-579"><a href="#cb85-579" aria-hidden="true" tabindex="-1"></a><span class="fu">RIloadLoc</span>(df2)</span>
-<span id="cb85-580"><a href="#cb85-580" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-581"><a href="#cb85-581" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-582"><a href="#cb85-582" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting</span></span>
-<span id="cb85-583"><a href="#cb85-583" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-586"><a href="#cb85-586" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-587"><a href="#cb85-587" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb85-588"><a href="#cb85-588" aria-hidden="true" tabindex="-1"></a><span class="co"># increase fig-height above as needed, if you have many items</span></span>
+<span id="cb85-509"><a href="#cb85-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-510"><a href="#cb85-510" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-511"><a href="#cb85-511" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb85-512"><a href="#cb85-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-513"><a href="#cb85-513" aria-hidden="true" tabindex="-1"></a><span class="fu">### Analysis 1 comments</span></span>
+<span id="cb85-514"><a href="#cb85-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-515"><a href="#cb85-515" aria-hidden="true" tabindex="-1"></a>Item 18 has issues with the second lowest category being disordered.</span>
+<span id="cb85-516"><a href="#cb85-516" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-517"><a href="#cb85-517" aria-hidden="true" tabindex="-1"></a>Item 15 shows low item fit.</span>
+<span id="cb85-518"><a href="#cb85-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-519"><a href="#cb85-519" aria-hidden="true" tabindex="-1"></a>Two item-pairs show residual correlations above the cutoff value:</span>
+<span id="cb85-520"><a href="#cb85-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-521"><a href="#cb85-521" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>15 and 16 (scared and afraid)</span>
+<span id="cb85-522"><a href="#cb85-522" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>17 and 18 (ashamed and guilty)</span>
+<span id="cb85-523"><a href="#cb85-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-524"><a href="#cb85-524" aria-hidden="true" tabindex="-1"></a>Since item 15 also had low item fit, we will remove it. In the second pair, item 18 will be removed since it also had problems with disordered response categories.</span>
+<span id="cb85-525"><a href="#cb85-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-528"><a href="#cb85-528" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-529"><a href="#cb85-529" aria-hidden="true" tabindex="-1"></a>removed.items <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"PANAS_15"</span>,<span class="st">"PANAS_18"</span>)</span>
+<span id="cb85-530"><a href="#cb85-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-531"><a href="#cb85-531" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb85-532"><a href="#cb85-532" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">any_of</span>(removed.items))</span>
+<span id="cb85-533"><a href="#cb85-533" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-534"><a href="#cb85-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-535"><a href="#cb85-535" aria-hidden="true" tabindex="-1"></a>As seen in the code above, I chose to create a copy of the dataframe with the removed items omitted. This can be useful if, at a later stage in the analysis, I want to be able to quickly "go back" and reinstate an item.</span>
+<span id="cb85-536"><a href="#cb85-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-537"><a href="#cb85-537" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rasch analysis 2</span></span>
+<span id="cb85-538"><a href="#cb85-538" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-539"><a href="#cb85-539" aria-hidden="true" tabindex="-1"></a>With items 15 and 18 removed.</span>
+<span id="cb85-540"><a href="#cb85-540" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-543"><a href="#cb85-543" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-544"><a href="#cb85-544" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
+<span id="cb85-545"><a href="#cb85-545" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb85-546"><a href="#cb85-546" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
+<span id="cb85-547"><a href="#cb85-547" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-548"><a href="#cb85-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-549"><a href="#cb85-549" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb85-550"><a href="#cb85-550" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit {.smaller}</span></span>
+<span id="cb85-551"><a href="#cb85-551" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-554"><a href="#cb85-554" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-555"><a href="#cb85-555" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfitPCM2</span>(df2, <span class="dv">300</span>, <span class="dv">32</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb85-556"><a href="#cb85-556" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-557"><a href="#cb85-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-558"><a href="#cb85-558" aria-hidden="true" tabindex="-1"></a><span class="fu">### PCA</span></span>
+<span id="cb85-559"><a href="#cb85-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-562"><a href="#cb85-562" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-563"><a href="#cb85-563" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "PCA of Rasch model residuals"</span></span>
+<span id="cb85-564"><a href="#cb85-564" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpcmPCA</span>(df2)</span>
+<span id="cb85-565"><a href="#cb85-565" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-566"><a href="#cb85-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-567"><a href="#cb85-567" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residual correlations</span></span>
+<span id="cb85-568"><a href="#cb85-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-571"><a href="#cb85-571" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-572"><a href="#cb85-572" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(df2, <span class="at">cutoff =</span> <span class="fl">0.2</span>)</span>
+<span id="cb85-573"><a href="#cb85-573" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-574"><a href="#cb85-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-575"><a href="#cb85-575" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1st contrast loadings</span></span>
+<span id="cb85-576"><a href="#cb85-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-579"><a href="#cb85-579" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-580"><a href="#cb85-580" aria-hidden="true" tabindex="-1"></a><span class="fu">RIloadLoc</span>(df2)</span>
+<span id="cb85-581"><a href="#cb85-581" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-582"><a href="#cb85-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-583"><a href="#cb85-583" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting</span></span>
+<span id="cb85-584"><a href="#cb85-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-587"><a href="#cb85-587" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-588"><a href="#cb85-588" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
 <span id="cb85-589"><a href="#cb85-589" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df2, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>), <span class="at">bins =</span> <span class="dv">45</span>)</span>
 <span id="cb85-590"><a href="#cb85-590" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-591"><a href="#cb85-591" aria-hidden="true" tabindex="-1"></a></span>
@@ -5429,133 +5440,135 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb85-909"><a href="#cb85-909" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb85-912"><a href="#cb85-912" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb85-913"><a href="#cb85-913" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df2)</span>
-<span id="cb85-914"><a href="#cb85-914" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-915"><a href="#cb85-915" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-916"><a href="#cb85-916" aria-hidden="true" tabindex="-1"></a>We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the <span class="in">`RIitemparams()`</span> function with the option <span class="in">`detail = all`</span>.</span>
-<span id="cb85-917"><a href="#cb85-917" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-920"><a href="#cb85-920" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-921"><a href="#cb85-921" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df2, <span class="at">detail =</span> <span class="st">"all"</span>)</span>
-<span id="cb85-922"><a href="#cb85-922" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-914"><a href="#cb85-914" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-915"><a href="#cb85-915" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb85-916"><a href="#cb85-916" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-917"><a href="#cb85-917" aria-hidden="true" tabindex="-1"></a>We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the <span class="in">`RIitemparams()`</span> function with the option <span class="in">`detail = all`</span>.</span>
+<span id="cb85-918"><a href="#cb85-918" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-921"><a href="#cb85-921" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-922"><a href="#cb85-922" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df2, <span class="at">detail =</span> <span class="st">"all"</span>)</span>
 <span id="cb85-923"><a href="#cb85-923" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-924"><a href="#cb85-924" aria-hidden="true" tabindex="-1"></a>The parameters can also be output to a dataframe or a file, using the option <span class="in">`output = "dataframe"`</span> or <span class="in">`output = "file"`</span>.</span>
+<span id="cb85-924"><a href="#cb85-924" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-925"><a href="#cb85-925" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-926"><a href="#cb85-926" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordinal sum score to interval score</span></span>
+<span id="cb85-926"><a href="#cb85-926" aria-hidden="true" tabindex="-1"></a>The parameters can also be output to a dataframe or a file, using the option <span class="in">`output = "dataframe"`</span> or <span class="in">`output = "file"`</span>.</span>
 <span id="cb85-927"><a href="#cb85-927" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-928"><a href="#cb85-928" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
+<span id="cb85-928"><a href="#cb85-928" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordinal sum score to interval score</span></span>
 <span id="cb85-929"><a href="#cb85-929" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-930"><a href="#cb85-930" aria-hidden="true" tabindex="-1"></a>(An option will be added *later* to create this table based on only item parameters.)</span>
+<span id="cb85-930"><a href="#cb85-930" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
 <span id="cb85-931"><a href="#cb85-931" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-934"><a href="#cb85-934" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-935"><a href="#cb85-935" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2)</span>
-<span id="cb85-936"><a href="#cb85-936" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-937"><a href="#cb85-937" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-938"><a href="#cb85-938" aria-hidden="true" tabindex="-1"></a>Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option <span class="in">`sdx`</span> from the default setting of <span class="in">`5`</span>. Also, if you find the the default range of logit scores is insufficient, it can be adjusted by changing the option <span class="in">`score_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
+<span id="cb85-932"><a href="#cb85-932" aria-hidden="true" tabindex="-1"></a>(An option will be added *later* to create this table based on only item parameters.)</span>
+<span id="cb85-933"><a href="#cb85-933" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-936"><a href="#cb85-936" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-937"><a href="#cb85-937" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2)</span>
+<span id="cb85-938"><a href="#cb85-938" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-939"><a href="#cb85-939" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-940"><a href="#cb85-940" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal/interval figure</span></span>
+<span id="cb85-940"><a href="#cb85-940" aria-hidden="true" tabindex="-1"></a>Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option <span class="in">`sdx`</span> from the default setting of <span class="in">`5`</span>. Also, if you find the the default range of logit scores is insufficient, it can be adjusted by changing the option <span class="in">`score_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
 <span id="cb85-941"><a href="#cb85-941" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-942"><a href="#cb85-942" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
+<span id="cb85-942"><a href="#cb85-942" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal/interval figure</span></span>
 <span id="cb85-943"><a href="#cb85-943" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-946"><a href="#cb85-946" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-947"><a href="#cb85-947" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
-<span id="cb85-948"><a href="#cb85-948" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-949"><a href="#cb85-949" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-950"><a href="#cb85-950" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
+<span id="cb85-944"><a href="#cb85-944" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
+<span id="cb85-945"><a href="#cb85-945" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-948"><a href="#cb85-948" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-949"><a href="#cb85-949" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
+<span id="cb85-950"><a href="#cb85-950" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-951"><a href="#cb85-951" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-952"><a href="#cb85-952" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the <span class="in">`RIitemfitPCM()`</span> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</span>
+<span id="cb85-952"><a href="#cb85-952" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
 <span id="cb85-953"><a href="#cb85-953" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-954"><a href="#cb85-954" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.</span>
+<span id="cb85-954"><a href="#cb85-954" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the <span class="in">`RIitemfitPCM()`</span> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</span>
 <span id="cb85-955"><a href="#cb85-955" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-958"><a href="#cb85-958" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-959"><a href="#cb85-959" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(furrr) <span class="co"># for a parallel processing version of purrr::map_dbl</span></span>
-<span id="cb85-960"><a href="#cb85-960" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df2, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb85-961"><a href="#cb85-961" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-962"><a href="#cb85-962" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-963"><a href="#cb85-963" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>. Similarly to <span class="in">`RIscoreSE()`</span> you can change the range of logit scores, using the option <span class="in">`theta_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
+<span id="cb85-956"><a href="#cb85-956" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.</span>
+<span id="cb85-957"><a href="#cb85-957" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-960"><a href="#cb85-960" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-961"><a href="#cb85-961" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(furrr) <span class="co"># for a parallel processing version of purrr::map_dbl</span></span>
+<span id="cb85-962"><a href="#cb85-962" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df2, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb85-963"><a href="#cb85-963" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-964"><a href="#cb85-964" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-965"><a href="#cb85-965" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item matrix, this code may be helpful:</span>
+<span id="cb85-965"><a href="#cb85-965" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>. Similarly to <span class="in">`RIscoreSE()`</span> you can change the range of logit scores, using the option <span class="in">`theta_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
 <span id="cb85-966"><a href="#cb85-966" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-969"><a href="#cb85-969" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-970"><a href="#cb85-970" aria-hidden="true" tabindex="-1"></a>itemParameters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"itemParameters.csv"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb85-971"><a href="#cb85-971" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb85-972"><a href="#cb85-972" aria-hidden="true" tabindex="-1"></a>itemParameters</span>
-<span id="cb85-973"><a href="#cb85-973" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-974"><a href="#cb85-974" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-975"><a href="#cb85-975" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
+<span id="cb85-967"><a href="#cb85-967" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item matrix, this code may be helpful:</span>
+<span id="cb85-968"><a href="#cb85-968" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-971"><a href="#cb85-971" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-972"><a href="#cb85-972" aria-hidden="true" tabindex="-1"></a>itemParameters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"itemParameters.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb85-973"><a href="#cb85-973" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb85-974"><a href="#cb85-974" aria-hidden="true" tabindex="-1"></a>itemParameters</span>
+<span id="cb85-975"><a href="#cb85-975" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-976"><a href="#cb85-976" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-977"><a href="#cb85-977" aria-hidden="true" tabindex="-1"></a>Finally, we'll look at the distribution of person scores using a simple histogram.</span>
+<span id="cb85-977"><a href="#cb85-977" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
 <span id="cb85-978"><a href="#cb85-978" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-981"><a href="#cb85-981" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-982"><a href="#cb85-982" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df2<span class="sc">$</span>personScores, <span class="at">col =</span> <span class="st">"#009ca6"</span>)</span>
-<span id="cb85-983"><a href="#cb85-983" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-984"><a href="#cb85-984" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-985"><a href="#cb85-985" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Estimating individual measurement error</span></span>
+<span id="cb85-979"><a href="#cb85-979" aria-hidden="true" tabindex="-1"></a>Finally, we'll look at the distribution of person scores using a simple histogram.</span>
+<span id="cb85-980"><a href="#cb85-980" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-983"><a href="#cb85-983" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-984"><a href="#cb85-984" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df2<span class="sc">$</span>personScores, <span class="at">col =</span> <span class="st">"#009ca6"</span>)</span>
+<span id="cb85-985"><a href="#cb85-985" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-986"><a href="#cb85-986" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-987"><a href="#cb85-987" aria-hidden="true" tabindex="-1"></a>Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be calculated using the following code, using the <span class="in">`semTheta()`</span> function from <span class="in">`library(catR)`</span>:</span>
+<span id="cb85-987"><a href="#cb85-987" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Estimating individual measurement error</span></span>
 <span id="cb85-988"><a href="#cb85-988" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-991"><a href="#cb85-991" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-992"><a href="#cb85-992" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="fu">map_vec</span>(df2<span class="sc">$</span>personScores, <span class="sc">~</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> .x,</span>
-<span id="cb85-993"><a href="#cb85-993" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">it =</span> itemParameters,</span>
-<span id="cb85-994"><a href="#cb85-994" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">model =</span> <span class="st">"PCM"</span>,</span>
-<span id="cb85-995"><a href="#cb85-995" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">method =</span> <span class="st">"WL"</span>,</span>
-<span id="cb85-996"><a href="#cb85-996" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>)</span>
-<span id="cb85-997"><a href="#cb85-997" aria-hidden="true" tabindex="-1"></a>                                                      ))</span>
-<span id="cb85-998"><a href="#cb85-998" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-999"><a href="#cb85-999" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1000"><a href="#cb85-1000" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`map_vec()`</span> allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the <span class="in">`semTheta()`</span> function from <span class="in">`catR`</span> to calculate the standard error of measurement for each individual. The <span class="in">`it`</span> argument is the item parameters matrix, and the <span class="in">`range`</span> argument is the range of logit scores. The range should match the range set when estimating the person locations with <span class="in">`RIestThetas()`</span>, and -4 to 4 is the default setting for both functions.</span>
+<span id="cb85-989"><a href="#cb85-989" aria-hidden="true" tabindex="-1"></a>Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be calculated using the following code, using the <span class="in">`semTheta()`</span> function from <span class="in">`library(catR)`</span>:</span>
+<span id="cb85-990"><a href="#cb85-990" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-993"><a href="#cb85-993" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-994"><a href="#cb85-994" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="fu">map_vec</span>(df2<span class="sc">$</span>personScores, <span class="sc">~</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> .x,</span>
+<span id="cb85-995"><a href="#cb85-995" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">it =</span> itemParameters,</span>
+<span id="cb85-996"><a href="#cb85-996" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">model =</span> <span class="st">"PCM"</span>,</span>
+<span id="cb85-997"><a href="#cb85-997" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">method =</span> <span class="st">"WL"</span>,</span>
+<span id="cb85-998"><a href="#cb85-998" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>)</span>
+<span id="cb85-999"><a href="#cb85-999" aria-hidden="true" tabindex="-1"></a>                                                      ))</span>
+<span id="cb85-1000"><a href="#cb85-1000" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-1001"><a href="#cb85-1001" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1002"><a href="#cb85-1002" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
+<span id="cb85-1002"><a href="#cb85-1002" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`map_vec()`</span> allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the <span class="in">`semTheta()`</span> function from <span class="in">`catR`</span> to calculate the standard error of measurement for each individual. The <span class="in">`it`</span> argument is the item parameters matrix, and the <span class="in">`range`</span> argument is the range of logit scores. The range should match the range set when estimating the person locations with <span class="in">`RIestThetas()`</span>, and -4 to 4 is the default setting for both functions.</span>
 <span id="cb85-1003"><a href="#cb85-1003" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1004"><a href="#cb85-1004" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
+<span id="cb85-1004"><a href="#cb85-1004" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
 <span id="cb85-1005"><a href="#cb85-1005" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1006"><a href="#cb85-1006" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
+<span id="cb85-1006"><a href="#cb85-1006" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
 <span id="cb85-1007"><a href="#cb85-1007" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1008"><a href="#cb85-1008" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
+<span id="cb85-1008"><a href="#cb85-1008" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
 <span id="cb85-1009"><a href="#cb85-1009" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1010"><a href="#cb85-1010" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
+<span id="cb85-1010"><a href="#cb85-1010" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
 <span id="cb85-1011"><a href="#cb85-1011" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1014"><a href="#cb85-1014" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-1015"><a href="#cb85-1015" aria-hidden="true" tabindex="-1"></a><span class="co"># first we need to remove the `personScores` and `personSEM` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.</span></span>
-<span id="cb85-1016"><a href="#cb85-1016" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb85-1017"><a href="#cb85-1017" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb85-1018"><a href="#cb85-1018" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1019"><a href="#cb85-1019" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2) <span class="sc">+</span></span>
-<span id="cb85-1020"><a href="#cb85-1020" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
-<span id="cb85-1021"><a href="#cb85-1021" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
-<span id="cb85-1022"><a href="#cb85-1022" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb85-1023"><a href="#cb85-1023" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1024"><a href="#cb85-1024" aria-hidden="true" tabindex="-1"></a>As of package version 0.1.30.0, the <span class="in">`RItargeting()`</span> function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the <span class="co">[</span><span class="ot">NEWS</span><span class="co">](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300)</span> file for more details.</span>
+<span id="cb85-1012"><a href="#cb85-1012" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
+<span id="cb85-1013"><a href="#cb85-1013" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-1016"><a href="#cb85-1016" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-1017"><a href="#cb85-1017" aria-hidden="true" tabindex="-1"></a><span class="co"># first we need to remove the `personScores` and `personSEM` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.</span></span>
+<span id="cb85-1018"><a href="#cb85-1018" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb85-1019"><a href="#cb85-1019" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb85-1020"><a href="#cb85-1020" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-1021"><a href="#cb85-1021" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2) <span class="sc">+</span></span>
+<span id="cb85-1022"><a href="#cb85-1022" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
+<span id="cb85-1023"><a href="#cb85-1023" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
+<span id="cb85-1024"><a href="#cb85-1024" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb85-1025"><a href="#cb85-1025" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1026"><a href="#cb85-1026" aria-hidden="true" tabindex="-1"></a>In order to change font for text inside plots you will need to add an additional line of code.</span>
+<span id="cb85-1026"><a href="#cb85-1026" aria-hidden="true" tabindex="-1"></a>As of package version 0.1.30.0, the <span class="in">`RItargeting()`</span> function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the <span class="co">[</span><span class="ot">NEWS</span><span class="co">](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300)</span> file for more details.</span>
 <span id="cb85-1027"><a href="#cb85-1027" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1028"><a href="#cb85-1028" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb85-1029"><a href="#cb85-1029" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato))</span></span>
-<span id="cb85-1030"><a href="#cb85-1030" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
-<span id="cb85-1031"><a href="#cb85-1031" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1032"><a href="#cb85-1032" aria-hidden="true" tabindex="-1"></a><span class="st">Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "</span>text<span class="st">" to "</span>text_repel<span class="st">".</span></span>
+<span id="cb85-1028"><a href="#cb85-1028" aria-hidden="true" tabindex="-1"></a>In order to change font for text inside plots you will need to add an additional line of code.</span>
+<span id="cb85-1029"><a href="#cb85-1029" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-1030"><a href="#cb85-1030" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb85-1031"><a href="#cb85-1031" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato))</span></span>
+<span id="cb85-1032"><a href="#cb85-1032" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
 <span id="cb85-1033"><a href="#cb85-1033" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1034"><a href="#cb85-1034" aria-hidden="true" tabindex="-1"></a><span class="st">A simple way to only change font family and font size would be to use `theme_minimal(base_family = "</span>Calibri<span class="st">", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.</span></span>
+<span id="cb85-1034"><a href="#cb85-1034" aria-hidden="true" tabindex="-1"></a><span class="st">Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "</span>text<span class="st">" to "</span>text_repel<span class="st">".</span></span>
 <span id="cb85-1035"><a href="#cb85-1035" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1036"><a href="#cb85-1036" aria-hidden="true" tabindex="-1"></a><span class="st">## Software used</span></span>
+<span id="cb85-1036"><a href="#cb85-1036" aria-hidden="true" tabindex="-1"></a><span class="st">A simple way to only change font family and font size would be to use `theme_minimal(base_family = "</span>Calibri<span class="st">", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.</span></span>
 <span id="cb85-1037"><a href="#cb85-1037" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1038"><a href="#cb85-1038" aria-hidden="true" tabindex="-1"></a><span class="st">The `grateful` package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span></span>
+<span id="cb85-1038"><a href="#cb85-1038" aria-hidden="true" tabindex="-1"></a><span class="st">## Software used</span></span>
 <span id="cb85-1039"><a href="#cb85-1039" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1042"><a href="#cb85-1042" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb85-1043"><a href="#cb85-1043" aria-hidden="true" tabindex="-1"></a><span class="st">library(grateful)</span></span>
-<span id="cb85-1044"><a href="#cb85-1044" aria-hidden="true" tabindex="-1"></a><span class="st">pkgs &lt;- cite_packages(cite.tidyverse = TRUE, </span></span>
-<span id="cb85-1045"><a href="#cb85-1045" aria-hidden="true" tabindex="-1"></a><span class="st">                      output = "</span>table<span class="st">",</span></span>
-<span id="cb85-1046"><a href="#cb85-1046" aria-hidden="true" tabindex="-1"></a><span class="st">                      bib.file = "</span>grateful<span class="sc">-</span>refs.bib<span class="st">",</span></span>
-<span id="cb85-1047"><a href="#cb85-1047" aria-hidden="true" tabindex="-1"></a><span class="st">                      include.RStudio = TRUE,</span></span>
-<span id="cb85-1048"><a href="#cb85-1048" aria-hidden="true" tabindex="-1"></a><span class="st">                      out.dir = getwd())</span></span>
-<span id="cb85-1049"><a href="#cb85-1049" aria-hidden="true" tabindex="-1"></a><span class="st"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
-<span id="cb85-1050"><a href="#cb85-1050" aria-hidden="true" tabindex="-1"></a><span class="st">formattable(pkgs, </span></span>
-<span id="cb85-1051"><a href="#cb85-1051" aria-hidden="true" tabindex="-1"></a><span class="st">            table.attr = 'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="</span>font<span class="sc">-</span>size<span class="sc">:</span> 13px; font<span class="sc">-</span>family<span class="sc">:</span> Lato; width<span class="sc">:</span> <span class="dv">80</span>%<span class="st">"')</span></span>
-<span id="cb85-1052"><a href="#cb85-1052" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
-<span id="cb85-1053"><a href="#cb85-1053" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1054"><a href="#cb85-1054" aria-hidden="true" tabindex="-1"></a><span class="st">## Additional credits</span></span>
+<span id="cb85-1040"><a href="#cb85-1040" aria-hidden="true" tabindex="-1"></a><span class="st">The `grateful` package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span></span>
+<span id="cb85-1041"><a href="#cb85-1041" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-1044"><a href="#cb85-1044" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb85-1045"><a href="#cb85-1045" aria-hidden="true" tabindex="-1"></a><span class="st">library(grateful)</span></span>
+<span id="cb85-1046"><a href="#cb85-1046" aria-hidden="true" tabindex="-1"></a><span class="st">pkgs &lt;- cite_packages(cite.tidyverse = TRUE, </span></span>
+<span id="cb85-1047"><a href="#cb85-1047" aria-hidden="true" tabindex="-1"></a><span class="st">                      output = "</span>table<span class="st">",</span></span>
+<span id="cb85-1048"><a href="#cb85-1048" aria-hidden="true" tabindex="-1"></a><span class="st">                      bib.file = "</span>grateful<span class="sc">-</span>refs.bib<span class="st">",</span></span>
+<span id="cb85-1049"><a href="#cb85-1049" aria-hidden="true" tabindex="-1"></a><span class="st">                      include.RStudio = TRUE,</span></span>
+<span id="cb85-1050"><a href="#cb85-1050" aria-hidden="true" tabindex="-1"></a><span class="st">                      out.dir = getwd())</span></span>
+<span id="cb85-1051"><a href="#cb85-1051" aria-hidden="true" tabindex="-1"></a><span class="st"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
+<span id="cb85-1052"><a href="#cb85-1052" aria-hidden="true" tabindex="-1"></a><span class="st">formattable(pkgs, </span></span>
+<span id="cb85-1053"><a href="#cb85-1053" aria-hidden="true" tabindex="-1"></a><span class="st">            table.attr = 'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="</span>font<span class="sc">-</span>size<span class="sc">:</span> 13px; font<span class="sc">-</span>family<span class="sc">:</span> Lato; width<span class="sc">:</span> <span class="dv">80</span>%<span class="st">"')</span></span>
+<span id="cb85-1054"><a href="#cb85-1054" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
 <span id="cb85-1055"><a href="#cb85-1055" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1056"><a href="#cb85-1056" aria-hidden="true" tabindex="-1"></a><span class="st">Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements) for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to [Mike Linacre](https://www.winsteps.com/linacre.htm) and [Jeanette Melin](https://www.ri.se/en/person/jeanette-melin) for providing useful feedback to improve this vignette.</span></span>
+<span id="cb85-1056"><a href="#cb85-1056" aria-hidden="true" tabindex="-1"></a><span class="st">## Additional credits</span></span>
 <span id="cb85-1057"><a href="#cb85-1057" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb85-1058"><a href="#cb85-1058" aria-hidden="true" tabindex="-1"></a><span class="st">## References</span></span>
+<span id="cb85-1058"><a href="#cb85-1058" aria-hidden="true" tabindex="-1"></a><span class="st">Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements) for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to [Mike Linacre](https://www.winsteps.com/linacre.htm) and [Jeanette Melin](https://www.ri.se/en/person/jeanette-melin) for providing useful feedback to improve this vignette.</span></span>
+<span id="cb85-1059"><a href="#cb85-1059" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-1060"><a href="#cb85-1060" aria-hidden="true" tabindex="-1"></a><span class="st">## References</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

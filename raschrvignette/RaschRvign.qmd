@@ -439,6 +439,7 @@ The numbers displayed in the plot can be disabled using the option `numbers = FA
 ```{r}
 #| fig-height: 6
 RIitemHierarchy(df)
+
 ```
 :::
 
@@ -504,7 +505,6 @@ RIloadLoc(df2)
 
 ```{r}
 #| fig-height: 5
-# increase fig-height above as needed, if you have many items
 RItargeting(df2, xlim = c(-4,4), bins = 45)
 ```
 
@@ -772,12 +772,14 @@ First, we'll output the parameters into a table.
 
 ```{r}
 RIitemparams(df2)
+
 ```
 
 We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the `RIitemparams()` function with the option `detail = all`.
 
 ```{r}
 RIitemparams(df2, detail = "all")
+
 ```
 
 The parameters can also be output to a dataframe or a file, using the option `output = "dataframe"` or `output = "file"`.
