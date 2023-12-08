@@ -362,7 +362,6 @@ In the tabset-panel below, each tab will have some explanatory text.
 RIlistItemsMargin(df, fontsize = 13)
 ```
 
-::: column-page-left
 ::: panel-tabset
 ### Item fit {.smaller}
 
@@ -440,12 +439,15 @@ The top part shows person location histogram, the middle part an inverted histog
 
 Here the items are sorted on their average threshold location (black diamonds). 95% confidence intervals are shown around each item threshold location. For further details, see the caption text below the figure.
 
+The numbers displayed in the plot can be disabled using the option `numbers = FALSE`.
+
 ```{r}
 #| fig-height: 6
 RIitemHierarchy(df)
 ```
 :::
-:::
+
+### Analysis 1 comments
 
 Item 18 has issues with the second lowest category being disordered.
 
@@ -477,7 +479,6 @@ With items 15 and 18 removed.
 RIlistItemsMargin(df2, fontsize = 13)
 ```
 
-::: column-page-left
 ::: panel-tabset
 ### Item fit {.smaller}
 
@@ -520,7 +521,8 @@ RIitemHierarchy(df2)
 
 ```
 :::
-:::
+
+### Analysis 2 comments
 
 Items 12 and 16 are a bit low in item fit ZSTD.
 
@@ -667,7 +669,6 @@ df2 <- df2 %>%
 RIlistItemsMargin(df2, fontsize = 13)
 ```
 
-::: column-page-left
 ::: panel-tabset
 ### Item fit
 
@@ -695,7 +696,8 @@ RItargeting(df2, bins = 45)
 RIitemHierarchy(df2)
 ```
 :::
-:::
+
+### Analysis 3 comments
 
 No problematic residual correlations, but item 12 is a bit low in item fit.
 
@@ -715,7 +717,6 @@ df2 <- df2 %>%
 RIlistItemsMargin(df2, fontsize = 13)
 ```
 
-::: column-page-left
 ::: panel-tabset
 ### Item fit
 
@@ -743,7 +744,8 @@ RItargeting(df2)
 RIitemHierarchy(df2)
 ```
 :::
-:::
+
+### Analysis 4 comments
 
 There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates.
 
