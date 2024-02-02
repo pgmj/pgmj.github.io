@@ -42,11 +42,14 @@ Please note that this is a sample analysis to showcase the R package. It is not 
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
 
+If you are new to Rasch Measurement Theory, you may find this intro presentation useful:
+<https://pgmj.github.io/RaschIRTlecture/slides.html>
+
 ## Getting started
 
-Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEkbmRasch/blob/main/Quarto/RISEkbmRasch%20Quarto%20template.qmd) that can be useful to have handy for copy&paste when running a new analysis. You can also download a complete copy of the Quarto/R code to produce this document [here](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd).
+Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEraschTemplate/blob/main/analysis.qmd) that can be useful to have handy for copy&paste when running a new analysis.  You can also download a complete copy of the Quarto/R code to produce this document [here](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd).
 
-Loading the `RISEkbmRasch` package should also get all the dependencies loaded. You may need to make sure that ggplot2 is updated to version 3.4.0 or later. However, it could be desirable to explicitly load the packages used, to simplify the automatic creation of citations for them, using the `grateful` package.
+Loading the `RISEkbmRasch` package should automatically load all the packages it depends on. However, it could be desirable to explicitly load all packages used, to simplify the automatic creation of citations for them, using the `grateful` package (see @sec-grateful).
 
 ```{r}
 library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch")
@@ -358,7 +361,7 @@ RIlistItemsMargin(df, fontsize = 13)
 ```
 
 ::: panel-tabset
-### Item fit {.smaller}
+### Item fit
 
 ```{r}
 RIitemfitPCM2(df, 300, 32, cpu = 8)
@@ -593,16 +596,9 @@ No interaction effect found for sex and age. The analysis only shows the previou
 
 ### LRT-based DIF example {#sec-diflrt}
 
-::: {.callout-note}
-### Note
-I advice not to use these LRT-based functions, unless you are certain that you understand their output. The `LRtest()` itself is fine, but the functions have not yet been extensively tested and may have issues depending on the dataset. It seems that the DIF size indicated by these functions may be inflated.
-
-I wrote these when I found a bug in the `psychotree`-based functions that produced errors when mixing polytomous and dichotomous variables, but this has been fixed upstream now.
-
-At some point I hope to find time to update the "old" DIF-functions with some of the nice things I implemented below.
+::: {.callout-note icon="true"}
+As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. And, since version 0.1.31.0, these are also correctly extracting item locations/threshold locations. Results will not be identical to the results from the previous functions that use the `psychotree` package, since they make some different choices in estimation. I refer the curious to the respective package's documentation.
 :::
-
-As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package.
 
 We'll use the group variable as an example. First, we can simply run the test to get the overall result.
 
@@ -621,20 +617,24 @@ RIlistItemsMargin(df2, fontsize = 13)
 #### Item location table
 ```{r}
 RIdifTableLR(df2, dif.group)
+
 ```
 #### Item location figure
 ```{r}
 #| fig-height: 7
 RIdifFigureLR(df2, dif.group) + theme_rise()
+
 ```
 #### Item threshold table
 ```{r}
 RIdifThreshTblLR(df2, dif.group)
+
 ```
 #### Item threshold figure
 ```{r}
 #| fig-height: 7
 RIdifThreshFigLR(df2, dif.group) + theme_rise()
+
 ```
 :::
 
@@ -873,14 +873,14 @@ As of package version 0.1.30.0, the `RItargeting()` function allows more flexibi
 In order to change font for text inside plots you will need to add an additional line of code.
 
 ``` r
-update_geom_defaults("text", list(family = "Lato))
+update_geom_defaults("text", list(family = "Lato"))
 ```
 
 Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "text" to "text_repel".
 
 A simple way to only change font family and font size would be to use `theme_minimal(base_family = "Calibri", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.
 
-## Software used
+## Software used {#sec-grateful}
 
 The `grateful` package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).
 

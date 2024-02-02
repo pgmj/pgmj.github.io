@@ -27,6 +27,21 @@ This page will be updated intermittently. The planned content includes:
 - splitting an item into two based on a DIF variable
 - merging two items into a super-item/testlet
 
+## Removing respondents with missing data
+
+There may be situations where you want to specify a minimum number of items that a respondent must have answered in order to be included in the analysis. This is done by using the `filter()` function from `library(dplyr)`. The syntax is as follows:
+
+``` r
+min.responses <- 5 # set the minimum number of responses
+
+df2 <- df %>% 
+  filter(length(itemlabels$itemnr) - rowSums(is.na(.[itemlabels$itemnr])) >=     min.responses)
+```
+
+The object `itemlabels$itemnr` is a vector (column in a dataframe) with the short item labels as they are used in the dataframe `df` which contain the data, with items as columns using the corresponding labels. 
+
+The `length()` function is used to count the number of items in the vector, and `rowSums(is.na())` is used to count the number of missing values in each row. Then a simple subtraction is done, total number of items minus number of missing responses. The `>=` operator is used to compare the number of responses to the minimum number of responses specified in the object `min.responses`. The `filter()` function removes all rows that do not meet the criteria. And the new dataset is saved to `df2`.
+
 ## Dividing a dataset
 
 ## Recoding response categories
