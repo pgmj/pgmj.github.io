@@ -27,6 +27,11 @@ I recently needed to do a power analysis for a longitudinal study, and since I a
 
 The starting point for me was the ["Basic example"](https://rpsychologist.com/introducing-powerlmm#a-basic-example) made by the author of the `powerlmm` package.
 
+You may need to install the package from the GitHub website:
+``` r
+devtools::install_github("rpsychologist/powerlmm")
+```
+
 ```{r}
 #| code-fold: true
 library(powerlmm)

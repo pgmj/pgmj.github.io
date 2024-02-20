@@ -7,6 +7,9 @@ website:
   site-url: "https://pgmj.github.io"
   repo-url: https://github.com/pgmj/pgmj.github.io
   open-graph: true
+  comments:
+    giscus:
+      repo: pgmj/pgmj.github.io
   twitter-card: true
   navbar: 
     background: "#009ca6"

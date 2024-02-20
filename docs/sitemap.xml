@@ -2,18 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://pgmj.github.io/raschrvignette/RaschRvign.html</loc>
-    <lastmod>2024-02-20T10:37:04.128Z</lastmod>
+    <lastmod>2024-02-20T15:51:57.711Z</lastmod>
   </url>
   <url>
     <loc>https://pgmj.github.io/powerviz.html</loc>
-    <lastmod>2023-09-28T08:58:55.534Z</lastmod>
+    <lastmod>2024-02-20T15:49:01.215Z</lastmod>
   </url>
   <url>
     <loc>https://pgmj.github.io/datawrangling.html</loc>
-    <lastmod>2023-10-19T11:57:00.750Z</lastmod>
+    <lastmod>2023-12-19T15:07:10.247Z</lastmod>
   </url>
   <url>
     <loc>https://pgmj.github.io/compLatent.html</loc>
     <lastmod>2023-10-17T14:03:28.547Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pgmj.github.io/parameterizedQ.html</loc>
+    <lastmod>2023-04-26T11:09:06.823Z</lastmod>
   </url>
 </urlset>

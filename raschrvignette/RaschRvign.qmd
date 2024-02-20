@@ -749,6 +749,7 @@ However, we will not modify the response categories for this sample/simple analy
 ## Reliability
 
 ```{r}
+#| fig-height: 6
 RItif(df2)
 ```
 
