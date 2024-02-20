@@ -750,7 +750,6 @@ However, we will not modify the response categories for this sample/simple analy
 
 ```{r}
 RItif(df2)
-
 ```
 
 The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).
