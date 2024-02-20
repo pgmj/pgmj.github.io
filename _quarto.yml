@@ -12,6 +12,7 @@ website:
       repo: pgmj/pgmj.github.io
   twitter-card: true
   navbar: 
+    search: true
     background: "#009ca6"
     foreground: "#FFFFFF"
     left:

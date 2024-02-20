@@ -264,5 +264,19 @@
     "title": "Automating reports with Quarto",
     "section": "\n3 A slightly more complex example",
     "text": "3 A slightly more complex example\nThe earlier example only used a single vector of municipalities as a parameter. In a current project I’m working on the municipalities also want to specify who they want to compare themselves with, and the timespan in years that they want displayed in the report. We keep this information in a MS Excel file with three variables: focusMuni, compMuni, yearsMuni, which is read into a dataframe called DIDparams in the script below. To avoid issues with blank spaces in the cells, we’ll remove them when importing. This is done with the gsub() function.\n# we need two additional packages for this\nlibrary(readxl)\nlibrary(dplyr)\n\nDIDparams &lt;- read_excel(\"DIDreportParameters.xls\") %&gt;%\n  mutate(across(everything(), ~ gsub(\" \",\"\",.x)))\nThen we loop through each row in the DIDparams dataframe. Each cell in the variables compMuni and YearsMuni will contain multiple values. We use strsplit() and unlist() in a pipe to convert these into vectors. Finally, we want to make sure that the variable containing years is coded as numeric.\nwalk(1:nrow(DIDparams), function(i) {\n  this &lt;- DIDparams[i,]\n\n  outfile &lt;- glue(\"{Sys.Date()}_DIDrapport_{this$fokusKommun}.html\")\n\n  quarto_render(input = \"DIDreport.qmd\",\n                execute_params = list(\"focusMuni\" = this$focusMuni, # only contains one value\n                                      \"compMuni\" = this$compMuni %&gt;% strsplit(\",\") %&gt;% unlist(),\n                                      \"yearsMuni\" = this$yearsMuni %&gt;% strsplit(\",\") %&gt;% unlist() %&gt;% as.numeric()\n                                      ),\n                output_file = outfile,\n                output_format = \"html\")\n})"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Magnus Johansson is a licensed psychologist with a PhD in behavior analysis. I work as a scientist at RISE Research Institutes of Sweden, primarily with psychometrics, measurement, prevention and public health.\nYou can also find me on:\n\nTwitter: @pgmjoh\nORCID: 0000-0003-1669-592X\nMastodon: @pgmj\nOSF: Open Science Framework\n\nand of course on GitHub\n\n\n\n\n\nReuseCC BY 4.0"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "When you work with open source tools such as R it comes with a community of users asking and answering questions, as well as many making helpful tutorials or blog posts freely available.\nI constantly learn from others and like to give something back from my own journey of learning, exploring and hopefully innovating and contributing back to the community. I have the opportunity to work with a lot of different data scenarios. Most often psychometrics is involved, as well as data analysis and visualization.\nMy ambition is to get better at documenting my own learning process and sharing it through this website. Content will be added intermittently under the Blog headline.\n\n\n\n\n\nReuseCC BY 4.0"
   }
 ]
