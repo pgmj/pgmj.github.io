@@ -9,9 +9,6 @@ author:
 date: last-modified
 google-scholar: true
 citation: true
-website:
-  open-graph:
-    image: "/RaschRvign_files/figure-html/unnamed-chunk-34-1.png"
 execute: 
   cache: true
   warning: false
