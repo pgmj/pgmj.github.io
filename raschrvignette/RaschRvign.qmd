@@ -750,9 +750,14 @@ However, we will not modify the response categories for this sample/simple analy
 
 ```{r}
 RItif(df2)
+
 ```
 
-While 11.8% of respondents had a floor effect based on the raw sum scored data, the figure above shows us that 41.8% are located below the point where the items produce a person separation index (reliability) of 0.7 or higher.
+The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).
+
+The default cutoff value used in `RItif()` is TIF = 3.33, which corresponds to person separation index (PSI) = 0.7. PSI is similar to reliability coefficients such as omega and alpha, ranging from 0 to 1. You can change the TIF cutoff by using the option `cutoff`, for instance `cutoff = 2.5` (TIF values range from 1 and up).
+
+While 11.8% of respondents had a floor effect based on the raw sum scored data, the figure above shows us that 41.8% are located below the point where the items produce a PSI of 0.7 or higher. Again, note that this figure shows the reliability of the test/scale, not the sample. If you want to add the sample reliability use option `samplePSI = TRUE`. More details are available in the documentation `?RItif`.
 
 ## Person fit
 
@@ -835,7 +840,7 @@ hist(df2$personScores, col = "#009ca6")
 
 #### Estimating individual measurement error
 
-Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be calculated using the following code, using the `semTheta()` function from `library(catR)`:
+Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be estimated using the following code with the `semTheta()` function from `library(catR)`:
 
 ```{r}
 df2$personSEM <- map_vec(df2$personScores, ~ semTheta(thEst = .x,
@@ -846,7 +851,7 @@ df2$personSEM <- map_vec(df2$personScores, ~ semTheta(thEst = .x,
                                                       ))
 ```
 
-The function `map_vec()` allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the `semTheta()` function from `catR` to calculate the standard error of measurement for each individual. The `it` argument is the item parameters matrix, and the `range` argument is the range of logit scores. The range should match the range set when estimating the person locations with `RIestThetas()`, and -4 to 4 is the default setting for both functions.
+The function `map_vec()` allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the `semTheta()` function to calculate the standard error of measurement for each individual. The `it` argument is the item parameters matrix, and the `range` argument is the range of logit scores. The range should match the range set when estimating the person locations with `RIestThetas()`, and -4 to 4 is the default setting for both functions.
 
 ## Figure design
 
@@ -894,6 +899,7 @@ pkgs <- cite_packages(cite.tidyverse = TRUE,
 # If kbl() is used to generate this table, the references will not be added to the Reference list.
 formattable(pkgs, 
             table.attr = 'class=\"table table-striped\" style="font-size: 13px; font-family: Lato; width: 80%"')
+
 ```
 
 ## Additional credits
