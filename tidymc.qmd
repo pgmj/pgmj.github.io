@@ -1,0 +1,77 @@
+---
+title: "Rasch simulation studies"
+subtitle: "A simple example of a simulation structure"
+author:
+  name: 'Magnus Johansson'
+  affiliation: 'RISE Research Institutes of Sweden'
+  affiliation-url: 'https://ri.se/shic'
+  orcid: '0000-0003-1669-592X'
+date: last-modified
+date-format: iso
+google-scholar: true
+citation:
+  type: 'webpage'
+format:
+  html:
+    css: styles.css
+execute: 
+  cache: false
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+Simulation studies are incredibly helpful to understand and evaluate different methods and models. The `tidyMC` package seems like a great tool for this purpose, but I have yet to try it out. So this is my exploration example, applied to a rather small scope question (hopefully).
+
+When working with latent measures using a Rasch model, one can separately estimated item/scale properties and based on these estimate person scores/locations on the latent variable continuum. Additionally, one can also estimate a measurement error (SEM, henceforth) for each person, which will differ depending on person location since the reliability is not a constant value across the latent variable continuum.
+
+The expected result, which we will evaluate, is that the estimated point value +/- 1.96 * SEM for each person location should include the true person location 95% of the time.
+
+We need a couple of things to be constant for this study, and then use `tidyMC` to simulate a number of datasets and run the calculations for each dataset. 
+
+We'll use a fixed set of item category threshold locations for a set of polytomous items, which is similar to what you would do when having a questionnaire with multiple items that someone else calibrated already. And to keep things simple we will use the same item properties when generating simulated responses from a simulated person location vector as we do when estimating person locations and person SEM.
+
+```{r}
+library(RISEkbmRasch)
+library(tidyMC)
+item_params <- read_csv("BBQitemParameters.csv") %>% 
+  as.matrix()
+
+item_params
+```
+
+We have six items with five response categories each, as seen in the matrix of item category threshold locations above. This is what is traditionally termed "item difficulty", but that is semantically not very helpful when working with scales that are not tests of ability, so we go with the more generic "item location", which refers to a location on the latent variable continuum. For more details on Rasch measurement, please see the *RISEkbmRasch vignette* in the top meny.
+
+I'll work from the ["tidyMC vignette"](https://cran.r-project.org/web/packages/tidyMC/vignettes/tidyMC.html), which states:
+
+> `future_mc()` allows you to run a Monte Carlo simulation for a user defined function and given parameters. The first argument of `future_mc()` is fun which has to be a function that handles the generation of data, the application of the method of interest and the evaluation of the result for a single repetition and parameter combination. `future_mc()` handles the generation of loops over the desired parameter grids and the repetition of the Monte Carlo experiment for each of the parameter constellations.
+
+```{r}
+# fun
+ols_test <- 
+  function(b0, b1, b2, n, sigma2, param_x1, param_x2, inc_x2){
+    
+    # generation of data
+    x1 <- rnorm(n = n, mean = param_x1[1], sd = param_x1[2])
+    x2 <- rnorm(n = n,  mean = param_x2[1], sd = param_x2[2])
+    e <- rnorm(n, sd = sqrt(sigma2))
+    y <- b0 + b1*x1 + b2*x2 + e
+    
+    if (inc_x2 == 0){
+      x2 <- x2 * inc_x2
+    }
+    
+    # application of method
+    estim <- lm(y ~ x1 + x2)
+    
+    # evaluation of the result for a single repetition and parameter combination
+    out <- list(b0 = estim$coefficients[1],
+                b1 = estim$coefficients[2],
+                b2 = estim$coefficients[3],
+                sigma2 = var(estim$residuals))
+    return(out)
+  }
+
+```
+

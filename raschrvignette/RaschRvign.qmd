@@ -9,6 +9,9 @@ author:
 date: last-modified
 google-scholar: true
 citation: true
+website:
+  open-graph:
+    image: "/RaschRvign_files/figure-html/unnamed-chunk-34-1.png"
 execute: 
   cache: true
   warning: false
@@ -23,9 +26,14 @@ editor_options:
 
 This is an introduction to using the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch). A changelog for package updates is available [here](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md).
 
-Details on installation are available at the [package GitHub page](https://github.com/pgmj/RISEkbmRasch). This vignette will walk through a sample analysis using an open dataset with polytomous questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **\</\> CODE** at the top beside the table of contents. You should be able to use the source code "as is" and reproduce this document locally, as long as you have the required packages installed. This page and this website are built using the open source publishing tool [Quarto](https://www.quarto.org).
+Details on package installation are available at the [package GitHub page](https://github.com/pgmj/RISEkbmRasch).
 
-One of the aims with this package is to simplify psychometric analysis to shed light on the measurement properties of a scale, questionnaire or test. In a paper recently made available as a preprint [@johansson], our [research group](https://www.ri.se/en/what-we-do/projects/center-for-categorically-based-measurements) propose that the basic aspects of a psychometric analysis should include information about:
+If you are new to Rasch Measurement Theory, you may find this intro presentation useful:
+<https://pgmj.github.io/RaschIRTlecture/slides.html>
+
+This vignette will walk through a sample analysis using an open dataset with polytomous questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **\</\> CODE** at the top of this page. You should be able to use the source code "as is" and reproduce this document locally, as long as you have the required packages installed. This page and this website are built using the open source publishing tool [Quarto](https://www.quarto.org).
+
+One of the aims with this package is to simplify reproducible psychometric analysis to shed light on the measurement properties of a scale, questionnaire or test. In a paper recently made available as a preprint [@johansson], our [research group](https://www.ri.se/en/what-we-do/projects/center-for-categorically-based-measurements) propose that the basic aspects of a psychometric analysis should include information about:
 
 -   Unidimensionality
 -   Response categories
@@ -33,20 +41,20 @@ One of the aims with this package is to simplify psychometric analysis to shed l
 -   Targeting
 -   Measurement uncertainties (reliability)
 
-We'll include several ways to investigate these measurement properties, using Rasch Measurement Theory. There are also functions in the package less directly related to the criteria above, that will be shown in this vignette.
+We'll include several ways to investigate these measurement properties, using Rasch Measurement Theory. There are also functions in the package less directly related to the criteria above, that will be demonstrated in this vignette.
 
-Please note that this is a sample analysis to showcase the R package. It is not intended as a "best practice" psychometric analysis example.
+Please note that this is just a sample analysis to showcase the R package. It is not intended as a "best practice" psychometric analysis example.
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
 
-If you are new to Rasch Measurement Theory, you may find this intro presentation useful:
-<https://pgmj.github.io/RaschIRTlecture/slides.html>
+There is a separate GitHub repository containing a suggested template to simplify using the RISEkbmRasch package when conducting a reproducible Rasch analysis in R: <https://github.com/pgmj/RISEraschTemplate>
+
 
 ## Getting started
 
 Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEraschTemplate/blob/main/analysis.qmd) that can be useful to have handy for copy&paste when running a new analysis.  You can also download a complete copy of the Quarto/R code to produce this document [here](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd).
 
-Loading the `RISEkbmRasch` package should automatically load all the packages it depends on. However, it could be desirable to explicitly load all packages used, to simplify the automatic creation of citations for them, using the `grateful` package (see @sec-grateful).
+Loading the `RISEkbmRasch` package will automatically load all the packages it depends on. However, it could be desirable to explicitly load all packages used, to simplify the automatic creation of citations for them, using the `grateful` package (see @sec-grateful).
 
 ```{r}
 library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch")
@@ -167,8 +175,9 @@ glimpse(df$age)
 Sometimes age is provided in categories, but here we have a numeric variable with age in years. Let's have a quick look at the age distribution using a histogram, and calculate mean, sd and range.
 
 ```{r}
-### simpler version of the ggplot below
+### simpler version of the ggplot below using base R function hist()
 # hist(df$age, col = "#009ca6")
+# abline(v = mean(age, na.rm = TRUE))
 # 
 # df %>% 
 #   summarise(Mean = round(mean(age, na.rm = T),1),
@@ -186,7 +195,7 @@ ggplot(df) +
              col = "orange") +
   # add a light grey field indicating the standard deviation
   annotate("rect", ymin = 0, ymax = Inf, 
-           xmin = (mean(df$age) - sd(df$age)), xmax = (mean(df$age) + sd(df$age)), 
+           xmin = (mean(df$age, na.rm = TRUE) - sd(df$age, na.rm = TRUE)), xmax = (mean(df$age, na.rm = TRUE) + sd(df$age, na.rm = TRUE)), 
            alpha = .2) +
   labs(title = "",
        x = "Age in years",
@@ -327,7 +336,7 @@ tam1 <- tam(as.matrix(df), irtmodel = "PCM", verbose = FALSE) # run TAM Rasch Pa
 plot(tam1) # create ICC plots
 ```
 
-The expected value curves are made using the [TAM](https://cran.r-project.org/web/packages/TAM/index.html) package, which uses Marginal Maximum Likelihood (MML) estimation. It is a good way to check if any of your items may need reversed response categories, amongst other things.
+The expected value curves are made using the [TAM](https://cran.r-project.org/web/packages/TAM/index.html) package, which uses Marginal Maximum Likelihood (MML) estimation. EVC's will show clearly if any of your items may need reversed response categories. The figures are also useful as a complement to item fit metrics.
 :::
 :::
 
@@ -456,6 +465,16 @@ Two item-pairs show residual correlations above the cutoff value:
 
 Since item 15 also had low item fit, we will remove it. In the second pair, item 18 will be removed since it also had problems with disordered response categories.
 
+::: {.callout-note icon="true"}
+We have multiple "diagnostics" to review when deciding which item to remove if there are strong residual correlations between two items. Here is a list of commonly used criteria:
+
+- item fit
+- item threshold locations (targeting)
+- ordering of response categories
+- DIF
+- and whether there are residual correlations between one item and multiple other items
+:::
+
 ```{r}
 removed.items <- c("PANAS_15","PANAS_18")
 
@@ -519,15 +538,35 @@ RIitemHierarchy(df2)
 
 ### Analysis 2 comments
 
-Items 12 and 16 are a bit low in item fit ZSTD.
+Items 12 and 16 are a bit low in item fit ZSTD, but not much, and MSQ looks good.
 
 Items 16 and 19 have a residual correlation at about 0.25 above the average level.
 
-Let's look at DIF before taking action upon this information.
+Let's look at DIF before taking action upon this information. While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the `panel-tabset` above (on item fit, PCA, residual correlations, etc).
 
 ## DIF - differential item functioning
 
-We'll be looking at how/if item (threshold) locations are stable between demographic subgroups.
+We'll be looking at whether item (threshold) locations are stable between demographic subgroups.
+
+There are several DIF analysis tools available. The first one uses the package `psychotree`, which relies on statistical significance at p < .05 as an indicator for DIF. This is a criterion that is highly sample size sensitive, and we are always interested in the size/magnitude of DIF as well, since that will inform us about the impact of DIF on the estimated latent variable. 
+
+The structure of DIF is also an important and complex aspect, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. We can test this in R using the `lordif` package, as demonstrated in @sec-lordif.
+
+A recent preprint [@henninger_partial_2024] does a great job illustrating "differential step functioning" (DSF), which is when item threshold locations in polytomous data show varying levels of DIF. It also describes a forthcoming development of the `psychotree` where one can use DIF effect size and purification functions to evaluate DIF/DSF. When the updated package is available, I will work to implement these new functions into the `RISEkbmRasch` package as well.
+
+::: {.callout-note icon="true"}
+It is important to ensure that no cells in the data are empty for subgroups when conducting a DIF analysis. Split the data using the DIF-variable and create separate tileplots to review the response distribution in the DIF-groups.
+:::
+
+```{r}
+#| fig-height: 5
+difPlots <- df2 %>% # save the output into the `difPlots` object
+  add_column(gender = dif.sex) %>% # add the DIF variable to the dataframe
+  split(.$gender) %>% # split the data using the DIF variable
+  map(~ RItileplot(.x %>% dplyr::select(!gender)) + labs(title = .x$gender)) # create separate tileplots for each group
+
+difPlots$Female + difPlots$Male # the actual name of the plots (in this case Male/Female) will be determined by the factor labels
+```
 
 ### Sex
 
@@ -558,7 +597,7 @@ RIdifFigThresh(df2, dif.sex)
 ```
 :::
 
-While no item shows problematic levels of DIF regarding item location, as shown by the table, there is an interesting pattern in the thresholds figure. The lowest threshold seems to be slightly lower for node 3 (Male) for all items.
+While no item shows problematic levels of DIF regarding item location, as shown by the table, there is an interesting pattern in the thresholds figure. The lowest threshold seems to be slightly lower for node 3 (Male) for all items. Also, item 11 shows a much wider spread of item locations for node 3 compared to node 2.
 
 The results do not require any action since the difference is small.
 
@@ -591,10 +630,10 @@ RIdifTable2(df2, dif.sex, dif.age)
 
 No interaction effect found for sex and age. The analysis only shows the previously identified DIF for sex.
 
-### LRT-based DIF example {#sec-diflrt}
+### LRT-based DIF {#sec-diflrt}
 
 ::: {.callout-note icon="true"}
-As of package version 0.1.16 there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. And, since version 0.1.31.0, these are also correctly extracting item locations/threshold locations. Results will not be identical to the results from the previous functions that use the `psychotree` package, since they make some different choices in estimation. I refer the curious to the respective package's documentation.
+As of `RISEkbmRasch` package version 0.1.16, there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. And, since version 0.1.31.0, these are also correctly extracting item locations/threshold locations. Results will not be identical to the results from the previous functions that use the `psychotree` package, since they make some different choices in estimation. I refer the curious to the respective package's documentation.
 :::
 
 We'll use the group variable as an example. First, we can simply run the test to get the overall result.
@@ -603,6 +642,8 @@ We'll use the group variable as an example. First, we can simply run the test to
 erm.out <- PCM(df2)
 LRtest(erm.out, splitcr = dif.group)
 ```
+
+Review the documentation for further details, using `?LRtest` in your R console panel in Rstudio. There is also a plotting function, `plotGOF()` that may be of interest.
 
 ```{r}
 #| column: margin
@@ -635,15 +676,76 @@ RIdifThreshFigLR(df2, dif.group) + theme_rise()
 ```
 :::
 
-The item threshold table shows that the highest thresholds for items 13 and 17 differ more than 0.5 logits between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.
+The item threshold table shows that the top threshold for item 13 differs more than 0.5 logits between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.
+
+### Logistic Ordinal Regression DIF {#sec-lordif}
+
+The `lordif` package [@choi_lordif_2011] does not use a Rasch measurement model, it only offers a choice between the Graded Response Model (GRM) and the Generalized Partial Credit Model (GPCM). Both of these are 2PL models, meaning that they estimate a discrimination parameter for each item in addition to the item threshold parameters. `lordif` relies on the `mirt` package.
+
+There are several nice features available in the `lordif` package. First, we get a χ2 test of uniform or non-uniform DIF. Second, there are three possible methods/criteria for flagging items with potential DIF. One of these uses a likelihood ratio (LR) χ2 test, while the other two are indicators of DIF size/magnitude, either using a pseudo R2 statistic ("McFadden", "Nagelkerke", or "CoxSnell") or a Beta criterion. For further details, see `?lordif` in your R console or the paper describing the package [@choi_lordif_2011].
+
+Below is some sample code to get you started with `lordif`.
+
+```{r}
+#| results: hide
+library(lordif)
+
+g_dif <- lordif(as.data.frame(df2), as.numeric(dif.sex), # make sure that the data is in a dataframe-object and that the DIF variable is numeric
+                criterion = c("Chisqr"), 
+                alpha = 0.01, 
+                beta.change = 0.1,
+                model = "GPCM",
+                R2.change = 0.02)
+
+g_dif_sum <- summary(g_dif)
+```
+
+```{r}
+# threshold values for colorizing the table below
+alpha = 0.01
+beta.change = 0.1
+R2.change = 0.02
+
+g_dif_sum$stats %>% 
+  as.data.frame() %>% 
+  select(!all_of(c("item","df12","df13","df23"))) %>% 
+  round(3) %>% 
+  add_column(itemnr = names(df2), .before = "ncat") %>% 
+  mutate(across(c(chi12,chi13,chi23), ~ cell_spec(.x,
+                               color = case_when(
+                                 .x < alpha ~ "red",
+                                 TRUE ~ "black"
+                               )))) %>%
+  mutate(across(starts_with("pseudo"), ~ cell_spec(.x,
+                               color = case_when(
+                                 .x > R2.change ~ "red",
+                                 TRUE ~ "black"
+                               )))) %>%
+  mutate(beta12 =  cell_spec(beta12,
+                               color = case_when(
+                                 beta12 > beta.change ~ "red",
+                                 TRUE ~ "black"
+                               ))) %>% 
+  kbl_rise()
+```
+
+We can review the results regarding uniform/non-uniform DIF by looking at the `chi*` columns. Uniform DIF is indicated by column `chi12` and non-uniform DIF by `chi23`, while column `chi13` represents "an overall test of "total DIF effect" [@choi_lordif_2011].
+
+While the table indicates significant chi2-tests for items 11 and 17, the magnitude estimates are low for these items.
+
+There are some plots available as well, using the base R `plot()` function. For some reason the plots won't render in this Quarto document, so I will try to sort that out at some point.
+
+```{r}
+#| layout-ncol: 2
+plot(g_dif) # use option `graphics.off()` to get the plots rendered one by one
+#plot(g_dif, graphics.off())
+```
 
 ## Rasch analysis 3
 
-While there were no significant issues with DIF for any item/subgroup combination, we need to address the previously identified problems
+While there were no significant issues with DIF for any item/subgroup combination, we need to address the previously identified problem:
 
-Items 12 and 16 are a bit low in item fit ZSTD.
-
-Items 16 and 19 have a residual correlation at about 0.25 above the average level.
+- Items 16 and 19 have a residual correlation at about 0.25 above the average level.
 
 We'll remove item 19 since item 16 has better targeting.
 
@@ -693,52 +795,6 @@ RIitemHierarchy(df2)
 
 No problematic residual correlations, but item 12 is a bit low in item fit.
 
-## Rasch analysis 4
-
-```{r}
-removed.items <- c(removed.items,"PANAS_12")
-
-df2 <- df2 %>% 
-  select(!any_of(removed.items))
-
-```
-
-```{r}
-#| column: margin
-#| echo: false
-RIlistItemsMargin(df2, fontsize = 13)
-```
-
-::: panel-tabset
-### Item fit
-
-```{r}
-RIitemfitPCM2(df2, 350, 32, 8)
-```
-
-### Residual correlations
-
-```{r}
-RIresidcorr(df2, cutoff = 0.2)
-```
-
-### Targeting
-
-```{r}
-#| fig-height: 5
-RItargeting(df2)
-```
-
-### Item hierarchy
-
-```{r}
-#| fig-height: 5
-RIitemHierarchy(df2)
-```
-:::
-
-### Analysis 4 comments
-
 There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates.
 
 However, we will not modify the response categories for this sample/simple analysis, we only note that this is not ideal.
@@ -748,6 +804,7 @@ However, we will not modify the response categories for this sample/simple analy
 ```{r}
 #| fig-height: 6
 RItif(df2)
+
 ```
 
 The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).
@@ -758,11 +815,51 @@ While 11.8% of respondents had a floor effect based on the raw sum scored data, 
 
 ## Person fit
 
-We can also look at how the respondents fit the Rasch model with these items.
+We can also look at how the respondents fit the Rasch model with these items. By default, `RIpfit()` outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented, and the curious analyst is suggested to look at the package [PerFit](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package).
 
 ```{r}
 RIpfit(df2)
 ```
+
+You can export the person fit values to a new variable in the dataframe by specifying `output = "dataframe"`, or if you just want the row numbers for respondents with deviant infit values, `output = "rowid"`.
+
+You can also specify a grouping variable to visualize the person fit for different groups.
+
+```{r}
+RIpfit(df2, group = dif.sex, output = "heatmap")
+
+```
+
+Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.
+
+### `PerFit` sample code
+
+While none of the functions in the `PerFit` package has been implemented in `RISEkbmRasch`, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package [documentation](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package).
+
+For this example, we'll use the non-parametric U3 statistic generalized to polytomous items [@emons_nonparametric_2008].
+
+::: panel-tabset
+#### U3poly
+```{r}
+library(PerFit)
+pfit_u3poly <- U3poly(matrix = df2, 
+                      Ncat = 5, # make sure to input number of response categories, not thresholds
+                      IRT.PModel = "PCM")
+```
+#### Cutoff information
+```{r}
+cutoff(pfit_u3poly)
+```
+#### Flagged respondents
+```{r}
+flagged.resp(pfit_u3poly) %>% 
+  pluck("Scores") %>% 
+  as.data.frame() %>% 
+  arrange(desc(PFscores))
+```
+:::
+
+The dataframe shown under the tab `Flagged respondents` above contains a variable named `FlaggedID` which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit affects the Andersen's LR-test [@artner_simulation_2016].
 
 ## Item parameters
 
@@ -796,7 +893,7 @@ This table shows the corresponding "raw" ordinal sum score values and logit scor
 RIscoreSE(df2)
 ```
 
-Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option `sdx` from the default setting of `5`. Also, if you find the the default range of logit scores is insufficient, it can be adjusted by changing the option `score_range` (default is `c(-4,4)`).
+Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option `sdx` from the default setting of `4`. Also, if you find the the default range of logit scores is insufficient (there should be no duplicate values at the upper/lower limits), it can be adjusted by changing the option `score_range` (default is `c(-4,4)`).
 
 ### Ordinal/interval figure
 
@@ -810,7 +907,7 @@ RIscoreSE(df2, output = "figure")
 
 Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the `RIitemfitPCM()` function there is also a parallel processing version of the function available, which makes use of 4 cores by default.
 
-`RIestThetas()` by default uses WL estimation of a partial credit model and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (threshold) locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.
+`RIestThetas()` by default uses WL estimation of a partial credit model (PCM) and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (category) threshold locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.
 
 ```{r}
 library(furrr) # for a parallel processing version of purrr::map_dbl
@@ -896,11 +993,17 @@ pkgs <- cite_packages(cite.tidyverse = TRUE,
 # If kbl() is used to generate this table, the references will not be added to the Reference list.
 formattable(pkgs, 
             table.attr = 'class=\"table table-striped\" style="font-size: 13px; font-family: Lato; width: 80%"')
-
 ```
 
 ## Additional credits
 
 Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements) for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to [Mike Linacre](https://www.winsteps.com/linacre.htm) and [Jeanette Melin](https://www.ri.se/en/person/jeanette-melin) for providing useful feedback to improve this vignette.
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
 
 ## References

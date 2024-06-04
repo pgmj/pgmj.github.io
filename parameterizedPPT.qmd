@@ -1,0 +1,206 @@
+---
+title: "Automating PPT reports with Quarto"
+subtitle: "Providing feedback from survey data to multiple groups"
+author:
+  name: 'Magnus Johansson'
+  affiliation: 'RISE Research Institutes of Sweden'
+  affiliation-url: 'https://ri.se/shic'
+  orcid: '0000-0003-1669-592X'
+date: last-modified
+date-format: iso
+google-scholar: true
+citation:
+  type: 'webpage'
+format:
+  html:
+    css: styles.css
+execute: 
+  cache: false
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## Background
+
+In a recent study we wanted to provide group-level feedback to all participants from the baseline survey.
+
+While I can't show all the parts of this, I will simulate some data and hopefully we will end up with something that is useful and can be generalized from.
+
+## Setting up
+
+Things that are needed:
+
+- dataframe with participant data
+- df with information about our items
+- a flexible function for plotting (theming optional)
+- Quarto (.qmd) file with the grouping parameter
+  - this file also imports/recodes data, reads item info and the plotting function
+  - here you create the structure needed for the PPT
+- R-file with code for rendering multiple PPT-files based on the template .qmd
+
+### Item info
+
+We'll need a dataframe with information about each item:
+
+- short name/code
+- full item text
+- response categories
+- intro text
+- domain/questionnaire, if some items belong together
+
+For this, we'll use WHO-5 as an example.
+
+```{r}
+
+```
+
+Our dataframe looks like this:
+
+```{r}
+
+```
+
+In our case, there is a separate file where participant ID's can be matched to a group, which can be joined to the dataset (if you don't collect group info in the survey).
+
+## Defining a plot function
+
+First we need to decide which things we will want to be able to adjust - options in the function.
+
+It is good practice to offer the dataframe as first input. Then we have the items, followed by intro text, response categories, and number of faceting rows.
+
+```{r}
+
+# ändra så att svarskategorier hämtas från itemlabels-objektet
+staplar <- function(data, items, rubrik, rader) {
+  
+  # get response categories to a vector
+  svarskategorier <- data %>% 
+    select(all_of({{ items }})) %>% 
+    pivot_longer(everything()) %>%
+    na.omit() %>% 
+    distinct(value) %>% 
+    pull(value)
+  
+  p <- data %>% 
+    select(all_of({{ items }})) %>% 
+    pivot_longer(everything()) %>%
+    na.omit() %>% 
+    count(name, value) %>% # räkna hur många individer i varje svarskategori
+    mutate(Procent = (100 * n / sum(n))) %>% # räkna fram procent för varje svarskategori
+    mutate(across(where(is.numeric), ~ round(.x, 2))) %>%
+    rename(
+      Svarskategori = value, # byt namn på variabler inför skapande av figur.
+      Fråga = name
+    ) %>%
+    left_join(itemlabels, by = join_by("Fråga" == "itemnr")) %>% 
+    ggplot(aes(x = Svarskategori, y = Procent, fill = Svarskategori)) +
+    scale_y_continuous(limits = c(0,NA)) + # starta alltid y på 0
+    scale_x_discrete(labels = c(0:length(svarskategorier))) + # byt etikett på x axeln så det blir mindre text i figuren
+    geom_col() +
+    geom_text(aes(label = n), color = "darkgrey",
+              size = 4,
+              position = position_dodge(width = 0.9),
+              vjust = -0.24) +
+    theme_rise_ppt() +
+    scale_fill_viridis_d(labels = ~ str_wrap(.x, width = 9)) + #radbrytning i förklaringsrutan
+    theme(panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank()) +
+    labs(title = rubrik, 
+         caption = str_wrap("Staplarnas höjd anger andel (%) av respondenterna som svarat i respektive svarskategori. Siffran ovanför staplarna anger antalet respondenter som svarat i den kategorin.", 100))
+  
+  if (missing(rader) == TRUE) {
+    p + facet_wrap(~item, 
+                   labeller = label_wrap_gen(22)) 
+  }
+  else {
+    p + facet_wrap(~item, 
+                   nrow = rader,
+                   labeller = label_wrap_gen(22)) 
+  }
+}
+```
+
+### Theming
+
+```{r}
+theme_rise_ppt <- function(fontfamily = "Lato", axissize = 17, titlesize = 18,
+                       margins = 12, axisface = "plain", stripsize = 15, axisTsize = 15, capsize = 14,
+                       panelDist = 0.6, legendSize = 15, legendTsize = 16, ...) {
+  theme_minimal() +
+    theme(
+      text = element_text(family = fontfamily),
+      axis.title.x = element_text(
+        margin = margin(t = margins),
+        size = axissize
+      ),
+      axis.title.y = element_text(
+        margin = margin(r = margins),
+        size = axissize
+      ),
+      plot.title = element_text(
+        face = "bold",
+        size = titlesize
+      ),
+      axis.title = element_text(
+        face = axisface
+      ),
+      plot.caption = element_text(
+        face = "italic", size = capsize
+      ),
+      axis.text = element_text(size = axisTsize),
+      legend.text = element_text(family = fontfamily, size = legendSize),
+      legend.title = element_text(family = fontfamily, size = legendTsize),
+      legend.background = element_rect(color = "lightgrey"),
+      strip.text = element_text(size = stripsize),
+      strip.background = element_rect(color = "lightgrey"),
+      panel.spacing = unit(panelDist, "cm", data = NULL),
+      ...
+    )
+}
+```
+
+
+## Quarto parameters
+
+We only have one parameter in this example - "group".
+
+## Render code
+
+This is a separate .R file 
+
+```{r}
+library(glue)
+library(quarto)
+library(purrr)
+library(readxl)
+library(dplyr)
+library(janitor)
+
+### Credit to https://github.com/Pecners/sra_pullout/blob/main/render.R for inspiration
+
+# calculate no of responses in each group and identify those with low number of responses (<6)
+
+
+# get group names
+groups <- read_excel("data/AFA_mailadresser.xlsx", sheet = 1) %>% 
+  clean_names() %>% 
+  distinct(group) %>% 
+  filter(!group %in% low_responses) %>% # filter out groups that should not receive feedback due to n < 6.
+  pull(group)
+
+
+# render files
+walk(1:length(groups), function(i) {
+  grupp <- groups[i]
+  
+  outfile <- glue("RISEfeedback_{grupp}.pptx")
+  
+  quarto_render(input = "AFAfeedback.qmd",
+                execute_params = list("grupp" = grupp),
+                output_file = outfile,
+                output_format = "pptx")
+})
+```
+

@@ -50,3 +50,4 @@ format:
     page-layout: full
     linestretch: 1.6
     license: CC BY
+    toc-title: 'Table of contents'
