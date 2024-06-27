@@ -9,6 +9,10 @@ date: last-modified
 citation:
   type: 'webpage'
 csl: apa.csl
+execute: 
+  cache: true
+  warning: false
+  message: false
 editor: 
   markdown: 
     wrap: 72
@@ -45,6 +49,7 @@ library(modelsummary)
 library(broom.mixed)
 library(marginaleffects)
 library(faux)
+library(ggdist)
 
 ### some commands exist in multiple packages, here we define preferred ones that are frequently used
 select <- dplyr::select
@@ -185,6 +190,8 @@ erm_item_parameters <- erm_item_parameters - mean(erm_item_parameters)
 
 ### Estimating person locations and SEM
 
+Using Weighted Likelihood (Warm, 1989) to minimize bias.
+
 ```{r}
 # estimate thetas/person locations, based on eRm estimated item thresholds
 erm_thetas <- RIestThetas(td, itemParams = erm_item_parameters)
@@ -208,22 +215,33 @@ summary(d$change)
 sd(d$change)
 sd(d$t_3)
 
-ggplot(d, aes(x = change)) +
-  geom_histogram() +
-  facet_wrap(~ group)
+ggplot(d, aes(x = change, fill = group, color = group)) +
+  #geom_histogram() +
+  stat_dotsinterval(color = "black", slab_color = "white", slab_linewidth = 0.5) +
+  facet_wrap(~ group) +
+  guides(fill = "none", color = "none")
 
 d %>% 
   mutate(change_grp = case_when(change > 0.5 ~ "Improved > 0.5",
-                                change < -0.5 ~ "Worsened",
+                                change < -0.5 ~ "Worsened > 0.5",
                                 TRUE ~ "In between")) %>% 
   group_by(group) %>% 
-  count(change_grp)
+  count(change_grp) %>% 
+  kbl_rise(tbl_width = 40) %>% 
+  row_spec(c(1,4),bold=TRUE)
+
+```
+
+### Test information function
+
+```{r}
+RItif(td, samplePSI = TRUE)
 ```
 
 
 ## t-tests of individual change
 
-Only using t1 and t3 data.
+Only using t1 and t3 estimated person locations/thetas and SEM values.
 
 ```{r}
 d_wide_tt <- d_long %>% 
@@ -236,14 +254,9 @@ d_wide_tt <- d_long %>%
 # basic formula for t-test
 # (d_wide_tt$erm_thetas_1[1] - d_wide_tt$erm_thetas_3[1]) / sqrt(d_wide_tt$erm_sem_1[1] + d_wide_tt$erm_sem_3[1])
 
-# t-tests for intervention group
+# t-tests for all rows in dataframe
 t_values <- c()
-for (i in 1:250) {
- t_values[i] <- (d_wide_tt$erm_thetas_3[i] - d_wide_tt$erm_thetas_1[i]) / sqrt(d_wide_tt$erm_sem_3[i] + d_wide_tt$erm_sem_1[i])
-}
-
-# t-tests for control group
-for (i in 251:500) {
+for (i in 1:nrow(d_wide_tt)) {
  t_values[i] <- (d_wide_tt$erm_thetas_3[i] - d_wide_tt$erm_thetas_1[i]) / sqrt(d_wide_tt$erm_sem_3[i] + d_wide_tt$erm_sem_1[i])
 }
 
@@ -253,14 +266,16 @@ data.frame(t_values = t_values,
                             t_values < -1.96 ~ "Worsened",
                             TRUE ~ "No detectable change")) %>% 
   group_by(group) %>% 
-  count(result)
+  count(result) %>% 
+  kbl_rise(tbl_width = 40) %>% 
+  row_spec(c(1,4),bold=TRUE)
 
 ```
 
 
 ### "Recovery" of n changed
 
-in part due to precision/reliability
+Again, strongly affected by precision/reliability
 
 
 

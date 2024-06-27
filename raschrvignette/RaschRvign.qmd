@@ -386,6 +386,7 @@ A low item fit indicates that responses are too predictable and provide little i
 ```{r}
 #| tbl-cap: "PCA of Rasch model residuals"
 RIpcmPCA(df)
+
 ```
 
 The first eigenvalue should be below 2.0 to support unidimensionality.
