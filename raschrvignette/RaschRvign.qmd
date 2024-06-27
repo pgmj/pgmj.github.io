@@ -383,10 +383,10 @@ A low item fit indicates that responses are too predictable and provide little i
 
 ### PCA
 
-```{r}
-#| tbl-cap: "PCA of Rasch model residuals"
-RIpcmPCA(df)
+Principal Component Analysis of Rasch model residuals.
 
+```{r}
+RIpcmPCA(df)
 ```
 
 The first eigenvalue should be below 2.0 to support unidimensionality.
@@ -496,7 +496,7 @@ RIlistItemsMargin(df2, fontsize = 13)
 ```
 
 ::: panel-tabset
-### Item fit {.smaller}
+### Item fit
 
 ```{r}
 RIitemfitPCM2(df2, 300, 32, cpu = 8)
@@ -505,7 +505,6 @@ RIitemfitPCM2(df2, 300, 32, cpu = 8)
 ### PCA
 
 ```{r}
-#| tbl-cap: "PCA of Rasch model residuals"
 RIpcmPCA(df2)
 ```
 

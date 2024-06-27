@@ -1295,12 +1295,12 @@ Jittery
 <p>A low item fit indicates that responses are too predictable and provide little information. A high item fit can indicate several things, most often multidimensionality or, for questionnaires, a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time.</p>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Principal Component Analysis of Rasch model residuals.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIpcmPCA.html">RIpcmPCA</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <table data-quarto-disable-processing="true" style="width:65%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
-<caption><p>PCA of Rasch model residuals</p></caption>
- <thead><tr>
+<thead><tr>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Eigenvalues </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Proportion of variance </th>
   </tr></thead>
@@ -1802,26 +1802,31 @@ Jittery
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIpcmPCA.html">RIpcmPCA</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<table data-quarto-disable-processing="true" style="width:25%; font-size: 15px;  font-family: Lato; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic table">
-<caption><p>PCA of Rasch model residuals</p></caption>
- <thead><tr>
-<th style="text-align:right;"> Eigenvalues </th>
+<table data-quarto-disable-processing="true" style="width:65%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
+<thead><tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Eigenvalues </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Proportion of variance </th>
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:right;font-weight: bold;"> 1.52 </td>
+<td style="text-align:right;"> 1.52 </td>
+   <td style="text-align:left;"> 18.9% </td>
   </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;"> 1.33 </td>
+<td style="text-align:right;"> 1.33 </td>
+   <td style="text-align:left;"> 17.1% </td>
   </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;"> 1.19 </td>
+<td style="text-align:right;"> 1.19 </td>
+   <td style="text-align:left;"> 16.6% </td>
   </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;"> 1.15 </td>
+<td style="text-align:right;"> 1.15 </td>
+   <td style="text-align:left;"> 14.6% </td>
   </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;"> 1.00 </td>
+<td style="text-align:right;"> 1.00 </td>
+   <td style="text-align:left;"> 13.1% </td>
   </tr>
 </tbody>
 </table>
@@ -5755,10 +5760,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb92-436"><a href="#cb92-436" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb92-437"><a href="#cb92-437" aria-hidden="true" tabindex="-1"></a><span class="fu">### PCA</span></span>
 <span id="cb92-438"><a href="#cb92-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-441"><a href="#cb92-441" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-442"><a href="#cb92-442" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "PCA of Rasch model residuals"</span></span>
-<span id="cb92-443"><a href="#cb92-443" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpcmPCA</span>(df)</span>
-<span id="cb92-444"><a href="#cb92-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-439"><a href="#cb92-439" aria-hidden="true" tabindex="-1"></a>Principal Component Analysis of Rasch model residuals.</span>
+<span id="cb92-440"><a href="#cb92-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-443"><a href="#cb92-443" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-444"><a href="#cb92-444" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpcmPCA</span>(df)</span>
 <span id="cb92-445"><a href="#cb92-445" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb92-446"><a href="#cb92-446" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb92-447"><a href="#cb92-447" aria-hidden="true" tabindex="-1"></a>The first eigenvalue should be below 2.0 to support unidimensionality.</span>
@@ -5868,7 +5873,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb92-567"><a href="#cb92-567" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb92-568"><a href="#cb92-568" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb92-569"><a href="#cb92-569" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb92-570"><a href="#cb92-570" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit {.smaller}</span></span>
+<span id="cb92-570"><a href="#cb92-570" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit</span></span>
 <span id="cb92-571"><a href="#cb92-571" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb92-574"><a href="#cb92-574" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb92-575"><a href="#cb92-575" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfitPCM2</span>(df2, <span class="dv">300</span>, <span class="dv">32</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
@@ -5877,509 +5882,508 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb92-578"><a href="#cb92-578" aria-hidden="true" tabindex="-1"></a><span class="fu">### PCA</span></span>
 <span id="cb92-579"><a href="#cb92-579" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb92-582"><a href="#cb92-582" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-583"><a href="#cb92-583" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "PCA of Rasch model residuals"</span></span>
-<span id="cb92-584"><a href="#cb92-584" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpcmPCA</span>(df2)</span>
-<span id="cb92-585"><a href="#cb92-585" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-586"><a href="#cb92-586" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-587"><a href="#cb92-587" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residual correlations</span></span>
-<span id="cb92-588"><a href="#cb92-588" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-591"><a href="#cb92-591" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-592"><a href="#cb92-592" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(df2, <span class="at">cutoff =</span> <span class="fl">0.2</span>)</span>
-<span id="cb92-593"><a href="#cb92-593" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-594"><a href="#cb92-594" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-595"><a href="#cb92-595" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1st contrast loadings</span></span>
-<span id="cb92-596"><a href="#cb92-596" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-599"><a href="#cb92-599" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-600"><a href="#cb92-600" aria-hidden="true" tabindex="-1"></a><span class="fu">RIloadLoc</span>(df2)</span>
-<span id="cb92-601"><a href="#cb92-601" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-602"><a href="#cb92-602" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-603"><a href="#cb92-603" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting</span></span>
-<span id="cb92-604"><a href="#cb92-604" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-607"><a href="#cb92-607" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-608"><a href="#cb92-608" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb92-609"><a href="#cb92-609" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df2, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>), <span class="at">bins =</span> <span class="dv">45</span>)</span>
-<span id="cb92-610"><a href="#cb92-610" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-611"><a href="#cb92-611" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-612"><a href="#cb92-612" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item hierarchy</span></span>
-<span id="cb92-613"><a href="#cb92-613" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-616"><a href="#cb92-616" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-617"><a href="#cb92-617" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb92-618"><a href="#cb92-618" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2)</span>
-<span id="cb92-619"><a href="#cb92-619" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-620"><a href="#cb92-620" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-621"><a href="#cb92-621" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb92-622"><a href="#cb92-622" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-623"><a href="#cb92-623" aria-hidden="true" tabindex="-1"></a><span class="fu">### Analysis 2 comments</span></span>
-<span id="cb92-624"><a href="#cb92-624" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-625"><a href="#cb92-625" aria-hidden="true" tabindex="-1"></a>Items 12 and 16 are a bit low in item fit ZSTD, but not much, and MSQ looks good.</span>
-<span id="cb92-626"><a href="#cb92-626" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-627"><a href="#cb92-627" aria-hidden="true" tabindex="-1"></a>Items 16 and 19 have a residual correlation at about 0.25 above the average level.</span>
-<span id="cb92-628"><a href="#cb92-628" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-629"><a href="#cb92-629" aria-hidden="true" tabindex="-1"></a>Let's look at DIF before taking action upon this information. While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the <span class="in">`panel-tabset`</span> above (on item fit, PCA, residual correlations, etc).</span>
-<span id="cb92-630"><a href="#cb92-630" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-631"><a href="#cb92-631" aria-hidden="true" tabindex="-1"></a><span class="fu">## DIF - differential item functioning</span></span>
-<span id="cb92-632"><a href="#cb92-632" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-633"><a href="#cb92-633" aria-hidden="true" tabindex="-1"></a>We'll be looking at whether item (threshold) locations are stable between demographic subgroups.</span>
-<span id="cb92-634"><a href="#cb92-634" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-635"><a href="#cb92-635" aria-hidden="true" tabindex="-1"></a>There are several DIF analysis tools available. The first one uses the package <span class="in">`psychotree`</span>, which relies on statistical significance at p &lt; .05 as an indicator for DIF. This is a criterion that is highly sample size sensitive, and we are always interested in the size/magnitude of DIF as well, since that will inform us about the impact of DIF on the estimated latent variable. </span>
-<span id="cb92-636"><a href="#cb92-636" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-637"><a href="#cb92-637" aria-hidden="true" tabindex="-1"></a>The structure of DIF is also an important and complex aspect, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. We can test this in R using the <span class="in">`lordif`</span> package, as demonstrated in @sec-lordif.</span>
-<span id="cb92-638"><a href="#cb92-638" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-639"><a href="#cb92-639" aria-hidden="true" tabindex="-1"></a>A recent preprint <span class="co">[</span><span class="ot">@henninger_partial_2024</span><span class="co">]</span> does a great job illustrating "differential step functioning" (DSF), which is when item threshold locations in polytomous data show varying levels of DIF. It also describes a forthcoming development of the <span class="in">`psychotree`</span> where one can use DIF effect size and purification functions to evaluate DIF/DSF. When the updated package is available, I will work to implement these new functions into the <span class="in">`RISEkbmRasch`</span> package as well.</span>
-<span id="cb92-640"><a href="#cb92-640" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-641"><a href="#cb92-641" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon="true"}</span>
-<span id="cb92-642"><a href="#cb92-642" aria-hidden="true" tabindex="-1"></a>It is important to ensure that no cells in the data are empty for subgroups when conducting a DIF analysis. Split the data using the DIF-variable and create separate tileplots to review the response distribution in the DIF-groups.</span>
-<span id="cb92-643"><a href="#cb92-643" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb92-644"><a href="#cb92-644" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-647"><a href="#cb92-647" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-648"><a href="#cb92-648" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb92-649"><a href="#cb92-649" aria-hidden="true" tabindex="-1"></a>difPlots <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span> <span class="co"># save the output into the `difPlots` object</span></span>
-<span id="cb92-650"><a href="#cb92-650" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.sex) <span class="sc">%&gt;%</span> <span class="co"># add the DIF variable to the dataframe</span></span>
-<span id="cb92-651"><a href="#cb92-651" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span> <span class="co"># split the data using the DIF variable</span></span>
-<span id="cb92-652"><a href="#cb92-652" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender)) <span class="co"># create separate tileplots for each group</span></span>
-<span id="cb92-653"><a href="#cb92-653" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-654"><a href="#cb92-654" aria-hidden="true" tabindex="-1"></a>difPlots<span class="sc">$</span>Female <span class="sc">+</span> difPlots<span class="sc">$</span>Male <span class="co"># the actual name of the plots (in this case Male/Female) will be determined by the factor labels</span></span>
-<span id="cb92-655"><a href="#cb92-655" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-656"><a href="#cb92-656" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-657"><a href="#cb92-657" aria-hidden="true" tabindex="-1"></a><span class="fu">### Sex</span></span>
-<span id="cb92-658"><a href="#cb92-658" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-661"><a href="#cb92-661" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-662"><a href="#cb92-662" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
-<span id="cb92-663"><a href="#cb92-663" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb92-664"><a href="#cb92-664" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
-<span id="cb92-665"><a href="#cb92-665" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-666"><a href="#cb92-666" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-667"><a href="#cb92-667" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb92-668"><a href="#cb92-668" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Table</span></span>
-<span id="cb92-669"><a href="#cb92-669" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-672"><a href="#cb92-672" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-673"><a href="#cb92-673" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
-<span id="cb92-674"><a href="#cb92-674" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable</span>(df2, dif.sex)</span>
-<span id="cb92-675"><a href="#cb92-675" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-676"><a href="#cb92-676" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-677"><a href="#cb92-677" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure items</span></span>
-<span id="cb92-678"><a href="#cb92-678" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-681"><a href="#cb92-681" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-682"><a href="#cb92-682" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifFigure</span>(df2, dif.sex)</span>
-<span id="cb92-683"><a href="#cb92-683" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-684"><a href="#cb92-684" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-685"><a href="#cb92-685" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure thresholds</span></span>
-<span id="cb92-686"><a href="#cb92-686" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-689"><a href="#cb92-689" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-690"><a href="#cb92-690" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifFigThresh</span>(df2, dif.sex)</span>
-<span id="cb92-691"><a href="#cb92-691" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-692"><a href="#cb92-692" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb92-693"><a href="#cb92-693" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-694"><a href="#cb92-694" aria-hidden="true" tabindex="-1"></a>While no item shows problematic levels of DIF regarding item location, as shown by the table, there is an interesting pattern in the thresholds figure. The lowest threshold seems to be slightly lower for node 3 (Male) for all items. Also, item 11 shows a much wider spread of item locations for node 3 compared to node 2.</span>
-<span id="cb92-695"><a href="#cb92-695" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-696"><a href="#cb92-696" aria-hidden="true" tabindex="-1"></a>The results do not require any action since the difference is small.</span>
-<span id="cb92-697"><a href="#cb92-697" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-698"><a href="#cb92-698" aria-hidden="true" tabindex="-1"></a><span class="fu">### Age</span></span>
-<span id="cb92-699"><a href="#cb92-699" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-700"><a href="#cb92-700" aria-hidden="true" tabindex="-1"></a>The <span class="in">`psychotree`</span> package uses a model-based recursive partitioning that is particularly useful when you have a continuous variable such as age in years and a large enough sample. It will test different ways to partition the age variable to determine potential group differences <span class="co">[</span><span class="ot">@strobl2015; @strobl2021</span><span class="co">]</span>.</span>
-<span id="cb92-701"><a href="#cb92-701" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-704"><a href="#cb92-704" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-705"><a href="#cb92-705" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable</span>(df2, dif.age)</span>
-<span id="cb92-706"><a href="#cb92-706" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-707"><a href="#cb92-707" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-708"><a href="#cb92-708" aria-hidden="true" tabindex="-1"></a>No DIF found for age.</span>
-<span id="cb92-709"><a href="#cb92-709" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-710"><a href="#cb92-710" aria-hidden="true" tabindex="-1"></a><span class="fu">### Group</span></span>
-<span id="cb92-711"><a href="#cb92-711" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-714"><a href="#cb92-714" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-715"><a href="#cb92-715" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable</span>(df2, dif.group)</span>
-<span id="cb92-716"><a href="#cb92-716" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-717"><a href="#cb92-717" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-718"><a href="#cb92-718" aria-hidden="true" tabindex="-1"></a>And no DIF for group.</span>
-<span id="cb92-719"><a href="#cb92-719" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-720"><a href="#cb92-720" aria-hidden="true" tabindex="-1"></a><span class="fu">### Sex and age</span></span>
-<span id="cb92-721"><a href="#cb92-721" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-722"><a href="#cb92-722" aria-hidden="true" tabindex="-1"></a>The <span class="in">`psychotree`</span> package also allows for DIF interaction analysis with multiple DIF variables. We can use <span class="in">`RIdifTable2()`</span> to input two DIF variables.</span>
-<span id="cb92-723"><a href="#cb92-723" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-726"><a href="#cb92-726" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-727"><a href="#cb92-727" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable2</span>(df2, dif.sex, dif.age)</span>
-<span id="cb92-728"><a href="#cb92-728" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-729"><a href="#cb92-729" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-730"><a href="#cb92-730" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-731"><a href="#cb92-731" aria-hidden="true" tabindex="-1"></a>No interaction effect found for sex and age. The analysis only shows the previously identified DIF for sex.</span>
-<span id="cb92-732"><a href="#cb92-732" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-733"><a href="#cb92-733" aria-hidden="true" tabindex="-1"></a><span class="fu">### LRT-based DIF {#sec-diflrt}</span></span>
-<span id="cb92-734"><a href="#cb92-734" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-735"><a href="#cb92-735" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon="true"}</span>
-<span id="cb92-736"><a href="#cb92-736" aria-hidden="true" tabindex="-1"></a>As of <span class="in">`RISEkbmRasch`</span> package version 0.1.16, there are four new functions for analyzing item location DIF. These are all making use of the function <span class="in">`LRtest()`</span> from the <span class="in">`eRm`</span> package. And, since version 0.1.31.0, these are also correctly extracting item locations/threshold locations. Results will not be identical to the results from the previous functions that use the <span class="in">`psychotree`</span> package, since they make some different choices in estimation. I refer the curious to the respective package's documentation.</span>
-<span id="cb92-737"><a href="#cb92-737" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb92-738"><a href="#cb92-738" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-739"><a href="#cb92-739" aria-hidden="true" tabindex="-1"></a>We'll use the group variable as an example. First, we can simply run the test to get the overall result.</span>
-<span id="cb92-740"><a href="#cb92-740" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-743"><a href="#cb92-743" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-744"><a href="#cb92-744" aria-hidden="true" tabindex="-1"></a>erm.out <span class="ot">&lt;-</span> <span class="fu">PCM</span>(df2)</span>
-<span id="cb92-745"><a href="#cb92-745" aria-hidden="true" tabindex="-1"></a><span class="fu">LRtest</span>(erm.out, <span class="at">splitcr =</span> dif.group)</span>
-<span id="cb92-746"><a href="#cb92-746" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-747"><a href="#cb92-747" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-748"><a href="#cb92-748" aria-hidden="true" tabindex="-1"></a>Review the documentation for further details, using <span class="in">`?LRtest`</span> in your R console panel in Rstudio. There is also a plotting function, <span class="in">`plotGOF()`</span> that may be of interest.</span>
-<span id="cb92-749"><a href="#cb92-749" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-752"><a href="#cb92-752" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-753"><a href="#cb92-753" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
-<span id="cb92-754"><a href="#cb92-754" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb92-755"><a href="#cb92-755" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
-<span id="cb92-756"><a href="#cb92-756" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-757"><a href="#cb92-757" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-758"><a href="#cb92-758" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb92-759"><a href="#cb92-759" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item location table</span></span>
-<span id="cb92-762"><a href="#cb92-762" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-763"><a href="#cb92-763" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTableLR</span>(df2, dif.group)</span>
-<span id="cb92-764"><a href="#cb92-764" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-765"><a href="#cb92-765" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-766"><a href="#cb92-766" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item location figure</span></span>
-<span id="cb92-769"><a href="#cb92-769" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-770"><a href="#cb92-770" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb92-771"><a href="#cb92-771" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifFigureLR</span>(df2, dif.group) <span class="sc">+</span> <span class="fu">theme_rise</span>()</span>
-<span id="cb92-772"><a href="#cb92-772" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-773"><a href="#cb92-773" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-774"><a href="#cb92-774" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item threshold table</span></span>
-<span id="cb92-777"><a href="#cb92-777" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-778"><a href="#cb92-778" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifThreshTblLR</span>(df2, dif.group)</span>
-<span id="cb92-779"><a href="#cb92-779" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-780"><a href="#cb92-780" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-781"><a href="#cb92-781" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item threshold figure</span></span>
-<span id="cb92-784"><a href="#cb92-784" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-785"><a href="#cb92-785" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb92-786"><a href="#cb92-786" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifThreshFigLR</span>(df2, dif.group) <span class="sc">+</span> <span class="fu">theme_rise</span>()</span>
-<span id="cb92-787"><a href="#cb92-787" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-788"><a href="#cb92-788" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-789"><a href="#cb92-789" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb92-790"><a href="#cb92-790" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-791"><a href="#cb92-791" aria-hidden="true" tabindex="-1"></a>The item threshold table shows that the top threshold for item 13 differs more than 0.5 logits between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.</span>
-<span id="cb92-792"><a href="#cb92-792" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-793"><a href="#cb92-793" aria-hidden="true" tabindex="-1"></a><span class="fu">### Logistic Ordinal Regression DIF {#sec-lordif}</span></span>
-<span id="cb92-794"><a href="#cb92-794" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-795"><a href="#cb92-795" aria-hidden="true" tabindex="-1"></a>The <span class="in">`lordif`</span> package <span class="co">[</span><span class="ot">@choi_lordif_2011</span><span class="co">]</span> does not use a Rasch measurement model, it only offers a choice between the Graded Response Model (GRM) and the Generalized Partial Credit Model (GPCM). Both of these are 2PL models, meaning that they estimate a discrimination parameter for each item in addition to the item threshold parameters. <span class="in">`lordif`</span> relies on the <span class="in">`mirt`</span> package.</span>
-<span id="cb92-796"><a href="#cb92-796" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-797"><a href="#cb92-797" aria-hidden="true" tabindex="-1"></a>There are several nice features available in the <span class="in">`lordif`</span> package. First, we get a χ2 test of uniform or non-uniform DIF. Second, there are three possible methods/criteria for flagging items with potential DIF. One of these uses a likelihood ratio (LR) χ2 test, while the other two are indicators of DIF size/magnitude, either using a pseudo R2 statistic ("McFadden", "Nagelkerke", or "CoxSnell") or a Beta criterion. For further details, see <span class="in">`?lordif`</span> in your R console or the paper describing the package <span class="co">[</span><span class="ot">@choi_lordif_2011</span><span class="co">]</span>.</span>
-<span id="cb92-798"><a href="#cb92-798" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-799"><a href="#cb92-799" aria-hidden="true" tabindex="-1"></a>Below is some sample code to get you started with <span class="in">`lordif`</span>.</span>
-<span id="cb92-800"><a href="#cb92-800" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-803"><a href="#cb92-803" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-804"><a href="#cb92-804" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
-<span id="cb92-805"><a href="#cb92-805" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lordif)</span>
-<span id="cb92-806"><a href="#cb92-806" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-807"><a href="#cb92-807" aria-hidden="true" tabindex="-1"></a>g_dif <span class="ot">&lt;-</span> <span class="fu">lordif</span>(<span class="fu">as.data.frame</span>(df2), <span class="fu">as.numeric</span>(dif.sex), <span class="co"># make sure that the data is in a dataframe-object and that the DIF variable is numeric</span></span>
-<span id="cb92-808"><a href="#cb92-808" aria-hidden="true" tabindex="-1"></a>                <span class="at">criterion =</span> <span class="fu">c</span>(<span class="st">"Chisqr"</span>), </span>
-<span id="cb92-809"><a href="#cb92-809" aria-hidden="true" tabindex="-1"></a>                <span class="at">alpha =</span> <span class="fl">0.01</span>, </span>
-<span id="cb92-810"><a href="#cb92-810" aria-hidden="true" tabindex="-1"></a>                <span class="at">beta.change =</span> <span class="fl">0.1</span>,</span>
-<span id="cb92-811"><a href="#cb92-811" aria-hidden="true" tabindex="-1"></a>                <span class="at">model =</span> <span class="st">"GPCM"</span>,</span>
-<span id="cb92-812"><a href="#cb92-812" aria-hidden="true" tabindex="-1"></a>                <span class="at">R2.change =</span> <span class="fl">0.02</span>)</span>
-<span id="cb92-813"><a href="#cb92-813" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-814"><a href="#cb92-814" aria-hidden="true" tabindex="-1"></a>g_dif_sum <span class="ot">&lt;-</span> <span class="fu">summary</span>(g_dif)</span>
-<span id="cb92-815"><a href="#cb92-815" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-816"><a href="#cb92-816" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-819"><a href="#cb92-819" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-820"><a href="#cb92-820" aria-hidden="true" tabindex="-1"></a><span class="co"># threshold values for colorizing the table below</span></span>
-<span id="cb92-821"><a href="#cb92-821" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="fl">0.01</span></span>
-<span id="cb92-822"><a href="#cb92-822" aria-hidden="true" tabindex="-1"></a>beta.change <span class="ot">=</span> <span class="fl">0.1</span></span>
-<span id="cb92-823"><a href="#cb92-823" aria-hidden="true" tabindex="-1"></a>R2.change <span class="ot">=</span> <span class="fl">0.02</span></span>
-<span id="cb92-824"><a href="#cb92-824" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-825"><a href="#cb92-825" aria-hidden="true" tabindex="-1"></a>g_dif_sum<span class="sc">$</span>stats <span class="sc">%&gt;%</span> </span>
-<span id="cb92-826"><a href="#cb92-826" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb92-827"><a href="#cb92-827" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"item"</span>,<span class="st">"df12"</span>,<span class="st">"df13"</span>,<span class="st">"df23"</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb92-828"><a href="#cb92-828" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb92-829"><a href="#cb92-829" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">itemnr =</span> <span class="fu">names</span>(df2), <span class="at">.before =</span> <span class="st">"ncat"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb92-830"><a href="#cb92-830" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(chi12,chi13,chi23), <span class="sc">~</span> <span class="fu">cell_spec</span>(.x,</span>
-<span id="cb92-831"><a href="#cb92-831" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="fu">case_when</span>(</span>
-<span id="cb92-832"><a href="#cb92-832" aria-hidden="true" tabindex="-1"></a>                                 .x <span class="sc">&lt;</span> alpha <span class="sc">~</span> <span class="st">"red"</span>,</span>
-<span id="cb92-833"><a href="#cb92-833" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"black"</span></span>
-<span id="cb92-834"><a href="#cb92-834" aria-hidden="true" tabindex="-1"></a>                               )))) <span class="sc">%&gt;%</span></span>
-<span id="cb92-835"><a href="#cb92-835" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"pseudo"</span>), <span class="sc">~</span> <span class="fu">cell_spec</span>(.x,</span>
-<span id="cb92-836"><a href="#cb92-836" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="fu">case_when</span>(</span>
-<span id="cb92-837"><a href="#cb92-837" aria-hidden="true" tabindex="-1"></a>                                 .x <span class="sc">&gt;</span> R2.change <span class="sc">~</span> <span class="st">"red"</span>,</span>
-<span id="cb92-838"><a href="#cb92-838" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"black"</span></span>
-<span id="cb92-839"><a href="#cb92-839" aria-hidden="true" tabindex="-1"></a>                               )))) <span class="sc">%&gt;%</span></span>
-<span id="cb92-840"><a href="#cb92-840" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">beta12 =</span>  <span class="fu">cell_spec</span>(beta12,</span>
-<span id="cb92-841"><a href="#cb92-841" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="fu">case_when</span>(</span>
-<span id="cb92-842"><a href="#cb92-842" aria-hidden="true" tabindex="-1"></a>                                 beta12 <span class="sc">&gt;</span> beta.change <span class="sc">~</span> <span class="st">"red"</span>,</span>
-<span id="cb92-843"><a href="#cb92-843" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"black"</span></span>
-<span id="cb92-844"><a href="#cb92-844" aria-hidden="true" tabindex="-1"></a>                               ))) <span class="sc">%&gt;%</span> </span>
-<span id="cb92-845"><a href="#cb92-845" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl_rise</span>()</span>
-<span id="cb92-846"><a href="#cb92-846" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-847"><a href="#cb92-847" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-848"><a href="#cb92-848" aria-hidden="true" tabindex="-1"></a>We can review the results regarding uniform/non-uniform DIF by looking at the <span class="in">`chi*`</span> columns. Uniform DIF is indicated by column <span class="in">`chi12`</span> and non-uniform DIF by <span class="in">`chi23`</span>, while column <span class="in">`chi13`</span> represents "an overall test of "total DIF effect" <span class="co">[</span><span class="ot">@choi_lordif_2011</span><span class="co">]</span>.</span>
-<span id="cb92-849"><a href="#cb92-849" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-850"><a href="#cb92-850" aria-hidden="true" tabindex="-1"></a>While the table indicates significant chi2-tests for items 11 and 17, the magnitude estimates are low for these items.</span>
-<span id="cb92-851"><a href="#cb92-851" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-852"><a href="#cb92-852" aria-hidden="true" tabindex="-1"></a>There are some plots available as well, using the base R <span class="in">`plot()`</span> function. For some reason the plots won't render in this Quarto document, so I will try to sort that out at some point.</span>
-<span id="cb92-853"><a href="#cb92-853" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-856"><a href="#cb92-856" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-857"><a href="#cb92-857" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
-<span id="cb92-858"><a href="#cb92-858" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_dif) <span class="co"># use option `graphics.off()` to get the plots rendered one by one</span></span>
-<span id="cb92-859"><a href="#cb92-859" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(g_dif, graphics.off())</span></span>
-<span id="cb92-860"><a href="#cb92-860" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-861"><a href="#cb92-861" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-862"><a href="#cb92-862" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rasch analysis 3</span></span>
-<span id="cb92-863"><a href="#cb92-863" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-864"><a href="#cb92-864" aria-hidden="true" tabindex="-1"></a>While there were no significant issues with DIF for any item/subgroup combination, we need to address the previously identified problem:</span>
-<span id="cb92-865"><a href="#cb92-865" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-866"><a href="#cb92-866" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Items 16 and 19 have a residual correlation at about 0.25 above the average level.</span>
-<span id="cb92-867"><a href="#cb92-867" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-868"><a href="#cb92-868" aria-hidden="true" tabindex="-1"></a>We'll remove item 19 since item 16 has better targeting.</span>
-<span id="cb92-869"><a href="#cb92-869" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-872"><a href="#cb92-872" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-873"><a href="#cb92-873" aria-hidden="true" tabindex="-1"></a>removed.items <span class="ot">&lt;-</span> <span class="fu">c</span>(removed.items,<span class="st">"PANAS_19"</span>)</span>
-<span id="cb92-874"><a href="#cb92-874" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-875"><a href="#cb92-875" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span> </span>
-<span id="cb92-876"><a href="#cb92-876" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">any_of</span>(removed.items))</span>
-<span id="cb92-877"><a href="#cb92-877" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-878"><a href="#cb92-878" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-879"><a href="#cb92-879" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-882"><a href="#cb92-882" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-883"><a href="#cb92-883" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
-<span id="cb92-884"><a href="#cb92-884" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb92-885"><a href="#cb92-885" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
-<span id="cb92-886"><a href="#cb92-886" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-887"><a href="#cb92-887" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-888"><a href="#cb92-888" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb92-889"><a href="#cb92-889" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit</span></span>
-<span id="cb92-890"><a href="#cb92-890" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-893"><a href="#cb92-893" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-894"><a href="#cb92-894" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfitPCM2</span>(df2, <span class="dv">350</span>, <span class="dv">32</span>, <span class="dv">8</span>)</span>
-<span id="cb92-895"><a href="#cb92-895" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-896"><a href="#cb92-896" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-897"><a href="#cb92-897" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residual correlations</span></span>
-<span id="cb92-898"><a href="#cb92-898" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-901"><a href="#cb92-901" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-902"><a href="#cb92-902" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(df2, <span class="at">cutoff =</span> <span class="fl">0.2</span>)</span>
-<span id="cb92-903"><a href="#cb92-903" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-904"><a href="#cb92-904" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-905"><a href="#cb92-905" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting</span></span>
-<span id="cb92-906"><a href="#cb92-906" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-909"><a href="#cb92-909" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-910"><a href="#cb92-910" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb92-911"><a href="#cb92-911" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df2, <span class="at">bins =</span> <span class="dv">45</span>)</span>
-<span id="cb92-912"><a href="#cb92-912" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-913"><a href="#cb92-913" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-914"><a href="#cb92-914" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item hierarchy</span></span>
-<span id="cb92-915"><a href="#cb92-915" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-918"><a href="#cb92-918" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-919"><a href="#cb92-919" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
-<span id="cb92-920"><a href="#cb92-920" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2)</span>
-<span id="cb92-921"><a href="#cb92-921" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-922"><a href="#cb92-922" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb92-923"><a href="#cb92-923" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-924"><a href="#cb92-924" aria-hidden="true" tabindex="-1"></a><span class="fu">### Analysis 3 comments</span></span>
-<span id="cb92-925"><a href="#cb92-925" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-926"><a href="#cb92-926" aria-hidden="true" tabindex="-1"></a>No problematic residual correlations, but item 12 is a bit low in item fit.</span>
-<span id="cb92-927"><a href="#cb92-927" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-928"><a href="#cb92-928" aria-hidden="true" tabindex="-1"></a>There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates.</span>
-<span id="cb92-929"><a href="#cb92-929" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-930"><a href="#cb92-930" aria-hidden="true" tabindex="-1"></a>However, we will not modify the response categories for this sample/simple analysis, we only note that this is not ideal.</span>
-<span id="cb92-931"><a href="#cb92-931" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-932"><a href="#cb92-932" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reliability</span></span>
-<span id="cb92-933"><a href="#cb92-933" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-936"><a href="#cb92-936" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-937"><a href="#cb92-937" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
-<span id="cb92-938"><a href="#cb92-938" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(df2)</span>
-<span id="cb92-939"><a href="#cb92-939" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-940"><a href="#cb92-940" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-941"><a href="#cb92-941" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-942"><a href="#cb92-942" aria-hidden="true" tabindex="-1"></a>The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).</span>
-<span id="cb92-943"><a href="#cb92-943" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-944"><a href="#cb92-944" aria-hidden="true" tabindex="-1"></a>The default cutoff value used in <span class="in">`RItif()`</span> is TIF = 3.33, which corresponds to person separation index (PSI) = 0.7. PSI is similar to reliability coefficients such as omega and alpha, ranging from 0 to 1. You can change the TIF cutoff by using the option <span class="in">`cutoff`</span>, for instance <span class="in">`cutoff = 2.5`</span> (TIF values range from 1 and up).</span>
-<span id="cb92-945"><a href="#cb92-945" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-946"><a href="#cb92-946" aria-hidden="true" tabindex="-1"></a>While 11.8% of respondents had a floor effect based on the raw sum scored data, the figure above shows us that 41.8% are located below the point where the items produce a PSI of 0.7 or higher. Again, note that this figure shows the reliability of the test/scale, not the sample. If you want to add the sample reliability use option <span class="in">`samplePSI = TRUE`</span>. More details are available in the documentation <span class="in">`?RItif`</span>.</span>
-<span id="cb92-947"><a href="#cb92-947" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-948"><a href="#cb92-948" aria-hidden="true" tabindex="-1"></a><span class="fu">## Person fit</span></span>
-<span id="cb92-949"><a href="#cb92-949" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-950"><a href="#cb92-950" aria-hidden="true" tabindex="-1"></a>We can also look at how the respondents fit the Rasch model with these items. By default, <span class="in">`RIpfit()`</span> outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented, and the curious analyst is suggested to look at the package <span class="co">[</span><span class="ot">PerFit</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span>.</span>
-<span id="cb92-951"><a href="#cb92-951" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-954"><a href="#cb92-954" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-955"><a href="#cb92-955" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df2)</span>
-<span id="cb92-956"><a href="#cb92-956" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-957"><a href="#cb92-957" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-958"><a href="#cb92-958" aria-hidden="true" tabindex="-1"></a>You can export the person fit values to a new variable in the dataframe by specifying <span class="in">`output = "dataframe"`</span>, or if you just want the row numbers for respondents with deviant infit values, <span class="in">`output = "rowid"`</span>.</span>
-<span id="cb92-959"><a href="#cb92-959" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-960"><a href="#cb92-960" aria-hidden="true" tabindex="-1"></a>You can also specify a grouping variable to visualize the person fit for different groups.</span>
-<span id="cb92-961"><a href="#cb92-961" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-964"><a href="#cb92-964" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-965"><a href="#cb92-965" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df2, <span class="at">group =</span> dif.sex, <span class="at">output =</span> <span class="st">"heatmap"</span>)</span>
-<span id="cb92-966"><a href="#cb92-966" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-967"><a href="#cb92-967" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-968"><a href="#cb92-968" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-969"><a href="#cb92-969" aria-hidden="true" tabindex="-1"></a>Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.</span>
-<span id="cb92-970"><a href="#cb92-970" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-971"><a href="#cb92-971" aria-hidden="true" tabindex="-1"></a><span class="fu">### `PerFit` sample code</span></span>
-<span id="cb92-972"><a href="#cb92-972" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-973"><a href="#cb92-973" aria-hidden="true" tabindex="-1"></a>While none of the functions in the <span class="in">`PerFit`</span> package has been implemented in <span class="in">`RISEkbmRasch`</span>, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package <span class="co">[</span><span class="ot">documentation</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span>.</span>
-<span id="cb92-974"><a href="#cb92-974" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-975"><a href="#cb92-975" aria-hidden="true" tabindex="-1"></a>For this example, we'll use the non-parametric U3 statistic generalized to polytomous items <span class="co">[</span><span class="ot">@emons_nonparametric_2008</span><span class="co">]</span>.</span>
-<span id="cb92-976"><a href="#cb92-976" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-977"><a href="#cb92-977" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb92-978"><a href="#cb92-978" aria-hidden="true" tabindex="-1"></a><span class="fu">#### U3poly</span></span>
-<span id="cb92-981"><a href="#cb92-981" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-982"><a href="#cb92-982" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PerFit)</span>
-<span id="cb92-983"><a href="#cb92-983" aria-hidden="true" tabindex="-1"></a>pfit_u3poly <span class="ot">&lt;-</span> <span class="fu">U3poly</span>(<span class="at">matrix =</span> df2, </span>
-<span id="cb92-984"><a href="#cb92-984" aria-hidden="true" tabindex="-1"></a>                      <span class="at">Ncat =</span> <span class="dv">5</span>, <span class="co"># make sure to input number of response categories, not thresholds</span></span>
-<span id="cb92-985"><a href="#cb92-985" aria-hidden="true" tabindex="-1"></a>                      <span class="at">IRT.PModel =</span> <span class="st">"PCM"</span>)</span>
-<span id="cb92-986"><a href="#cb92-986" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-987"><a href="#cb92-987" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Cutoff information</span></span>
-<span id="cb92-990"><a href="#cb92-990" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-991"><a href="#cb92-991" aria-hidden="true" tabindex="-1"></a><span class="fu">cutoff</span>(pfit_u3poly)</span>
-<span id="cb92-992"><a href="#cb92-992" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-993"><a href="#cb92-993" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Flagged respondents</span></span>
-<span id="cb92-996"><a href="#cb92-996" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-997"><a href="#cb92-997" aria-hidden="true" tabindex="-1"></a><span class="fu">flagged.resp</span>(pfit_u3poly) <span class="sc">%&gt;%</span> </span>
-<span id="cb92-998"><a href="#cb92-998" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"Scores"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb92-999"><a href="#cb92-999" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb92-1000"><a href="#cb92-1000" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(PFscores))</span>
-<span id="cb92-1001"><a href="#cb92-1001" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1002"><a href="#cb92-1002" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb92-1003"><a href="#cb92-1003" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1004"><a href="#cb92-1004" aria-hidden="true" tabindex="-1"></a>The dataframe shown under the tab <span class="in">`Flagged respondents`</span> above contains a variable named <span class="in">`FlaggedID`</span> which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit affects the Andersen's LR-test <span class="co">[</span><span class="ot">@artner_simulation_2016</span><span class="co">]</span>.</span>
-<span id="cb92-1005"><a href="#cb92-1005" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1006"><a href="#cb92-1006" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item parameters</span></span>
-<span id="cb92-1007"><a href="#cb92-1007" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1008"><a href="#cb92-1008" aria-hidden="true" tabindex="-1"></a>To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the <span class="in">`thetaEst()`</span> function from the <span class="in">`catR`</span> package.</span>
-<span id="cb92-1009"><a href="#cb92-1009" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1010"><a href="#cb92-1010" aria-hidden="true" tabindex="-1"></a>It can also be done by using the new (as of 2023-02-04) <span class="in">`RIestTheta()`</span> function in this package (does not yet work with dichotomous data), which uses <span class="in">`thetaEst()`</span> across all the participants in your dataframe.</span>
-<span id="cb92-1011"><a href="#cb92-1011" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1012"><a href="#cb92-1012" aria-hidden="true" tabindex="-1"></a>First, we'll output the parameters into a table.</span>
-<span id="cb92-1013"><a href="#cb92-1013" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1016"><a href="#cb92-1016" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1017"><a href="#cb92-1017" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df2)</span>
-<span id="cb92-1018"><a href="#cb92-1018" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1019"><a href="#cb92-1019" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1020"><a href="#cb92-1020" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1021"><a href="#cb92-1021" aria-hidden="true" tabindex="-1"></a>We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the <span class="in">`RIitemparams()`</span> function with the option <span class="in">`detail = all`</span>.</span>
-<span id="cb92-1022"><a href="#cb92-1022" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1025"><a href="#cb92-1025" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1026"><a href="#cb92-1026" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df2, <span class="at">detail =</span> <span class="st">"all"</span>)</span>
-<span id="cb92-1027"><a href="#cb92-1027" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1028"><a href="#cb92-1028" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1029"><a href="#cb92-1029" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1030"><a href="#cb92-1030" aria-hidden="true" tabindex="-1"></a>The parameters can also be output to a dataframe or a file, using the option <span class="in">`output = "dataframe"`</span> or <span class="in">`output = "file"`</span>.</span>
-<span id="cb92-1031"><a href="#cb92-1031" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1032"><a href="#cb92-1032" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordinal sum score to interval score</span></span>
-<span id="cb92-1033"><a href="#cb92-1033" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1034"><a href="#cb92-1034" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
-<span id="cb92-1035"><a href="#cb92-1035" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1036"><a href="#cb92-1036" aria-hidden="true" tabindex="-1"></a>(An option will be added *later* to create this table based on only item parameters.)</span>
-<span id="cb92-1037"><a href="#cb92-1037" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1040"><a href="#cb92-1040" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1041"><a href="#cb92-1041" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2)</span>
-<span id="cb92-1042"><a href="#cb92-1042" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1043"><a href="#cb92-1043" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1044"><a href="#cb92-1044" aria-hidden="true" tabindex="-1"></a>Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option <span class="in">`sdx`</span> from the default setting of <span class="in">`4`</span>. Also, if you find the the default range of logit scores is insufficient (there should be no duplicate values at the upper/lower limits), it can be adjusted by changing the option <span class="in">`score_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
-<span id="cb92-1045"><a href="#cb92-1045" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1046"><a href="#cb92-1046" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal/interval figure</span></span>
-<span id="cb92-1047"><a href="#cb92-1047" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1048"><a href="#cb92-1048" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
-<span id="cb92-1049"><a href="#cb92-1049" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1052"><a href="#cb92-1052" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1053"><a href="#cb92-1053" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
-<span id="cb92-1054"><a href="#cb92-1054" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1055"><a href="#cb92-1055" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1056"><a href="#cb92-1056" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
-<span id="cb92-1057"><a href="#cb92-1057" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1058"><a href="#cb92-1058" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the <span class="in">`RIitemfitPCM()`</span> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</span>
-<span id="cb92-1059"><a href="#cb92-1059" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1060"><a href="#cb92-1060" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> by default uses WL estimation of a partial credit model (PCM) and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (category) threshold locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.</span>
-<span id="cb92-1061"><a href="#cb92-1061" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1064"><a href="#cb92-1064" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1065"><a href="#cb92-1065" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(furrr) <span class="co"># for a parallel processing version of purrr::map_dbl</span></span>
-<span id="cb92-1066"><a href="#cb92-1066" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df2, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb92-1067"><a href="#cb92-1067" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1068"><a href="#cb92-1068" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1069"><a href="#cb92-1069" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>. Similarly to <span class="in">`RIscoreSE()`</span> you can change the range of logit scores, using the option <span class="in">`theta_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
-<span id="cb92-1070"><a href="#cb92-1070" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1071"><a href="#cb92-1071" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item matrix, this code may be helpful:</span>
-<span id="cb92-1072"><a href="#cb92-1072" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1075"><a href="#cb92-1075" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1076"><a href="#cb92-1076" aria-hidden="true" tabindex="-1"></a>itemParameters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"itemParameters.csv"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb92-1077"><a href="#cb92-1077" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb92-1078"><a href="#cb92-1078" aria-hidden="true" tabindex="-1"></a>itemParameters</span>
-<span id="cb92-1079"><a href="#cb92-1079" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1080"><a href="#cb92-1080" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1081"><a href="#cb92-1081" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
-<span id="cb92-1082"><a href="#cb92-1082" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1083"><a href="#cb92-1083" aria-hidden="true" tabindex="-1"></a>Finally, we'll look at the distribution of person scores using a simple histogram.</span>
-<span id="cb92-1084"><a href="#cb92-1084" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1087"><a href="#cb92-1087" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1088"><a href="#cb92-1088" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df2<span class="sc">$</span>personScores, <span class="at">col =</span> <span class="st">"#009ca6"</span>)</span>
-<span id="cb92-1089"><a href="#cb92-1089" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1090"><a href="#cb92-1090" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1091"><a href="#cb92-1091" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Estimating individual measurement error</span></span>
-<span id="cb92-1092"><a href="#cb92-1092" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1093"><a href="#cb92-1093" aria-hidden="true" tabindex="-1"></a>Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be estimated using the following code with the <span class="in">`semTheta()`</span> function from <span class="in">`library(catR)`</span>:</span>
-<span id="cb92-1094"><a href="#cb92-1094" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1097"><a href="#cb92-1097" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1098"><a href="#cb92-1098" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="fu">map_vec</span>(df2<span class="sc">$</span>personScores, <span class="sc">~</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> .x,</span>
-<span id="cb92-1099"><a href="#cb92-1099" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">it =</span> itemParameters,</span>
-<span id="cb92-1100"><a href="#cb92-1100" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">model =</span> <span class="st">"PCM"</span>,</span>
-<span id="cb92-1101"><a href="#cb92-1101" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">method =</span> <span class="st">"WL"</span>,</span>
-<span id="cb92-1102"><a href="#cb92-1102" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>)</span>
-<span id="cb92-1103"><a href="#cb92-1103" aria-hidden="true" tabindex="-1"></a>                                                      ))</span>
-<span id="cb92-1104"><a href="#cb92-1104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1105"><a href="#cb92-1105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1106"><a href="#cb92-1106" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`map_vec()`</span> allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the <span class="in">`semTheta()`</span> function to calculate the standard error of measurement for each individual. The <span class="in">`it`</span> argument is the item parameters matrix, and the <span class="in">`range`</span> argument is the range of logit scores. The range should match the range set when estimating the person locations with <span class="in">`RIestThetas()`</span>, and -4 to 4 is the default setting for both functions.</span>
-<span id="cb92-1107"><a href="#cb92-1107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1108"><a href="#cb92-1108" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
-<span id="cb92-1109"><a href="#cb92-1109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1110"><a href="#cb92-1110" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
-<span id="cb92-1111"><a href="#cb92-1111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1112"><a href="#cb92-1112" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
-<span id="cb92-1113"><a href="#cb92-1113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1114"><a href="#cb92-1114" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
-<span id="cb92-1115"><a href="#cb92-1115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1116"><a href="#cb92-1116" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
-<span id="cb92-1117"><a href="#cb92-1117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1120"><a href="#cb92-1120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1121"><a href="#cb92-1121" aria-hidden="true" tabindex="-1"></a><span class="co"># first we need to remove the `personScores` and `personSEM` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.</span></span>
-<span id="cb92-1122"><a href="#cb92-1122" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb92-1123"><a href="#cb92-1123" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
-<span id="cb92-1124"><a href="#cb92-1124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1125"><a href="#cb92-1125" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2) <span class="sc">+</span></span>
-<span id="cb92-1126"><a href="#cb92-1126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
-<span id="cb92-1127"><a href="#cb92-1127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
-<span id="cb92-1128"><a href="#cb92-1128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1129"><a href="#cb92-1129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1130"><a href="#cb92-1130" aria-hidden="true" tabindex="-1"></a>As of package version 0.1.30.0, the <span class="in">`RItargeting()`</span> function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the <span class="co">[</span><span class="ot">NEWS</span><span class="co">](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300)</span> file for more details.</span>
-<span id="cb92-1131"><a href="#cb92-1131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1132"><a href="#cb92-1132" aria-hidden="true" tabindex="-1"></a>In order to change font for text inside plots you will need to add an additional line of code.</span>
-<span id="cb92-1133"><a href="#cb92-1133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1134"><a href="#cb92-1134" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb92-1135"><a href="#cb92-1135" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato"</span>))</span>
-<span id="cb92-1136"><a href="#cb92-1136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1137"><a href="#cb92-1137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1138"><a href="#cb92-1138" aria-hidden="true" tabindex="-1"></a>Please note that this updates the default settings for <span class="in">`geom_text()`</span> for the whole session. Also, some functions, such as <span class="in">`RIloadLoc()`</span> make use of <span class="in">`geom_text_repel()`</span>, for which you would need to change the function above from "text" to "text_repel".</span>
-<span id="cb92-1139"><a href="#cb92-1139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1140"><a href="#cb92-1140" aria-hidden="true" tabindex="-1"></a>A simple way to only change font family and font size would be to use <span class="in">`theme_minimal(base_family = "Calibri", base_size = 14)`</span>. Please see the <span class="co">[</span><span class="ot">reference page</span><span class="co">](https://ggplot2.tidyverse.org/reference/ggtheme.html)</span> for default ggplot themes for alternatives to <span class="in">`theme_minimal()`</span>.</span>
-<span id="cb92-1141"><a href="#cb92-1141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1142"><a href="#cb92-1142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Software used {#sec-grateful}</span></span>
-<span id="cb92-1143"><a href="#cb92-1143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1144"><a href="#cb92-1144" aria-hidden="true" tabindex="-1"></a>The <span class="in">`grateful`</span> package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span>
-<span id="cb92-1145"><a href="#cb92-1145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1148"><a href="#cb92-1148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1149"><a href="#cb92-1149" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grateful)</span>
-<span id="cb92-1150"><a href="#cb92-1150" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">cite_packages</span>(<span class="at">cite.tidyverse =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb92-1151"><a href="#cb92-1151" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">"table"</span>,</span>
-<span id="cb92-1152"><a href="#cb92-1152" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bib.file =</span> <span class="st">"grateful-refs.bib"</span>,</span>
-<span id="cb92-1153"><a href="#cb92-1153" aria-hidden="true" tabindex="-1"></a>                      <span class="at">include.RStudio =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb92-1154"><a href="#cb92-1154" aria-hidden="true" tabindex="-1"></a>                      <span class="at">out.dir =</span> <span class="fu">getwd</span>())</span>
-<span id="cb92-1155"><a href="#cb92-1155" aria-hidden="true" tabindex="-1"></a><span class="co"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
-<span id="cb92-1156"><a href="#cb92-1156" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(pkgs, </span>
-<span id="cb92-1157"><a href="#cb92-1157" aria-hidden="true" tabindex="-1"></a>            <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 13px; font-family: Lato; width: 80%"'</span>)</span>
-<span id="cb92-1158"><a href="#cb92-1158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb92-1159"><a href="#cb92-1159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1160"><a href="#cb92-1160" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional credits</span></span>
-<span id="cb92-1161"><a href="#cb92-1161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1162"><a href="#cb92-1162" aria-hidden="true" tabindex="-1"></a>Thanks to my <span class="co">[</span><span class="ot">colleagues at RISE</span><span class="co">](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements)</span> for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to <span class="co">[</span><span class="ot">Mike Linacre</span><span class="co">](https://www.winsteps.com/linacre.htm)</span> and <span class="co">[</span><span class="ot">Jeanette Melin</span><span class="co">](https://www.ri.se/en/person/jeanette-melin)</span> for providing useful feedback to improve this vignette.</span>
-<span id="cb92-1163"><a href="#cb92-1163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1164"><a href="#cb92-1164" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
-<span id="cb92-1165"><a href="#cb92-1165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1168"><a href="#cb92-1168" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb92-1169"><a href="#cb92-1169" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb92-1170"><a href="#cb92-1170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-583"><a href="#cb92-583" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpcmPCA</span>(df2)</span>
+<span id="cb92-584"><a href="#cb92-584" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-585"><a href="#cb92-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-586"><a href="#cb92-586" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residual correlations</span></span>
+<span id="cb92-587"><a href="#cb92-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-590"><a href="#cb92-590" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-591"><a href="#cb92-591" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(df2, <span class="at">cutoff =</span> <span class="fl">0.2</span>)</span>
+<span id="cb92-592"><a href="#cb92-592" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-593"><a href="#cb92-593" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-594"><a href="#cb92-594" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1st contrast loadings</span></span>
+<span id="cb92-595"><a href="#cb92-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-598"><a href="#cb92-598" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-599"><a href="#cb92-599" aria-hidden="true" tabindex="-1"></a><span class="fu">RIloadLoc</span>(df2)</span>
+<span id="cb92-600"><a href="#cb92-600" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-601"><a href="#cb92-601" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-602"><a href="#cb92-602" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting</span></span>
+<span id="cb92-603"><a href="#cb92-603" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-606"><a href="#cb92-606" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-607"><a href="#cb92-607" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb92-608"><a href="#cb92-608" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df2, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>), <span class="at">bins =</span> <span class="dv">45</span>)</span>
+<span id="cb92-609"><a href="#cb92-609" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-610"><a href="#cb92-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-611"><a href="#cb92-611" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item hierarchy</span></span>
+<span id="cb92-612"><a href="#cb92-612" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-615"><a href="#cb92-615" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-616"><a href="#cb92-616" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb92-617"><a href="#cb92-617" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2)</span>
+<span id="cb92-618"><a href="#cb92-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-619"><a href="#cb92-619" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-620"><a href="#cb92-620" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb92-621"><a href="#cb92-621" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-622"><a href="#cb92-622" aria-hidden="true" tabindex="-1"></a><span class="fu">### Analysis 2 comments</span></span>
+<span id="cb92-623"><a href="#cb92-623" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-624"><a href="#cb92-624" aria-hidden="true" tabindex="-1"></a>Items 12 and 16 are a bit low in item fit ZSTD, but not much, and MSQ looks good.</span>
+<span id="cb92-625"><a href="#cb92-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-626"><a href="#cb92-626" aria-hidden="true" tabindex="-1"></a>Items 16 and 19 have a residual correlation at about 0.25 above the average level.</span>
+<span id="cb92-627"><a href="#cb92-627" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-628"><a href="#cb92-628" aria-hidden="true" tabindex="-1"></a>Let's look at DIF before taking action upon this information. While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the <span class="in">`panel-tabset`</span> above (on item fit, PCA, residual correlations, etc).</span>
+<span id="cb92-629"><a href="#cb92-629" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-630"><a href="#cb92-630" aria-hidden="true" tabindex="-1"></a><span class="fu">## DIF - differential item functioning</span></span>
+<span id="cb92-631"><a href="#cb92-631" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-632"><a href="#cb92-632" aria-hidden="true" tabindex="-1"></a>We'll be looking at whether item (threshold) locations are stable between demographic subgroups.</span>
+<span id="cb92-633"><a href="#cb92-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-634"><a href="#cb92-634" aria-hidden="true" tabindex="-1"></a>There are several DIF analysis tools available. The first one uses the package <span class="in">`psychotree`</span>, which relies on statistical significance at p &lt; .05 as an indicator for DIF. This is a criterion that is highly sample size sensitive, and we are always interested in the size/magnitude of DIF as well, since that will inform us about the impact of DIF on the estimated latent variable. </span>
+<span id="cb92-635"><a href="#cb92-635" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-636"><a href="#cb92-636" aria-hidden="true" tabindex="-1"></a>The structure of DIF is also an important and complex aspect, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. We can test this in R using the <span class="in">`lordif`</span> package, as demonstrated in @sec-lordif.</span>
+<span id="cb92-637"><a href="#cb92-637" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-638"><a href="#cb92-638" aria-hidden="true" tabindex="-1"></a>A recent preprint <span class="co">[</span><span class="ot">@henninger_partial_2024</span><span class="co">]</span> does a great job illustrating "differential step functioning" (DSF), which is when item threshold locations in polytomous data show varying levels of DIF. It also describes a forthcoming development of the <span class="in">`psychotree`</span> where one can use DIF effect size and purification functions to evaluate DIF/DSF. When the updated package is available, I will work to implement these new functions into the <span class="in">`RISEkbmRasch`</span> package as well.</span>
+<span id="cb92-639"><a href="#cb92-639" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-640"><a href="#cb92-640" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon="true"}</span>
+<span id="cb92-641"><a href="#cb92-641" aria-hidden="true" tabindex="-1"></a>It is important to ensure that no cells in the data are empty for subgroups when conducting a DIF analysis. Split the data using the DIF-variable and create separate tileplots to review the response distribution in the DIF-groups.</span>
+<span id="cb92-642"><a href="#cb92-642" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb92-643"><a href="#cb92-643" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-646"><a href="#cb92-646" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-647"><a href="#cb92-647" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb92-648"><a href="#cb92-648" aria-hidden="true" tabindex="-1"></a>difPlots <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span> <span class="co"># save the output into the `difPlots` object</span></span>
+<span id="cb92-649"><a href="#cb92-649" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.sex) <span class="sc">%&gt;%</span> <span class="co"># add the DIF variable to the dataframe</span></span>
+<span id="cb92-650"><a href="#cb92-650" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span> <span class="co"># split the data using the DIF variable</span></span>
+<span id="cb92-651"><a href="#cb92-651" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender)) <span class="co"># create separate tileplots for each group</span></span>
+<span id="cb92-652"><a href="#cb92-652" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-653"><a href="#cb92-653" aria-hidden="true" tabindex="-1"></a>difPlots<span class="sc">$</span>Female <span class="sc">+</span> difPlots<span class="sc">$</span>Male <span class="co"># the actual name of the plots (in this case Male/Female) will be determined by the factor labels</span></span>
+<span id="cb92-654"><a href="#cb92-654" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-655"><a href="#cb92-655" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-656"><a href="#cb92-656" aria-hidden="true" tabindex="-1"></a><span class="fu">### Sex</span></span>
+<span id="cb92-657"><a href="#cb92-657" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-660"><a href="#cb92-660" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-661"><a href="#cb92-661" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
+<span id="cb92-662"><a href="#cb92-662" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb92-663"><a href="#cb92-663" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
+<span id="cb92-664"><a href="#cb92-664" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-665"><a href="#cb92-665" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-666"><a href="#cb92-666" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb92-667"><a href="#cb92-667" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Table</span></span>
+<span id="cb92-668"><a href="#cb92-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-671"><a href="#cb92-671" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-672"><a href="#cb92-672" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 3</span></span>
+<span id="cb92-673"><a href="#cb92-673" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable</span>(df2, dif.sex)</span>
+<span id="cb92-674"><a href="#cb92-674" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-675"><a href="#cb92-675" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-676"><a href="#cb92-676" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure items</span></span>
+<span id="cb92-677"><a href="#cb92-677" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-680"><a href="#cb92-680" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-681"><a href="#cb92-681" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifFigure</span>(df2, dif.sex)</span>
+<span id="cb92-682"><a href="#cb92-682" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-683"><a href="#cb92-683" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-684"><a href="#cb92-684" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure thresholds</span></span>
+<span id="cb92-685"><a href="#cb92-685" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-688"><a href="#cb92-688" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-689"><a href="#cb92-689" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifFigThresh</span>(df2, dif.sex)</span>
+<span id="cb92-690"><a href="#cb92-690" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-691"><a href="#cb92-691" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb92-692"><a href="#cb92-692" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-693"><a href="#cb92-693" aria-hidden="true" tabindex="-1"></a>While no item shows problematic levels of DIF regarding item location, as shown by the table, there is an interesting pattern in the thresholds figure. The lowest threshold seems to be slightly lower for node 3 (Male) for all items. Also, item 11 shows a much wider spread of item locations for node 3 compared to node 2.</span>
+<span id="cb92-694"><a href="#cb92-694" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-695"><a href="#cb92-695" aria-hidden="true" tabindex="-1"></a>The results do not require any action since the difference is small.</span>
+<span id="cb92-696"><a href="#cb92-696" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-697"><a href="#cb92-697" aria-hidden="true" tabindex="-1"></a><span class="fu">### Age</span></span>
+<span id="cb92-698"><a href="#cb92-698" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-699"><a href="#cb92-699" aria-hidden="true" tabindex="-1"></a>The <span class="in">`psychotree`</span> package uses a model-based recursive partitioning that is particularly useful when you have a continuous variable such as age in years and a large enough sample. It will test different ways to partition the age variable to determine potential group differences <span class="co">[</span><span class="ot">@strobl2015; @strobl2021</span><span class="co">]</span>.</span>
+<span id="cb92-700"><a href="#cb92-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-703"><a href="#cb92-703" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-704"><a href="#cb92-704" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable</span>(df2, dif.age)</span>
+<span id="cb92-705"><a href="#cb92-705" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-706"><a href="#cb92-706" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-707"><a href="#cb92-707" aria-hidden="true" tabindex="-1"></a>No DIF found for age.</span>
+<span id="cb92-708"><a href="#cb92-708" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-709"><a href="#cb92-709" aria-hidden="true" tabindex="-1"></a><span class="fu">### Group</span></span>
+<span id="cb92-710"><a href="#cb92-710" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-713"><a href="#cb92-713" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-714"><a href="#cb92-714" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable</span>(df2, dif.group)</span>
+<span id="cb92-715"><a href="#cb92-715" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-716"><a href="#cb92-716" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-717"><a href="#cb92-717" aria-hidden="true" tabindex="-1"></a>And no DIF for group.</span>
+<span id="cb92-718"><a href="#cb92-718" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-719"><a href="#cb92-719" aria-hidden="true" tabindex="-1"></a><span class="fu">### Sex and age</span></span>
+<span id="cb92-720"><a href="#cb92-720" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-721"><a href="#cb92-721" aria-hidden="true" tabindex="-1"></a>The <span class="in">`psychotree`</span> package also allows for DIF interaction analysis with multiple DIF variables. We can use <span class="in">`RIdifTable2()`</span> to input two DIF variables.</span>
+<span id="cb92-722"><a href="#cb92-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-725"><a href="#cb92-725" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-726"><a href="#cb92-726" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTable2</span>(df2, dif.sex, dif.age)</span>
+<span id="cb92-727"><a href="#cb92-727" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-728"><a href="#cb92-728" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-729"><a href="#cb92-729" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-730"><a href="#cb92-730" aria-hidden="true" tabindex="-1"></a>No interaction effect found for sex and age. The analysis only shows the previously identified DIF for sex.</span>
+<span id="cb92-731"><a href="#cb92-731" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-732"><a href="#cb92-732" aria-hidden="true" tabindex="-1"></a><span class="fu">### LRT-based DIF {#sec-diflrt}</span></span>
+<span id="cb92-733"><a href="#cb92-733" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-734"><a href="#cb92-734" aria-hidden="true" tabindex="-1"></a>::: {.callout-note icon="true"}</span>
+<span id="cb92-735"><a href="#cb92-735" aria-hidden="true" tabindex="-1"></a>As of <span class="in">`RISEkbmRasch`</span> package version 0.1.16, there are four new functions for analyzing item location DIF. These are all making use of the function <span class="in">`LRtest()`</span> from the <span class="in">`eRm`</span> package. And, since version 0.1.31.0, these are also correctly extracting item locations/threshold locations. Results will not be identical to the results from the previous functions that use the <span class="in">`psychotree`</span> package, since they make some different choices in estimation. I refer the curious to the respective package's documentation.</span>
+<span id="cb92-736"><a href="#cb92-736" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb92-737"><a href="#cb92-737" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-738"><a href="#cb92-738" aria-hidden="true" tabindex="-1"></a>We'll use the group variable as an example. First, we can simply run the test to get the overall result.</span>
+<span id="cb92-739"><a href="#cb92-739" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-742"><a href="#cb92-742" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-743"><a href="#cb92-743" aria-hidden="true" tabindex="-1"></a>erm.out <span class="ot">&lt;-</span> <span class="fu">PCM</span>(df2)</span>
+<span id="cb92-744"><a href="#cb92-744" aria-hidden="true" tabindex="-1"></a><span class="fu">LRtest</span>(erm.out, <span class="at">splitcr =</span> dif.group)</span>
+<span id="cb92-745"><a href="#cb92-745" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-746"><a href="#cb92-746" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-747"><a href="#cb92-747" aria-hidden="true" tabindex="-1"></a>Review the documentation for further details, using <span class="in">`?LRtest`</span> in your R console panel in Rstudio. There is also a plotting function, <span class="in">`plotGOF()`</span> that may be of interest.</span>
+<span id="cb92-748"><a href="#cb92-748" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-751"><a href="#cb92-751" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-752"><a href="#cb92-752" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
+<span id="cb92-753"><a href="#cb92-753" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb92-754"><a href="#cb92-754" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
+<span id="cb92-755"><a href="#cb92-755" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-756"><a href="#cb92-756" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-757"><a href="#cb92-757" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb92-758"><a href="#cb92-758" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item location table</span></span>
+<span id="cb92-761"><a href="#cb92-761" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-762"><a href="#cb92-762" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifTableLR</span>(df2, dif.group)</span>
+<span id="cb92-763"><a href="#cb92-763" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-764"><a href="#cb92-764" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-765"><a href="#cb92-765" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item location figure</span></span>
+<span id="cb92-768"><a href="#cb92-768" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-769"><a href="#cb92-769" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb92-770"><a href="#cb92-770" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifFigureLR</span>(df2, dif.group) <span class="sc">+</span> <span class="fu">theme_rise</span>()</span>
+<span id="cb92-771"><a href="#cb92-771" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-772"><a href="#cb92-772" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-773"><a href="#cb92-773" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item threshold table</span></span>
+<span id="cb92-776"><a href="#cb92-776" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-777"><a href="#cb92-777" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifThreshTblLR</span>(df2, dif.group)</span>
+<span id="cb92-778"><a href="#cb92-778" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-779"><a href="#cb92-779" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-780"><a href="#cb92-780" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Item threshold figure</span></span>
+<span id="cb92-783"><a href="#cb92-783" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-784"><a href="#cb92-784" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb92-785"><a href="#cb92-785" aria-hidden="true" tabindex="-1"></a><span class="fu">RIdifThreshFigLR</span>(df2, dif.group) <span class="sc">+</span> <span class="fu">theme_rise</span>()</span>
+<span id="cb92-786"><a href="#cb92-786" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-787"><a href="#cb92-787" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-788"><a href="#cb92-788" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb92-789"><a href="#cb92-789" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-790"><a href="#cb92-790" aria-hidden="true" tabindex="-1"></a>The item threshold table shows that the top threshold for item 13 differs more than 0.5 logits between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.</span>
+<span id="cb92-791"><a href="#cb92-791" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-792"><a href="#cb92-792" aria-hidden="true" tabindex="-1"></a><span class="fu">### Logistic Ordinal Regression DIF {#sec-lordif}</span></span>
+<span id="cb92-793"><a href="#cb92-793" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-794"><a href="#cb92-794" aria-hidden="true" tabindex="-1"></a>The <span class="in">`lordif`</span> package <span class="co">[</span><span class="ot">@choi_lordif_2011</span><span class="co">]</span> does not use a Rasch measurement model, it only offers a choice between the Graded Response Model (GRM) and the Generalized Partial Credit Model (GPCM). Both of these are 2PL models, meaning that they estimate a discrimination parameter for each item in addition to the item threshold parameters. <span class="in">`lordif`</span> relies on the <span class="in">`mirt`</span> package.</span>
+<span id="cb92-795"><a href="#cb92-795" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-796"><a href="#cb92-796" aria-hidden="true" tabindex="-1"></a>There are several nice features available in the <span class="in">`lordif`</span> package. First, we get a χ2 test of uniform or non-uniform DIF. Second, there are three possible methods/criteria for flagging items with potential DIF. One of these uses a likelihood ratio (LR) χ2 test, while the other two are indicators of DIF size/magnitude, either using a pseudo R2 statistic ("McFadden", "Nagelkerke", or "CoxSnell") or a Beta criterion. For further details, see <span class="in">`?lordif`</span> in your R console or the paper describing the package <span class="co">[</span><span class="ot">@choi_lordif_2011</span><span class="co">]</span>.</span>
+<span id="cb92-797"><a href="#cb92-797" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-798"><a href="#cb92-798" aria-hidden="true" tabindex="-1"></a>Below is some sample code to get you started with <span class="in">`lordif`</span>.</span>
+<span id="cb92-799"><a href="#cb92-799" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-802"><a href="#cb92-802" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-803"><a href="#cb92-803" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
+<span id="cb92-804"><a href="#cb92-804" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lordif)</span>
+<span id="cb92-805"><a href="#cb92-805" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-806"><a href="#cb92-806" aria-hidden="true" tabindex="-1"></a>g_dif <span class="ot">&lt;-</span> <span class="fu">lordif</span>(<span class="fu">as.data.frame</span>(df2), <span class="fu">as.numeric</span>(dif.sex), <span class="co"># make sure that the data is in a dataframe-object and that the DIF variable is numeric</span></span>
+<span id="cb92-807"><a href="#cb92-807" aria-hidden="true" tabindex="-1"></a>                <span class="at">criterion =</span> <span class="fu">c</span>(<span class="st">"Chisqr"</span>), </span>
+<span id="cb92-808"><a href="#cb92-808" aria-hidden="true" tabindex="-1"></a>                <span class="at">alpha =</span> <span class="fl">0.01</span>, </span>
+<span id="cb92-809"><a href="#cb92-809" aria-hidden="true" tabindex="-1"></a>                <span class="at">beta.change =</span> <span class="fl">0.1</span>,</span>
+<span id="cb92-810"><a href="#cb92-810" aria-hidden="true" tabindex="-1"></a>                <span class="at">model =</span> <span class="st">"GPCM"</span>,</span>
+<span id="cb92-811"><a href="#cb92-811" aria-hidden="true" tabindex="-1"></a>                <span class="at">R2.change =</span> <span class="fl">0.02</span>)</span>
+<span id="cb92-812"><a href="#cb92-812" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-813"><a href="#cb92-813" aria-hidden="true" tabindex="-1"></a>g_dif_sum <span class="ot">&lt;-</span> <span class="fu">summary</span>(g_dif)</span>
+<span id="cb92-814"><a href="#cb92-814" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-815"><a href="#cb92-815" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-818"><a href="#cb92-818" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-819"><a href="#cb92-819" aria-hidden="true" tabindex="-1"></a><span class="co"># threshold values for colorizing the table below</span></span>
+<span id="cb92-820"><a href="#cb92-820" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb92-821"><a href="#cb92-821" aria-hidden="true" tabindex="-1"></a>beta.change <span class="ot">=</span> <span class="fl">0.1</span></span>
+<span id="cb92-822"><a href="#cb92-822" aria-hidden="true" tabindex="-1"></a>R2.change <span class="ot">=</span> <span class="fl">0.02</span></span>
+<span id="cb92-823"><a href="#cb92-823" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-824"><a href="#cb92-824" aria-hidden="true" tabindex="-1"></a>g_dif_sum<span class="sc">$</span>stats <span class="sc">%&gt;%</span> </span>
+<span id="cb92-825"><a href="#cb92-825" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb92-826"><a href="#cb92-826" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"item"</span>,<span class="st">"df12"</span>,<span class="st">"df13"</span>,<span class="st">"df23"</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-827"><a href="#cb92-827" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-828"><a href="#cb92-828" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">itemnr =</span> <span class="fu">names</span>(df2), <span class="at">.before =</span> <span class="st">"ncat"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-829"><a href="#cb92-829" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(chi12,chi13,chi23), <span class="sc">~</span> <span class="fu">cell_spec</span>(.x,</span>
+<span id="cb92-830"><a href="#cb92-830" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb92-831"><a href="#cb92-831" aria-hidden="true" tabindex="-1"></a>                                 .x <span class="sc">&lt;</span> alpha <span class="sc">~</span> <span class="st">"red"</span>,</span>
+<span id="cb92-832"><a href="#cb92-832" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"black"</span></span>
+<span id="cb92-833"><a href="#cb92-833" aria-hidden="true" tabindex="-1"></a>                               )))) <span class="sc">%&gt;%</span></span>
+<span id="cb92-834"><a href="#cb92-834" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"pseudo"</span>), <span class="sc">~</span> <span class="fu">cell_spec</span>(.x,</span>
+<span id="cb92-835"><a href="#cb92-835" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb92-836"><a href="#cb92-836" aria-hidden="true" tabindex="-1"></a>                                 .x <span class="sc">&gt;</span> R2.change <span class="sc">~</span> <span class="st">"red"</span>,</span>
+<span id="cb92-837"><a href="#cb92-837" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"black"</span></span>
+<span id="cb92-838"><a href="#cb92-838" aria-hidden="true" tabindex="-1"></a>                               )))) <span class="sc">%&gt;%</span></span>
+<span id="cb92-839"><a href="#cb92-839" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">beta12 =</span>  <span class="fu">cell_spec</span>(beta12,</span>
+<span id="cb92-840"><a href="#cb92-840" aria-hidden="true" tabindex="-1"></a>                               <span class="at">color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb92-841"><a href="#cb92-841" aria-hidden="true" tabindex="-1"></a>                                 beta12 <span class="sc">&gt;</span> beta.change <span class="sc">~</span> <span class="st">"red"</span>,</span>
+<span id="cb92-842"><a href="#cb92-842" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"black"</span></span>
+<span id="cb92-843"><a href="#cb92-843" aria-hidden="true" tabindex="-1"></a>                               ))) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-844"><a href="#cb92-844" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kbl_rise</span>()</span>
+<span id="cb92-845"><a href="#cb92-845" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-846"><a href="#cb92-846" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-847"><a href="#cb92-847" aria-hidden="true" tabindex="-1"></a>We can review the results regarding uniform/non-uniform DIF by looking at the <span class="in">`chi*`</span> columns. Uniform DIF is indicated by column <span class="in">`chi12`</span> and non-uniform DIF by <span class="in">`chi23`</span>, while column <span class="in">`chi13`</span> represents "an overall test of "total DIF effect" <span class="co">[</span><span class="ot">@choi_lordif_2011</span><span class="co">]</span>.</span>
+<span id="cb92-848"><a href="#cb92-848" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-849"><a href="#cb92-849" aria-hidden="true" tabindex="-1"></a>While the table indicates significant chi2-tests for items 11 and 17, the magnitude estimates are low for these items.</span>
+<span id="cb92-850"><a href="#cb92-850" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-851"><a href="#cb92-851" aria-hidden="true" tabindex="-1"></a>There are some plots available as well, using the base R <span class="in">`plot()`</span> function. For some reason the plots won't render in this Quarto document, so I will try to sort that out at some point.</span>
+<span id="cb92-852"><a href="#cb92-852" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-855"><a href="#cb92-855" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-856"><a href="#cb92-856" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
+<span id="cb92-857"><a href="#cb92-857" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(g_dif) <span class="co"># use option `graphics.off()` to get the plots rendered one by one</span></span>
+<span id="cb92-858"><a href="#cb92-858" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(g_dif, graphics.off())</span></span>
+<span id="cb92-859"><a href="#cb92-859" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-860"><a href="#cb92-860" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-861"><a href="#cb92-861" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rasch analysis 3</span></span>
+<span id="cb92-862"><a href="#cb92-862" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-863"><a href="#cb92-863" aria-hidden="true" tabindex="-1"></a>While there were no significant issues with DIF for any item/subgroup combination, we need to address the previously identified problem:</span>
+<span id="cb92-864"><a href="#cb92-864" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-865"><a href="#cb92-865" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Items 16 and 19 have a residual correlation at about 0.25 above the average level.</span>
+<span id="cb92-866"><a href="#cb92-866" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-867"><a href="#cb92-867" aria-hidden="true" tabindex="-1"></a>We'll remove item 19 since item 16 has better targeting.</span>
+<span id="cb92-868"><a href="#cb92-868" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-871"><a href="#cb92-871" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-872"><a href="#cb92-872" aria-hidden="true" tabindex="-1"></a>removed.items <span class="ot">&lt;-</span> <span class="fu">c</span>(removed.items,<span class="st">"PANAS_19"</span>)</span>
+<span id="cb92-873"><a href="#cb92-873" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-874"><a href="#cb92-874" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span> </span>
+<span id="cb92-875"><a href="#cb92-875" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">any_of</span>(removed.items))</span>
+<span id="cb92-876"><a href="#cb92-876" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-877"><a href="#cb92-877" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-878"><a href="#cb92-878" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-881"><a href="#cb92-881" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-882"><a href="#cb92-882" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: margin</span></span>
+<span id="cb92-883"><a href="#cb92-883" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb92-884"><a href="#cb92-884" aria-hidden="true" tabindex="-1"></a><span class="fu">RIlistItemsMargin</span>(df2, <span class="at">fontsize =</span> <span class="dv">13</span>)</span>
+<span id="cb92-885"><a href="#cb92-885" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-886"><a href="#cb92-886" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-887"><a href="#cb92-887" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb92-888"><a href="#cb92-888" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit</span></span>
+<span id="cb92-889"><a href="#cb92-889" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-892"><a href="#cb92-892" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-893"><a href="#cb92-893" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfitPCM2</span>(df2, <span class="dv">350</span>, <span class="dv">32</span>, <span class="dv">8</span>)</span>
+<span id="cb92-894"><a href="#cb92-894" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-895"><a href="#cb92-895" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-896"><a href="#cb92-896" aria-hidden="true" tabindex="-1"></a><span class="fu">### Residual correlations</span></span>
+<span id="cb92-897"><a href="#cb92-897" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-900"><a href="#cb92-900" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-901"><a href="#cb92-901" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(df2, <span class="at">cutoff =</span> <span class="fl">0.2</span>)</span>
+<span id="cb92-902"><a href="#cb92-902" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-903"><a href="#cb92-903" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-904"><a href="#cb92-904" aria-hidden="true" tabindex="-1"></a><span class="fu">### Targeting</span></span>
+<span id="cb92-905"><a href="#cb92-905" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-908"><a href="#cb92-908" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-909"><a href="#cb92-909" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb92-910"><a href="#cb92-910" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df2, <span class="at">bins =</span> <span class="dv">45</span>)</span>
+<span id="cb92-911"><a href="#cb92-911" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-912"><a href="#cb92-912" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-913"><a href="#cb92-913" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item hierarchy</span></span>
+<span id="cb92-914"><a href="#cb92-914" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-917"><a href="#cb92-917" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-918"><a href="#cb92-918" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb92-919"><a href="#cb92-919" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2)</span>
+<span id="cb92-920"><a href="#cb92-920" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-921"><a href="#cb92-921" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb92-922"><a href="#cb92-922" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-923"><a href="#cb92-923" aria-hidden="true" tabindex="-1"></a><span class="fu">### Analysis 3 comments</span></span>
+<span id="cb92-924"><a href="#cb92-924" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-925"><a href="#cb92-925" aria-hidden="true" tabindex="-1"></a>No problematic residual correlations, but item 12 is a bit low in item fit.</span>
+<span id="cb92-926"><a href="#cb92-926" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-927"><a href="#cb92-927" aria-hidden="true" tabindex="-1"></a>There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates.</span>
+<span id="cb92-928"><a href="#cb92-928" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-929"><a href="#cb92-929" aria-hidden="true" tabindex="-1"></a>However, we will not modify the response categories for this sample/simple analysis, we only note that this is not ideal.</span>
+<span id="cb92-930"><a href="#cb92-930" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-931"><a href="#cb92-931" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reliability</span></span>
+<span id="cb92-932"><a href="#cb92-932" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-935"><a href="#cb92-935" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-936"><a href="#cb92-936" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb92-937"><a href="#cb92-937" aria-hidden="true" tabindex="-1"></a><span class="fu">RItif</span>(df2)</span>
+<span id="cb92-938"><a href="#cb92-938" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-939"><a href="#cb92-939" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-940"><a href="#cb92-940" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-941"><a href="#cb92-941" aria-hidden="true" tabindex="-1"></a>The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).</span>
+<span id="cb92-942"><a href="#cb92-942" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-943"><a href="#cb92-943" aria-hidden="true" tabindex="-1"></a>The default cutoff value used in <span class="in">`RItif()`</span> is TIF = 3.33, which corresponds to person separation index (PSI) = 0.7. PSI is similar to reliability coefficients such as omega and alpha, ranging from 0 to 1. You can change the TIF cutoff by using the option <span class="in">`cutoff`</span>, for instance <span class="in">`cutoff = 2.5`</span> (TIF values range from 1 and up).</span>
+<span id="cb92-944"><a href="#cb92-944" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-945"><a href="#cb92-945" aria-hidden="true" tabindex="-1"></a>While 11.8% of respondents had a floor effect based on the raw sum scored data, the figure above shows us that 41.8% are located below the point where the items produce a PSI of 0.7 or higher. Again, note that this figure shows the reliability of the test/scale, not the sample. If you want to add the sample reliability use option <span class="in">`samplePSI = TRUE`</span>. More details are available in the documentation <span class="in">`?RItif`</span>.</span>
+<span id="cb92-946"><a href="#cb92-946" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-947"><a href="#cb92-947" aria-hidden="true" tabindex="-1"></a><span class="fu">## Person fit</span></span>
+<span id="cb92-948"><a href="#cb92-948" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-949"><a href="#cb92-949" aria-hidden="true" tabindex="-1"></a>We can also look at how the respondents fit the Rasch model with these items. By default, <span class="in">`RIpfit()`</span> outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented, and the curious analyst is suggested to look at the package <span class="co">[</span><span class="ot">PerFit</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span>.</span>
+<span id="cb92-950"><a href="#cb92-950" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-953"><a href="#cb92-953" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-954"><a href="#cb92-954" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df2)</span>
+<span id="cb92-955"><a href="#cb92-955" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-956"><a href="#cb92-956" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-957"><a href="#cb92-957" aria-hidden="true" tabindex="-1"></a>You can export the person fit values to a new variable in the dataframe by specifying <span class="in">`output = "dataframe"`</span>, or if you just want the row numbers for respondents with deviant infit values, <span class="in">`output = "rowid"`</span>.</span>
+<span id="cb92-958"><a href="#cb92-958" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-959"><a href="#cb92-959" aria-hidden="true" tabindex="-1"></a>You can also specify a grouping variable to visualize the person fit for different groups.</span>
+<span id="cb92-960"><a href="#cb92-960" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-963"><a href="#cb92-963" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-964"><a href="#cb92-964" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df2, <span class="at">group =</span> dif.sex, <span class="at">output =</span> <span class="st">"heatmap"</span>)</span>
+<span id="cb92-965"><a href="#cb92-965" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-966"><a href="#cb92-966" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-967"><a href="#cb92-967" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-968"><a href="#cb92-968" aria-hidden="true" tabindex="-1"></a>Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.</span>
+<span id="cb92-969"><a href="#cb92-969" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-970"><a href="#cb92-970" aria-hidden="true" tabindex="-1"></a><span class="fu">### `PerFit` sample code</span></span>
+<span id="cb92-971"><a href="#cb92-971" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-972"><a href="#cb92-972" aria-hidden="true" tabindex="-1"></a>While none of the functions in the <span class="in">`PerFit`</span> package has been implemented in <span class="in">`RISEkbmRasch`</span>, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package <span class="co">[</span><span class="ot">documentation</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span>.</span>
+<span id="cb92-973"><a href="#cb92-973" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-974"><a href="#cb92-974" aria-hidden="true" tabindex="-1"></a>For this example, we'll use the non-parametric U3 statistic generalized to polytomous items <span class="co">[</span><span class="ot">@emons_nonparametric_2008</span><span class="co">]</span>.</span>
+<span id="cb92-975"><a href="#cb92-975" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-976"><a href="#cb92-976" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb92-977"><a href="#cb92-977" aria-hidden="true" tabindex="-1"></a><span class="fu">#### U3poly</span></span>
+<span id="cb92-980"><a href="#cb92-980" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-981"><a href="#cb92-981" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PerFit)</span>
+<span id="cb92-982"><a href="#cb92-982" aria-hidden="true" tabindex="-1"></a>pfit_u3poly <span class="ot">&lt;-</span> <span class="fu">U3poly</span>(<span class="at">matrix =</span> df2, </span>
+<span id="cb92-983"><a href="#cb92-983" aria-hidden="true" tabindex="-1"></a>                      <span class="at">Ncat =</span> <span class="dv">5</span>, <span class="co"># make sure to input number of response categories, not thresholds</span></span>
+<span id="cb92-984"><a href="#cb92-984" aria-hidden="true" tabindex="-1"></a>                      <span class="at">IRT.PModel =</span> <span class="st">"PCM"</span>)</span>
+<span id="cb92-985"><a href="#cb92-985" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-986"><a href="#cb92-986" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Cutoff information</span></span>
+<span id="cb92-989"><a href="#cb92-989" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-990"><a href="#cb92-990" aria-hidden="true" tabindex="-1"></a><span class="fu">cutoff</span>(pfit_u3poly)</span>
+<span id="cb92-991"><a href="#cb92-991" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-992"><a href="#cb92-992" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Flagged respondents</span></span>
+<span id="cb92-995"><a href="#cb92-995" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-996"><a href="#cb92-996" aria-hidden="true" tabindex="-1"></a><span class="fu">flagged.resp</span>(pfit_u3poly) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-997"><a href="#cb92-997" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"Scores"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-998"><a href="#cb92-998" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb92-999"><a href="#cb92-999" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(PFscores))</span>
+<span id="cb92-1000"><a href="#cb92-1000" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1001"><a href="#cb92-1001" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb92-1002"><a href="#cb92-1002" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1003"><a href="#cb92-1003" aria-hidden="true" tabindex="-1"></a>The dataframe shown under the tab <span class="in">`Flagged respondents`</span> above contains a variable named <span class="in">`FlaggedID`</span> which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit affects the Andersen's LR-test <span class="co">[</span><span class="ot">@artner_simulation_2016</span><span class="co">]</span>.</span>
+<span id="cb92-1004"><a href="#cb92-1004" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1005"><a href="#cb92-1005" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item parameters</span></span>
+<span id="cb92-1006"><a href="#cb92-1006" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1007"><a href="#cb92-1007" aria-hidden="true" tabindex="-1"></a>To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the <span class="in">`thetaEst()`</span> function from the <span class="in">`catR`</span> package.</span>
+<span id="cb92-1008"><a href="#cb92-1008" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1009"><a href="#cb92-1009" aria-hidden="true" tabindex="-1"></a>It can also be done by using the new (as of 2023-02-04) <span class="in">`RIestTheta()`</span> function in this package (does not yet work with dichotomous data), which uses <span class="in">`thetaEst()`</span> across all the participants in your dataframe.</span>
+<span id="cb92-1010"><a href="#cb92-1010" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1011"><a href="#cb92-1011" aria-hidden="true" tabindex="-1"></a>First, we'll output the parameters into a table.</span>
+<span id="cb92-1012"><a href="#cb92-1012" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1015"><a href="#cb92-1015" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1016"><a href="#cb92-1016" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df2)</span>
+<span id="cb92-1017"><a href="#cb92-1017" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1018"><a href="#cb92-1018" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1019"><a href="#cb92-1019" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1020"><a href="#cb92-1020" aria-hidden="true" tabindex="-1"></a>We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the <span class="in">`RIitemparams()`</span> function with the option <span class="in">`detail = all`</span>.</span>
+<span id="cb92-1021"><a href="#cb92-1021" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1024"><a href="#cb92-1024" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1025"><a href="#cb92-1025" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df2, <span class="at">detail =</span> <span class="st">"all"</span>)</span>
+<span id="cb92-1026"><a href="#cb92-1026" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1027"><a href="#cb92-1027" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1028"><a href="#cb92-1028" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1029"><a href="#cb92-1029" aria-hidden="true" tabindex="-1"></a>The parameters can also be output to a dataframe or a file, using the option <span class="in">`output = "dataframe"`</span> or <span class="in">`output = "file"`</span>.</span>
+<span id="cb92-1030"><a href="#cb92-1030" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1031"><a href="#cb92-1031" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordinal sum score to interval score</span></span>
+<span id="cb92-1032"><a href="#cb92-1032" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1033"><a href="#cb92-1033" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
+<span id="cb92-1034"><a href="#cb92-1034" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1035"><a href="#cb92-1035" aria-hidden="true" tabindex="-1"></a>(An option will be added *later* to create this table based on only item parameters.)</span>
+<span id="cb92-1036"><a href="#cb92-1036" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1039"><a href="#cb92-1039" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1040"><a href="#cb92-1040" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2)</span>
+<span id="cb92-1041"><a href="#cb92-1041" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1042"><a href="#cb92-1042" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1043"><a href="#cb92-1043" aria-hidden="true" tabindex="-1"></a>Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option <span class="in">`sdx`</span> from the default setting of <span class="in">`4`</span>. Also, if you find the the default range of logit scores is insufficient (there should be no duplicate values at the upper/lower limits), it can be adjusted by changing the option <span class="in">`score_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
+<span id="cb92-1044"><a href="#cb92-1044" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1045"><a href="#cb92-1045" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal/interval figure</span></span>
+<span id="cb92-1046"><a href="#cb92-1046" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1047"><a href="#cb92-1047" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
+<span id="cb92-1048"><a href="#cb92-1048" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1051"><a href="#cb92-1051" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1052"><a href="#cb92-1052" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df2, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
+<span id="cb92-1053"><a href="#cb92-1053" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1054"><a href="#cb92-1054" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1055"><a href="#cb92-1055" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
+<span id="cb92-1056"><a href="#cb92-1056" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1057"><a href="#cb92-1057" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the <span class="in">`RIitemfitPCM()`</span> function there is also a parallel processing version of the function available, which makes use of 4 cores by default.</span>
+<span id="cb92-1058"><a href="#cb92-1058" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1059"><a href="#cb92-1059" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> by default uses WL estimation of a partial credit model (PCM) and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (category) threshold locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.</span>
+<span id="cb92-1060"><a href="#cb92-1060" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1063"><a href="#cb92-1063" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1064"><a href="#cb92-1064" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(furrr) <span class="co"># for a parallel processing version of purrr::map_dbl</span></span>
+<span id="cb92-1065"><a href="#cb92-1065" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="fu">RIestThetas2</span>(df2, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb92-1066"><a href="#cb92-1066" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1067"><a href="#cb92-1067" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1068"><a href="#cb92-1068" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetas()`</span> can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>. Similarly to <span class="in">`RIscoreSE()`</span> you can change the range of logit scores, using the option <span class="in">`theta_range`</span> (default is <span class="in">`c(-4,4)`</span>).</span>
+<span id="cb92-1069"><a href="#cb92-1069" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1070"><a href="#cb92-1070" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item matrix, this code may be helpful:</span>
+<span id="cb92-1071"><a href="#cb92-1071" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1074"><a href="#cb92-1074" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1075"><a href="#cb92-1075" aria-hidden="true" tabindex="-1"></a>itemParameters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"itemParameters.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb92-1076"><a href="#cb92-1076" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb92-1077"><a href="#cb92-1077" aria-hidden="true" tabindex="-1"></a>itemParameters</span>
+<span id="cb92-1078"><a href="#cb92-1078" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1079"><a href="#cb92-1079" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1080"><a href="#cb92-1080" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
+<span id="cb92-1081"><a href="#cb92-1081" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1082"><a href="#cb92-1082" aria-hidden="true" tabindex="-1"></a>Finally, we'll look at the distribution of person scores using a simple histogram.</span>
+<span id="cb92-1083"><a href="#cb92-1083" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1086"><a href="#cb92-1086" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1087"><a href="#cb92-1087" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df2<span class="sc">$</span>personScores, <span class="at">col =</span> <span class="st">"#009ca6"</span>)</span>
+<span id="cb92-1088"><a href="#cb92-1088" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1089"><a href="#cb92-1089" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1090"><a href="#cb92-1090" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Estimating individual measurement error</span></span>
+<span id="cb92-1091"><a href="#cb92-1091" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1092"><a href="#cb92-1092" aria-hidden="true" tabindex="-1"></a>Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be estimated using the following code with the <span class="in">`semTheta()`</span> function from <span class="in">`library(catR)`</span>:</span>
+<span id="cb92-1093"><a href="#cb92-1093" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1096"><a href="#cb92-1096" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1097"><a href="#cb92-1097" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="fu">map_vec</span>(df2<span class="sc">$</span>personScores, <span class="sc">~</span> <span class="fu">semTheta</span>(<span class="at">thEst =</span> .x,</span>
+<span id="cb92-1098"><a href="#cb92-1098" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">it =</span> itemParameters,</span>
+<span id="cb92-1099"><a href="#cb92-1099" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">model =</span> <span class="st">"PCM"</span>,</span>
+<span id="cb92-1100"><a href="#cb92-1100" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">method =</span> <span class="st">"WL"</span>,</span>
+<span id="cb92-1101"><a href="#cb92-1101" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>)</span>
+<span id="cb92-1102"><a href="#cb92-1102" aria-hidden="true" tabindex="-1"></a>                                                      ))</span>
+<span id="cb92-1103"><a href="#cb92-1103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1104"><a href="#cb92-1104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1105"><a href="#cb92-1105" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`map_vec()`</span> allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the <span class="in">`semTheta()`</span> function to calculate the standard error of measurement for each individual. The <span class="in">`it`</span> argument is the item parameters matrix, and the <span class="in">`range`</span> argument is the range of logit scores. The range should match the range set when estimating the person locations with <span class="in">`RIestThetas()`</span>, and -4 to 4 is the default setting for both functions.</span>
+<span id="cb92-1106"><a href="#cb92-1106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1107"><a href="#cb92-1107" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
+<span id="cb92-1108"><a href="#cb92-1108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1109"><a href="#cb92-1109" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
+<span id="cb92-1110"><a href="#cb92-1110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1111"><a href="#cb92-1111" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
+<span id="cb92-1112"><a href="#cb92-1112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1113"><a href="#cb92-1113" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
+<span id="cb92-1114"><a href="#cb92-1114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1115"><a href="#cb92-1115" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
+<span id="cb92-1116"><a href="#cb92-1116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1119"><a href="#cb92-1119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1120"><a href="#cb92-1120" aria-hidden="true" tabindex="-1"></a><span class="co"># first we need to remove the `personScores` and `personSEM` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.</span></span>
+<span id="cb92-1121"><a href="#cb92-1121" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personScores <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb92-1122"><a href="#cb92-1122" aria-hidden="true" tabindex="-1"></a>df2<span class="sc">$</span>personSEM <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb92-1123"><a href="#cb92-1123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1124"><a href="#cb92-1124" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df2) <span class="sc">+</span></span>
+<span id="cb92-1125"><a href="#cb92-1125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
+<span id="cb92-1126"><a href="#cb92-1126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
+<span id="cb92-1127"><a href="#cb92-1127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1128"><a href="#cb92-1128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1129"><a href="#cb92-1129" aria-hidden="true" tabindex="-1"></a>As of package version 0.1.30.0, the <span class="in">`RItargeting()`</span> function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the <span class="co">[</span><span class="ot">NEWS</span><span class="co">](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300)</span> file for more details.</span>
+<span id="cb92-1130"><a href="#cb92-1130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1131"><a href="#cb92-1131" aria-hidden="true" tabindex="-1"></a>In order to change font for text inside plots you will need to add an additional line of code.</span>
+<span id="cb92-1132"><a href="#cb92-1132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1133"><a href="#cb92-1133" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb92-1134"><a href="#cb92-1134" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato"</span>))</span>
+<span id="cb92-1135"><a href="#cb92-1135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1136"><a href="#cb92-1136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1137"><a href="#cb92-1137" aria-hidden="true" tabindex="-1"></a>Please note that this updates the default settings for <span class="in">`geom_text()`</span> for the whole session. Also, some functions, such as <span class="in">`RIloadLoc()`</span> make use of <span class="in">`geom_text_repel()`</span>, for which you would need to change the function above from "text" to "text_repel".</span>
+<span id="cb92-1138"><a href="#cb92-1138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1139"><a href="#cb92-1139" aria-hidden="true" tabindex="-1"></a>A simple way to only change font family and font size would be to use <span class="in">`theme_minimal(base_family = "Calibri", base_size = 14)`</span>. Please see the <span class="co">[</span><span class="ot">reference page</span><span class="co">](https://ggplot2.tidyverse.org/reference/ggtheme.html)</span> for default ggplot themes for alternatives to <span class="in">`theme_minimal()`</span>.</span>
+<span id="cb92-1140"><a href="#cb92-1140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1141"><a href="#cb92-1141" aria-hidden="true" tabindex="-1"></a><span class="fu">## Software used {#sec-grateful}</span></span>
+<span id="cb92-1142"><a href="#cb92-1142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1143"><a href="#cb92-1143" aria-hidden="true" tabindex="-1"></a>The <span class="in">`grateful`</span> package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span>
+<span id="cb92-1144"><a href="#cb92-1144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1147"><a href="#cb92-1147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1148"><a href="#cb92-1148" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grateful)</span>
+<span id="cb92-1149"><a href="#cb92-1149" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">cite_packages</span>(<span class="at">cite.tidyverse =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb92-1150"><a href="#cb92-1150" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">"table"</span>,</span>
+<span id="cb92-1151"><a href="#cb92-1151" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bib.file =</span> <span class="st">"grateful-refs.bib"</span>,</span>
+<span id="cb92-1152"><a href="#cb92-1152" aria-hidden="true" tabindex="-1"></a>                      <span class="at">include.RStudio =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb92-1153"><a href="#cb92-1153" aria-hidden="true" tabindex="-1"></a>                      <span class="at">out.dir =</span> <span class="fu">getwd</span>())</span>
+<span id="cb92-1154"><a href="#cb92-1154" aria-hidden="true" tabindex="-1"></a><span class="co"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
+<span id="cb92-1155"><a href="#cb92-1155" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(pkgs, </span>
+<span id="cb92-1156"><a href="#cb92-1156" aria-hidden="true" tabindex="-1"></a>            <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 13px; font-family: Lato; width: 80%"'</span>)</span>
+<span id="cb92-1157"><a href="#cb92-1157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1158"><a href="#cb92-1158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1159"><a href="#cb92-1159" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional credits</span></span>
+<span id="cb92-1160"><a href="#cb92-1160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1161"><a href="#cb92-1161" aria-hidden="true" tabindex="-1"></a>Thanks to my <span class="co">[</span><span class="ot">colleagues at RISE</span><span class="co">](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements)</span> for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to <span class="co">[</span><span class="ot">Mike Linacre</span><span class="co">](https://www.winsteps.com/linacre.htm)</span> and <span class="co">[</span><span class="ot">Jeanette Melin</span><span class="co">](https://www.ri.se/en/person/jeanette-melin)</span> for providing useful feedback to improve this vignette.</span>
+<span id="cb92-1162"><a href="#cb92-1162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1163"><a href="#cb92-1163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb92-1164"><a href="#cb92-1164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-1167"><a href="#cb92-1167" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb92-1168"><a href="#cb92-1168" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb92-1169"><a href="#cb92-1169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb92-1170"><a href="#cb92-1170" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb92-1171"><a href="#cb92-1171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1172"><a href="#cb92-1172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-1173"><a href="#cb92-1173" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb92-1172"><a href="#cb92-1172" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
