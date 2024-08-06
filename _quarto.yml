@@ -11,6 +11,12 @@ website:
     giscus:
       repo: pgmj/pgmj.github.io
   twitter-card: true
+  announcement: 
+    icon: info-circle
+    dismissable: true
+    content: "**Note:** The RISEkbmRasch vignette has new sections on item fit visualization, LR DIF tests, and person fit"
+    type: primary
+    position: below-navbar
   navbar: 
     search: true
     background: "#009ca6"

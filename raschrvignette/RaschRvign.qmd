@@ -12,12 +12,6 @@ citation: true
 website:
   open-graph:
     image: "/RaschRvign_files/figure-html/unnamed-chunk-34-1.png"
-  announcement: 
-    icon: info-circle
-    dismissable: true
-    content: "Note: new sections on item fit visualization, DIF, and person fit"
-    type: primary
-    position: below-navbar
 execute: 
   cache: true
   warning: false
