@@ -12,13 +12,19 @@ citation: true
 website:
   open-graph:
     image: "/RaschRvign_files/figure-html/unnamed-chunk-34-1.png"
+  announcement: 
+    icon: info-circle
+    dismissable: true
+    content: "Note: new sections on item fit visualization, DIF, and person fit"
+    type: primary
+    position: below-navbar
 execute: 
   cache: true
   warning: false
   message: false
 bibliography: 
-- references.bib
-- grateful-refs.bib
+  - references.bib
+  - grateful-refs.bib
 csl: apa.csl
 editor_options: 
   chunk_output_type: console
@@ -326,20 +332,8 @@ RIbarstack(df) +
 #| layout-ncol: 2
 RIbarplot(df)
 ```
-
-#### Expected Value Curves
-
-```{r}
-#| layout-ncol: 2
-library(TAM)
-tam1 <- tam(as.matrix(df), irtmodel = "PCM", verbose = FALSE) # run TAM Rasch Partial Credit Model on our data, which uses Marginal Maximum Likelihood estimation
-plot(tam1) # create ICC plots
-```
-
-The expected value curves are made using the [TAM](https://cran.r-project.org/web/packages/TAM/index.html) package, which uses Marginal Maximum Likelihood (MML) estimation. EVC's will show clearly if any of your items may need reversed response categories. The figures are also useful as a complement to item fit metrics.
 :::
 :::
-
 
 
 ## Rasch analysis 1 {#sec-rasch}
@@ -370,16 +364,51 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Item fit
 
 ```{r}
-RIitemfitPCM2(df, 300, 32, cpu = 8)
+RIitemfitPCM2(df, samplesize = 250, nsamples = 32, cpu = 8)
 ```
 
-Since we have a sample size over 500, ZSTD item fit values would be inflated if we use the whole sample. To better estimate accurate ZSTD values the `RIitemfitPCM()` function allows for multiple subsampling. It is recommended to use a sample size between 250 and 500 [@hagell2016]. We will set the sample size to 300 and run 32 subsamples. If you just want to test things out, I highly recommend lowering the number 32 to 4 to enable faster rendering.
+"Outfit" refers to item fit when person location is relatively far away from the item location, while "infit" provides estimates for when person and item locations are close together. MSQ should be close to 1, with lower and upper cutoffs set to 0.7 and 1.3 as default values, while ZSTD should be around 0, with default cutoffs set to +/- 1.96. Infit is usually more important. You can change the cutoff values by using options in the function, see `?RIitemfitPCM` for details. The cutoff values are debatable, and the curious reader should read Marianne Müller's paper on the topic [-@muller_item_2020]. During the [Scandinavian Applied Measurement Conference](https://www.hkr.se/en/collaboration/samc2024/) in June of 2024, [Karl Bang Christensen](https://publichealth.ku.dk/staff/?pure=en/persons/64551) presented very interesting work on simulation based cutoff values. There is a [Shiny app available for dichotomous data](https://shiny.sund.ku.dk/RMDitemfit/), but to my knowledge this work is not yet available for polytomous data.
+
+A low item fit value (sometimes referred to as "overfitting" the Rasch model) indicates that responses are too predictable and provide little information. This is often the case for items that are very general/broad in scope in relation to the latent variable. A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time or is ambiguous for other reasons.
+
+Since we have a sample size over 500, ZSTD item fit values would be inflated [@hagell2016;@muller_item_2020] if we used the whole sample. To better estimate accurate ZSTD values, the `RIitemfitPCM()` function allows for multiple subsampling. While it has been recommended to use a sample size between 250 and 500 [@hagell2016], it is better to keep the sample size at 200-250 when possible  [@muller_item_2020]. If your data has few responses in some response categories for some items, you may need to try larger number of participants.
+
+We will set the sample size to 250 and run 32 subsamples. If you just want to test things out, I highly recommend lowering the number 32 to 4 to enable faster rendering while getting approximate values. Based on experience, 32 subsamples seems to result in stable values, but I have yet to systematically evaluate this.
 
 For faster processing, `RIitemfitPCM2()` enables parallel processing with multiple CPUs/cores. You can check how many available cores you have by running `parallel::detectCores()`. It is recommended to not use all of them (leave 1 or 2 free). There may be issues with multicore parallel processing, especially when having few responses in some response categories. If you run in to errors, try increasing the sample size, or just use the single cpu/core function `RIitemfitPCM()` instead.
 
-"Outfit" refers to item fit when person location is relatively far away from the item location, while "infit" provides estimates for when person and item locations are close together. MSQ should be close to 1, with lower and upper cutoffs set to 0.7 and 1.3 as default values, while ZSTD should be around 0, with default cutoffs set to +/- 2.0. Infit is usually more important. You can change the cutoff values by using options in the function, see `?RIitemfitPCM` for details.
+### Conditional item fit curves
 
-A low item fit indicates that responses are too predictable and provide little information. A high item fit can indicate several things, most often multidimensionality or, for questionnaires, a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time.
+The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions may be included in a future version of the `RISEkbmRasch` package. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
+
+```{r}
+library(iarm)
+ICCplot(as.data.frame(df), 
+        itemnumber = 1:4, 
+        method = "cut", 
+        itemdescrip = c("PANAS_11","PANAS_12","PANAS_13","PANAS_14"))
+```
+
+A similar visualization has been made available in the [`RASCHplot`](https://github.com/ERRTG/RASCHplot/) package [@buchardt_visualizing_2023], which needs to be installed from GitHub (see code below). The linked paper is recommended reading, not least for descriptions of the useful options available. Below are some sample plots showing Conditional ICC's using the raw sum score.
+
+```{r}
+library(RASCHplot) # devtools::install_github("ERRTG/RASCHplot")
+r <- PCM(df) # run the partial credit model and save the output to object `r`
+
+CICCplot(r,
+         which.item = c(1:4),
+         lower.groups = c(0,7,14,21,28,35),
+         grid.items = TRUE)
+```
+
+The `iarm` package also provides functions for assessing conditional item fit [@muller_item_2020]: *"To avoid bias observed item responses are compared to expected responses under the conditional distribution of responses given the total score."* (text from <https://search.r-project.org/CRAN/refmans/iarm/html/out_infit.html>)
+
+```{r}
+r <- PCM(df) # run the partial credit model (not necessary to do again, but included here for clarity)
+out_infit(r)
+# for more correct p-values using bootstrapping, use `boot_fit(r, B = 100)`
+```
+
 
 ### PCA
 
@@ -409,7 +438,7 @@ Here we see item locations and their loadings on the first residual contrast. Th
 
 ### Analysis of response categories
 
-The `xlims` setting changes the x-axis limits for the ICC plots. The default values usually make sense, and we mostly add this option to point out the possibility of doing so. You can also choose to only show the ICC plots for specific items.
+The `xlims` setting changes the x-axis limits for the plots. The default values usually make sense, and we mostly add this option to point out the possibility of doing so. You can also choose to only show plots for only specific items.
 
 ```{r}
 #| layout-ncol: 2
@@ -455,11 +484,11 @@ RIitemHierarchy(df)
 
 ### Analysis 1 comments
 
-Item 18 has issues with the second lowest category being disordered.
+Item 18 has issues with the second lowest category being disordered. Several other items have very short distances between thresholds 1 and 2, which is also clearly seen in the Item Hierarchy figure above.
 
-Item 15 shows low item fit.
+Item 15 shows slightly low item fit.
 
-Two item-pairs show residual correlations above the cutoff value:
+Two item-pairs show residual correlations far above the cutoff value:
 
 -   15 and 16 (scared and afraid)
 -   17 and 18 (ashamed and guilty)
