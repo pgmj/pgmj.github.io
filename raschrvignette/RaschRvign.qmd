@@ -403,6 +403,23 @@ out_infit(r)
 # for more correct p-values using bootstrapping, use `boot_fit(r, B = 100)`
 ```
 
+For a more clean layout and conditional highlighting outside of 0.7-1.3:
+
+```{r}
+cfit <- out_infit(r)
+data.frame(Outfit = cfit$Outfit,
+           Infit = cfit$Infit) %>% 
+  round(3) %>% 
+  rownames_to_column("Item") %>% 
+  mutate(Outfit = cell_spec(Outfit, 
+                            color = ifelse(Outfit < 0.7, "red", 
+                                           ifelse(Outfit > 1.3, "red", "black"))),
+         Infit = cell_spec(Infit, color = ifelse(Infit < 
+                                                   0.7, "red", ifelse(Infit > 1.3, 
+                                                                      "red", "black")))) %>% 
+  kbl_rise(fontfamily = "Lato", tbl_width = 35)
+```
+
 
 ### PCA
 
