@@ -24,7 +24,12 @@ editor_options:
   chunk_output_type: console
 ---
 
-This is an introduction to using the [RISEkbmRasch R package](https://github.com/pgmj/RISEkbmRasch). A changelog for package updates is available [here](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md).
+This is an introduction to using the [`RISEkbmRasch` R package](https://github.com/pgmj/RISEkbmRasch). A changelog for package updates is available [here](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md).
+
+::: {.callout-note icon="true"}
+## Note
+Since August 9th 2024 (`RISEkbmRasch` package version 0.1.50.0) there has been a change in threshold estimation in Rasch Partial Credit Models to make the threshold locations sum to zero. This affects all functions that produce output related to item threshold locations.
+:::
 
 Details on package installation are available at the [package GitHub page](https://github.com/pgmj/RISEkbmRasch).
 
@@ -359,14 +364,13 @@ RIlistItemsMargin(df, fontsize = 13)
 
 ```{r}
 RIitemfitPCM2(df, samplesize = 250, nsamples = 32, cpu = 8)
-
 ```
 
 "Outfit" refers to item fit when person location is relatively far away from the item location, while "infit" provides estimates for when person and item locations are close together. MSQ should be close to 1, with lower and upper cutoffs set to 0.7 and 1.3 as default values, while ZSTD should be around 0, with default cutoffs set to +/- 1.96. Infit is usually more important. You can change the cutoff values by using options in the function, see `?RIitemfitPCM` for details. The cutoff values are debatable, and the curious reader should read Marianne Müller's paper on the topic [-@muller_item_2020]. During the [Scandinavian Applied Measurement Conference](https://www.hkr.se/en/collaboration/samc2024/) in June of 2024, [Karl Bang Christensen](https://publichealth.ku.dk/staff/?pure=en/persons/64551) presented very interesting work on simulation based cutoff values. There is a [Shiny app available for dichotomous data](https://shiny.sund.ku.dk/RMDitemfit/), but to my knowledge this work is not yet available for polytomous data.
 
 A low item fit value (sometimes referred to as "overfitting" the Rasch model) indicates that responses are too predictable and provide little information. This is often the case for items that are very general/broad in scope in relation to the latent variable. A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time or is ambiguous for other reasons.
 
-Since we have a sample size over 500, ZSTD item fit values would be inflated if we used the whole sample [@hagell2016;@muller_item_2020]. To better estimate accurate ZSTD values, the `RIitemfitPCM()` function allows for multiple subsampling. While it has been recommended to use a sample size between 250 and 500 [@hagell2016], it is better to keep the sample size at 200-250 when possible  [@muller_item_2020]. If your data has few responses in some response categories for some items, you may need to try larger number of participants.
+Since we have a sample size over 400, ZSTD item fit values would be inflated if we used the whole sample [@hagell2016;@muller_item_2020;smith_rasch_2008]. To better estimate accurate ZSTD values, the `RIitemfitPCM()` function allows for multiple subsampling. While it has been recommended to use a sample size between 250 and 500 [@hagell2016], it is better to keep the sample size at 200-250 when possible [@muller_item_2020], avoid over 400 [@smith_rasch_2008]. If your data has few responses in some response categories for some items, you may need to try larger number of participants.
 
 We will set the sample size to 250 and run 32 subsamples. If you just want to test things out, I highly recommend lowering the number 32 to 4 to enable faster rendering while getting approximate values. Based on experience, 32 subsamples seems to result in stable values, but I have yet to systematically evaluate this.
 
@@ -400,7 +404,7 @@ CICCplot(r,
 
 The `iarm` package also provides functions for assessing conditional item fit [@muller_item_2020]: *"To avoid bias observed item responses are compared to expected responses under the conditional distribution of responses given the total score."* (text from <https://search.r-project.org/CRAN/refmans/iarm/html/out_infit.html>)
 
-Conditional item fit using `iarm::out_infit()` has been implemented (since version 0.1.40.0, released on August 6th 2024) as the default method in `RIitemfitPCM()`, `RIitemfitPCM2()`, and `RIitemfitRM()`.
+Conditional item fit using `iarm::out_infit()` has been implemented (since version 0.1.40.0, released on August 6th 2024) as the default method in `RIitemfitPCM()`, `RIitemfitPCM2()`, and `RIitemfitRM()`. There is however more information available from the `iarm` output, if desired.
 
 ```{r}
 r <- PCM(df) # run the partial credit model (not necessary to do again, but included here for clarity)
@@ -893,22 +897,18 @@ The dataframe shown under the tab `Flagged respondents` above contains a variabl
 
 ## Item parameters
 
-To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package.
-
-It can also be done by using the new (as of 2023-02-04) `RIestTheta()` function in this package (does not yet work with dichotomous data), which uses `thetaEst()` across all the participants in your dataframe.
+To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package. This is implemented in the function `RIestThetasOLD()`, see below for details.
 
 First, we'll output the parameters into a table.
 
 ```{r}
 RIitemparams(df2)
-
 ```
 
 We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the `RIitemparams()` function with the option `detail = all`.
 
 ```{r}
 RIitemparams(df2, detail = "all")
-
 ```
 
 The parameters can also be output to a dataframe or a file, using the option `output = "dataframe"` or `output = "file"`.
@@ -935,16 +935,27 @@ RIscoreSE(df2, output = "figure")
 
 ### Estimating interval level person scores
 
-Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). Similarly to the `RIitemfitPCM()` function there is also a parallel processing version of the function available, which makes use of 4 cores by default.
-
-`RIestThetas()` by default uses WL estimation of a partial credit model (PCM) and outputs a vector of person locations on the logit scale. If you do not supply a matrix of item (category) threshold locations, the function will use eRm's CML PCM to automatically calculate the item parameters based on the dataframe input.
+Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). `RIestThetas()` by default uses WLE estimation based on item parameters from a partial credit model (PCM) and outputs a dataframe with person locations and measurement error on the logit scale.
 
 ```{r}
-library(furrr) # for a parallel processing version of purrr::map_dbl
-df2$personScores <- RIestThetas2(df2, cpu = 8)
+thetas <- RIestThetas(df2)
+
+head(thetas)
 ```
 
-`RIestThetas()` can also be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989]. Similarly to `RIscoreSE()` you can change the range of logit scores, using the option `theta_range` (default is `c(-4,4)`).
+Each individual has a standard error of measurement (SEM) associated with their estimated location/score. This is included in the output of the `RIestThetas()` function as the `SEM` variable, as seen above. We can review the distribution of measurement error with a figure.
+
+We can take a look at the distribution of person locations (thetas) using a histogram.
+
+```{r}
+hist(thetas$WLE, 
+     col = "#009ca6", 
+     main = "Histogram of person locations (thetas)", 
+     breaks = 20)
+```
+
+
+`RIestThetasOLD()` can be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989]. Similarly to `RIscoreSE()` you can (and will often need to) change the range of logit scores, using the option `theta_range` (default is `c(-4,4)`).
 
 If you would like to use an existing item matrix, this code may be helpful:
 
@@ -955,27 +966,6 @@ itemParameters
 ```
 
 As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.
-
-Finally, we'll look at the distribution of person scores using a simple histogram.
-
-```{r}
-hist(df2$personScores, col = "#009ca6")
-```
-
-#### Estimating individual measurement error
-
-Each individual has a standard error of measurement associated with their estimated location/score. This has not yet been implemented as a function in this package, but can be estimated using the following code with the `semTheta()` function from `library(catR)`:
-
-```{r}
-df2$personSEM <- map_vec(df2$personScores, ~ semTheta(thEst = .x,
-                                                      it = itemParameters,
-                                                      model = "PCM",
-                                                      method = "WL",
-                                                      range = c(-4, 4)
-                                                      ))
-```
-
-The function `map_vec()` allows us to apply a function to all variables in a vector. As you can see, the first argument is the vector of estimated person locations, then we use the `semTheta()` function to calculate the standard error of measurement for each individual. The `it` argument is the item parameters matrix, and the `range` argument is the range of logit scores. The range should match the range set when estimating the person locations with `RIestThetas()`, and -4 to 4 is the default setting for both functions.
 
 ## Figure design
 
@@ -988,24 +978,24 @@ A custom theme function, `theme_rise()`, is included in the RISEkbmRasch package
 For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.
 
 ```{r}
-# first we need to remove the `personScores` and `personSEM` variable from the `df2` dataframe, to ensure that `df2` contains only item data before using it with the item hierarchy function.
-df2$personScores <- NULL
-df2$personSEM <- NULL
-
 RIitemHierarchy(df2) +
   theme_minimal() + # first apply the minimal theme to make the background transparent
   theme_rise(fontfamily = "Lato") # then apply theme_rise, which simplifies making changes to all plot elements
 ```
 
-As of package version 0.1.30.0, the `RItargeting()` function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the [NEWS](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300) file for more details.
+As of package version 0.1.30.0, the `RItargeting()` function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the [NEWS](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300) file for more details. Since the `RItargeting()` function uses the `patchwork` library to combine plots, you can also make use of diverse functions that `patchwork` includes. For instance, you can set a title with a specific theme:
 
-In order to change font for text inside plots you will need to add an additional line of code.
+``` {r}
+RItargeting(df2) + plot_annotation(title = "Targeting", theme = theme_rise(fontfamily = "Arial"))
+```
+
+In order to change font for text *inside* plots (such as "t1" for thresholds) you will need to add an additional line of code.
 
 ``` r
 update_geom_defaults("text", list(family = "Lato"))
 ```
 
-Please note that this updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()` make use of `geom_text_repel()`, for which you would need to change the function above from "text" to "text_repel".
+Please note that the line of code above updates the default settings for `geom_text()` for the whole session. Also, some functions, such as `RIloadLoc()`, make use of `geom_text_repel()`, for which you would need to change the code above from "text" to "text_repel".
 
 A simple way to only change font family and font size would be to use `theme_minimal(base_family = "Calibri", base_size = 14)`. Please see the [reference page](https://ggplot2.tidyverse.org/reference/ggtheme.html) for default ggplot themes for alternatives to `theme_minimal()`.
 
