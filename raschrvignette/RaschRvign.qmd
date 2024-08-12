@@ -457,7 +457,7 @@ For a more compact figure.
 ```{r}
 mirt(df, model=1, itemtype='Rasch', verbose = FALSE) %>% 
   plot(type="trace", as.table = TRUE, 
-       theta_lim = c(-5,5))
+       theta_lim = c(-5,5)) # changes x axis limits
 ```
 
 ### Targeting
@@ -465,7 +465,7 @@ mirt(df, model=1, itemtype='Rasch', verbose = FALSE) %>%
 ```{r}
 #| fig-height: 7
 # increase fig-height in the chunk option above if you have many items
-RItargeting(df, xlim = c(-5,4)) # xlim defaults to c(-5,6) if you omit this option
+RItargeting(df, xlim = c(-5,4)) # xlim defaults to c(-4,4) if you omit this option
 ```
 
 This figure shows how well the items fit the respondents/persons. It is a sort of [Wright Map](https://www.rasch.org/rmt/rmt253b.htm) that shows person locations and item threshold locations on the same logit scale.
@@ -474,14 +474,13 @@ The top part shows person location histogram, the middle part an inverted histog
 
 ### Item hierarchy
 
-Here the items are sorted on their average threshold location (black diamonds). 95% confidence intervals are shown around each item threshold location. For further details, see the caption text below the figure.
+Here the items are sorted on their average threshold location (black diamonds). 84% confidence intervals are shown around each item threshold location. For further details, see the caption text below the figure.
 
 The numbers displayed in the plot can be disabled using the option `numbers = FALSE`.
 
 ```{r}
 #| fig-height: 6
 RIitemHierarchy(df)
-
 ```
 :::
 
