@@ -236,6 +236,10 @@ div.csl-indent {
     <a class="dropdown-item" href="../datawrangling.html">
  <span class="dropdown-text">Data wrangling for psychometrics in R</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../simcutoffs.html">
+ <span class="dropdown-text">Simulation based cutoff values for Rasch item fit and residual correlations</span></a>
+  </li>  
     </ul>
 </li>
   <li class="nav-item compact">
@@ -3980,7 +3984,7 @@ attr(,"class")
 </div>
 </div>
 </div>
-<p>The dataframe shown under the tab <code>Flagged respondents</code> above contains a variable named <code>FlaggedID</code> which represents the row id’s. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit affects the Andersen’s LR-test <span class="citation" data-cites="artner_simulation_2016">(<a href="#ref-artner_simulation_2016" role="doc-biblioref">Artner, 2016</a>)</span>.</p>
+<p>The dataframe shown under the tab <code>Flagged respondents</code> above contains a variable named <code>FlaggedID</code> which represents the row id’s. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit may affect results of Andersen’s LR-test for DIF <span class="citation" data-cites="artner_simulation_2016">(<a href="#ref-artner_simulation_2016" role="doc-biblioref">Artner, 2016</a>)</span>.</p>
 </section></section><section id="item-parameters" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="item-parameters">
 <span class="header-section-number">9</span> Item parameters</h2>
 <p>To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the <code><a href="https://rdrr.io/pkg/catR/man/thetaEst.html">thetaEst()</a></code> function from the <code>catR</code> package. This is implemented in the function <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIestThetasOLD.html">RIestThetasOLD()</a></code>, see below for details.</p>
@@ -6321,7 +6325,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb95-1037"><a href="#cb95-1037" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb95-1038"><a href="#cb95-1038" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb95-1039"><a href="#cb95-1039" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb95-1040"><a href="#cb95-1040" aria-hidden="true" tabindex="-1"></a>The dataframe shown under the tab <span class="in">`Flagged respondents`</span> above contains a variable named <span class="in">`FlaggedID`</span> which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit affects the Andersen's LR-test <span class="co">[</span><span class="ot">@artner_simulation_2016</span><span class="co">]</span>.</span>
+<span id="cb95-1040"><a href="#cb95-1040" aria-hidden="true" tabindex="-1"></a>The dataframe shown under the tab <span class="in">`Flagged respondents`</span> above contains a variable named <span class="in">`FlaggedID`</span> which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit may affect results of Andersen's LR-test for DIF <span class="co">[</span><span class="ot">@artner_simulation_2016</span><span class="co">]</span>.</span>
 <span id="cb95-1041"><a href="#cb95-1041" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb95-1042"><a href="#cb95-1042" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item parameters</span></span>
 <span id="cb95-1043"><a href="#cb95-1043" aria-hidden="true" tabindex="-1"></a></span>

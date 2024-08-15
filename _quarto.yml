@@ -33,6 +33,7 @@ website:
          - SkolverketAPI/skolverketapi.qmd
          - powerviz.qmd
          - datawrangling.qmd
+         - simcutoffs.qmd
       - icon: github
         href: https://github.com/pgmj/pgmj.github.io
         aria-label: GitHub
