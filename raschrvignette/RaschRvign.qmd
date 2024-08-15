@@ -892,7 +892,7 @@ flagged.resp(pfit_u3poly) %>%
 ```
 :::
 
-The dataframe shown under the tab `Flagged respondents` above contains a variable named `FlaggedID` which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit affects the Andersen's LR-test [@artner_simulation_2016].
+The dataframe shown under the tab `Flagged respondents` above contains a variable named `FlaggedID` which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit may affect results of Andersen's LR-test for DIF [@artner_simulation_2016].
 
 ## Item parameters
 

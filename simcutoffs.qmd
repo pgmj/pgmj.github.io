@@ -1,0 +1,122 @@
+---
+title: "Simulation based cutoff values for Rasch item fit and residual correlations"
+author: 
+  name: Magnus Johansson
+  affiliation: RISE Research Institutes of Sweden
+  affiliation-url: https://www.ri.se/en/shic/
+  orcid: 0000-0003-1669-592X
+date: last-modified
+citation:
+  type: 'webpage'
+csl: apa.csl
+editor: 
+  markdown: 
+    wrap: 72
+execute: 
+  cache: true
+  warning: false
+  message: false
+bibliography: simcut.bib
+editor_options: 
+  chunk_output_type: console
+---
+
+## Background
+
+It has long been known that rule-of-thumb cutoff values in psychometrics are not optimal (and often misguiding), and that simulations are helpful for determining appropriate cutoff values based on the properties of the sample and items being analyzed. This actually goes for factor analysis, as well as item response theory and Rasch measurement theory. In recent years, we have seen a number of interactive Shiny apps made available to help solve this issue, which is clearly a step in the right direction.
+
+My approach here is to write functions to help users easily run these simulations on their computers in R, when they do their psychometric analysis.
+
+This blog post will be incorporated into the RISEkbmRasch vignette at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.
+
+Since I mostly work with polytomous data, I usually start out developing functions for this type of data. This is also the case now, and I hope to find time to also get dichotomous data working soon.
+
+Finally, I want to thank Karl Bang Christensen for a very nice presentation on item fit and simulations at the Scandinavian Applied Measurement Conference, which made me think about these things a lot until I came up with the idea to implement these functions.
+
+## Residual correlations
+
+This is the simpler of the two functions that have been added. It is based on the simulation study by Christensen et al. [-@christensen2017].
+
+```{r}
+library(RISEkbmRasch)
+```
+
+For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package.
+
+```{r}
+res_cor <- RIgetResidCor(pcmdat2, iterations = 500, cpu = 8)
+```
+
+While we are mostly interested in the 99th quartile from the simulation, we will save the output of the simulation into the object `res_cor`.
+
+```{r}
+glimpse(res_cor)
+```
+
+The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.
+
+Based on the simulations I have made so far, it seems that 500 iterations is sufficient for a reasonably accurate q99 value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% value as the cutoff. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
+
+```{r}
+RIresidcorr(pcmdat2, cutoff = res_cor$q99)
+```
+
+We can see that items 3 and 4 have a residual correlation between them that is quite a bit above the threshold value.
+
+Since the results of the simulation is included in the output object, we can investigate it further.
+
+```{r}
+hist(res_cor$results$diff, breaks = 50, col = "lightblue")
+summary(res_cor$results$diff)
+```
+
+## Item fit
+
+While conditional item fit is a huge step towards getting correct item fit values, no matter what the sample size is [@muller_item_2020;@buchardt_visualizing_2023], we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.
+
+```{r}
+itemfit_sim <- RIgetfit(pcmdat2, iterations = 500, cpu = 8)
+```
+
+The output is a list object consisting of one dataframe per iteration. We can look at iteration 1:
+```{r}
+itemfit_sim[[1]]
+```
+
+This object can in turn be used with three different
+functions. Most importantly, you can use it with `RIitemfitPCM()` to set
+cutoff values for both MSQ and ZSTD based on your sample size and item
+parameters. This uses the lowest and highest value from *all* items as cutoff
+for all items.
+
+```{r}
+RIitemfitPCM(pcmdat2,simcut = TRUE, gf = itemfit_sim)
+```
+
+All items seem to fit the Rasch model well. Values crossing the cutoff thresholds would be colorized red.
+
+If you want to see a table with the individual item fit upper/lower cutoffs,
+the function `RIgetfitTable()` should be used with the output from this
+function as input.
+
+```{r}
+RIgetfitTable(itemfit_sim)
+```
+
+The function `RIgetfitPlot()` uses the package `ggdist` to plot the
+distribution of fit values from the simulation results.
+
+```{r}
+#| fig-height: 7
+RIgetfitPlot(itemfit_sim)
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
+## References
+
+
