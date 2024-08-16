@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2024-08-15">
+<meta name="dcterms.date" content="2024-08-16">
 <title>Simulation based cutoff values for Rasch item fit and residual correlations – R, Rasch, etc</title>
 <style>
 code{white-space: pre-wrap;}
@@ -243,7 +243,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 15, 2024</p>
+      <p class="date">August 16, 2024</p>
     </div>
   </div>
   
@@ -271,7 +271,7 @@ div.csl-indent {
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetResidCor.html">RIgetResidCor</a></span><span class="op">(</span><span class="va">pcmdat2</span>, iterations <span class="op">=</span> <span class="fl">500</span>, cpu <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>While we are mostly interested in the 99th quartile from the simulation, we will save the output of the simulation into the object <code>res_cor</code>.</p>
+<p>While we are mostly interested in the 99% percentile from the simulation (<code>q99</code>), we will save the output of the simulation into the object <code>res_cor</code>.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">glimpse</span><span class="op">(</span><span class="va">res_cor</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
@@ -292,7 +292,7 @@ div.csl-indent {
 </div>
 </div>
 <p>The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.</p>
-<p>Based on the simulations I have made so far, it seems that 500 iterations is sufficient for a reasonably accurate q99 value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% value as the cutoff. For more detailed information on the topic I refer to Christensen et al. <span class="citation" data-cites="christensen2017">(<a href="#ref-christensen2017" role="doc-biblioref">2017</a>)</span>.</p>
+<p>Based on the simulations I have made so far, it seems that 500 iterations is sufficient for a reasonably accurate 99% percentile value (<code>q99</code>) value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. For more detailed information on the topic I refer to Christensen et al. <span class="citation" data-cites="christensen2017">(<a href="#ref-christensen2017" role="doc-biblioref">2017</a>)</span>.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIresidcorr.html">RIresidcorr</a></span><span class="op">(</span><span class="va">pcmdat2</span>, cutoff <span class="op">=</span> <span class="va">res_cor</span><span class="op">$</span><span class="va">q99</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -579,12 +579,12 @@ Müller, M. (2020). Item fit statistics for <span>Rasch</span> analysis: Can we 
   author = {Johansson, Magnus},
   title = {Simulation Based Cutoff Values for {Rasch} Item Fit and
     Residual Correlations},
-  date = {2024-08-15},
+  date = {2024-08-16},
   url = {https://pgmj.github.io/simcutoffs.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Johansson, M. (2024, August 15). <em>Simulation based cutoff values for
+Johansson, M. (2024, August 16). <em>Simulation based cutoff values for
 Rasch item fit and residual correlations</em>. <a href="https://pgmj.github.io/simcutoffs.html">https://pgmj.github.io/simcutoffs.html</a>
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -1107,7 +1107,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>res_cor <span class="ot">&lt;-</span> <span class="fu">RIgetResidCor</span>(pcmdat2, <span class="at">iterations =</span> <span class="dv">500</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
 <span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>While we are mostly interested in the 99th quartile from the simulation, we will save the output of the simulation into the object <span class="in">`res_cor`</span>.</span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>While we are mostly interested in the 99% percentile from the simulation (<span class="in">`q99`</span>), we will save the output of the simulation into the object <span class="in">`res_cor`</span>.</span>
 <span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(res_cor)</span>
@@ -1115,7 +1115,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.</span>
 <span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>Based on the simulations I have made so far, it seems that 500 iterations is sufficient for a reasonably accurate q99 value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% value as the cutoff. For more detailed information on the topic I refer to Christensen et al. <span class="co">[</span><span class="ot">-@christensen2017</span><span class="co">]</span>.</span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>Based on the simulations I have made so far, it seems that 500 iterations is sufficient for a reasonably accurate 99% percentile value (<span class="in">`q99`</span>) value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. For more detailed information on the topic I refer to Christensen et al. <span class="co">[</span><span class="ot">-@christensen2017</span><span class="co">]</span>.</span>
 <span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(pcmdat2, <span class="at">cutoff =</span> res_cor<span class="sc">$</span>q99)</span>

@@ -47,7 +47,7 @@ For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package.
 res_cor <- RIgetResidCor(pcmdat2, iterations = 500, cpu = 8)
 ```
 
-While we are mostly interested in the 99th quartile from the simulation, we will save the output of the simulation into the object `res_cor`.
+While we are mostly interested in the 99% percentile from the simulation (`q99`), we will save the output of the simulation into the object `res_cor`.
 
 ```{r}
 glimpse(res_cor)
@@ -55,7 +55,7 @@ glimpse(res_cor)
 
 The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.
 
-Based on the simulations I have made so far, it seems that 500 iterations is sufficient for a reasonably accurate q99 value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% value as the cutoff. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
+Based on the simulations I have made so far, it seems that 500 iterations is sufficient for a reasonably accurate 99% percentile value (`q99`) value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
 
 ```{r}
 RIresidcorr(pcmdat2, cutoff = res_cor$q99)
