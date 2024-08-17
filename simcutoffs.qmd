@@ -120,6 +120,8 @@ RIgetfitPlot(itemfit_sim)
 
 As you can see, there is variation in the different fit metrics across the items, which highlights the need for indicating this in the `RIitemfitPCM()` table with separate cutoff values for all items/metrics.
 
+It also seems most reasonable to use the 99th (upper/lower) percentile for item fit metrics. I will be implementing this change in a future update to the `RISEkbmRasch` package.
+
 ## Session info
 
 ```{r}

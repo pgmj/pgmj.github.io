@@ -510,6 +510,7 @@ Note
 </div>
 </div>
 <p>As you can see, there is variation in the different fit metrics across the items, which highlights the need for indicating this in the <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> table with separate cutoff values for all items/metrics.</p>
+<p>It also seems most reasonable to use the 99th (upper/lower) percentile for item fit metrics. I will be implementing this change in a future update to the <code>RISEkbmRasch</code> package.</p>
 </section><section id="session-info" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="session-info">
 <span class="header-section-number">4</span> Session info</h2>
 <div class="cell">
@@ -1203,14 +1204,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-142"><a href="#cb19-142" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-143"><a href="#cb19-143" aria-hidden="true" tabindex="-1"></a>As you can see, there is variation in the different fit metrics across the items, which highlights the need for indicating this in the <span class="in">`RIitemfitPCM()`</span> table with separate cutoff values for all items/metrics.</span>
 <span id="cb19-144"><a href="#cb19-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-145"><a href="#cb19-145" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb19-145"><a href="#cb19-145" aria-hidden="true" tabindex="-1"></a>It also seems most reasonable to use the 99th (upper/lower) percentile for item fit metrics. I will be implementing this change in a future update to the <span class="in">`RISEkbmRasch`</span> package.</span>
 <span id="cb19-146"><a href="#cb19-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-149"><a href="#cb19-149" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-150"><a href="#cb19-150" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb19-151"><a href="#cb19-151" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-152"><a href="#cb19-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-153"><a href="#cb19-153" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb19-147"><a href="#cb19-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb19-148"><a href="#cb19-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-151"><a href="#cb19-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-152"><a href="#cb19-152" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb19-153"><a href="#cb19-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-154"><a href="#cb19-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-155"><a href="#cb19-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb19-156"><a href="#cb19-156" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
