@@ -44,7 +44,7 @@ library(RISEkbmRasch)
 For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package.
 
 ```{r}
-res_cor <- RIgetResidCor(pcmdat2, iterations = 500, cpu = 8)
+res_cor <- RIgetResidCor(pcmdat2, iterations = 1000, cpu = 8)
 ```
 
 While we are mostly interested in the 99% percentile from the simulation (`q99`), we will save the output of the simulation into the object `res_cor`.
@@ -55,7 +55,7 @@ glimpse(res_cor)
 
 The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.
 
-Based on the simulations I have made so far, it seems that 500 iterations may be sufficient for a reasonably accurate 99% percentile value (`q99`) value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
+Based on the simulations I have made so far, it seems that 1000 iterations may be sufficient for a reasonably accurate 99% percentile value (`q99`) value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
 
 ```{r}
 RIresidcorr(pcmdat2, cutoff = res_cor$q99)
@@ -75,11 +75,11 @@ summary(res_cor$results$diff)
 While conditional item fit is a huge step towards getting correct item fit values, no matter what the sample size is [@muller_item_2020;@buchardt_visualizing_2023], we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.
 
 ::: {.callout-note}
-Again, we will use 500 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories) took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).
+We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories) using 500 iterations took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).
 :::
 
 ```{r}
-itemfit_sim <- RIgetfit(pcmdat2, iterations = 500, cpu = 8)
+itemfit_sim <- RIgetfit(pcmdat2, iterations = 1000, cpu = 8)
 ```
 
 The output is a list object consisting of one dataframe per iteration. We can look at iteration 1:
