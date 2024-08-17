@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2024-08-16">
+<meta name="dcterms.date" content="2024-08-17">
 <title>Simulation based cutoff values for Rasch item fit and residual correlations – R, Rasch, etc</title>
 <style>
 code{white-space: pre-wrap;}
@@ -243,7 +243,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 16, 2024</p>
+      <p class="date">August 17, 2024</p>
     </div>
   </div>
   
@@ -376,7 +376,7 @@ div.csl-indent {
 4   V4      1.062     1.045      -1.329     -2.007</code></pre>
 </div>
 </div>
-<p>This object can in turn be used with three different functions. Most importantly, you can use it with <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> to set cutoff values for both MSQ and ZSTD based on your sample size and item parameters. This uses the lowest and highest value from <em>all</em> items as cutoff for all items.</p>
+<p>This object can in turn be used with three different functions. Most importantly, you can use it with <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> to set cutoff values for both MSQ and ZSTD based on your sample size and item parameters. This uses the lowest and highest value from <em>all</em> items as cutoff for all items. This is not ideal, but was the easiest to implement. There will be “custom” cutoffs for every item in the near future.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM</a></span><span class="op">(</span><span class="va">pcmdat2</span>,simcut <span class="op">=</span> <span class="cn">TRUE</span>, gf <span class="op">=</span> <span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -426,8 +426,8 @@ div.csl-indent {
 </table>
 </div>
 </div>
-<p>All items seem to fit the Rasch model well. Values crossing the cutoff thresholds would be colorized red.</p>
-<p>If you want to see a table with the individual item fit upper/lower cutoffs, the function <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitTable.html">RIgetfitTable()</a></code> should be used with the output from this function as input.</p>
+<p>All items seem to fit the Rasch model quite well. Values crossing the cutoff thresholds would be colorized red.</p>
+<p>If you want to see a table with the individual item fit upper/lower cutoffs, the function <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitTable.html">RIgetfitTable()</a></code> should be used with the output object from <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfit.html">RIgetfit()</a></code> as input.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitTable.html">RIgetfitTable</a></span><span class="op">(</span><span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -487,6 +487,7 @@ div.csl-indent {
 </div>
 </div>
 </div>
+<p>As you can see, there is variation in the different fit metrics across the items, which strengthens the need for indicating this in the <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> table.</p>
 </section><section id="session-info" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="session-info">
 <span class="header-section-number">4</span> Session info</h2>
 <div class="cell">
@@ -579,12 +580,12 @@ Müller, M. (2020). Item fit statistics for <span>Rasch</span> analysis: Can we 
   author = {Johansson, Magnus},
   title = {Simulation Based Cutoff Values for {Rasch} Item Fit and
     Residual Correlations},
-  date = {2024-08-16},
+  date = {2024-08-17},
   url = {https://pgmj.github.io/simcutoffs.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Johansson, M. (2024, August 16). <em>Simulation based cutoff values for
+Johansson, M. (2024, August 17). <em>Simulation based cutoff values for
 Rasch item fit and residual correlations</em>. <a href="https://pgmj.github.io/simcutoffs.html">https://pgmj.github.io/simcutoffs.html</a>
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -1147,38 +1148,39 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a>functions. Most importantly, you can use it with <span class="in">`RIitemfitPCM()`</span> to set</span>
 <span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a>cutoff values for both MSQ and ZSTD based on your sample size and item</span>
 <span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a>parameters. This uses the lowest and highest value from *all* items as cutoff</span>
-<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a>for all items.</span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a>for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future.</span>
 <span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfitPCM</span>(pcmdat2,<span class="at">simcut =</span> <span class="cn">TRUE</span>, <span class="at">gf =</span> itemfit_sim)</span>
 <span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a>All items seem to fit the Rasch model well. Values crossing the cutoff thresholds would be colorized red.</span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a>All items seem to fit the Rasch model quite well. Values crossing the cutoff thresholds would be colorized red.</span>
 <span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a>If you want to see a table with the individual item fit upper/lower cutoffs,</span>
-<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>the function <span class="in">`RIgetfitTable()`</span> should be used with the output from this</span>
-<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>function as input.</span>
-<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitTable</span>(itemfit_sim)</span>
-<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`RIgetfitPlot()`</span> uses the package <span class="in">`ggdist`</span> to plot the</span>
-<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>distribution of fit values from the simulation results.</span>
-<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitPlot</span>(itemfit_sim)</span>
-<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
-<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
-<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>the function <span class="in">`RIgetfitTable()`</span> should be used with the output object from <span class="in">`RIgetfit()`</span> as input.</span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitTable</span>(itemfit_sim)</span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`RIgetfitPlot()`</span> uses the package <span class="in">`ggdist`</span> to plot the</span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>distribution of fit values from the simulation results.</span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitPlot</span>(itemfit_sim)</span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a>As you can see, there is variation in the different fit metrics across the items, which strengthens the need for indicating this in the <span class="in">`RIitemfitPCM()`</span> table.</span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

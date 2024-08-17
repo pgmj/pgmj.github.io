@@ -87,17 +87,16 @@ This object can in turn be used with three different
 functions. Most importantly, you can use it with `RIitemfitPCM()` to set
 cutoff values for both MSQ and ZSTD based on your sample size and item
 parameters. This uses the lowest and highest value from *all* items as cutoff
-for all items.
+for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future.
 
 ```{r}
 RIitemfitPCM(pcmdat2,simcut = TRUE, gf = itemfit_sim)
 ```
 
-All items seem to fit the Rasch model well. Values crossing the cutoff thresholds would be colorized red.
+All items seem to fit the Rasch model quite well. Values crossing the cutoff thresholds would be colorized red.
 
 If you want to see a table with the individual item fit upper/lower cutoffs,
-the function `RIgetfitTable()` should be used with the output from this
-function as input.
+the function `RIgetfitTable()` should be used with the output object from `RIgetfit()` as input.
 
 ```{r}
 RIgetfitTable(itemfit_sim)
@@ -110,6 +109,8 @@ distribution of fit values from the simulation results.
 #| fig-height: 7
 RIgetfitPlot(itemfit_sim)
 ```
+
+As you can see, there is variation in the different fit metrics across the items, which strengthens the need for indicating this in the `RIitemfitPCM()` table.
 
 ## Session info
 
