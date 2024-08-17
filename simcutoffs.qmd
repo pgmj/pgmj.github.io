@@ -45,7 +45,7 @@ For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package.
 res_cor <- RIgetResidCor(pcmdat2, iterations = 1000, cpu = 8)
 ```
 
-While we are mostly interested in the 99% percentile from the simulation (`q99`), we will save the output of the simulation into the object `res_cor`.
+While we are mostly interested in the 99% percentile from the simulation (`p99` below), we will save the output of the simulation into the list object `res_cor`.
 
 ```{r}
 glimpse(res_cor)
@@ -53,10 +53,10 @@ glimpse(res_cor)
 
 The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.
 
-Based on the simulations I have made so far, it seems that 1000 iterations may be sufficient for a reasonably accurate 99% percentile value (`q99`) value. The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
+ The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. Based on the simulations I have made so far, it seems that 1000 iterations may be sufficient for a reasonably accurate 99% percentile value (`p99`) value. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
 
 ```{r}
-RIresidcorr(pcmdat2, cutoff = res_cor$q99)
+RIresidcorr(pcmdat2, cutoff = res_cor$p99)
 ```
 
 We can see that items 3 and 4 have a residual correlation between them that is quite a bit above the threshold value.
@@ -64,6 +64,7 @@ We can see that items 3 and 4 have a residual correlation between them that is q
 Since the results of the simulation is included in the output object, we can investigate it further.
 
 ```{r}
+#| fig-height: 4
 hist(res_cor$results$diff, breaks = 50, col = "lightblue")
 summary(res_cor$results$diff)
 ```
@@ -88,21 +89,23 @@ itemfit_sim[[1]]
 This object can in turn be used with three different
 functions. Most importantly, you can use it with `RIitemfitPCM()` to set
 cutoff values for both MSQ and ZSTD based on your sample size and item
-parameters. This uses the lowest and highest value from *all* items as cutoff
-for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future. Also, `RIitemfitRM()` has not yet been updated to make use of simulation based cutoffs.
+parameters. This uses the 1st and 99th percentile value from *all* items as cutoff
+for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future. `RIgetfitTable()` will show the simulation based cutoff values from each item, see below.
+
+Unfortunately, `RIitemfitRM()` has not yet been updated to make use of simulation based cutoffs.
 
 ```{r}
 RIitemfitPCM(pcmdat2, simcut = TRUE, gf = itemfit_sim)
 ```
 
-All items seem to fit the Rasch model quite well. Values crossing the cutoff thresholds would be colorized red. The cutoff values used can be shown with
+Values crossing the cutoff thresholds are automatically colorized red. The cutoff values used in the above table can be shown with `RIgetfitLoHi()`.
 
 ```{r}
 RIgetfitLoHi(itemfit_sim)
 ```
 
 If you want to see a table with the individual item fit upper/lower cutoffs for all metrics,
-the function `RIgetfitTable()` is used with the output object from `RIgetfit()` as input.
+the function `RIgetfitTable()` is used with the output object from `RIgetfit()` as input. The table defaults to show 1st and 99th percentile values as lower/upper values.
 
 ```{r}
 RIgetfitTable(itemfit_sim)
@@ -116,9 +119,7 @@ distribution of fit values from the simulation results.
 RIgetfitPlot(itemfit_sim)
 ```
 
-As you can see, there is variation in the different fit metrics across the items, which highlights the need for indicating this in the `RIitemfitPCM()` table with separate cutoff values for all items/metrics.
-
-It also seems most reasonable to use the 99th (upper/lower) percentile for item fit metrics. I will be implementing this change in a future update to the `RISEkbmRasch` package.
+As you can see, there is some variation in the different fit metrics across the items, which highlights the need for indicating this in the `RIitemfitPCM()` table with separate cutoff values for all items/metrics. Colors in the plot are for 1st/99th percentile, dots are median values.
 
 ## Session info
 
