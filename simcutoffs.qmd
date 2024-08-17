@@ -27,7 +27,7 @@ It has long been known that rule-of-thumb cutoff values in psychometrics are not
 
 My approach here is to write functions to help users easily run these simulations on their computers in R, when they do their psychometric analysis.
 
-This blog post will be incorporated into the RISEkbmRasch vignette at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.
+This blog post will be incorporated into the [`RISEkbmRasch` vignette](https://pgmj.github.io/raschrvignette/RaschRvign.html) at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.
 
 Since I mostly work with polytomous data, I usually start out developing functions for this type of data. This is also the case now, and I hope to find time to also get dichotomous data working soon.
 
