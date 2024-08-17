@@ -94,7 +94,7 @@ parameters. This uses the lowest and highest value from *all* items as cutoff
 for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future.
 
 ```{r}
-RIitemfitPCM(pcmdat2,simcut = TRUE, gf = itemfit_sim)
+RIitemfitPCM(pcmdat2, simcut = TRUE, gf = itemfit_sim)
 ```
 
 All items seem to fit the Rasch model quite well. Values crossing the cutoff thresholds would be colorized red. The cutoff values used can be shown with
