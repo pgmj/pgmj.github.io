@@ -29,8 +29,6 @@ My approach here is to write functions to help users easily run these simulation
 
 This blog post will be incorporated into the [`RISEkbmRasch` vignette](https://pgmj.github.io/raschrvignette/RaschRvign.html) at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.
 
-Since I mostly work with polytomous data, I usually start out developing functions for this type of data. This is also the case now, and I hope to find time to also get dichotomous data working soon.
-
 Finally, I want to thank Karl Bang Christensen for a very nice presentation on item fit and simulations at the Scandinavian Applied Measurement Conference, which made me think about these things a lot until I came up with the idea to implement these functions.
 
 ## Residual correlations
@@ -91,7 +89,7 @@ This object can in turn be used with three different
 functions. Most importantly, you can use it with `RIitemfitPCM()` to set
 cutoff values for both MSQ and ZSTD based on your sample size and item
 parameters. This uses the lowest and highest value from *all* items as cutoff
-for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future.
+for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future. Also, `RIitemfitRM()` has not yet been updated to make use of simulation based cutoffs.
 
 ```{r}
 RIitemfitPCM(pcmdat2, simcut = TRUE, gf = itemfit_sim)
