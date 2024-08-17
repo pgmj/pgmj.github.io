@@ -93,10 +93,14 @@ for all items. This is not ideal, but was the easiest to implement. There will b
 RIitemfitPCM(pcmdat2,simcut = TRUE, gf = itemfit_sim)
 ```
 
-All items seem to fit the Rasch model quite well. Values crossing the cutoff thresholds would be colorized red.
+All items seem to fit the Rasch model quite well. Values crossing the cutoff thresholds would be colorized red. The cutoff values used can be shown with
 
-If you want to see a table with the individual item fit upper/lower cutoffs,
-the function `RIgetfitTable()` should be used with the output object from `RIgetfit()` as input.
+```{r}
+RIgetfitLoHi(itemfit_sim)
+```
+
+If you want to see a table with the individual item fit upper/lower cutoffs for all metrics,
+the function `RIgetfitTable()` is used with the output object from `RIgetfit()` as input.
 
 ```{r}
 RIgetfitTable(itemfit_sim)
@@ -110,7 +114,7 @@ distribution of fit values from the simulation results.
 RIgetfitPlot(itemfit_sim)
 ```
 
-As you can see, there is variation in the different fit metrics across the items, which strengthens the need for indicating this in the `RIitemfitPCM()` table.
+As you can see, there is variation in the different fit metrics across the items, which highlights the need for indicating this in the `RIitemfitPCM()` table with separate cutoff values for all items/metrics.
 
 ## Session info
 
