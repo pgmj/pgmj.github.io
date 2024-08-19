@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2024-08-17">
+<meta name="dcterms.date" content="2024-08-19">
 <title>Simulation based cutoff values for Rasch item fit and residual correlations – R, Rasch, etc</title>
 <style>
 code{white-space: pre-wrap;}
@@ -210,9 +210,10 @@ div.csl-indent {
   <ul>
 <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="header-section-number">1</span> Background</a></li>
   <li><a href="#residual-correlations" id="toc-residual-correlations" class="nav-link" data-scroll-target="#residual-correlations"><span class="header-section-number">2</span> Residual correlations</a></li>
-  <li><a href="#item-fit" id="toc-item-fit" class="nav-link" data-scroll-target="#item-fit"><span class="header-section-number">3</span> Item fit</a></li>
-  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="header-section-number">4</span> Session info</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">5</span> References</a></li>
+  <li><a href="#conditional-item-fit" id="toc-conditional-item-fit" class="nav-link" data-scroll-target="#conditional-item-fit"><span class="header-section-number">3</span> Conditional item fit</a></li>
+  <li><a href="#visualizing-conditional-fit" id="toc-visualizing-conditional-fit" class="nav-link" data-scroll-target="#visualizing-conditional-fit"><span class="header-section-number">4</span> Visualizing conditional fit</a></li>
+  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="header-section-number">5</span> Session info</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">6</span> References</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -243,7 +244,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 17, 2024</p>
+      <p class="date">August 19, 2024</p>
     </div>
   </div>
   
@@ -276,17 +277,17 @@ div.csl-indent {
 </details><div class="cell-output cell-output-stdout">
 <pre><code>List of 8
  $ results    :'data.frame':    1000 obs. of  3 variables:
-  ..$ mean: num [1:1000] -0.259 -0.256 -0.272 -0.273 -0.274 ...
-  ..$ max : num [1:1000] -0.188 -0.162 -0.207 -0.204 -0.241 ...
-  ..$ diff: num [1:1000] 0.0709 0.0936 0.0643 0.0691 0.033 ...
+  ..$ mean: num [1:1000] -0.264 -0.264 -0.249 -0.269 -0.251 ...
+  ..$ max : num [1:1000] -0.121 -0.165 -0.172 -0.155 -0.171 ...
+  ..$ diff: num [1:1000] 0.1424 0.0986 0.0765 0.1141 0.0801 ...
  $ sample_n   : int 300
  $ sample_mean: num 0.684
  $ sample_sd  : num 1.54
- $ max_diff   : num 0.266
- $ sd_diff    : num 0.0338
+ $ max_diff   : num 0.231
+ $ sd_diff    : num 0.0346
  $ p95        : Named num 0.152
   ..- attr(*, "names")= chr "95%"
- $ p99        : Named num 0.195
+ $ p99        : Named num 0.183
   ..- attr(*, "names")= chr "99%"</code></pre>
 </div>
 </div>
@@ -336,7 +337,7 @@ div.csl-indent {
 <tfoot>
 <tr><td style="padding: 0; " colspan="100%"><span style="font-style: italic;">Note: </span></td></tr>
 <tr><td style="padding: 0; " colspan="100%">
-<sup></sup> Relative cut-off value (highlighted in red) is -0.031, which is 0.195 above the average correlation (-0.226).</td></tr>
+<sup></sup> Relative cut-off value (highlighted in red) is -0.043, which is 0.183 above the average correlation (-0.226).</td></tr>
 </tfoot>
 </table>
 </div>
@@ -354,12 +355,12 @@ div.csl-indent {
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">res_cor</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">diff</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-0.01871 0.06662 0.08684 0.09031 0.10956 0.26599 </code></pre>
+0.01759 0.06613 0.08683 0.09097 0.11274 0.23144 </code></pre>
 </div>
 </div>
-</section><section id="item-fit" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="item-fit">
-<span class="header-section-number">3</span> Item fit</h2>
-<p>While conditional item fit is a huge step towards getting correct item fit values, no matter what the sample size is <span class="citation" data-cites="muller_item_2020 buchardt_visualizing_2023">(<a href="#ref-buchardt_visualizing_2023" role="doc-biblioref">Buchardt et al., 2023</a>; <a href="#ref-muller_item_2020" role="doc-biblioref">Müller, 2020</a>)</span>, we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.</p>
+</section><section id="conditional-item-fit" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="conditional-item-fit">
+<span class="header-section-number">3</span> Conditional item fit</h2>
+<p>While conditional item fit is a huge step towards getting correct item fit values <span class="citation" data-cites="christensen_item_2012 muller_item_2020 buchardt_visualizing_2023">(<a href="#ref-buchardt_visualizing_2023" role="doc-biblioref">Buchardt et al., 2023</a>; <a href="#ref-christensen_item_2012" role="doc-biblioref">Christensen &amp; Kreiner, 2012</a>; <a href="#ref-muller_item_2020" role="doc-biblioref">Müller, 2020</a>)</span>, we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -381,139 +382,90 @@ Note
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">itemfit_sim</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
-<pre><code>  item outfit_msq infit_msq outfit_zstd infit_zstd
-1   V1      1.079     1.003      -1.587     -2.489
-2   V2      0.879     0.906      -3.447     -4.048
-3   V3      0.994     1.020      -1.826     -1.838
-4   V4      1.023     1.060      -1.851     -1.897</code></pre>
+<pre><code>  Item InfitMSQ OutfitMSQ
+1   V1    0.938     0.908
+2   V2    1.004     1.064
+3   V3    1.012     1.048
+4   V4    1.066     1.065</code></pre>
 </div>
 </div>
-<p>This object can in turn be used with three different functions. Most importantly, you can use it with <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> to set cutoff values for both MSQ and ZSTD based on your sample size and item parameters. This uses the 1st and 99th percentile value from <em>all</em> items as cutoff for all items. This is not ideal, but was the easiest to implement. There will be “custom” cutoffs for every item in the near future. <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitTable.html">RIgetfitTable()</a></code> will show the simulation based cutoff values from each item, see below.</p>
-<p>Unfortunately, <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitRM.html">RIitemfitRM()</a></code> has not yet been updated to make use of simulation based cutoffs.</p>
+<p>This object can in turn be used with three different functions. Most importantly, you can use it with <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfit.html">RIitemfit()</a></code> to set cutoff values for both MSQ and ZSTD based on your sample size and item parameters. This uses the 1st and 99th percentile values for each individual item.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM</a></span><span class="op">(</span><span class="va">pcmdat2</span>, simcut <span class="op">=</span> <span class="cn">TRUE</span>, gf <span class="op">=</span> <span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfit.html">RIitemfit</a></span><span class="op">(</span><span class="va">pcmdat2</span>, simcut <span class="op">=</span> <span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
-<table data-quarto-disable-processing="true" style="width:65%; font-size: 15px; width: auto !important;  font-family: Lato; margin-left: auto; margin-right: auto; margin-left: auto; margin-right: auto;border-bottom: 0;" class="table table-striped table-hover lightable-classic table">
+<table data-quarto-disable-processing="true" style="width:65%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;border-bottom: 0;" class="table table-striped table-hover lightable-classic">
 <thead><tr>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Item </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> OutfitMSQ </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> InfitMSQ </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> OutfitZSTD </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> InfitZSTD </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Infit thresholds </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> OutfitMSQ </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Outfit thresholds </th>
   </tr></thead>
 <tbody>
 <tr>
-<td style="text-align:left;font-weight: bold;"> I1 </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">1.069</span> </td>
+<td style="text-align:left;"> I1 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">1.08</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-1.548</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-1.532</span> </td>
+   <td style="text-align:left;"> [0.874, 1.141] </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">1.069</span> </td>
+   <td style="text-align:left;"> [0.844, 1.192] </td>
   </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;"> I2 </td>
+<td style="text-align:left;"> I2 </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">1.155</span> </td>
+   <td style="text-align:left;"> [0.854, 1.164] </td>
    <td style="text-align:left;"> <span style="     color: black !important;">1.084</span> </td>
-   <td style="text-align:left;"> <span style="     color: red !important;">1.155</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-1.809</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-1.261</span> </td>
+   <td style="text-align:left;"> [0.792, 1.269] </td>
   </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;"> I3 </td>
-   <td style="text-align:left;"> <span style="     color: red !important;">0.802</span> </td>
+<td style="text-align:left;"> I3 </td>
    <td style="text-align:left;"> <span style="     color: red !important;">0.828</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-3.555</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-3.918</span> </td>
+   <td style="text-align:left;"> [0.866, 1.146] </td>
+   <td style="text-align:left;"> <span style="     color: red !important;">0.802</span> </td>
+   <td style="text-align:left;"> [0.806, 1.217] </td>
   </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;"> I4 </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">1.024</span> </td>
+<td style="text-align:left;"> I4 </td>
    <td style="text-align:left;"> <span style="     color: black !important;">1.007</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-1.881</span> </td>
-   <td style="text-align:left;"> <span style="     color: black !important;">-2.543</span> </td>
+   <td style="text-align:left;"> [0.837, 1.165] </td>
+   <td style="text-align:left;"> <span style="     color: black !important;">1.024</span> </td>
+   <td style="text-align:left;"> [0.813, 1.198] </td>
   </tr>
 </tbody>
 <tfoot>
 <tr><td style="padding: 0; " colspan="100%"><span style="font-style: italic;">Note: </span></td></tr>
 <tr><td style="padding: 0; " colspan="100%">
-<sup></sup> MSQ values based on conditional estimation. All values<br> are based on a sample size of 300.</td></tr>
-</tfoot>
-</table>
-</div>
-</div>
-<p>Values crossing the cutoff thresholds are automatically colorized red. The cutoff values used in the above table can be shown with <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitLoHi.html">RIgetfitLoHi()</a></code>.</p>
-<div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitLoHi.html">RIgetfitLoHi</a></span><span class="op">(</span><span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output cell-output-stdout">
-<pre><code>  infit_msq_lo infit_msq_hi outfit_msq_lo outfit_msq_hi infit_zstd_lo
-1        0.856        1.154         0.816         1.226        -4.406
-  infit_zstd_hi outfit_zstd_lo outfit_zstd_hi
-1        -0.609         -3.786         -0.089</code></pre>
-</div>
-</div>
-<p>If you want to see a table with the individual item fit upper/lower cutoffs for all metrics, the function <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitTable.html">RIgetfitTable()</a></code> is used with the output object from <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfit.html">RIgetfit()</a></code> as input. The table defaults to show 1st and 99th percentile values as lower/upper values.</p>
-<div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitTable.html">RIgetfitTable</a></span><span class="op">(</span><span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details><div class="cell-output-display">
-<table data-quarto-disable-processing="true" style="width:75%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;border-bottom: 0;" class="table table-striped table-hover lightable-classic">
-<thead><tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Item </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Infit MSQ </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Outfit MSQ </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Infit ZSTD </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Outfit ZSTD </th>
-  </tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;"> V1 </td>
-   <td style="text-align:left;"> [0.868, 1.151] </td>
-   <td style="text-align:left;"> [0.839, 1.2] </td>
-   <td style="text-align:left;"> [-4.001, -0.656] </td>
-   <td style="text-align:left;"> [-3.837, -0.491] </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> V2 </td>
-   <td style="text-align:left;"> [0.831, 1.16] </td>
-   <td style="text-align:left;"> [0.792, 1.288] </td>
-   <td style="text-align:left;"> [-4.824, -1.298] </td>
-   <td style="text-align:left;"> [-3.87, -0.508] </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> V3 </td>
-   <td style="text-align:left;"> [0.872, 1.142] </td>
-   <td style="text-align:left;"> [0.833, 1.2] </td>
-   <td style="text-align:left;"> [-3.546, -0.315] </td>
-   <td style="text-align:left;"> [-3.196, 0.303] </td>
-  </tr>
-<tr>
-<td style="text-align:left;"> V4 </td>
-   <td style="text-align:left;"> [0.849, 1.146] </td>
-   <td style="text-align:left;"> [0.818, 1.187] </td>
-   <td style="text-align:left;"> [-4.248, -0.821] </td>
-   <td style="text-align:left;"> [-3.831, -0.389] </td>
-  </tr>
-</tbody>
-<tfoot>
-<tr><td style="padding: 0; " colspan="100%"><span style="font-style: italic;">Note: </span></td></tr>
-<tr><td style="padding: 0; " colspan="100%">
-<sup></sup> Results from 1000 simulated datasets with 300 respondents (theta mean = 0.68, SD = 1.54).</td></tr>
+<sup></sup> MSQ values based on conditional calculations (n = 300).<br>                                Simulation based thresholds based on 1000 simulated datasets.</td></tr>
 </tfoot>
 </table>
 </div>
 </div>
 <p>The function <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitPlot.html">RIgetfitPlot()</a></code> uses the package <code>ggdist</code> to plot the distribution of fit values from the simulation results.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitPlot.html">RIgetfitPlot</a></span><span class="op">(</span><span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIgetfitPlot.html">RIgetfitPlot</a></span><span class="op">(</span><span class="va">itemfit_sim</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
 <div>
-<figure class="figure"><p><img src="simcutoffs_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="1050"></p>
+<figure class="figure"><p><img src="simcutoffs_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="1050"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>As you can see, there is some variation in the different fit metrics across the items, which highlights the need for indicating this in the <code><a href="https://rdrr.io/pkg/RISEkbmRasch/man/RIitemfitPCM.html">RIitemfitPCM()</a></code> table with separate cutoff values for all items/metrics. Colors in the plot are for 1st/99th percentile, dots are median values.</p>
-</section><section id="session-info" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="session-info">
-<span class="header-section-number">4</span> Session info</h2>
+</section><section id="visualizing-conditional-fit" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="visualizing-conditional-fit">
+<span class="header-section-number">4</span> Visualizing conditional fit</h2>
+<p>As a side note, a graphical representation of conditional item fit across class intervals <span class="citation" data-cites="buchardt_visualizing_2023">(<a href="#ref-buchardt_visualizing_2023" role="doc-biblioref">Buchardt et al., 2023</a>)</span> can be helpful to further analyze our observed data.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ERRTG/RASCHplot/">RASCHplot</a></span><span class="op">)</span> <span class="co"># devtools::install_github("ERRTG/RASCHplot")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/RASCHplot/man/CICCplot.html">CICCplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/eRm/man/PCM.html">PCM</a></span><span class="op">(</span><span class="va">pcmdat2</span><span class="op">)</span>, which.item <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, grid.items <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="simcutoffs_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="1050"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="session-info" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="session-info">
+<span class="header-section-number">5</span> Session info</h2>
+<div class="cell">
+<details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output cell-output-stdout">
 <pre><code>R version 4.4.1 (2024-06-14)
 Platform: aarch64-apple-darwin20
@@ -534,66 +486,73 @@ attached base packages:
  [8] datasets  methods   base     
 
 other attached packages:
- [1] ggdist_3.3.2         doParallel_1.0.17    iterators_1.0.14    
- [4] foreach_1.5.2        RISEkbmRasch_0.2.1.1 janitor_2.2.0       
- [7] iarm_0.4.3           hexbin_1.28.3        catR_3.17           
-[10] glue_1.7.0           ggrepel_0.9.5        patchwork_1.2.0     
-[13] reshape_0.8.9        matrixStats_1.3.0    psychotree_0.16-1   
-[16] psychotools_0.7-4    partykit_1.2-21      mvtnorm_1.2-5       
-[19] libcoin_1.0-10       psych_2.4.6.26       mirt_1.42           
-[22] lattice_0.22-6       eRm_1.0-6            lubridate_1.9.3     
-[25] forcats_1.0.0        stringr_1.5.1        dplyr_1.1.4         
-[28] purrr_1.0.2          readr_2.1.5          tidyr_1.3.1         
-[31] tibble_3.2.1         ggplot2_3.5.1        tidyverse_2.0.0     
-[34] kableExtra_1.4.0     formattable_0.2.1   
+ [1] RASCHplot_0.1.0    ggdist_3.3.2       doParallel_1.0.17  iterators_1.0.14  
+ [5] foreach_1.5.2      RISEkbmRasch_0.2.2 janitor_2.2.0      iarm_0.4.3        
+ [9] hexbin_1.28.3      catR_3.17          glue_1.7.0         ggrepel_0.9.5     
+[13] patchwork_1.2.0    reshape_0.8.9      matrixStats_1.3.0  psychotree_0.16-1 
+[17] psychotools_0.7-4  partykit_1.2-21    mvtnorm_1.2-5      libcoin_1.0-10    
+[21] psych_2.4.6.26     mirt_1.42          lattice_0.22-6     eRm_1.0-6         
+[25] lubridate_1.9.3    forcats_1.0.0      stringr_1.5.1      dplyr_1.1.4       
+[29] purrr_1.0.2        readr_2.1.5        tidyr_1.3.1        tibble_3.2.1      
+[33] ggplot2_3.5.1      tidyverse_2.0.0    kableExtra_1.4.0   formattable_0.2.1 
 
 loaded via a namespace (and not attached):
-  [1] RColorBrewer_1.1-3   vcd_1.4-12           rstudioapi_0.16.0   
-  [4] audio_0.1-11         jsonlite_1.8.8       magrittr_2.0.3      
-  [7] farver_2.1.2         rmarkdown_2.27       vctrs_0.6.5         
- [10] base64enc_0.1-3      htmltools_0.5.8.1    distributional_0.4.0
- [13] curl_5.2.1           cellranger_1.1.0     Formula_1.2-5       
- [16] dcurver_0.9.2        parallelly_1.38.0    htmlwidgets_1.6.4   
- [19] plyr_1.8.9           testthat_3.2.1.1     zoo_1.8-12          
- [22] lifecycle_1.0.4      pkgconfig_2.0.3      Matrix_1.7-0        
- [25] R6_2.5.1             fastmap_1.2.0        snakecase_0.11.1    
- [28] future_1.34.0        digest_0.6.36        colorspace_2.1-1    
- [31] rprojroot_2.0.4      Hmisc_5.1-3          vegan_2.6-6.1       
- [34] labeling_0.4.3       progressr_0.14.0     fansi_1.0.6         
- [37] timechange_0.3.0     mgcv_1.9-1           compiler_4.4.1      
- [40] here_1.0.1           vcdExtra_0.8-5       withr_3.0.1         
- [43] htmlTable_2.4.3      backports_1.5.0      relimp_1.0-5        
- [46] R.utils_2.12.3       MASS_7.3-61          sessioninfo_1.2.2   
- [49] GPArotation_2024.3-1 permute_0.9-7        tools_4.4.1         
- [52] foreign_0.8-87       lmtest_0.9-40        future.apply_1.11.2 
- [55] nnet_7.3-19          quadprog_1.5-8       R.oo_1.26.0         
- [58] nlme_3.1-165         inum_1.0-5           checkmate_2.3.2     
- [61] cluster_2.1.6        generics_0.1.3       gtable_0.3.5        
- [64] RPushbullet_0.3.4    tzdb_0.4.0           R.methodsS3_1.8.2   
- [67] ca_0.71.1            data.table_1.15.4    hms_1.1.3           
- [70] xml2_1.3.6           Deriv_4.1.3          utf8_1.2.4          
- [73] pillar_1.9.0         splines_4.4.1        survival_3.7-0      
- [76] tidyselect_1.2.1     pbapply_1.7-2        knitr_1.48          
- [79] gridExtra_2.3        svglite_2.1.3        xfun_0.46           
- [82] gnm_1.1-5            brio_1.1.5           stringi_1.8.4       
- [85] yaml_2.3.10          evaluate_0.24.0      codetools_0.2-20    
- [88] beepr_2.0            cli_3.6.3            rpart_4.1.23        
- [91] qvcalc_1.0.3         systemfonts_1.1.0    munsell_0.5.1       
- [94] readxl_1.4.3         Rcpp_1.0.13          globals_0.16.3      
- [97] listenv_0.9.1        viridisLite_0.4.2    SimDesign_2.16      
-[100] scales_1.3.0         rlang_1.1.4          mnormt_2.1.1        </code></pre>
+  [1] later_1.3.2          splines_4.4.1        R.oo_1.26.0         
+  [4] cellranger_1.1.0     rpart_4.1.23         lifecycle_1.0.4     
+  [7] rstatix_0.7.2        rprojroot_2.0.4      globals_0.16.3      
+ [10] MASS_7.3-61          backports_1.5.0      magrittr_2.0.3      
+ [13] vcd_1.4-12           Hmisc_5.1-3          rmarkdown_2.27      
+ [16] yaml_2.3.10          httpuv_1.6.15        sessioninfo_1.2.2   
+ [19] cowplot_1.1.3        pbapply_1.7-2        RColorBrewer_1.1-3  
+ [22] abind_1.4-5          audio_0.1-11         quadprog_1.5-8      
+ [25] R.utils_2.12.3       nnet_7.3-19          listenv_0.9.1       
+ [28] testthat_3.2.1.1     RPushbullet_0.3.4    vegan_2.6-6.1       
+ [31] parallelly_1.38.0    svglite_2.1.3        permute_0.9-7       
+ [34] codetools_0.2-20     DT_0.33              xml2_1.3.6          
+ [37] tidyselect_1.2.1     farver_2.1.2         base64enc_0.1-3     
+ [40] jsonlite_1.8.8       progressr_0.14.0     Formula_1.2-5       
+ [43] survival_3.7-0       systemfonts_1.1.0    tools_4.4.1         
+ [46] gnm_1.1-5            Rcpp_1.0.13          mnormt_2.1.1        
+ [49] gridExtra_2.3        xfun_0.46            here_1.0.1          
+ [52] mgcv_1.9-1           distributional_0.4.0 ca_0.71.1           
+ [55] withr_3.0.1          beepr_2.0            fastmap_1.2.0       
+ [58] fansi_1.0.6          digest_0.6.36        mime_0.12           
+ [61] timechange_0.3.0     R6_2.5.1             colorspace_2.1-1    
+ [64] R.methodsS3_1.8.2    inum_1.0-5           utf8_1.2.4          
+ [67] generics_0.1.3       data.table_1.15.4    SimDesign_2.16      
+ [70] htmlwidgets_1.6.4    pkgconfig_2.0.3      gtable_0.3.5        
+ [73] lmtest_0.9-40        brio_1.1.5           htmltools_0.5.8.1   
+ [76] carData_3.0-5        scales_1.3.0         corrplot_0.92       
+ [79] snakecase_0.11.1     knitr_1.48           rstudioapi_0.16.0   
+ [82] reshape2_1.4.4       tzdb_0.4.0           checkmate_2.3.2     
+ [85] nlme_3.1-165         curl_5.2.1           zoo_1.8-12          
+ [88] cachem_1.1.0         relimp_1.0-5         vcdExtra_0.8-5      
+ [91] foreign_0.8-87       pillar_1.9.0         vctrs_0.6.5         
+ [94] promises_1.3.0       ggpubr_0.6.0         car_3.1-2           
+ [97] xtable_1.8-4         Deriv_4.1.3          cluster_2.1.6       
+[100] dcurver_0.9.2        GPArotation_2024.3-1 htmlTable_2.4.3     
+[103] evaluate_0.24.0      cli_3.6.3            compiler_4.4.1      
+[106] rlang_1.1.4          future.apply_1.11.2  ggsignif_0.6.4      
+[109] labeling_0.4.3       plyr_1.8.9           stringi_1.8.4       
+[112] viridisLite_0.4.2    munsell_0.5.1        Matrix_1.7-0        
+[115] qvcalc_1.0.3         hms_1.1.3            future_1.34.0       
+[118] shiny_1.9.1          broom_1.0.6          memoise_2.0.1       
+[121] ggstance_0.3.7       readxl_1.4.3        </code></pre>
 </div>
 </div>
-</section><section id="references" class="level2" data-number="5">
+</section><section id="references" class="level2" data-number="6">
 
 
 <!-- -->
 
 
 </section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">
-5 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+6 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
 <div id="ref-buchardt_visualizing_2023" class="csl-entry" role="listitem">
 Buchardt, A.-S., Christensen, K. B., &amp; Jensen, N. (2023). Visualizing <span>Rasch</span> item fit using conditional item characteristic curves in <span>R</span>. <em>Psychological Test and Assessment Modeling</em>, <em>65</em>(2), 206–219.
+</div>
+<div id="ref-christensen_item_2012" class="csl-entry" role="listitem">
+Christensen, K. B., &amp; Kreiner, S. (2012). Item <span>Fit</span> <span>Statistics</span>. In <em>Rasch <span>Models</span> in <span>Health</span></em> (pp. 83–104). John Wiley &amp; Sons, Ltd. <a href="https://doi.org/10.1002/9781118574454.ch5">https://doi.org/10.1002/9781118574454.ch5</a>
 </div>
 <div id="ref-christensen2017" class="csl-entry" role="listitem">
 Christensen, K. B., Makransky, G., &amp; Horton, M. (2017). Critical Values for Yen<span>’</span>s Q3: Identification of Local Dependence in the Rasch Model Using Residual Correlations. <em>Applied Psychological Measurement</em>, <em>41</em>(3), 178–194. <a href="https://doi.org/10.1177/0146621616677520">https://doi.org/10.1177/0146621616677520</a>
@@ -605,12 +564,12 @@ Müller, M. (2020). Item fit statistics for <span>Rasch</span> analysis: Can we 
   author = {Johansson, Magnus},
   title = {Simulation Based Cutoff Values for {Rasch} Item Fit and
     Residual Correlations},
-  date = {2024-08-17},
+  date = {2024-08-19},
   url = {https://pgmj.github.io/simcutoffs.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Johansson, M. (2024, August 17). <em>Simulation based cutoff values for
+Johansson, M. (2024, August 19). <em>Simulation based cutoff values for
 Rasch item fit and residual correlations</em>. <a href="https://pgmj.github.io/simcutoffs.html">https://pgmj.github.io/simcutoffs.html</a>
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -1084,137 +1043,128 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><script src="https://giscus.app/client.js" data-repo="pgmj/pgmj.github.io" data-repo-id="R_kgDOGtKrEA" data-category="General" data-category-id="DIC_kwDOGtKrEM4CdX5K" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
 </script><input type="hidden" id="giscus-base-theme" value="light"><input type="hidden" id="giscus-alt-theme" value="dark"><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb19" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Simulation based cutoff values for Rasch item fit and residual correlations"</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> </span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">  name: Magnus Johansson</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: RISE Research Institutes of Sweden</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: https://www.ri.se/en/shic/</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">  orcid: 0000-0003-1669-592X</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="an">citation:</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">  type: 'webpage'</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="an">csl:</span><span class="co"> apa.csl</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> </span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: 72</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: true</span></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="an">bibliography:</span><span class="co"> simcut.bib</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Background</span></span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>It has long been known that rule-of-thumb cutoff values in psychometrics are not optimal (and often misguiding), and that simulations are helpful for determining appropriate cutoff values based on the properties of the sample and items being analyzed. This actually goes for factor analysis, as well as item response theory and Rasch measurement theory. In recent years, we have seen a number of interactive Shiny apps made available to help solve this issue, which is clearly a step in the right direction.</span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>My approach here is to write functions to help users easily run these simulations on their computers in R, when they do their psychometric analysis.</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>This blog post will be incorporated into the <span class="co">[</span><span class="ot">`RISEkbmRasch` vignette</span><span class="co">](https://pgmj.github.io/raschrvignette/RaschRvign.html)</span> at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.</span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>Finally, I want to thank Karl Bang Christensen for a very nice presentation on item fit and simulations at the Scandinavian Applied Measurement Conference, which made me think about these things a lot until I came up with the idea to implement these functions.</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Residual correlations</span></span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>This is the simpler of the two functions that have been added. It is based on the simulation study by Christensen et al. <span class="co">[</span><span class="ot">-@christensen2017</span><span class="co">]</span>.</span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RISEkbmRasch)</span>
-<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>For simplicity, we will use the dataset <span class="in">`pcmdat2`</span> included in the <span class="in">`eRm`</span> package.</span>
-<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>res_cor <span class="ot">&lt;-</span> <span class="fu">RIgetResidCor</span>(pcmdat2, <span class="at">iterations =</span> <span class="dv">1000</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>While we are mostly interested in the 99% percentile from the simulation (<span class="in">`p99`</span> below), we will save the output of the simulation into the list object <span class="in">`res_cor`</span>.</span>
-<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(res_cor)</span>
-<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.</span>
-<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a> The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. Based on the simulations I have made so far, it seems that 1000 iterations may be sufficient for a reasonably accurate 99% percentile value (<span class="in">`p99`</span>) value. For more detailed information on the topic I refer to Christensen et al. <span class="co">[</span><span class="ot">-@christensen2017</span><span class="co">]</span>.</span>
-<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(pcmdat2, <span class="at">cutoff =</span> res_cor<span class="sc">$</span>p99)</span>
-<span id="cb19-68"><a href="#cb19-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-69"><a href="#cb19-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-70"><a href="#cb19-70" aria-hidden="true" tabindex="-1"></a>We can see that items 3 and 4 have a residual correlation between them that is quite a bit above the threshold value.</span>
-<span id="cb19-71"><a href="#cb19-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-72"><a href="#cb19-72" aria-hidden="true" tabindex="-1"></a>Since the results of the simulation is included in the output object, we can investigate it further.</span>
-<span id="cb19-73"><a href="#cb19-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-76"><a href="#cb19-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-77"><a href="#cb19-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
-<span id="cb19-78"><a href="#cb19-78" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(res_cor<span class="sc">$</span>results<span class="sc">$</span>diff, <span class="at">breaks =</span> <span class="dv">50</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>)</span>
-<span id="cb19-79"><a href="#cb19-79" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res_cor<span class="sc">$</span>results<span class="sc">$</span>diff)</span>
-<span id="cb19-80"><a href="#cb19-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-81"><a href="#cb19-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-82"><a href="#cb19-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item fit</span></span>
-<span id="cb19-83"><a href="#cb19-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-84"><a href="#cb19-84" aria-hidden="true" tabindex="-1"></a>While conditional item fit is a huge step towards getting correct item fit values, no matter what the sample size is <span class="co">[</span><span class="ot">@muller_item_2020;@buchardt_visualizing_2023</span><span class="co">]</span>, we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.</span>
-<span id="cb19-85"><a href="#cb19-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-86"><a href="#cb19-86" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb19-87"><a href="#cb19-87" aria-hidden="true" tabindex="-1"></a>We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories) using 500 iterations took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).</span>
-<span id="cb19-88"><a href="#cb19-88" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb19-89"><a href="#cb19-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-92"><a href="#cb19-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-93"><a href="#cb19-93" aria-hidden="true" tabindex="-1"></a>itemfit_sim <span class="ot">&lt;-</span> <span class="fu">RIgetfit</span>(pcmdat2, <span class="at">iterations =</span> <span class="dv">1000</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb19-94"><a href="#cb19-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-95"><a href="#cb19-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-96"><a href="#cb19-96" aria-hidden="true" tabindex="-1"></a>The output is a list object consisting of one dataframe per iteration. We can look at iteration 1:</span>
-<span id="cb19-99"><a href="#cb19-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-100"><a href="#cb19-100" aria-hidden="true" tabindex="-1"></a>itemfit_sim[[<span class="dv">1</span>]]</span>
-<span id="cb19-101"><a href="#cb19-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-102"><a href="#cb19-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-103"><a href="#cb19-103" aria-hidden="true" tabindex="-1"></a>This object can in turn be used with three different</span>
-<span id="cb19-104"><a href="#cb19-104" aria-hidden="true" tabindex="-1"></a>functions. Most importantly, you can use it with <span class="in">`RIitemfitPCM()`</span> to set</span>
-<span id="cb19-105"><a href="#cb19-105" aria-hidden="true" tabindex="-1"></a>cutoff values for both MSQ and ZSTD based on your sample size and item</span>
-<span id="cb19-106"><a href="#cb19-106" aria-hidden="true" tabindex="-1"></a>parameters. This uses the 1st and 99th percentile value from *all* items as cutoff</span>
-<span id="cb19-107"><a href="#cb19-107" aria-hidden="true" tabindex="-1"></a>for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future. <span class="in">`RIgetfitTable()`</span> will show the simulation based cutoff values from each item, see below.</span>
-<span id="cb19-108"><a href="#cb19-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-109"><a href="#cb19-109" aria-hidden="true" tabindex="-1"></a>Unfortunately, <span class="in">`RIitemfitRM()`</span> has not yet been updated to make use of simulation based cutoffs.</span>
-<span id="cb19-110"><a href="#cb19-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-113"><a href="#cb19-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-114"><a href="#cb19-114" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfitPCM</span>(pcmdat2, <span class="at">simcut =</span> <span class="cn">TRUE</span>, <span class="at">gf =</span> itemfit_sim)</span>
-<span id="cb19-115"><a href="#cb19-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-116"><a href="#cb19-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-117"><a href="#cb19-117" aria-hidden="true" tabindex="-1"></a>Values crossing the cutoff thresholds are automatically colorized red. The cutoff values used in the above table can be shown with <span class="in">`RIgetfitLoHi()`</span>.</span>
-<span id="cb19-118"><a href="#cb19-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-121"><a href="#cb19-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-122"><a href="#cb19-122" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitLoHi</span>(itemfit_sim)</span>
-<span id="cb19-123"><a href="#cb19-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-124"><a href="#cb19-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-125"><a href="#cb19-125" aria-hidden="true" tabindex="-1"></a>If you want to see a table with the individual item fit upper/lower cutoffs for all metrics,</span>
-<span id="cb19-126"><a href="#cb19-126" aria-hidden="true" tabindex="-1"></a>the function <span class="in">`RIgetfitTable()`</span> is used with the output object from <span class="in">`RIgetfit()`</span> as input. The table defaults to show 1st and 99th percentile values as lower/upper values.</span>
-<span id="cb19-127"><a href="#cb19-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-130"><a href="#cb19-130" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-131"><a href="#cb19-131" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitTable</span>(itemfit_sim)</span>
-<span id="cb19-132"><a href="#cb19-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-133"><a href="#cb19-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-134"><a href="#cb19-134" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`RIgetfitPlot()`</span> uses the package <span class="in">`ggdist`</span> to plot the</span>
-<span id="cb19-135"><a href="#cb19-135" aria-hidden="true" tabindex="-1"></a>distribution of fit values from the simulation results.</span>
-<span id="cb19-136"><a href="#cb19-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-139"><a href="#cb19-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-140"><a href="#cb19-140" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 7</span></span>
-<span id="cb19-141"><a href="#cb19-141" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitPlot</span>(itemfit_sim)</span>
-<span id="cb19-142"><a href="#cb19-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-143"><a href="#cb19-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-144"><a href="#cb19-144" aria-hidden="true" tabindex="-1"></a>As you can see, there is some variation in the different fit metrics across the items, which highlights the need for indicating this in the <span class="in">`RIitemfitPCM()`</span> table with separate cutoff values for all items/metrics. Colors in the plot are for 1st/99th percentile, dots are median values.</span>
-<span id="cb19-145"><a href="#cb19-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-146"><a href="#cb19-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
-<span id="cb19-147"><a href="#cb19-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-150"><a href="#cb19-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-151"><a href="#cb19-151" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb19-152"><a href="#cb19-152" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-153"><a href="#cb19-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-154"><a href="#cb19-154" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
-<span id="cb19-155"><a href="#cb19-155" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode" id="cb17" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Simulation based cutoff values for Rasch item fit and residual correlations"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> </span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">  name: Magnus Johansson</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: RISE Research Institutes of Sweden</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: https://www.ri.se/en/shic/</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">  orcid: 0000-0003-1669-592X</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="an">citation:</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">  type: 'webpage'</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="an">csl:</span><span class="co"> apa.csl</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> </span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: 72</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: true</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="an">bibliography:</span><span class="co"> simcut.bib</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Background</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>It has long been known that rule-of-thumb cutoff values in psychometrics are not optimal (and often misguiding), and that simulations are helpful for determining appropriate cutoff values based on the properties of the sample and items being analyzed. This actually goes for factor analysis, as well as item response theory and Rasch measurement theory. In recent years, we have seen a number of interactive Shiny apps made available to help solve this issue, which is clearly a step in the right direction.</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>My approach here is to write functions to help users easily run these simulations on their computers in R, when they do their psychometric analysis.</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>This blog post will be incorporated into the <span class="co">[</span><span class="ot">`RISEkbmRasch` vignette</span><span class="co">](https://pgmj.github.io/raschrvignette/RaschRvign.html)</span> at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>Finally, I want to thank Karl Bang Christensen for a very nice presentation on item fit and simulations at the Scandinavian Applied Measurement Conference, which made me think about these things a lot until I came up with the idea to implement these functions.</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Residual correlations</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>This is the simpler of the two functions that have been added. It is based on the simulation study by Christensen et al. <span class="co">[</span><span class="ot">-@christensen2017</span><span class="co">]</span>.</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RISEkbmRasch)</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>For simplicity, we will use the dataset <span class="in">`pcmdat2`</span> included in the <span class="in">`eRm`</span> package.</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>res_cor <span class="ot">&lt;-</span> <span class="fu">RIgetResidCor</span>(pcmdat2, <span class="at">iterations =</span> <span class="dv">1000</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>While we are mostly interested in the 99% percentile from the simulation (<span class="in">`p99`</span> below), we will save the output of the simulation into the list object <span class="in">`res_cor`</span>.</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(res_cor)</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a>The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.</span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a> The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. Based on the simulations I have made so far, it seems that 1000 iterations may be sufficient for a reasonably accurate 99% percentile value (<span class="in">`p99`</span>) value. For more detailed information on the topic I refer to Christensen et al. <span class="co">[</span><span class="ot">-@christensen2017</span><span class="co">]</span>.</span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a><span class="fu">RIresidcorr</span>(pcmdat2, <span class="at">cutoff =</span> res_cor<span class="sc">$</span>p99)</span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a>We can see that items 3 and 4 have a residual correlation between them that is quite a bit above the threshold value.</span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>Since the results of the simulation is included in the output object, we can investigate it further.</span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(res_cor<span class="sc">$</span>results<span class="sc">$</span>diff, <span class="at">breaks =</span> <span class="dv">50</span>, <span class="at">col =</span> <span class="st">"lightblue"</span>)</span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(res_cor<span class="sc">$</span>results<span class="sc">$</span>diff)</span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conditional item fit</span></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>While conditional item fit is a huge step towards getting correct item fit values <span class="co">[</span><span class="ot">@christensen_item_2012;@muller_item_2020;@buchardt_visualizing_2023</span><span class="co">]</span>, we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.</span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a>We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories) using 500 iterations took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).</span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a>itemfit_sim <span class="ot">&lt;-</span> <span class="fu">RIgetfit</span>(pcmdat2, <span class="at">iterations =</span> <span class="dv">1000</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>The output is a list object consisting of one dataframe per iteration. We can look at iteration 1:</span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a>itemfit_sim[[<span class="dv">1</span>]]</span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a>This object can in turn be used with three different</span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a>functions. Most importantly, you can use it with <span class="in">`RIitemfit()`</span> to set</span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a>cutoff values for both MSQ and ZSTD based on your sample size and item</span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a>parameters. This uses the 1st and 99th percentile values for each individual item.</span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfit</span>(pcmdat2, <span class="at">simcut =</span> itemfit_sim)</span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a>The function <span class="in">`RIgetfitPlot()`</span> uses the package <span class="in">`ggdist`</span> to plot the</span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>distribution of fit values from the simulation results.</span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitPlot</span>(itemfit_sim)</span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualizing conditional fit</span></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>As a side note, a graphical representation of conditional item fit across class intervals <span class="co">[</span><span class="ot">@buchardt_visualizing_2023</span><span class="co">]</span> can be helpful to further analyze our observed data.</span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RASCHplot) <span class="co"># devtools::install_github("ERRTG/RASCHplot")</span></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="fu">CICCplot</span>(<span class="fu">PCM</span>(pcmdat2), <span class="at">which.item =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">grid.items =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

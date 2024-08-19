@@ -69,9 +69,9 @@ hist(res_cor$results$diff, breaks = 50, col = "lightblue")
 summary(res_cor$results$diff)
 ```
 
-## Item fit
+## Conditional item fit
 
-While conditional item fit is a huge step towards getting correct item fit values, no matter what the sample size is [@muller_item_2020;@buchardt_visualizing_2023], we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.
+While conditional item fit is a huge step towards getting correct item fit values [@christensen_item_2012;@muller_item_2020;@buchardt_visualizing_2023], we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.
 
 ::: {.callout-note}
 We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories) using 500 iterations took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).
@@ -87,39 +87,30 @@ itemfit_sim[[1]]
 ```
 
 This object can in turn be used with three different
-functions. Most importantly, you can use it with `RIitemfitPCM()` to set
+functions. Most importantly, you can use it with `RIitemfit()` to set
 cutoff values for both MSQ and ZSTD based on your sample size and item
-parameters. This uses the 1st and 99th percentile value from *all* items as cutoff
-for all items. This is not ideal, but was the easiest to implement. There will be "custom" cutoffs for every item in the near future. `RIgetfitTable()` will show the simulation based cutoff values from each item, see below.
-
-Unfortunately, `RIitemfitRM()` has not yet been updated to make use of simulation based cutoffs.
+parameters. This uses the 1st and 99th percentile values for each individual item.
 
 ```{r}
-RIitemfitPCM(pcmdat2, simcut = TRUE, gf = itemfit_sim)
-```
-
-Values crossing the cutoff thresholds are automatically colorized red. The cutoff values used in the above table can be shown with `RIgetfitLoHi()`.
-
-```{r}
-RIgetfitLoHi(itemfit_sim)
-```
-
-If you want to see a table with the individual item fit upper/lower cutoffs for all metrics,
-the function `RIgetfitTable()` is used with the output object from `RIgetfit()` as input. The table defaults to show 1st and 99th percentile values as lower/upper values.
-
-```{r}
-RIgetfitTable(itemfit_sim)
+RIitemfit(pcmdat2, simcut = itemfit_sim)
 ```
 
 The function `RIgetfitPlot()` uses the package `ggdist` to plot the
 distribution of fit values from the simulation results.
 
 ```{r}
-#| fig-height: 7
 RIgetfitPlot(itemfit_sim)
 ```
 
-As you can see, there is some variation in the different fit metrics across the items, which highlights the need for indicating this in the `RIitemfitPCM()` table with separate cutoff values for all items/metrics. Colors in the plot are for 1st/99th percentile, dots are median values.
+## Visualizing conditional fit
+
+As a side note, a graphical representation of conditional item fit across class intervals [@buchardt_visualizing_2023] can be helpful to further analyze our observed data.
+
+```{r}
+library(RASCHplot) # devtools::install_github("ERRTG/RASCHplot")
+CICCplot(PCM(pcmdat2), which.item = 1:4, grid.items = TRUE)
+```
+
 
 ## Session info
 
