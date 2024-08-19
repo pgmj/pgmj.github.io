@@ -74,7 +74,7 @@ summary(res_cor$results$diff)
 While conditional item fit is a huge step towards getting correct item fit values [@christensen_item_2012;@muller_item_2020;@buchardt_visualizing_2023], we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.
 
 ::: {.callout-note}
-We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories) using 500 iterations took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).
+We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories per item) using 500 iterations took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).
 :::
 
 ```{r}
@@ -89,7 +89,8 @@ itemfit_sim[[1]]
 This object can in turn be used with three different
 functions. Most importantly, you can use it with `RIitemfit()` to set
 cutoff values for both MSQ and ZSTD based on your sample size and item
-parameters. This uses the 1st and 99th percentile values for each individual item.
+parameters. `RIitemfit()` uses the .05 and 99.5 percentile values for each individual item.
+The cutoff limit might be added as a user option later.
 
 ```{r}
 RIitemfit(pcmdat2, simcut = itemfit_sim)

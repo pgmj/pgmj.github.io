@@ -70,7 +70,7 @@ RIitemfit(pcmdat2)
 RIitemfit(raschdat1)
 
 
-RIgetfit3 <- function(data, iterations, cpu = 4) {
+RIgetfit <- function(data, iterations, cpu = 4) {
   
   sample_n <- nrow(data)
   
@@ -179,60 +179,30 @@ simfit <- RIgetfit3(pcmdat2, 1000, cpu = 8)
 
 RIitemfit(pcmdat2, simcut = simfit)
 
-
-RIgetfitTable <- function(gf, output = "table", limit = "99", tbl_width = 75) {
+RIgetfitPlot <- function(simcut) {
+  require(ggdist)
   
-  iterations <- length(gf) - 3
+  iterations <- length(simcut) - 3
   
-  if (limit == "max") {
+    bind_rows(simcut[1:(length(simcut)-3)]) %>%
+      pivot_longer(contains("MSQ"),
+                   names_to = "statistic",
+                   values_to = "Value") %>%
+      
+      ggplot(aes(x = Value, y = Item, slab_fill = after_stat(level))) +
+      stat_dotsinterval(quantiles = iterations, point_interval = median_qi,
+                        layout = "weave", slab_color = NA,
+                        .width = c(0.66, 0.99)) +
+      labs(x = "Conditional MSQ",
+           y = "Item") +
+      scale_color_manual(values = scales::brewer_pal()(3)[-1], aesthetics = "slab_fill", guide = "none") +
+      labs(caption = str_wrap(paste0("Note: Results from ",iterations," simulated datasets with ",
+                                     simcut$sample_n," respondents (mean theta = ", round(simcut$sample_mean,2),", SD = ",round(simcut$sample_sd,2),")."))
+      ) +
+      facet_wrap(~statistic, ncol = 2) +
+      scale_x_continuous(breaks = seq(0.5,1.5,0.1), minor_breaks = NULL) +
+      theme_minimal()
     
-    fit_table <-
-      bind_rows(gf[1:(length(gf)-3)]) %>%
-      dplyr::rename(Item = item) %>%
-      group_by(Item) %>%
-      summarise(`Infit MSQ` = paste0("[",round(min(infit_msq),3),", ",round(max(infit_msq),3),"]"),
-                `Outfit MSQ` = paste0("[",round(min(outfit_msq),3),", ",round(max(outfit_msq),3),"]"),
-                `Infit ZSTD` = paste0("[",round(min(infit_zstd),3),", ",round(max(infit_zstd),3),"]"),
-                `Outfit ZSTD` = paste0("[",round(min(outfit_zstd),3),", ",round(max(outfit_zstd),3),"]")
-      ) %>%
-      mutate(across(where(is.numeric), ~ round(.x, 3)))
-    
-  } else if (limit == "99") {
-    
-    fit_table <-
-      bind_rows(gf[1:(length(gf)-3)]) %>%
-      dplyr::rename(Item = item) %>%
-      group_by(Item) %>%
-      summarise(`Infit MSQ` = paste0("[",round(quantile(infit_msq, .01),3),", ",round(quantile(infit_msq, .99),3),"]"),
-                `Outfit MSQ` = paste0("[",round(quantile(outfit_msq, .01),3),", ",round(quantile(outfit_msq, .99),3),"]"),
-                `Infit ZSTD` = paste0("[",round(quantile(infit_zstd, .01),3),", ",round(quantile(infit_zstd, .99),3),"]"),
-                `Outfit ZSTD` = paste0("[",round(quantile(outfit_zstd, .01),3),", ",round(quantile(outfit_zstd, .99),3),"]")
-      )
-  }
-  
-  if (output == "table"){
-    kbl_rise(fit_table, tbl_width = tbl_width) %>%
-      footnote(general = paste0("Results from ",iterations," simulated datasets with ",
-                                gf$sample_n," respondents (theta mean = ", round(gf$sample_mean,2),", SD = ",round(gf$sample_sd,2),")."))
-  } else if (output == "quarto") {
-    knitr::kable(fit_table) %>%
-      add_footnote(paste0("Results from ",iterations," simulated datasets with ",
-                          gf$sample_n," respondents (theta mean = ", round(gf$sample_mean,2),", SD = ",round(gf$sample_sd,2),")."),
-                   notation = "none")
-  } else if (output == "dataframe") {
-    
-    bind_rows(gf[1:(length(gf)-3)]) %>%
-      dplyr::rename(Item = item) %>%
-      group_by(Item) %>%
-      summarise(infit_msq_lo = round(quantile(infit_msq, .01),3),
-                infit_msq_hi = round(quantile(infit_msq, .99),3),
-                outfit_msq_lo = round(quantile(outfit_msq, .01),3),
-                outfit_msq_hi = round(quantile(outfit_msq, .99),3),
-                infit_zstd_lo = round(quantile(infit_zstd, .01),3),
-                infit_zstd_hi = round(quantile(infit_zstd, .99),3),
-                outfit_zstd_lo = round(quantile(outfit_zstd, .01),3),
-                outfit_zstd_hi = round(quantile(outfit_zstd, .99),3)
-      )
-  }
 }
 
+RIgetfitPlot(simfit)
