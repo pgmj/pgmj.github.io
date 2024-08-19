@@ -351,7 +351,9 @@ We will begin by looking at unidimensionality, response categories, and targetin
 
 When unidimensionality and response categories are found to work adequately, we will move on to invariance testing. And when/if invariance looks good, we can investigate reliability/measurement uncertainties.
 
-In the tabset-panel below, each tab will have some explanatory text.
+::: {.callout-note}
+In the tabset-panel below, each tab will have some explanatory text. Remember to scroll back up and click on all tabs.
+:::
 
 ```{r}
 #| column: margin
@@ -362,18 +364,30 @@ RIlistItemsMargin(df, fontsize = 13)
 ::: panel-tabset
 ### Item fit
 
-Since the distribution of item fit statistics are not known, we need to make simulations to get appropriate cutoff threshold values. Notably, the new (since version 0.2.2, dated 2024-08-19) `RIitemfit()` function uses conditional outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020]. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items.
-
-The simulation will take quite a bit of time to run if you have complex data/many participants, and/or choose to use many iterations
-
 ```{r}
-simfit <- RIgetfit(df, iterations = 1000, cpu = 8) # save output into object `simfit` (arbitrary name)
+simfit <- RIgetfit(df, iterations = 1000, cpu = 8) # save simulation output into object `simfit` (arbitrary name)
 RIitemfit(df, simcut = simfit)
 ```
 
-`RIitemfit()` works with both dichotomous and polytomous data.
+`RIitemfit()` works with both dichotomous and polytomous data (no option needed).
 
-A low item fit value (sometimes referred to as "overfitting" the Rasch model) indicates that responses are too predictable and provide little information. This is often the case for items that are very general/broad in scope in relation to the latent variable. A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time or is ambiguous for other reasons.
+Since the distribution of item fit statistics are not known, we need to make simulations to get appropriate cutoff threshold values for the current sample and items. Important to note is that the new (since version 0.2.2, dated 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020]. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this.
+
+Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data.
+
+The simulation will take quite a bit of time to run if you have complex data/many participants, and/or choose to use many iterations. While insufficient testing has been done to make any strong recommendations, I think 1000 iterations is a decent starting point, and certainly no less than 500.
+
+For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 145 seconds (~2.5 minutes) to run on 8 cpu cores (Macbook Pro M1 Max).
+
+I'll cite Ostini & Nering [-@ostini_polytomous_2006] on the description of outfit and infit (pages 86-87):
+
+> Response residuals can be summed over respondents to obtain an item fit measure. Generally, the accumulation is done with squared standardized residuals, which are then divided by the total number of respondents to obtain a mean square statistic. In this form, the statistic is referred to as an **unweighted mean square** (Masters & Wright, 1997; Wright & Masters, 1982) and has also come to be known as **“outfit”** (Smith, Schumacker, & Bush, 1998; Wu, 1997), perhaps because it is highly sensitive to outlier responses (Adams & Khoo, 1996; Smith et al., 1998; Wright & Masters, 1982).
+
+> A weighted version of this statistic was developed to counteract its sensitivity to outliers (Smith, 2000). In its weighted form, the squared standardized residual is multiplied by the observed response variance and then divided by the sum of the item response variances. This is sometimes referred to as an **information weighted mean square** and has become known as **“infit”** (Smith et al., 1998; Wu, 1997).
+
+A low item fit value (sometimes referred to as "overfitting" the Rasch model) indicates that responses are too predictable and provide little information. This is often the case for items that are very general/broad in scope in relation to the latent variable.
+
+A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time or is ambiguous for other reasons.
 
 ### Conditional item fit curves
 
@@ -787,11 +801,26 @@ RIlistItemsMargin(df, fontsize = 13)
 ::: panel-tabset
 ### Item fit
 
-https://pgmj.github.io/simcutoffs.html
+```{r}
+simfit3 <- RIgetfit(df, iterations = 1000, cpu = 8) # save simulation output into object `simfit` (arbitrary name)
+RIitemfit(df, simcut = simfit3)
+```
+
+### CICC
+
+```{r}
+CICCplot(PCM(df),
+         which.item = c(1:3,7),
+         lower.groups = c(0,7,14,21,28),
+         grid.items = TRUE)
+```
 
 ### Residual correlations
 
-
+```{r}
+res_cor3 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
+RIresidcorr(df, cutoff = res_cor3$p99)
+```
 
 ### Targeting
 
@@ -804,24 +833,21 @@ RItargeting(df, bins = 45)
 
 ```{r}
 #| fig-height: 5
-RIitemHierarchy(df2)
+RIitemHierarchy(df)
 ```
 :::
 
 ### Analysis 3 comments
 
-No problematic residual correlations, but item 12 is a bit low in item fit.
+No problematic residual correlations remaining. Several items show misfit but we will end this sample analysis here and move on to show other functions.
 
-There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates.
-
-However, we will not modify the response categories for this sample/simple analysis, we only note that this is not ideal.
+There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates. However, we will not modify the response categories for this analysis, we only note that this is not workable and should be dealt with by trying variations of merged response categories to achieve better separation of threshold locations without disordering.
 
 ## Reliability
 
 ```{r}
 #| fig-height: 6
-RItif(df2)
-
+RItif(df)
 ```
 
 The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).
@@ -835,7 +861,7 @@ While 11.8% of respondents had a floor effect based on the raw sum scored data, 
 We can also look at how the respondents fit the Rasch model with these items. By default, `RIpfit()` outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented, and the curious analyst is suggested to look at the package [PerFit](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package).
 
 ```{r}
-RIpfit(df2)
+RIpfit(df)
 ```
 
 You can export the person fit values to a new variable in the dataframe by specifying `output = "dataframe"`, or if you just want the row numbers for respondents with deviant infit values, `output = "rowid"`.
@@ -843,7 +869,7 @@ You can export the person fit values to a new variable in the dataframe by speci
 You can also specify a grouping variable to visualize the person fit for different groups.
 
 ```{r}
-RIpfit(df2, group = dif.sex, output = "heatmap")
+RIpfit(df, group = dif.sex, output = "heatmap")
 
 ```
 
@@ -859,7 +885,7 @@ For this example, we'll use the non-parametric U3 statistic generalized to polyt
 #### U3poly
 ```{r}
 library(PerFit)
-pfit_u3poly <- U3poly(matrix = df2, 
+pfit_u3poly <- U3poly(matrix = df, 
                       Ncat = 5, # make sure to input number of response categories, not thresholds
                       IRT.PModel = "PCM")
 ```
@@ -878,6 +904,24 @@ flagged.resp(pfit_u3poly) %>%
 
 The dataframe shown under the tab `Flagged respondents` above contains a variable named `FlaggedID` which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit may affect results of Andersen's LR-test for DIF [@artner_simulation_2016].
 
+We can remove the misfitting persons to see how that affects item fit.
+
+```{r}
+misfits <- flagged.resp(pfit_u3poly) %>% 
+  pluck("Scores") %>% 
+  as.data.frame() %>% 
+  pull(FlaggedID)
+
+df %>% 
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname)) %>% 
+  filter(!rowname %in% misfits) %>% 
+  dplyr::select(!rowname) %>% 
+  RIitemfit(simcut = simfit3)
+```
+
+The same items are highlighted in red as when the misfitting persons were included in the analysis.
+
 ## Item parameters
 
 To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the `thetaEst()` function from the `catR` package. This is implemented in the function `RIestThetasOLD()`, see below for details.
@@ -885,13 +929,13 @@ To allow others (and oneself) to use the item parameters estimated for estimatio
 First, we'll output the parameters into a table.
 
 ```{r}
-RIitemparams(df2)
+RIitemparams(df)
 ```
 
 We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the `RIitemparams()` function with the option `detail = all`.
 
 ```{r}
-RIitemparams(df2, detail = "all")
+RIitemparams(df, detail = "all")
 ```
 
 The parameters can also be output to a dataframe or a file, using the option `output = "dataframe"` or `output = "file"`.
@@ -900,28 +944,26 @@ The parameters can also be output to a dataframe or a file, using the option `ou
 
 This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989].
 
-(An option will be added *later* to create this table based on only item parameters.)
+(An option will hopefully be added at some point to create this table based on only item parameters.)
 
 ```{r}
-RIscoreSE(df2)
+RIscoreSE(df)
 ```
-
-Note that if your transformation table does not show the full range of ordinal sum scores, you can try to increase the option `sdx` from the default setting of `4`. Also, if you find the the default range of logit scores is insufficient (there should be no duplicate values at the upper/lower limits), it can be adjusted by changing the option `score_range` (default is `c(-4,4)`).
 
 ### Ordinal/interval figure
 
 The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.
 
 ```{r}
-RIscoreSE(df2, output = "figure")
+RIscoreSE(df, output = "figure")
 ```
 
 ### Estimating interval level person scores
 
-Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). `RIestThetas()` by default uses WLE estimation based on item parameters from a partial credit model (PCM) and outputs a dataframe with person locations and measurement error on the logit scale.
+Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). `RIestThetas()` by default uses WLE estimation based on item parameters from a partial credit model (PCM) and outputs a dataframe with person locations (WLE) and measurement error (SEM) on the logit scale.
 
 ```{r}
-thetas <- RIestThetas(df2)
+thetas <- RIestThetas(df)
 
 head(thetas)
 ```
@@ -938,9 +980,9 @@ hist(thetas$WLE,
 ```
 
 
-`RIestThetasOLD()` can be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989]. Similarly to `RIscoreSE()` you can (and will often need to) change the range of logit scores, using the option `theta_range` (default is `c(-4,4)`).
+`RIestThetasOLD()` can be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation [@warm1989]. Similarly to `RIscoreSE()` you can (and may indeed need to) change the range of logit scores, using the option `theta_range`. The default is `c(-7,7)`, which should hopefully work in most circumstances.
 
-If you would like to use an existing item matrix, this code may be helpful:
+If you would like to use an existing item threshold location matrix, this code may be helpful:
 
 ```{r}
 itemParameters <- read_csv("itemParameters.csv") %>% 
@@ -961,15 +1003,15 @@ A custom theme function, `theme_rise()`, is included in the RISEkbmRasch package
 For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.
 
 ```{r}
-RIitemHierarchy(df2) +
+RIitemHierarchy(df) +
   theme_minimal() + # first apply the minimal theme to make the background transparent
   theme_rise(fontfamily = "Lato") # then apply theme_rise, which simplifies making changes to all plot elements
 ```
 
-As of package version 0.1.30.0, the `RItargeting()` function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the [NEWS](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300) file for more details. Since the `RItargeting()` function uses the `patchwork` library to combine plots, you can also make use of diverse functions that `patchwork` includes. For instance, you can set a title with a specific theme:
+As of package version 0.1.30.0, the `RItargeting()` function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the [NEWS](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300) file for more details. Since the `RItargeting()` function uses the `patchwork` library to combine plots, you can also make use of [the many functions that `patchwork` includes](https://patchwork.data-imaginist.com/articles/patchwork.html). For instance, you can set a title with a specific theme:
 
 ``` {r}
-RItargeting(df2) + plot_annotation(title = "Targeting", theme = theme_rise(fontfamily = "Arial"))
+RItargeting(df) + plot_annotation(title = "Targeting", theme = theme_rise(fontfamily = "Arial"))
 ```
 
 In order to change font for text *inside* plots (such as "t1" for thresholds) you will need to add an additional line of code.

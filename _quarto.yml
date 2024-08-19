@@ -14,7 +14,7 @@ website:
   announcement: 
     icon: info-circle
     dismissable: true
-    content: "**Note:** The RISEkbmRasch vignette has new sections on item fit visualization, LR DIF tests, and person fit. Also, item fit now uses conditional estimation."
+    content: "**Note:** The RISEkbmRasch vignette has new material on conditional item fit and simulation based cutoff values."
     type: primary
     position: below-navbar
   navbar: 
