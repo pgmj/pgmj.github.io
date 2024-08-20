@@ -39,7 +39,7 @@ This is the simpler of the two functions that have been added. It is based on th
 library(RISEkbmRasch)
 ```
 
-For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package.
+For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package. If you want to use this function with dichotomous data, use option `model = "RM"`.
 
 ```{r}
 res_cor <- RIgetResidCor(pcmdat2, iterations = 1000, cpu = 8)
@@ -90,17 +90,18 @@ This object can in turn be used with three different
 functions. Most importantly, you can use it with `RIitemfit()` to set
 cutoff values for both MSQ and ZSTD based on your sample size and item
 parameters. `RIitemfit()` uses the .05 and 99.5 percentile values for each individual item.
-The cutoff limit might be added as a user option later.
+The cutoff limit might be added as a user option later. You can optionally sort the table output according to misfit by using `sort = "infit"`.
 
 ```{r}
 RIitemfit(pcmdat2, simcut = itemfit_sim)
 ```
 
 The function `RIgetfitPlot()` uses the package `ggdist` to plot the
-distribution of fit values from the simulation results.
+distribution of fit values from the simulation results. You can get the observed conditional item fit included in the plot by using the option `data = yourdataframe`.
 
 ```{r}
-RIgetfitPlot(itemfit_sim)
+RIgetfitPlot(itemfit_sim, data = pcmdat2)
+
 ```
 
 ## Visualizing conditional fit
