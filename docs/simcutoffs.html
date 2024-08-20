@@ -400,8 +400,8 @@ Note
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Infit thresholds </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> OutfitMSQ </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Outfit thresholds </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Infit diff </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Outfit diff </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Infit diff </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> Outfit diff </th>
   </tr></thead>
 <tbody>
 <tr>
@@ -410,8 +410,8 @@ Note
    <td style="text-align:left;"> [0.855, 1.155] </td>
    <td style="text-align:left;"> <span style="     color: black !important;">1.069</span> </td>
    <td style="text-align:left;"> [0.824, 1.206] </td>
-   <td style="text-align:right;"> 0.075 </td>
-   <td style="text-align:right;"> 0.137 </td>
+   <td style="text-align:left;"> no misfit </td>
+   <td style="text-align:left;"> no misfit </td>
   </tr>
 <tr>
 <td style="text-align:left;"> I2 </td>
@@ -419,8 +419,8 @@ Note
    <td style="text-align:left;"> [0.844, 1.179] </td>
    <td style="text-align:left;"> <span style="     color: black !important;">1.084</span> </td>
    <td style="text-align:left;"> [0.783, 1.302] </td>
-   <td style="text-align:right;"> 0.024 </td>
-   <td style="text-align:right;"> 0.218 </td>
+   <td style="text-align:left;"> no misfit </td>
+   <td style="text-align:left;"> no misfit </td>
   </tr>
 <tr>
 <td style="text-align:left;"> I3 </td>
@@ -428,8 +428,8 @@ Note
    <td style="text-align:left;"> [0.843, 1.158] </td>
    <td style="text-align:left;"> <span style="     color: red !important;">0.802</span> </td>
    <td style="text-align:left;"> [0.803, 1.252] </td>
-   <td style="text-align:right;"> 0.015 </td>
-   <td style="text-align:right;"> 0.001 </td>
+   <td style="text-align:left;"> 0.015 </td>
+   <td style="text-align:left;"> 0.001 </td>
   </tr>
 <tr>
 <td style="text-align:left;"> I4 </td>
@@ -437,8 +437,8 @@ Note
    <td style="text-align:left;"> [0.839, 1.178] </td>
    <td style="text-align:left;"> <span style="     color: black !important;">1.024</span> </td>
    <td style="text-align:left;"> [0.8, 1.205] </td>
-   <td style="text-align:right;"> 0.168 </td>
-   <td style="text-align:right;"> 0.181 </td>
+   <td style="text-align:left;"> no misfit </td>
+   <td style="text-align:left;"> no misfit </td>
   </tr>
 </tbody>
 <tfoot>
@@ -1156,27 +1156,26 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="fu">RIgetfitPlot</span>(itemfit_sim, <span class="at">data =</span> pcmdat2)</span>
-<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualizing conditional fit</span></span>
-<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a>As a side note, a graphical representation of conditional item fit across class intervals <span class="co">[</span><span class="ot">@buchardt_visualizing_2023</span><span class="co">]</span> can be helpful to further analyze our observed data.</span>
-<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RASCHplot) <span class="co"># devtools::install_github("ERRTG/RASCHplot")</span></span>
-<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a><span class="fu">CICCplot</span>(<span class="fu">PCM</span>(pcmdat2), <span class="at">which.item =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">grid.items =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualizing conditional fit</span></span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a>As a side note, a graphical representation of conditional item fit across class intervals <span class="co">[</span><span class="ot">@buchardt_visualizing_2023</span><span class="co">]</span> can be helpful to further analyze our observed data.</span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RASCHplot) <span class="co"># devtools::install_github("ERRTG/RASCHplot")</span></span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a><span class="fu">CICCplot</span>(<span class="fu">PCM</span>(pcmdat2), <span class="at">which.item =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">grid.items =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
-<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
-<span id="cb17-146"><a href="#cb17-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

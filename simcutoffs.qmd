@@ -101,7 +101,6 @@ distribution of fit values from the simulation results. You can get the observed
 
 ```{r}
 RIgetfitPlot(itemfit_sim, data = pcmdat2)
-
 ```
 
 ## Visualizing conditional fit

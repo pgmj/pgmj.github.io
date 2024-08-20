@@ -389,7 +389,7 @@ A low item fit value (sometimes referred to as "overfitting" the Rasch model) in
 
 A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time or is ambiguous for other reasons.
 
-### Conditional item fit curves
+### Item fit curves
 
 The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions may be included in a future version of the `RISEkbmRasch` package. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
 
@@ -398,6 +398,7 @@ library(iarm)
 ICCplot(as.data.frame(df), 
         itemnumber = 1:4, 
         method = "cut", 
+        cinumber = 6, # number of class intervals to split respondents into
         itemdescrip = c("PANAS_11","PANAS_12","PANAS_13","PANAS_14"))
 ```
 
@@ -405,11 +406,10 @@ A similar, but even more informative and flexible, visualization has been made a
 
 ```{r}
 library(RASCHplot) # devtools::install_github("ERRTG/RASCHplot")
-r <- PCM(df) # run the partial credit model and save the output to object `r`
 
-CICCplot(r,
+CICCplot(PCM(df),
          which.item = c(1:4),
-         lower.groups = c(0,7,14,21,28,35),
+         lower.groups = c(0,7,14,21,28),
          grid.items = TRUE)
 ```
 
