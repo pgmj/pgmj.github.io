@@ -87,8 +87,7 @@ itemfit_sim[[1]]
 ```
 
 This object can in turn be used with three different
-functions. Most importantly, you can use it with `RIitemfit()` to set
-cutoff values for both MSQ and ZSTD based on your sample size and item
+functions. Most importantly, you can use it with `RIitemfit()` to automatically set the simulation based cutoff values for infit & outfit MSQ based on your sample size and item
 parameters. `RIitemfit()` uses the .05 and 99.5 percentile values for each individual item.
 The cutoff limit might be added as a user option later. You can optionally sort the table output according to misfit by using `sort = "infit"`.
 
@@ -116,7 +115,7 @@ CICCplot(PCM(pcmdat2), which.item = 1:4, grid.items = TRUE)
 ## Session info
 
 ```{r}
-sessionInfo()
+sessionInfo() 
 ```
 
 ## References
