@@ -349,7 +349,7 @@ This is also where the [five basic psychometric aspects](https://doi.org/10.3121
 
 We will begin by looking at unidimensionality, response categories, and targeting in parallel below. For unidimensionality, we are mostly interested in item fit and residual correlations, as well as PCA of residuals and loadings on the first residual contrast. At the same time, disordered response categories can influence item fit, and targeting can be useful if it is necessary to remove items due to residual correlations.
 
-When unidimensionality and response categories are found to work adequately, we will move on to invariance testing. And when/if invariance looks good, we can investigate reliability/measurement uncertainties.
+When unidimensionality and response categories are found to work adequately, we will move on to invariance testing (Differential Item Functioning, DIF). It should be noted that DIF should be evaluated in parallel with all other psychometric aspects, but since it is rather complex it is kept in a separate section in this vignette (as is person fit). Finally, when/if invariance also looks acceptable, we can investigate reliability/measurement uncertainties.
 
 ::: {.callout-note}
 In the tabset-panel below, each tab will have some explanatory text. Remember to scroll back up and click on all tabs.
@@ -537,7 +537,7 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Item fit
 
 ```{r}
-simfit2 <- RIgetfit(df, iterations = 1000, cpu = 8) # save output into object `simfit` (arbitrary name)
+simfit2 <- RIgetfit(df, iterations = 1000, cpu = 8)
 RIitemfit(df, simcut = simfit2)
 ```
 
@@ -775,6 +775,33 @@ plot(g_dif) # use option `graphics.off()` to get the plots rendered one by one
 #plot(g_dif, graphics.off())
 ```
 
+### Partial gamma DIF
+
+The `iarm` package provides a function to assess DIF by partial gamma [@bjorner_differential_1998]. 
+
+There are some recommended cutoff-values mentioned in the paper above:
+
+No or negligible DIF:
+
+- Gamma within the interval -0.21 to 0.21, *or*
+- Gamma not significantly different from 0
+
+Slight to moderate DIF:
+
+- Gamma within the interval -0.31 to 0.31 (and outside -0.21 to 0.21), *or*
+- not significantly outside the interval -0.21 to 0.21
+
+Moderate to large DIF:
+
+- Gamma outside the interval 20.31–10.31, **and**
+- significantly outside the interval 20.21–10.21
+
+```{r}
+partgam_DIF(as.data.frame(df), dif.sex, p.adj = "BH")
+```
+
+We can see "slight" DIF for item 17, with a statistically significant gamma of .23. 
+
 ## Rasch analysis 3
 
 While there were no significant issues with DIF for any item/subgroup combination, we need to address the previously identified problem:
@@ -802,7 +829,7 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Item fit
 
 ```{r}
-simfit3 <- RIgetfit(df, iterations = 1000, cpu = 8) # save simulation output into object `simfit` (arbitrary name)
+simfit3 <- RIgetfit(df, iterations = 1000, cpu = 8)
 RIitemfit(df, simcut = simfit3)
 ```
 
@@ -870,7 +897,6 @@ You can also specify a grouping variable to visualize the person fit for differe
 
 ```{r}
 RIpfit(df, group = dif.sex, output = "heatmap")
-
 ```
 
 Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.
@@ -911,16 +937,18 @@ misfits <- flagged.resp(pfit_u3poly) %>%
   pluck("Scores") %>% 
   as.data.frame() %>% 
   pull(FlaggedID)
-
-df %>% 
-  rownames_to_column() %>% 
-  mutate(rowname = as.numeric(rowname)) %>% 
-  filter(!rowname %in% misfits) %>% 
-  dplyr::select(!rowname) %>% 
-  RIitemfit(simcut = simfit3)
 ```
 
-The same items are highlighted in red as when the misfitting persons were included in the analysis.
+::: panel-tabset
+#### With all respondents
+```{r}
+RIitemfit(df, simcut = simfit3)
+```
+#### Without misfitting respondents
+```{r}
+RIitemfit(df[-misfits,], simcut = simfit3)
+```
+:::
 
 ## Item parameters
 
