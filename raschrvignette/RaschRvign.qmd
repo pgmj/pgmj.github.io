@@ -352,7 +352,7 @@ We will begin by looking at unidimensionality, response categories, and targetin
 When unidimensionality and response categories are found to work adequately, we will move on to invariance testing (Differential Item Functioning, DIF). It should be noted that DIF should be evaluated in parallel with all other psychometric aspects, but since it is rather complex it is kept in a separate section in this vignette (as is person fit). Finally, when/if invariance also looks acceptable, we can investigate reliability/measurement uncertainties.
 
 ::: {.callout-note}
-In the tabset-panel below, each tab will have some explanatory text. Remember to scroll back up and click on all tabs.
+In the tabset-panel below, each tab contains explanatory text, which is sometimes a bit lengthy. Remember to **scroll back up and click on all tabs**.
 :::
 
 ```{r}
@@ -365,19 +365,19 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Item fit
 
 ```{r}
-simfit <- RIgetfit(df, iterations = 1000, cpu = 8) # save simulation output into object `simfit` (arbitrary name)
-RIitemfit(df, simcut = simfit)
+simfit1 <- RIgetfit(df, iterations = 1000, cpu = 8) # save simulation output to object `simfit1`
+RIitemfit(df, simfit1)
 ```
 
 `RIitemfit()` works with both dichotomous and polytomous data (no option needed).
 
 Since the distribution of item fit statistics are not known, we need to make simulations to get appropriate cutoff threshold values for the current sample and items. Important to note is that the new (since version 0.2.2, dated 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020]. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this.
 
-Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data.
+Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
 
-The simulation will take quite a bit of time to run if you have complex data/many participants, and/or choose to use many iterations. While insufficient testing has been done to make any strong recommendations, I think 1000 iterations is a decent starting point, and certainly no less than 500.
+The simulation will take quite a bit of time to run if you have complex data/many participants, and/or choose to use many iterations. While insufficient testing has been done to make any strong recommendations, I think 1000 iterations is a good starting point, and probably no less than 500.
 
-For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 145 seconds (~2.5 minutes) to run on 8 cpu cores (Macbook Pro M1 Max).
+For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 52 seconds to run on 8 cpu cores (Macbook Pro M1 Max).
 
 I'll cite Ostini & Nering [-@ostini_polytomous_2006] on the description of outfit and infit (pages 86-87):
 
@@ -430,8 +430,8 @@ Similarly to item fit, we need to run simulations to get a useful cutoff thresho
 And again, the simulation can take quite a bit of time, but is necessary to set the appropriate cutoff value.
 
 ```{r}
-res_cor <- RIgetResidCor(df, iterations = 1000, cpu = 8)
-RIresidcorr(df, cutoff = res_cor$p99)
+simcor1 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
+RIresidcorr(df, cutoff = simcor1$p99)
 ```
 
 The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations crossing the threshold compared to the average item-pair correlation (for all item-pairs) [@christensen2017]. Rasch model residual correlations (Yen's Q3) are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
@@ -550,8 +550,8 @@ RIpcmPCA(df)
 ### Residual correlations
 
 ```{r}
-res_cor2 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
-RIresidcorr(df, cutoff = res_cor2$p99)
+simcor2 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
+RIresidcorr(df, cutoff = simcor2$p99)
 ```
 
 ### 1st contrast loadings
@@ -578,7 +578,7 @@ RIitemHierarchy(df)
 
 ### Analysis 2 comments
 
-Items 16 and 19 have a residual correlation at about 0.25 above the average level.
+Items 16 & 19, and 12 & 14 show problematic residual correlations.
 
 Let's look at DIF before taking action upon this information. While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the `panel-tabset` above (on item fit, PCA, residual correlations, etc).
 
@@ -806,7 +806,7 @@ We can see "slight" DIF for item 17, with a statistically significant gamma of .
 
 While there were no significant issues with DIF for any item/subgroup combination, we need to address the previously identified problem:
 
-- Items 16 and 19 have a residual correlation at about 0.25 above the average level.
+- Items 16 and 19 have the largest residual correlation.
 
 We'll remove item 19 since item 16 has better targeting.
 
@@ -830,7 +830,7 @@ RIlistItemsMargin(df, fontsize = 13)
 
 ```{r}
 simfit3 <- RIgetfit(df, iterations = 1000, cpu = 8)
-RIitemfit(df, simcut = simfit3)
+RIitemfit(df, simfit3)
 ```
 
 ### CICC
@@ -845,8 +845,8 @@ CICCplot(PCM(df),
 ### Residual correlations
 
 ```{r}
-res_cor3 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
-RIresidcorr(df, cutoff = res_cor3$p99)
+simcor3 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
+RIresidcorr(df, cutoff = simcor3$p99)
 ```
 
 ### Targeting
@@ -966,12 +966,6 @@ First, we'll output the parameters into a table.
 
 ```{r}
 RIitemparams(df)
-```
-
-We can get more detailed information, such as the relative item locations and highest/lowest thresholds, by using the `RIitemparams()` function with the option `detail = all`.
-
-```{r}
-RIitemparams(df, detail = "all")
 ```
 
 The parameters can also be output to a dataframe or a file, using the option `output = "dataframe"` or `output = "file"`.
