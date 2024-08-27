@@ -31,6 +31,17 @@ This blog post will be incorporated into the [`RISEkbmRasch` vignette](https://p
 
 Finally, I want to thank Karl Bang Christensen for a very nice presentation on item fit and simulations at the Scandinavian Applied Measurement Conference, which made me think about these things a lot until I came up with the idea to implement these functions.
 
+## Simulation methodology
+
+The process is similar for both functions:
+
+1. Estimate item parameters (using conditional maximum likelihood) and person parameters (thetas, using weighted likelihood).
+2. Resample thetas with replacement (parametric bootstrapping) and simulate response data (that fit a Rasch model) based on the resampled thetas and previously estimated item parameters
+3. Calculate conditional item fit/residual correlations for the simulated response data
+4. Repeat 2 & 3 across n iterations.
+
+The simulation then results in an empirical distribution of plausible values.
+
 ## Residual correlations
 
 This is the simpler of the two functions that have been added. It is based on the simulation study by Christensen et al. [-@christensen2017].
@@ -39,16 +50,16 @@ This is the simpler of the two functions that have been added. It is based on th
 library(RISEkbmRasch)
 ```
 
-For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package. If you want to use this function with dichotomous data, use option `model = "RM"`.
+For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package, which has polytomous data. Dichotomous data also works with all functions in this text. The functions will determine the proper model based on the data structure.
 
 ```{r}
-res_cor <- RIgetResidCor(pcmdat2, iterations = 1000, cpu = 8)
+simres1 <- RIgetResidCor(pcmdat2, iterations = 1000, cpu = 8)
 ```
 
 While we are mostly interested in the 99% percentile from the simulation (`p99` below), we will save the output of the simulation into the list object `res_cor`.
 
 ```{r}
-glimpse(res_cor)
+glimpse(simres1)
 ```
 
 The object contains a dataframe with mean and max values for residual correlations within each dataset simulated, and the difference between the mean and the max. This difference is the key metric we are interested in.
@@ -56,7 +67,7 @@ The object contains a dataframe with mean and max values for residual correlatio
  The max value will increase with the number of iterations, and it seems to be a bit spurious, so I would suggest to use the 99% percentile value as the cutoff. Based on the simulations I have made so far, it seems that 1000 iterations may be sufficient for a reasonably accurate 99% percentile value (`p99`) value. For more detailed information on the topic I refer to Christensen et al. [-@christensen2017].
 
 ```{r}
-RIresidcorr(pcmdat2, cutoff = res_cor$p99)
+RIresidcorr(pcmdat2, cutoff = simres1$p99)
 ```
 
 We can see that items 3 and 4 have a residual correlation between them that is quite a bit above the threshold value.
@@ -65,8 +76,13 @@ Since the results of the simulation is included in the output object, we can inv
 
 ```{r}
 #| fig-height: 4
-hist(res_cor$results$diff, breaks = 50, col = "lightblue")
-summary(res_cor$results$diff)
+hist(simres1$results$diff, breaks = 50, col = "lightblue")
+abline(v = simres1$p99, col = "red")
+abline(v = simres1$p95, col = "orange")
+```
+
+```{r}
+summary(simres1$results$diff)
 ```
 
 ## Conditional item fit
@@ -74,16 +90,18 @@ summary(res_cor$results$diff)
 While conditional item fit is a huge step towards getting correct item fit values [@christensen_item_2012;@muller_item_2020;@buchardt_visualizing_2023], we also need to know the range of values that are plausible for items fitting the Rasch model in the current context. The specific properties of the sample and the items is used to simulate multiple datasets that fit the Rasch model, to understand the variation in item fit that can be expected. The simulation results can then be compared with the observed data.
 
 ::: {.callout-note}
-We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). To give some reference, the code below (n = 300, 4 items, 4 response categories per item) using 500 iterations took 7.7 seconds on 8 cpu cores and 11.7 seconds on 4 cores. 1000 iterations on 8 cores took 12.8 seconds (based on single runs).
+We will use 1000 simulations, but no extensive tests have been made (yet) to determine a reasonable number of simulations. The more items/thresholds and the bigger your sample size, the more time this simulation will take. If you have more cpu cores, this will reduce the time (please remember to not use all cores, leave 1-2 unused). 
+
+To give some reference, the code below (n = 300, 4 items, 4 response categories per item) using 500 iterations took 3.7 seconds on 4 cpu cores. 1000 iterations on 8 cores took 4.2 seconds (based on single runs). I recommend `library(tictoc)` to make timing easy.
 :::
 
 ```{r}
-itemfit_sim <- RIgetfit(pcmdat2, iterations = 1000, cpu = 8)
+simfit1 <- RIgetfit(pcmdat2, iterations = 1000, cpu = 8)
 ```
 
 The output is a list object consisting of one dataframe per iteration. We can look at iteration 1:
 ```{r}
-itemfit_sim[[1]]
+simfit1[[1]]
 ```
 
 This object can in turn be used with three different
@@ -92,14 +110,14 @@ parameters. `RIitemfit()` uses the .05 and 99.5 percentile values for each indiv
 The cutoff limit might be added as a user option later. You can optionally sort the table output according to misfit by using `sort = "infit"`.
 
 ```{r}
-RIitemfit(pcmdat2, simcut = itemfit_sim)
+RIitemfit(pcmdat2, simfit1)
 ```
 
 The function `RIgetfitPlot()` uses the package `ggdist` to plot the
 distribution of fit values from the simulation results. You can get the observed conditional item fit included in the plot by using the option `data = yourdataframe`.
 
 ```{r}
-RIgetfitPlot(itemfit_sim, data = pcmdat2)
+RIgetfitPlot(simfit1, pcmdat2)
 ```
 
 ## Visualizing conditional fit
@@ -108,9 +126,8 @@ As a side note, a graphical representation of conditional item fit across class 
 
 ```{r}
 library(RASCHplot) # devtools::install_github("ERRTG/RASCHplot")
-CICCplot(PCM(pcmdat2), which.item = 1:4, grid.items = TRUE)
+CICCplot(PCM(pcmdat2), which.item = 3)
 ```
-
 
 ## Session info
 
