@@ -3248,12 +3248,12 @@ background-origin: content-box;
 10        10  2023    Åk 9  Pojkar       Håbo Varken bra eller dåligt</code></pre>
 </div>
 </div>
-<p>Ovan ser vi datastrukturen. Vårt item (“Hur mår du rent allmänt?”) har variabel namn <code>A1</code>. Varje respondent har alltså en rad i data.</p>
+<p>Ovan ser vi datastrukturen. Vår enkätfråga (“Hur mår du rent allmänt?”) har variabelnamn <code>A1</code>. Varje respondent har en rad i data.</p>
 </section>
 <section id="omkodning-inför-visualisering" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="omkodning-inför-visualisering"><span class="header-section-number">2</span> Omkodning inför visualisering</h2>
 <p>Nedan gör vi om till long format och räknar fram svarsandelar per svarskategori.</p>
-<p>Vi behöver egentligen inte <code>pivot_longer(A1)</code> när vi bara har ett enda item, men jag har låtit det stå med, eftersom det blir väldigt lätt att göra flera items i samma figur med små justeringar i koden (t.ex. <code>pivot_longer(A1,A2)</code> och sedan lägga till <code>facet_grid(name~Kön)</code> i ggplot.)</p>
+<p>Vi behöver egentligen inte <code>pivot_longer(A1)</code> när vi bara har ett enda item, men jag har låtit det stå med, eftersom det blir väldigt lätt att göra flera items i samma figur med små justeringar i koden (t.ex. <code>pivot_longer(A1,A2)</code> och sedan lägga till <code>facet_grid(name~Kön)</code> i <code>ggplot</code> senare.)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>d.long.all <span class="ot">&lt;-</span> df.viz <span class="sc">%&gt;%</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">A1 =</span> <span class="fu">factor</span>(A1, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Mycket dåligt&quot;</span>,<span class="st">&quot;Dåligt&quot;</span>,<span class="st">&quot;Varken bra eller dåligt&quot;</span>,<span class="st">&quot;Bra&quot;</span>,<span class="st">&quot;Mycket bra&quot;</span>))) <span class="sc">%&gt;%</span> </span>
