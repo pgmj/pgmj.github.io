@@ -793,8 +793,8 @@ Slight to moderate DIF:
 
 Moderate to large DIF:
 
-- Gamma outside the interval 20.31–10.31, **and**
-- significantly outside the interval 20.21–10.21
+- Gamma outside the interval -0.31 to 0.31, **and**
+- significantly outside the interval -0.21 to 0.21
 
 ```{r}
 partgam_DIF(as.data.frame(df), dif.sex, p.adj = "BH")

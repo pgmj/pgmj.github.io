@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2024-08-27">
+<meta name="dcterms.date" content="2024-08-30">
 <title>RISEkbmRasch vignette – R, Rasch, etc</title>
 <style>
 code{white-space: pre-wrap;}
@@ -128,10 +128,10 @@ div.csl-indent {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="citation_title" content="RISEkbmRasch vignette">
 <meta name="citation_author" content="Magnus Johansson">
-<meta name="citation_publication_date" content="2024-08-27">
-<meta name="citation_cover_date" content="2024-08-27">
+<meta name="citation_publication_date" content="2024-08-30">
+<meta name="citation_cover_date" content="2024-08-30">
 <meta name="citation_year" content="2024">
-<meta name="citation_online_date" content="2024-08-27">
+<meta name="citation_online_date" content="2024-08-30">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Differential Item Functioning in the Danish Translation of the SF-36;,citation_abstract=Statistical analyses of Differential Item Functioning (DIF) can be used for rigorous translation evaluations. DIF techniques test whether each item functions in the same way, irrespective of the country, language, or culture of the respondents. For a given level of health, the score on any item should be independent of nationality. This requirement can be tested through contingency-table methods, which are efficient for analyzing all types of items. We investigated DIF in the Danish translation of the SF-36 Health Survey, using two general population samples (USA, n = 1,506; Denmark, n = 3,950). DIF was identified for 12 out of 35 items. These results agreed with independent ratings of translation quality, but the statistical techniques were more sensitive. When included in scales, the items exhibiting DIF had only a little impact on conclusions about cross-national differences in health in the general population. However, if used as single items, the DIF items could seriously bias results from cross-national comparisons. Also, the DIF items might have larger impact on cross-national comparison of groups with poorer health status. We conclude that analysis of DIF is useful for evaluating questionnaire translations.;,citation_author=Jakob B. Bjorner;,citation_author=Svend Kreiner;,citation_author=John E. Ware;,citation_author=Mogens T. Damsgaard;,citation_author=Per Bech;,citation_publication_date=1998-11;,citation_cover_date=1998-11;,citation_year=1998;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S0895435698001115;,citation_issue=11;,citation_doi=10.1016/S0895-4356(98)00111-5;,citation_issn=0895-4356;,citation_volume=51;,citation_journal_title=Journal of Clinical Epidemiology;">
 <meta name="citation_reference" content="citation_title=Rasch fit statistics and sample size considerations for polytomous data;,citation_abstract=Previous research on educational data has demonstrated that Rasch fit statistics (mean squares and t-statistics) are highly susceptible to sample size variation for dichotomously scored rating data, although little is known about this relationship for polytomous data. These statistics help inform researchers about how well items fit to a unidimensional latent trait, and are an important adjunct to modern psychometrics. Given the increasing use of Rasch models in health research the purpose of this study was therefore to explore the relationship between fit statistics and sample size for polytomous data.;,citation_author=Adam B. Smith;,citation_author=Robert Rush;,citation_author=Lesley J. Fallowfield;,citation_author=Galina Velikova;,citation_author=Michael Sharpe;,citation_publication_date=2008-05;,citation_cover_date=2008-05;,citation_year=2008;,citation_fulltext_html_url=https://doi.org/10.1186/1471-2288-8-33;,citation_issue=1;,citation_doi=10.1186/1471-2288-8-33;,citation_issn=1471-2288;,citation_volume=8;,citation_journal_title=BMC Medical Research Methodology;">
@@ -365,7 +365,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 27, 2024</p>
+      <p class="date">August 30, 2024</p>
     </div>
   </div>
   
@@ -3476,9 +3476,9 @@ Jittery
 </ul>
 <p>Moderate to large DIF:</p>
 <ul>
-<li>Gamma outside the interval 20.31–10.31, <strong>and</strong>
+<li>Gamma outside the interval -0.31 to 0.31, <strong>and</strong>
 </li>
-<li>significantly outside the interval 20.21–10.21</li>
+<li>significantly outside the interval -0.21 to 0.21</li>
 </ul>
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/iarm/man/partgam_DIF.html">partgam_DIF</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>, <span class="va">dif.sex</span>, p.adj <span class="op">=</span> <span class="st">"BH"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -5320,12 +5320,12 @@ Zhu, H. (2024). <em><span class="nocase">kableExtra</span>: Construct complex ta
 </div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{johansson2024,
   author = {Johansson, Magnus},
   title = {RISEkbmRasch Vignette},
-  date = {2024-08-27},
+  date = {2024-08-30},
   url = {https://pgmj.github.io/raschrvignette/RaschRvign.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Johansson, M. (2024, August 27). <em>RISEkbmRasch vignette</em>. <a href="https://pgmj.github.io/raschrvignette/RaschRvign.html">https://pgmj.github.io/raschrvignette/RaschRvign.html</a>
+Johansson, M. (2024, August 30). <em>RISEkbmRasch vignette</em>. <a href="https://pgmj.github.io/raschrvignette/RaschRvign.html">https://pgmj.github.io/raschrvignette/RaschRvign.html</a>
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -6592,8 +6592,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb99-912"><a href="#cb99-912" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-913"><a href="#cb99-913" aria-hidden="true" tabindex="-1"></a>Moderate to large DIF:</span>
 <span id="cb99-914"><a href="#cb99-914" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-915"><a href="#cb99-915" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Gamma outside the interval 20.31–10.31, **and**</span>
-<span id="cb99-916"><a href="#cb99-916" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>significantly outside the interval 20.21–10.21</span>
+<span id="cb99-915"><a href="#cb99-915" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Gamma outside the interval -0.31 to 0.31, **and**</span>
+<span id="cb99-916"><a href="#cb99-916" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>significantly outside the interval -0.21 to 0.21</span>
 <span id="cb99-917"><a href="#cb99-917" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb99-920"><a href="#cb99-920" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb99-921"><a href="#cb99-921" aria-hidden="true" tabindex="-1"></a><span class="fu">partgam_DIF</span>(<span class="fu">as.data.frame</span>(df), dif.sex, <span class="at">p.adj =</span> <span class="st">"BH"</span>)</span>
