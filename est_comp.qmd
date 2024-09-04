@@ -46,6 +46,8 @@ We have four packages in the comparison:
 
 Other estimation methods are available in `TAM` and `mirt`, but we'll just test these for now.
 
+The datafile is available in the [Github repo](https://github.com/pgmj/pgmj.github.io/blob/main/sim_data_4t.rds).
+
 ## Data import
 
 ```{r}
