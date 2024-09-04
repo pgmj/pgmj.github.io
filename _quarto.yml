@@ -34,6 +34,7 @@ website:
          - powerviz.qmd
          - datawrangling.qmd
          - simcutoffs.qmd
+         - est_comp.qmd
       - icon: github
         href: https://github.com/pgmj/pgmj.github.io
         aria-label: GitHub

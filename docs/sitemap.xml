@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://pgmj.github.io/about.html</loc>
-    <lastmod>2023-02-24T15:56:50.062Z</lastmod>
+    <lastmod>2023-02-24T15:56:50.000Z</lastmod>
   </url>
   <url>
     <loc>https://pgmj.github.io/index.html</loc>
@@ -35,5 +35,9 @@
   <url>
     <loc>https://pgmj.github.io/simcutoffs.html</loc>
     <lastmod>2024-08-27T13:11:56.612Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pgmj.github.io/est_comp.html</loc>
+    <lastmod>2024-09-04T13:33:02.076Z</lastmod>
   </url>
 </urlset>
