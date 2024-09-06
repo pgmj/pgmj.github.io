@@ -465,15 +465,15 @@ div.csl-indent {
 <span><span class="va">results_params_diff_4t</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Estimator</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
-<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>    Median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
-<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>    MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
-<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span></span>
+<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
+<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
+<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Package <span class="op">=</span> <span class="va">Estimator</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Mean</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
  
@@ -481,9 +481,9 @@ div.csl-indent {
   
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>tinytable_n0po126oqgr0buj0q9gy</title>
+<title>tinytable_0po126oqgr0buj0q9gye</title>
 <style>
-.table td.tinytable_css_esjpb9zragiqbsavcam1, .table th.tinytable_css_esjpb9zragiqbsavcam1 {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_sjpb9zragiqbsavcam1o, .table th.tinytable_css_sjpb9zragiqbsavcam1o {    border-bottom: solid 0.1em #d3d8dc; }
     </style>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>
     MathJax = {
@@ -495,59 +495,59 @@ div.csl-indent {
       }
     };
     </script><div class="container">
-      <table class="table table-borderless" id="tinytable_n0po126oqgr0buj0q9gy" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_0po126oqgr0buj0q9gye" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead><tr>
 <th scope="col">Package</th>
-                <th scope="col">Mean</th>
                 <th scope="col">Median</th>
-                <th scope="col">SD</th>
                 <th scope="col">MAD</th>
                 <th scope="col">IQR</th>
+                <th scope="col">Mean</th>
+                <th scope="col">SD</th>
               </tr></thead>
 <tbody>
 <tr>
-<td>eRm </td>
-                  <td>0.106</td>
-                  <td>0.102</td>
-                  <td>0.043</td>
-                  <td>0.043</td>
-                  <td>0.059</td>
-                </tr>
-<tr>
 <td>mirt</td>
-                  <td>0.106</td>
                   <td>0.101</td>
                   <td>0.043</td>
+                  <td>0.059</td>
+                  <td>0.106</td>
+                  <td>0.043</td>
+                </tr>
+<tr>
+<td>eRm </td>
+                  <td>0.102</td>
                   <td>0.043</td>
                   <td>0.059</td>
+                  <td>0.106</td>
+                  <td>0.043</td>
                 </tr>
 <tr>
 <td>TAM </td>
-                  <td>0.152</td>
                   <td>0.140</td>
-                  <td>0.069</td>
                   <td>0.064</td>
                   <td>0.087</td>
+                  <td>0.152</td>
+                  <td>0.069</td>
                 </tr>
 <tr>
 <td>PAIR</td>
-                  <td>0.157</td>
                   <td>0.146</td>
-                  <td>0.070</td>
                   <td>0.065</td>
                   <td>0.091</td>
+                  <td>0.157</td>
+                  <td>0.070</td>
                 </tr>
 </tbody>
 </table>
 </div>
 
     <script>
-      function styleCell_tinytable_vhauz3s4rgk9pqsct8x7(i, j, css_id) {
-        var table = document.getElementById("tinytable_n0po126oqgr0buj0q9gy");
+      function styleCell_tinytable_hauz3s4rgk9pqsct8x7u(i, j, css_id) {
+        var table = document.getElementById("tinytable_0po126oqgr0buj0q9gye");
         table.rows[i].cells[j].classList.add(css_id);
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_n0po126oqgr0buj0q9gy');
+        var table = document.getElementById('tinytable_0po126oqgr0buj0q9gye');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -555,8 +555,8 @@ div.csl-indent {
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_vhauz3s4rgk9pqsct8x7(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_n0po126oqgr0buj0q9gy");
+      function spanCell_tinytable_hauz3s4rgk9pqsct8x7u(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_0po126oqgr0buj0q9gye");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -583,12 +583,12 @@ div.csl-indent {
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pqsct8x7(0, 0, 'tinytable_css_esjpb9zragiqbsavcam1') })
-window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pqsct8x7(0, 1, 'tinytable_css_esjpb9zragiqbsavcam1') })
-window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pqsct8x7(0, 2, 'tinytable_css_esjpb9zragiqbsavcam1') })
-window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pqsct8x7(0, 3, 'tinytable_css_esjpb9zragiqbsavcam1') })
-window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pqsct8x7(0, 4, 'tinytable_css_esjpb9zragiqbsavcam1') })
-window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pqsct8x7(0, 5, 'tinytable_css_esjpb9zragiqbsavcam1') })
+window.addEventListener('load', function () { styleCell_tinytable_hauz3s4rgk9pqsct8x7u(0, 0, 'tinytable_css_sjpb9zragiqbsavcam1o') })
+window.addEventListener('load', function () { styleCell_tinytable_hauz3s4rgk9pqsct8x7u(0, 1, 'tinytable_css_sjpb9zragiqbsavcam1o') })
+window.addEventListener('load', function () { styleCell_tinytable_hauz3s4rgk9pqsct8x7u(0, 2, 'tinytable_css_sjpb9zragiqbsavcam1o') })
+window.addEventListener('load', function () { styleCell_tinytable_hauz3s4rgk9pqsct8x7u(0, 3, 'tinytable_css_sjpb9zragiqbsavcam1o') })
+window.addEventListener('load', function () { styleCell_tinytable_hauz3s4rgk9pqsct8x7u(0, 4, 'tinytable_css_sjpb9zragiqbsavcam1o') })
+window.addEventListener('load', function () { styleCell_tinytable_hauz3s4rgk9pqsct8x7u(0, 5, 'tinytable_css_sjpb9zragiqbsavcam1o') })
     </script>
 </div>
 </div>
@@ -628,14 +628,14 @@ window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pq
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Package <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"diff_"</span>,<span class="st">""</span>,<span class="va">Estimator</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Package</span>, <span class="va">Threshold</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
-<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>    Median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
-<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>    MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
-<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span></span>
+<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
+<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
+<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Threshold</span>,<span class="va">Mean</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Threshold</span>,<span class="va">Median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/style_tt.html">style_tt</a></span><span class="op">(</span>i <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">9</span>, <span class="fl">13</span><span class="op">)</span>, j <span class="op">=</span> <span class="fl">2</span>, rowspan <span class="op">=</span> <span class="fl">4</span>, alignv <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -663,156 +663,156 @@ window.addEventListener('load', function () { styleCell_tinytable_vhauz3s4rgk9pq
 <thead><tr>
 <th scope="col">Package</th>
                 <th scope="col">Threshold</th>
-                <th scope="col">Mean</th>
                 <th scope="col">Median</th>
-                <th scope="col">SD</th>
                 <th scope="col">MAD</th>
                 <th scope="col">IQR</th>
+                <th scope="col">Mean</th>
+                <th scope="col">SD</th>
               </tr></thead>
 <tbody>
 <tr>
-<td>mirt</td>
-                  <td>T1</td>
-                  <td>0.126</td>
-                  <td>0.106</td>
-                  <td>0.097</td>
-                  <td>0.094</td>
-                  <td>0.131</td>
-                </tr>
-<tr>
 <td>eRm </td>
                   <td>T1</td>
-                  <td>0.127</td>
                   <td>0.106</td>
-                  <td>0.097</td>
                   <td>0.093</td>
                   <td>0.130</td>
+                  <td>0.127</td>
+                  <td>0.097</td>
+                </tr>
+<tr>
+<td>mirt</td>
+                  <td>T1</td>
+                  <td>0.106</td>
+                  <td>0.094</td>
+                  <td>0.131</td>
+                  <td>0.126</td>
+                  <td>0.097</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T1</td>
-                  <td>0.157</td>
                   <td>0.133</td>
-                  <td>0.118</td>
                   <td>0.116</td>
                   <td>0.160</td>
+                  <td>0.157</td>
+                  <td>0.118</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T1</td>
-                  <td>0.164</td>
                   <td>0.142</td>
-                  <td>0.121</td>
                   <td>0.118</td>
                   <td>0.166</td>
+                  <td>0.164</td>
+                  <td>0.121</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T2</td>
-                  <td>0.085</td>
                   <td>0.072</td>
-                  <td>0.064</td>
                   <td>0.063</td>
                   <td>0.088</td>
+                  <td>0.085</td>
+                  <td>0.064</td>
                 </tr>
 <tr>
 <td>mirt</td>
                   <td>T2</td>
-                  <td>0.085</td>
                   <td>0.072</td>
-                  <td>0.063</td>
                   <td>0.062</td>
                   <td>0.087</td>
+                  <td>0.085</td>
+                  <td>0.063</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T2</td>
-                  <td>0.144</td>
                   <td>0.123</td>
-                  <td>0.106</td>
                   <td>0.108</td>
                   <td>0.153</td>
+                  <td>0.144</td>
+                  <td>0.106</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T2</td>
-                  <td>0.148</td>
                   <td>0.129</td>
-                  <td>0.109</td>
                   <td>0.113</td>
                   <td>0.158</td>
-                </tr>
-<tr>
-<td>mirt</td>
-                  <td>T3</td>
-                  <td>0.085</td>
-                  <td>0.073</td>
-                  <td>0.065</td>
-                  <td>0.067</td>
-                  <td>0.091</td>
+                  <td>0.148</td>
+                  <td>0.109</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T3</td>
-                  <td>0.086</td>
                   <td>0.072</td>
                   <td>0.066</td>
-                  <td>0.066</td>
                   <td>0.094</td>
+                  <td>0.086</td>
+                  <td>0.066</td>
+                </tr>
+<tr>
+<td>mirt</td>
+                  <td>T3</td>
+                  <td>0.073</td>
+                  <td>0.067</td>
+                  <td>0.091</td>
+                  <td>0.085</td>
+                  <td>0.065</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T3</td>
-                  <td>0.144</td>
                   <td>0.119</td>
-                  <td>0.110</td>
                   <td>0.109</td>
                   <td>0.153</td>
+                  <td>0.144</td>
+                  <td>0.110</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T3</td>
-                  <td>0.147</td>
                   <td>0.120</td>
-                  <td>0.113</td>
                   <td>0.108</td>
                   <td>0.155</td>
+                  <td>0.147</td>
+                  <td>0.113</td>
                 </tr>
 <tr>
 <td>mirt</td>
                   <td>T4</td>
-                  <td>0.127</td>
                   <td>0.105</td>
-                  <td>0.097</td>
                   <td>0.091</td>
                   <td>0.131</td>
+                  <td>0.127</td>
+                  <td>0.097</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T4</td>
-                  <td>0.128</td>
                   <td>0.106</td>
-                  <td>0.097</td>
                   <td>0.093</td>
                   <td>0.130</td>
+                  <td>0.128</td>
+                  <td>0.097</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T4</td>
-                  <td>0.163</td>
                   <td>0.138</td>
-                  <td>0.121</td>
                   <td>0.117</td>
                   <td>0.164</td>
+                  <td>0.163</td>
+                  <td>0.121</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T4</td>
-                  <td>0.170</td>
                   <td>0.144</td>
-                  <td>0.129</td>
                   <td>0.121</td>
                   <td>0.171</td>
+                  <td>0.170</td>
+                  <td>0.129</td>
                 </tr>
 </tbody>
 </table>
@@ -1063,15 +1063,15 @@ window.addEventListener('load', function () { spanCell_tinytable_y8l2nvhu6m503e0
 <span><span class="va">results_params_diff_4t2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Estimator</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
-<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Package <span class="op">=</span> <span class="va">Estimator</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Mean</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
  
@@ -1079,9 +1079,9 @@ window.addEventListener('load', function () { spanCell_tinytable_y8l2nvhu6m503e0
   
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>tinytable_036awr16unzu0lmyawbs</title>
+<title>tinytable_36awr16unzu0lmyawbsy</title>
 <style>
-.table td.tinytable_css_yxt0thkmkeat8y8n90g0, .table th.tinytable_css_yxt0thkmkeat8y8n90g0 {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_xt0thkmkeat8y8n90g0m, .table th.tinytable_css_xt0thkmkeat8y8n90g0m {    border-bottom: solid 0.1em #d3d8dc; }
     </style>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script><script>
     MathJax = {
@@ -1093,59 +1093,59 @@ window.addEventListener('load', function () { spanCell_tinytable_y8l2nvhu6m503e0
       }
     };
     </script><div class="container">
-      <table class="table table-borderless" id="tinytable_036awr16unzu0lmyawbs" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_36awr16unzu0lmyawbsy" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead><tr>
 <th scope="col">Package</th>
-                <th scope="col">Mean</th>
                 <th scope="col">Median</th>
-                <th scope="col">SD</th>
                 <th scope="col">MAD</th>
                 <th scope="col">IQR</th>
+                <th scope="col">Mean</th>
+                <th scope="col">SD</th>
               </tr></thead>
 <tbody>
 <tr>
 <td>mirt</td>
-                  <td>0.251</td>
                   <td>0.241</td>
-                  <td>0.104</td>
                   <td>0.102</td>
                   <td>0.140</td>
+                  <td>0.251</td>
+                  <td>0.104</td>
                 </tr>
 <tr>
 <td>eRm </td>
-                  <td>0.252</td>
                   <td>0.242</td>
-                  <td>0.105</td>
                   <td>0.104</td>
                   <td>0.140</td>
+                  <td>0.252</td>
+                  <td>0.105</td>
                 </tr>
 <tr>
 <td>TAM </td>
-                  <td>0.264</td>
                   <td>0.252</td>
-                  <td>0.109</td>
                   <td>0.103</td>
                   <td>0.141</td>
+                  <td>0.264</td>
+                  <td>0.109</td>
                 </tr>
 <tr>
 <td>PAIR</td>
-                  <td>0.283</td>
                   <td>0.268</td>
-                  <td>0.123</td>
                   <td>0.113</td>
                   <td>0.153</td>
+                  <td>0.283</td>
+                  <td>0.123</td>
                 </tr>
 </tbody>
 </table>
 </div>
 
     <script>
-      function styleCell_tinytable_xzzqq6xau8auhbzk1acu(i, j, css_id) {
-        var table = document.getElementById("tinytable_036awr16unzu0lmyawbs");
+      function styleCell_tinytable_zzqq6xau8auhbzk1acu2(i, j, css_id) {
+        var table = document.getElementById("tinytable_36awr16unzu0lmyawbsy");
         table.rows[i].cells[j].classList.add(css_id);
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_036awr16unzu0lmyawbs');
+        var table = document.getElementById('tinytable_36awr16unzu0lmyawbsy');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -1153,8 +1153,8 @@ window.addEventListener('load', function () { spanCell_tinytable_y8l2nvhu6m503e0
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_xzzqq6xau8auhbzk1acu(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_036awr16unzu0lmyawbs");
+      function spanCell_tinytable_zzqq6xau8auhbzk1acu2(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_36awr16unzu0lmyawbsy");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -1181,12 +1181,12 @@ window.addEventListener('load', function () { spanCell_tinytable_y8l2nvhu6m503e0
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhbzk1acu(0, 0, 'tinytable_css_yxt0thkmkeat8y8n90g0') })
-window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhbzk1acu(0, 1, 'tinytable_css_yxt0thkmkeat8y8n90g0') })
-window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhbzk1acu(0, 2, 'tinytable_css_yxt0thkmkeat8y8n90g0') })
-window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhbzk1acu(0, 3, 'tinytable_css_yxt0thkmkeat8y8n90g0') })
-window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhbzk1acu(0, 4, 'tinytable_css_yxt0thkmkeat8y8n90g0') })
-window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhbzk1acu(0, 5, 'tinytable_css_yxt0thkmkeat8y8n90g0') })
+window.addEventListener('load', function () { styleCell_tinytable_zzqq6xau8auhbzk1acu2(0, 0, 'tinytable_css_xt0thkmkeat8y8n90g0m') })
+window.addEventListener('load', function () { styleCell_tinytable_zzqq6xau8auhbzk1acu2(0, 1, 'tinytable_css_xt0thkmkeat8y8n90g0m') })
+window.addEventListener('load', function () { styleCell_tinytable_zzqq6xau8auhbzk1acu2(0, 2, 'tinytable_css_xt0thkmkeat8y8n90g0m') })
+window.addEventListener('load', function () { styleCell_tinytable_zzqq6xau8auhbzk1acu2(0, 3, 'tinytable_css_xt0thkmkeat8y8n90g0m') })
+window.addEventListener('load', function () { styleCell_tinytable_zzqq6xau8auhbzk1acu2(0, 4, 'tinytable_css_xt0thkmkeat8y8n90g0m') })
+window.addEventListener('load', function () { styleCell_tinytable_zzqq6xau8auhbzk1acu2(0, 5, 'tinytable_css_xt0thkmkeat8y8n90g0m') })
     </script>
 </div>
 </div>
@@ -1226,14 +1226,14 @@ window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhb
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Package <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"diff_"</span>,<span class="st">""</span>,<span class="va">Estimator</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Package</span>, <span class="va">Threshold</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
-<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Threshold</span>,<span class="va">Mean</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Threshold</span>,<span class="va">Median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/style_tt.html">style_tt</a></span><span class="op">(</span>i <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">9</span>, <span class="fl">13</span><span class="op">)</span>, j <span class="op">=</span> <span class="fl">2</span>, rowspan <span class="op">=</span> <span class="fl">4</span>, alignv <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -1261,156 +1261,156 @@ window.addEventListener('load', function () { styleCell_tinytable_xzzqq6xau8auhb
 <thead><tr>
 <th scope="col">Package</th>
                 <th scope="col">Threshold</th>
-                <th scope="col">Mean</th>
                 <th scope="col">Median</th>
-                <th scope="col">SD</th>
                 <th scope="col">MAD</th>
                 <th scope="col">IQR</th>
+                <th scope="col">Mean</th>
+                <th scope="col">SD</th>
               </tr></thead>
 <tbody>
 <tr>
 <td>TAM </td>
                   <td>T1</td>
-                  <td>0.287</td>
                   <td>0.238</td>
-                  <td>0.222</td>
                   <td>0.216</td>
                   <td>0.305</td>
-                </tr>
-<tr>
-<td>mirt</td>
-                  <td>T1</td>
-                  <td>0.304</td>
-                  <td>0.253</td>
-                  <td>0.245</td>
-                  <td>0.223</td>
-                  <td>0.316</td>
+                  <td>0.287</td>
+                  <td>0.222</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T1</td>
-                  <td>0.305</td>
                   <td>0.250</td>
-                  <td>0.246</td>
                   <td>0.224</td>
                   <td>0.315</td>
+                  <td>0.305</td>
+                  <td>0.246</td>
+                </tr>
+<tr>
+<td>mirt</td>
+                  <td>T1</td>
+                  <td>0.253</td>
+                  <td>0.223</td>
+                  <td>0.316</td>
+                  <td>0.304</td>
+                  <td>0.245</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T1</td>
-                  <td>0.312</td>
                   <td>0.258</td>
-                  <td>0.245</td>
                   <td>0.231</td>
                   <td>0.330</td>
+                  <td>0.312</td>
+                  <td>0.245</td>
                 </tr>
 <tr>
 <td>mirt</td>
                   <td>T2</td>
-                  <td>0.198</td>
                   <td>0.168</td>
-                  <td>0.150</td>
                   <td>0.148</td>
                   <td>0.210</td>
+                  <td>0.198</td>
+                  <td>0.150</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T2</td>
-                  <td>0.200</td>
                   <td>0.170</td>
-                  <td>0.150</td>
                   <td>0.151</td>
                   <td>0.207</td>
+                  <td>0.200</td>
+                  <td>0.150</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T2</td>
-                  <td>0.240</td>
                   <td>0.202</td>
-                  <td>0.180</td>
                   <td>0.177</td>
                   <td>0.247</td>
+                  <td>0.240</td>
+                  <td>0.180</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T2</td>
-                  <td>0.255</td>
                   <td>0.218</td>
-                  <td>0.192</td>
                   <td>0.184</td>
                   <td>0.265</td>
+                  <td>0.255</td>
+                  <td>0.192</td>
                 </tr>
 <tr>
 <td>mirt</td>
                   <td>T3</td>
-                  <td>0.195</td>
                   <td>0.164</td>
-                  <td>0.150</td>
                   <td>0.144</td>
                   <td>0.201</td>
+                  <td>0.195</td>
+                  <td>0.150</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T3</td>
-                  <td>0.197</td>
                   <td>0.165</td>
-                  <td>0.151</td>
                   <td>0.143</td>
                   <td>0.200</td>
+                  <td>0.197</td>
+                  <td>0.151</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T3</td>
-                  <td>0.239</td>
                   <td>0.201</td>
-                  <td>0.182</td>
                   <td>0.172</td>
                   <td>0.243</td>
+                  <td>0.239</td>
+                  <td>0.182</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T3</td>
-                  <td>0.249</td>
                   <td>0.209</td>
-                  <td>0.192</td>
                   <td>0.181</td>
                   <td>0.253</td>
+                  <td>0.249</td>
+                  <td>0.192</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T4</td>
-                  <td>0.291</td>
                   <td>0.240</td>
-                  <td>0.221</td>
                   <td>0.212</td>
                   <td>0.305</td>
+                  <td>0.291</td>
+                  <td>0.221</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T4</td>
-                  <td>0.308</td>
                   <td>0.262</td>
-                  <td>0.244</td>
                   <td>0.226</td>
                   <td>0.314</td>
+                  <td>0.308</td>
+                  <td>0.244</td>
                 </tr>
 <tr>
 <td>mirt</td>
                   <td>T4</td>
-                  <td>0.308</td>
                   <td>0.262</td>
-                  <td>0.244</td>
                   <td>0.226</td>
                   <td>0.318</td>
+                  <td>0.308</td>
+                  <td>0.244</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T4</td>
-                  <td>0.316</td>
                   <td>0.265</td>
-                  <td>0.245</td>
                   <td>0.232</td>
                   <td>0.328</td>
+                  <td>0.316</td>
+                  <td>0.245</td>
                 </tr>
 </tbody>
 </table>
@@ -1661,15 +1661,15 @@ window.addEventListener('load', function () { spanCell_tinytable_buluff66ud3sc6o
 <span><span class="va">results_params_diff_4t3</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Estimator</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
-<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>Package <span class="op">=</span> <span class="va">Estimator</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Mean</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tt</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
  
@@ -1694,44 +1694,44 @@ window.addEventListener('load', function () { spanCell_tinytable_buluff66ud3sc6o
       <table class="table table-borderless" id="tinytable_uxj5dm3imapdb4u8er9c" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
 <thead><tr>
 <th scope="col">Package</th>
-                <th scope="col">Mean</th>
                 <th scope="col">Median</th>
-                <th scope="col">SD</th>
                 <th scope="col">MAD</th>
                 <th scope="col">IQR</th>
+                <th scope="col">Mean</th>
+                <th scope="col">SD</th>
               </tr></thead>
 <tbody>
 <tr>
+<td>TAM </td>
+                  <td>0.381</td>
+                  <td>0.173</td>
+                  <td>0.234</td>
+                  <td>0.644</td>
+                  <td>1.748</td>
+                </tr>
+<tr>
 <td>mirt</td>
-                  <td>0.407</td>
                   <td>0.386</td>
-                  <td>0.172</td>
                   <td>0.167</td>
                   <td>0.229</td>
+                  <td>0.407</td>
+                  <td>0.172</td>
                 </tr>
 <tr>
 <td>eRm </td>
-                  <td>0.416</td>
                   <td>0.393</td>
-                  <td>0.216</td>
                   <td>0.173</td>
                   <td>0.232</td>
+                  <td>0.416</td>
+                  <td>0.216</td>
                 </tr>
 <tr>
 <td>PAIR</td>
-                  <td>0.530</td>
                   <td>0.419</td>
-                  <td>0.481</td>
                   <td>0.199</td>
                   <td>0.282</td>
-                </tr>
-<tr>
-<td>TAM </td>
-                  <td>0.644</td>
-                  <td>0.381</td>
-                  <td>1.748</td>
-                  <td>0.173</td>
-                  <td>0.234</td>
+                  <td>0.530</td>
+                  <td>0.481</td>
                 </tr>
 </tbody>
 </table>
@@ -1824,14 +1824,14 @@ window.addEventListener('load', function () { styleCell_tinytable_62s6qmd7d8wipe
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Package <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"diff_"</span>,<span class="st">""</span>,<span class="va">Estimator</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Package</span>, <span class="va">Threshold</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
-<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    Median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    MAD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    IQR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/IQR.html">IQR</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    Mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    SD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">diff</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Threshold</span>,<span class="va">Mean</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">Threshold</span>,<span class="va">Median</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/tt.html">tt</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://vincentarelbundock.github.io/tinytable/man/style_tt.html">style_tt</a></span><span class="op">(</span>i <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">9</span>, <span class="fl">13</span><span class="op">)</span>, j <span class="op">=</span> <span class="fl">2</span>, rowspan <span class="op">=</span> <span class="fl">4</span>, alignv <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details><div class="cell-output-display">
@@ -1859,156 +1859,156 @@ window.addEventListener('load', function () { styleCell_tinytable_62s6qmd7d8wipe
 <thead><tr>
 <th scope="col">Package</th>
                 <th scope="col">Threshold</th>
-                <th scope="col">Mean</th>
                 <th scope="col">Median</th>
-                <th scope="col">SD</th>
                 <th scope="col">MAD</th>
                 <th scope="col">IQR</th>
+                <th scope="col">Mean</th>
+                <th scope="col">SD</th>
               </tr></thead>
 <tbody>
 <tr>
-<td>mirt</td>
-                  <td>T1</td>
-                  <td>0.495</td>
-                  <td>0.401</td>
-                  <td>0.396</td>
-                  <td>0.373</td>
-                  <td>0.520</td>
-                </tr>
-<tr>
-<td>eRm </td>
-                  <td>T1</td>
-                  <td>0.509</td>
-                  <td>0.407</td>
-                  <td>0.549</td>
-                  <td>0.371</td>
-                  <td>0.525</td>
-                </tr>
-<tr>
-<td>PAIR</td>
-                  <td>T1</td>
-                  <td>0.633</td>
-                  <td>0.416</td>
-                  <td>0.836</td>
-                  <td>0.390</td>
-                  <td>0.582</td>
-                </tr>
-<tr>
 <td>TAM </td>
                   <td>T1</td>
-                  <td>0.936</td>
                   <td>0.372</td>
-                  <td>3.519</td>
                   <td>0.342</td>
                   <td>0.506</td>
+                  <td>0.936</td>
+                  <td>3.519</td>
+                </tr>
+<tr>
+<td>mirt</td>
+                  <td>T1</td>
+                  <td>0.401</td>
+                  <td>0.373</td>
+                  <td>0.520</td>
+                  <td>0.495</td>
+                  <td>0.396</td>
+                </tr>
+<tr>
+<td>eRm </td>
+                  <td>T1</td>
+                  <td>0.407</td>
+                  <td>0.371</td>
+                  <td>0.525</td>
+                  <td>0.509</td>
+                  <td>0.549</td>
+                </tr>
+<tr>
+<td>PAIR</td>
+                  <td>T1</td>
+                  <td>0.416</td>
+                  <td>0.390</td>
+                  <td>0.582</td>
+                  <td>0.633</td>
+                  <td>0.836</td>
                 </tr>
 <tr>
 <td>mirt</td>
                   <td>T2</td>
-                  <td>0.312</td>
                   <td>0.259</td>
-                  <td>0.248</td>
                   <td>0.231</td>
                   <td>0.321</td>
+                  <td>0.312</td>
+                  <td>0.248</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T2</td>
-                  <td>0.318</td>
                   <td>0.263</td>
-                  <td>0.250</td>
                   <td>0.232</td>
                   <td>0.329</td>
-                </tr>
-<tr>
-<td>PAIR</td>
-                  <td>T2</td>
-                  <td>0.430</td>
-                  <td>0.319</td>
-                  <td>0.413</td>
-                  <td>0.296</td>
-                  <td>0.432</td>
+                  <td>0.318</td>
+                  <td>0.250</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T2</td>
-                  <td>0.509</td>
                   <td>0.296</td>
-                  <td>1.182</td>
                   <td>0.267</td>
                   <td>0.375</td>
+                  <td>0.509</td>
+                  <td>1.182</td>
                 </tr>
 <tr>
-<td>mirt</td>
-                  <td>T3</td>
-                  <td>0.332</td>
-                  <td>0.283</td>
-                  <td>0.251</td>
-                  <td>0.244</td>
-                  <td>0.336</td>
+<td>PAIR</td>
+                  <td>T2</td>
+                  <td>0.319</td>
+                  <td>0.296</td>
+                  <td>0.432</td>
+                  <td>0.430</td>
+                  <td>0.413</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T3</td>
-                  <td>0.335</td>
                   <td>0.282</td>
-                  <td>0.255</td>
                   <td>0.245</td>
                   <td>0.345</td>
+                  <td>0.335</td>
+                  <td>0.255</td>
                 </tr>
 <tr>
-<td>PAIR</td>
+<td>mirt</td>
                   <td>T3</td>
-                  <td>0.446</td>
-                  <td>0.337</td>
-                  <td>0.417</td>
-                  <td>0.308</td>
-                  <td>0.444</td>
+                  <td>0.283</td>
+                  <td>0.244</td>
+                  <td>0.336</td>
+                  <td>0.332</td>
+                  <td>0.251</td>
                 </tr>
 <tr>
 <td>TAM </td>
                   <td>T3</td>
-                  <td>0.524</td>
                   <td>0.318</td>
-                  <td>1.184</td>
                   <td>0.283</td>
                   <td>0.395</td>
+                  <td>0.524</td>
+                  <td>1.184</td>
+                </tr>
+<tr>
+<td>PAIR</td>
+                  <td>T3</td>
+                  <td>0.337</td>
+                  <td>0.308</td>
+                  <td>0.444</td>
+                  <td>0.446</td>
+                  <td>0.417</td>
+                </tr>
+<tr>
+<td>TAM </td>
+                  <td>T4</td>
+                  <td>0.374</td>
+                  <td>0.338</td>
+                  <td>0.494</td>
+                  <td>0.608</td>
+                  <td>1.207</td>
                 </tr>
 <tr>
 <td>mirt</td>
                   <td>T4</td>
-                  <td>0.490</td>
                   <td>0.404</td>
-                  <td>0.387</td>
                   <td>0.363</td>
                   <td>0.524</td>
+                  <td>0.490</td>
+                  <td>0.387</td>
                 </tr>
 <tr>
 <td>eRm </td>
                   <td>T4</td>
-                  <td>0.502</td>
                   <td>0.412</td>
-                  <td>0.512</td>
                   <td>0.370</td>
                   <td>0.522</td>
-                </tr>
-<tr>
-<td>TAM </td>
-                  <td>T4</td>
-                  <td>0.608</td>
-                  <td>0.374</td>
-                  <td>1.207</td>
-                  <td>0.338</td>
-                  <td>0.494</td>
+                  <td>0.502</td>
+                  <td>0.512</td>
                 </tr>
 <tr>
 <td>PAIR</td>
                   <td>T4</td>
-                  <td>0.613</td>
                   <td>0.429</td>
-                  <td>0.743</td>
                   <td>0.391</td>
                   <td>0.574</td>
+                  <td>0.613</td>
+                  <td>0.743</td>
                 </tr>
 </tbody>
 </table>
@@ -2890,15 +2890,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-215"><a href="#cb19-215" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t <span class="sc">%&gt;%</span></span>
 <span id="cb19-216"><a href="#cb19-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">%&gt;%</span></span>
 <span id="cb19-217"><a href="#cb19-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-218"><a href="#cb19-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff),</span>
-<span id="cb19-219"><a href="#cb19-219" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff),</span>
-<span id="cb19-220"><a href="#cb19-220" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff),</span>
-<span id="cb19-221"><a href="#cb19-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff),</span>
-<span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff)</span>
+<span id="cb19-218"><a href="#cb19-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff),</span>
+<span id="cb19-219"><a href="#cb19-219" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff),</span>
+<span id="cb19-220"><a href="#cb19-220" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff),</span>
+<span id="cb19-221"><a href="#cb19-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff),</span>
+<span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff),</span>
 <span id="cb19-223"><a href="#cb19-223" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb19-224"><a href="#cb19-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb19-225"><a href="#cb19-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Package =</span> Estimator) <span class="sc">%&gt;%</span></span>
-<span id="cb19-226"><a href="#cb19-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Mean) <span class="sc">%&gt;%</span></span>
+<span id="cb19-226"><a href="#cb19-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Median) <span class="sc">%&gt;%</span></span>
 <span id="cb19-227"><a href="#cb19-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>()</span>
 <span id="cb19-228"><a href="#cb19-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-229"><a href="#cb19-229" aria-hidden="true" tabindex="-1"></a></span>
@@ -2938,14 +2938,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-265"><a href="#cb19-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
 <span id="cb19-266"><a href="#cb19-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Package, Threshold) <span class="sc">%&gt;%</span></span>
 <span id="cb19-267"><a href="#cb19-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-268"><a href="#cb19-268" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff),</span>
-<span id="cb19-269"><a href="#cb19-269" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff),</span>
-<span id="cb19-270"><a href="#cb19-270" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff),</span>
-<span id="cb19-271"><a href="#cb19-271" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff),</span>
-<span id="cb19-272"><a href="#cb19-272" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff)</span>
+<span id="cb19-268"><a href="#cb19-268" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff),</span>
+<span id="cb19-269"><a href="#cb19-269" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff),</span>
+<span id="cb19-270"><a href="#cb19-270" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff),</span>
+<span id="cb19-271"><a href="#cb19-271" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff),</span>
+<span id="cb19-272"><a href="#cb19-272" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff)</span>
 <span id="cb19-273"><a href="#cb19-273" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb19-274"><a href="#cb19-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-275"><a href="#cb19-275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Mean) <span class="sc">%&gt;%</span></span>
+<span id="cb19-275"><a href="#cb19-275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Median) <span class="sc">%&gt;%</span></span>
 <span id="cb19-276"><a href="#cb19-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb19-277"><a href="#cb19-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>), <span class="at">j =</span> <span class="dv">2</span>, <span class="at">rowspan =</span> <span class="dv">4</span>, <span class="at">alignv =</span> <span class="st">"t"</span>)</span>
 <span id="cb19-278"><a href="#cb19-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
@@ -3133,15 +3133,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-468"><a href="#cb19-468" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t2 <span class="sc">%&gt;%</span></span>
 <span id="cb19-469"><a href="#cb19-469" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">%&gt;%</span></span>
 <span id="cb19-470"><a href="#cb19-470" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-471"><a href="#cb19-471" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-472"><a href="#cb19-472" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-473"><a href="#cb19-473" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-474"><a href="#cb19-474" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-475"><a href="#cb19-475" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-471"><a href="#cb19-471" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-472"><a href="#cb19-472" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-473"><a href="#cb19-473" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-474"><a href="#cb19-474" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-475"><a href="#cb19-475" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb19-476"><a href="#cb19-476" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb19-477"><a href="#cb19-477" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb19-478"><a href="#cb19-478" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Package =</span> Estimator) <span class="sc">%&gt;%</span></span>
-<span id="cb19-479"><a href="#cb19-479" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Mean) <span class="sc">%&gt;%</span></span>
+<span id="cb19-479"><a href="#cb19-479" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Median) <span class="sc">%&gt;%</span></span>
 <span id="cb19-480"><a href="#cb19-480" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>()</span>
 <span id="cb19-481"><a href="#cb19-481" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-482"><a href="#cb19-482" aria-hidden="true" tabindex="-1"></a></span>
@@ -3181,14 +3181,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-518"><a href="#cb19-518" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
 <span id="cb19-519"><a href="#cb19-519" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Package, Threshold) <span class="sc">%&gt;%</span></span>
 <span id="cb19-520"><a href="#cb19-520" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-521"><a href="#cb19-521" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-522"><a href="#cb19-522" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-523"><a href="#cb19-523" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-524"><a href="#cb19-524" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-525"><a href="#cb19-525" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-521"><a href="#cb19-521" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-522"><a href="#cb19-522" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-523"><a href="#cb19-523" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-524"><a href="#cb19-524" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-525"><a href="#cb19-525" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb19-526"><a href="#cb19-526" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb19-527"><a href="#cb19-527" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-528"><a href="#cb19-528" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Mean) <span class="sc">%&gt;%</span></span>
+<span id="cb19-528"><a href="#cb19-528" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Median) <span class="sc">%&gt;%</span></span>
 <span id="cb19-529"><a href="#cb19-529" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb19-530"><a href="#cb19-530" aria-hidden="true" tabindex="-1"></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>), <span class="at">j =</span> <span class="dv">2</span>, <span class="at">rowspan =</span> <span class="dv">4</span>, <span class="at">alignv =</span> <span class="st">"t"</span>)</span>
 <span id="cb19-531"><a href="#cb19-531" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
@@ -3377,15 +3377,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-722"><a href="#cb19-722" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t3 <span class="sc">%&gt;%</span></span>
 <span id="cb19-723"><a href="#cb19-723" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">%&gt;%</span></span>
 <span id="cb19-724"><a href="#cb19-724" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-725"><a href="#cb19-725" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-726"><a href="#cb19-726" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-727"><a href="#cb19-727" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-728"><a href="#cb19-728" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-729"><a href="#cb19-729" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-725"><a href="#cb19-725" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-726"><a href="#cb19-726" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-727"><a href="#cb19-727" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-728"><a href="#cb19-728" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-729"><a href="#cb19-729" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb19-730"><a href="#cb19-730" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb19-731"><a href="#cb19-731" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb19-732"><a href="#cb19-732" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Package =</span> Estimator) <span class="sc">%&gt;%</span></span>
-<span id="cb19-733"><a href="#cb19-733" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Mean) <span class="sc">%&gt;%</span></span>
+<span id="cb19-733"><a href="#cb19-733" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Median) <span class="sc">%&gt;%</span></span>
 <span id="cb19-734"><a href="#cb19-734" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>()</span>
 <span id="cb19-735"><a href="#cb19-735" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-736"><a href="#cb19-736" aria-hidden="true" tabindex="-1"></a></span>
@@ -3425,14 +3425,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-772"><a href="#cb19-772" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
 <span id="cb19-773"><a href="#cb19-773" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Package, Threshold) <span class="sc">%&gt;%</span></span>
 <span id="cb19-774"><a href="#cb19-774" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-775"><a href="#cb19-775" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-776"><a href="#cb19-776" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-777"><a href="#cb19-777" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-778"><a href="#cb19-778" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-779"><a href="#cb19-779" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-775"><a href="#cb19-775" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-776"><a href="#cb19-776" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-777"><a href="#cb19-777" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-778"><a href="#cb19-778" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-779"><a href="#cb19-779" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb19-780"><a href="#cb19-780" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb19-781"><a href="#cb19-781" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-782"><a href="#cb19-782" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Mean) <span class="sc">%&gt;%</span></span>
+<span id="cb19-782"><a href="#cb19-782" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Median) <span class="sc">%&gt;%</span></span>
 <span id="cb19-783"><a href="#cb19-783" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb19-784"><a href="#cb19-784" aria-hidden="true" tabindex="-1"></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>), <span class="at">j =</span> <span class="dv">2</span>, <span class="at">rowspan =</span> <span class="dv">4</span>, <span class="at">alignv =</span> <span class="st">"t"</span>)</span>
 <span id="cb19-785"><a href="#cb19-785" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>

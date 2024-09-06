@@ -450,11 +450,11 @@ results_params_diff_4t2 <- results_params_4t2 %>%
 results_params_diff_4t2 %>%
   group_by(Estimator) %>%
   summarise(
-    Median = median(diff),
-    MAD = mad(diff),
-    IQR = IQR(diff),
-    Mean = mean(diff),
-    SD = sd(diff),
+    Median = median(diff, na.rm = TRUE),
+    MAD = mad(diff, na.rm = TRUE),
+    IQR = IQR(diff, na.rm = TRUE),
+    Mean = mean(diff, na.rm = TRUE),
+    SD = sd(diff, na.rm = TRUE),
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
   rename(Package = Estimator) %>%
@@ -694,11 +694,11 @@ results_params_diff_4t3 <- results_params_4t3 %>%
 results_params_diff_4t3 %>%
   group_by(Estimator) %>%
   summarise(
-    Median = median(diff),
-    MAD = mad(diff),
-    IQR = IQR(diff),
-    Mean = mean(diff),
-    SD = sd(diff),
+    Median = median(diff, na.rm = TRUE),
+    MAD = mad(diff, na.rm = TRUE),
+    IQR = IQR(diff, na.rm = TRUE),
+    Mean = mean(diff, na.rm = TRUE),
+    SD = sd(diff, na.rm = TRUE),
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
   rename(Package = Estimator) %>%
