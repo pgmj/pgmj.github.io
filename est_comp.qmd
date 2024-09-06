@@ -207,15 +207,15 @@ results_params_diff_4t <- results_params_4t %>%
 results_params_diff_4t %>%
   group_by(Estimator) %>%
   summarise(
-    Mean = mean(diff),
     Median = median(diff),
-    SD = sd(diff),
     MAD = mad(diff),
-    IQR = IQR(diff)
+    IQR = IQR(diff),
+    Mean = mean(diff),
+    SD = sd(diff),
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
   rename(Package = Estimator) %>%
-  arrange(Mean) %>%
+  arrange(Median) %>%
   tt()
 ```
 
@@ -255,14 +255,14 @@ results_params_4t %>%
   mutate(Package = gsub("diff_","",Estimator)) %>%
   group_by(Package, Threshold) %>%
   summarise(
-    Mean = mean(diff),
     Median = median(diff),
-    SD = sd(diff),
     MAD = mad(diff),
-    IQR = IQR(diff)
+    IQR = IQR(diff),
+    Mean = mean(diff),
+    SD = sd(diff)
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
-  arrange(Threshold,Mean) %>%
+  arrange(Threshold,Median) %>%
   tt() %>% 
   style_tt(i = c(1, 5, 9, 13), j = 2, rowspan = 4, alignv = "t")
 ```
@@ -450,15 +450,15 @@ results_params_diff_4t2 <- results_params_4t2 %>%
 results_params_diff_4t2 %>%
   group_by(Estimator) %>%
   summarise(
-    Mean = mean(diff, na.rm = TRUE),
-    Median = median(diff, na.rm = TRUE),
-    SD = sd(diff, na.rm = TRUE),
-    MAD = mad(diff, na.rm = TRUE),
-    IQR = IQR(diff, na.rm = TRUE)
+    Median = median(diff),
+    MAD = mad(diff),
+    IQR = IQR(diff),
+    Mean = mean(diff),
+    SD = sd(diff),
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
   rename(Package = Estimator) %>%
-  arrange(Mean) %>%
+  arrange(Median) %>%
   tt()
 ```
 
@@ -498,14 +498,14 @@ results_params_4t2 %>%
   mutate(Package = gsub("diff_","",Estimator)) %>%
   group_by(Package, Threshold) %>%
   summarise(
-    Mean = mean(diff, na.rm = TRUE),
     Median = median(diff, na.rm = TRUE),
-    SD = sd(diff, na.rm = TRUE),
     MAD = mad(diff, na.rm = TRUE),
-    IQR = IQR(diff, na.rm = TRUE)
+    IQR = IQR(diff, na.rm = TRUE),
+    Mean = mean(diff, na.rm = TRUE),
+    SD = sd(diff, na.rm = TRUE)
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
-  arrange(Threshold,Mean) %>%
+  arrange(Threshold,Median) %>%
   tt() %>% 
   style_tt(i = c(1, 5, 9, 13), j = 2, rowspan = 4, alignv = "t")
 ```
@@ -694,15 +694,15 @@ results_params_diff_4t3 <- results_params_4t3 %>%
 results_params_diff_4t3 %>%
   group_by(Estimator) %>%
   summarise(
-    Mean = mean(diff, na.rm = TRUE),
-    Median = median(diff, na.rm = TRUE),
-    SD = sd(diff, na.rm = TRUE),
-    MAD = mad(diff, na.rm = TRUE),
-    IQR = IQR(diff, na.rm = TRUE)
+    Median = median(diff),
+    MAD = mad(diff),
+    IQR = IQR(diff),
+    Mean = mean(diff),
+    SD = sd(diff),
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
   rename(Package = Estimator) %>%
-  arrange(Mean) %>%
+  arrange(Median) %>%
   tt()
 ```
 
@@ -742,14 +742,14 @@ results_params_4t3 %>%
   mutate(Package = gsub("diff_","",Estimator)) %>%
   group_by(Package, Threshold) %>%
   summarise(
-    Mean = mean(diff, na.rm = TRUE),
     Median = median(diff, na.rm = TRUE),
-    SD = sd(diff, na.rm = TRUE),
     MAD = mad(diff, na.rm = TRUE),
-    IQR = IQR(diff, na.rm = TRUE)
+    IQR = IQR(diff, na.rm = TRUE),
+    Mean = mean(diff, na.rm = TRUE),
+    SD = sd(diff, na.rm = TRUE)
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
-  arrange(Threshold,Mean) %>%
+  arrange(Threshold,Median) %>%
   tt() %>% 
   style_tt(i = c(1, 5, 9, 13), j = 2, rowspan = 4, alignv = "t")
 ```
