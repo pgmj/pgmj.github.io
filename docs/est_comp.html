@@ -933,7 +933,8 @@ window.addEventListener('load', function () { spanCell_tinytable_y8l2nvhu6m503e0
 </div>
 </section></section><section id="smaller-sample" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="smaller-sample">
 <span class="header-section-number">5</span> Smaller sample</h2>
-<p>Since the pairwise method has been claimed to be good with small samples <span class="citation" data-cites="Finch_French_2019">(<a href="#ref-Finch_French_2019" role="doc-biblioref">Finch and French 2019</a>)</span>, I was interested to have a quick look at this. We’ll use the same 250 datasets again, but randomly select 108 respondents (3 per threshold estimated) from each dataset.</p>
+<p>Since the pairwise method has been claimed to be good with small samples, at least compared to MML <span class="citation" data-cites="Finch_French_2019">(<a href="#ref-Finch_French_2019" role="doc-biblioref">Finch and French 2019</a>)</span>. Notably, the paper mentions using the <code>ltm</code> package for MML estimation (which is referred to as “standard MLE” in the paper), for PCM estimation, but PCM is not available in <code>ltm</code>.</p>
+<p>I was interested to have a quick look at this. We’ll use the same 250 datasets again, but randomly select 108 respondents (3 per threshold estimated) from each dataset.</p>
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span><span class="op">(</span>cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="va">iterations</span> <span class="op">=</span> <span class="fl">250</span></span>
@@ -3001,498 +3002,500 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb19-330"><a href="#cb19-330" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-331"><a href="#cb19-331" aria-hidden="true" tabindex="-1"></a><span class="fu">## Smaller sample</span></span>
 <span id="cb19-332"><a href="#cb19-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-333"><a href="#cb19-333" aria-hidden="true" tabindex="-1"></a>Since the pairwise method has been claimed to be good with small samples <span class="co">[</span><span class="ot">@Finch_French_2019</span><span class="co">]</span>, I was interested to have a quick look at this. We'll use the same 250 datasets again, but randomly select 108 respondents (3 per threshold estimated) from each dataset.</span>
+<span id="cb19-333"><a href="#cb19-333" aria-hidden="true" tabindex="-1"></a>Since the pairwise method has been claimed to be good with small samples, at least compared to MML <span class="co">[</span><span class="ot">@Finch_French_2019</span><span class="co">]</span>. Notably, the paper mentions using the <span class="in">`ltm`</span> package for MML estimation (which is referred to as "standard MLE" in the paper), for PCM estimation, but PCM is not available in <span class="in">`ltm`</span>.</span>
 <span id="cb19-334"><a href="#cb19-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-337"><a href="#cb19-337" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-338"><a href="#cb19-338" aria-hidden="true" tabindex="-1"></a><span class="fu">registerDoParallel</span>(<span class="at">cores =</span> <span class="dv">8</span>)</span>
-<span id="cb19-339"><a href="#cb19-339" aria-hidden="true" tabindex="-1"></a>iterations <span class="ot">=</span> <span class="dv">250</span></span>
-<span id="cb19-340"><a href="#cb19-340" aria-hidden="true" tabindex="-1"></a>samplesize <span class="ot">=</span> <span class="dv">108</span> <span class="co"># n = 3 per threshold (instead of 20/threshold)</span></span>
-<span id="cb19-341"><a href="#cb19-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-342"><a href="#cb19-342" aria-hidden="true" tabindex="-1"></a>sim_results_4t2 <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb19-335"><a href="#cb19-335" aria-hidden="true" tabindex="-1"></a>I was interested to have a quick look at this. We'll use the same 250 datasets again, but randomly select 108 respondents (3 per threshold estimated) from each dataset.</span>
+<span id="cb19-336"><a href="#cb19-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-339"><a href="#cb19-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-340"><a href="#cb19-340" aria-hidden="true" tabindex="-1"></a><span class="fu">registerDoParallel</span>(<span class="at">cores =</span> <span class="dv">8</span>)</span>
+<span id="cb19-341"><a href="#cb19-341" aria-hidden="true" tabindex="-1"></a>iterations <span class="ot">=</span> <span class="dv">250</span></span>
+<span id="cb19-342"><a href="#cb19-342" aria-hidden="true" tabindex="-1"></a>samplesize <span class="ot">=</span> <span class="dv">108</span> <span class="co"># n = 3 per threshold (instead of 20/threshold)</span></span>
 <span id="cb19-343"><a href="#cb19-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-344"><a href="#cb19-344" aria-hidden="true" tabindex="-1"></a>sim_results_4t2 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span>iterations) <span class="sc">%dopar%</span> {</span>
+<span id="cb19-344"><a href="#cb19-344" aria-hidden="true" tabindex="-1"></a>sim_results_4t2 <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb19-345"><a href="#cb19-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-346"><a href="#cb19-346" aria-hidden="true" tabindex="-1"></a>  input_params <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>input_params</span>
-<span id="cb19-347"><a href="#cb19-347" aria-hidden="true" tabindex="-1"></a>  testData <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>data[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">720</span>, samplesize), ]</span>
-<span id="cb19-348"><a href="#cb19-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-349"><a href="#cb19-349" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check mean/centrality (item parameters should have been centered before data generation)</span></span>
-<span id="cb19-350"><a href="#cb19-350" aria-hidden="true" tabindex="-1"></a>  input_params_correction <span class="ot">&lt;-</span> <span class="fu">mean</span>(input_params)</span>
-<span id="cb19-351"><a href="#cb19-351" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-352"><a href="#cb19-352" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eRm</span></span>
-<span id="cb19-353"><a href="#cb19-353" aria-hidden="true" tabindex="-1"></a>  erm_out <span class="ot">&lt;-</span> <span class="fu">PCM</span>(testData)</span>
-<span id="cb19-354"><a href="#cb19-354" aria-hidden="true" tabindex="-1"></a>  erm_params <span class="ot">&lt;-</span> <span class="fu">thresholds</span>(erm_out)[[<span class="dv">3</span>]][[<span class="dv">1</span>]][,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
-<span id="cb19-355"><a href="#cb19-355" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-356"><a href="#cb19-356" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-357"><a href="#cb19-357" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-358"><a href="#cb19-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-359"><a href="#cb19-359" aria-hidden="true" tabindex="-1"></a>  erm_params_c <span class="ot">&lt;-</span> erm_params <span class="sc">-</span> <span class="fu">mean</span>(erm_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-346"><a href="#cb19-346" aria-hidden="true" tabindex="-1"></a>sim_results_4t2 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span>iterations) <span class="sc">%dopar%</span> {</span>
+<span id="cb19-347"><a href="#cb19-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-348"><a href="#cb19-348" aria-hidden="true" tabindex="-1"></a>  input_params <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>input_params</span>
+<span id="cb19-349"><a href="#cb19-349" aria-hidden="true" tabindex="-1"></a>  testData <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>data[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">720</span>, samplesize), ]</span>
+<span id="cb19-350"><a href="#cb19-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-351"><a href="#cb19-351" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check mean/centrality (item parameters should have been centered before data generation)</span></span>
+<span id="cb19-352"><a href="#cb19-352" aria-hidden="true" tabindex="-1"></a>  input_params_correction <span class="ot">&lt;-</span> <span class="fu">mean</span>(input_params)</span>
+<span id="cb19-353"><a href="#cb19-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-354"><a href="#cb19-354" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eRm</span></span>
+<span id="cb19-355"><a href="#cb19-355" aria-hidden="true" tabindex="-1"></a>  erm_out <span class="ot">&lt;-</span> <span class="fu">PCM</span>(testData)</span>
+<span id="cb19-356"><a href="#cb19-356" aria-hidden="true" tabindex="-1"></a>  erm_params <span class="ot">&lt;-</span> <span class="fu">thresholds</span>(erm_out)[[<span class="dv">3</span>]][[<span class="dv">1</span>]][,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb19-357"><a href="#cb19-357" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-358"><a href="#cb19-358" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-359"><a href="#cb19-359" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
 <span id="cb19-360"><a href="#cb19-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-361"><a href="#cb19-361" aria-hidden="true" tabindex="-1"></a>  <span class="co"># TAM</span></span>
-<span id="cb19-362"><a href="#cb19-362" aria-hidden="true" tabindex="-1"></a>  tam_out <span class="ot">&lt;-</span> <span class="fu">tam</span>(<span class="fu">as.matrix</span>(testData), <span class="at">irtmodel =</span> <span class="st">"PCM"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-363"><a href="#cb19-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-364"><a href="#cb19-364" aria-hidden="true" tabindex="-1"></a>  tam_params <span class="ot">&lt;-</span> tam_out<span class="sc">$</span>item_irt <span class="sc">%&gt;%</span></span>
-<span id="cb19-365"><a href="#cb19-365" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-366"><a href="#cb19-366" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"tau"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-367"><a href="#cb19-367" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-368"><a href="#cb19-368" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-369"><a href="#cb19-369" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-370"><a href="#cb19-370" aria-hidden="true" tabindex="-1"></a>  tam_params_c <span class="ot">&lt;-</span> tam_params <span class="sc">-</span> <span class="fu">mean</span>(tam_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-361"><a href="#cb19-361" aria-hidden="true" tabindex="-1"></a>  erm_params_c <span class="ot">&lt;-</span> erm_params <span class="sc">-</span> <span class="fu">mean</span>(erm_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-362"><a href="#cb19-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-363"><a href="#cb19-363" aria-hidden="true" tabindex="-1"></a>  <span class="co"># TAM</span></span>
+<span id="cb19-364"><a href="#cb19-364" aria-hidden="true" tabindex="-1"></a>  tam_out <span class="ot">&lt;-</span> <span class="fu">tam</span>(<span class="fu">as.matrix</span>(testData), <span class="at">irtmodel =</span> <span class="st">"PCM"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-365"><a href="#cb19-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-366"><a href="#cb19-366" aria-hidden="true" tabindex="-1"></a>  tam_params <span class="ot">&lt;-</span> tam_out<span class="sc">$</span>item_irt <span class="sc">%&gt;%</span></span>
+<span id="cb19-367"><a href="#cb19-367" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-368"><a href="#cb19-368" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"tau"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-369"><a href="#cb19-369" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-370"><a href="#cb19-370" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
 <span id="cb19-371"><a href="#cb19-371" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-372"><a href="#cb19-372" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mirt</span></span>
-<span id="cb19-373"><a href="#cb19-373" aria-hidden="true" tabindex="-1"></a>  mirt_out <span class="ot">&lt;-</span> <span class="fu">mirt</span>(<span class="at">data =</span> testData, <span class="at">model =</span> <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"Rasch"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-374"><a href="#cb19-374" aria-hidden="true" tabindex="-1"></a>  mirt_params <span class="ot">&lt;-</span> <span class="fu">coef</span>(mirt_out, <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">IRTpars =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>items <span class="sc">%&gt;%</span></span>
-<span id="cb19-375"><a href="#cb19-375" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-376"><a href="#cb19-376" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">!</span>a) <span class="sc">%&gt;%</span></span>
-<span id="cb19-377"><a href="#cb19-377" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-378"><a href="#cb19-378" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-379"><a href="#cb19-379" aria-hidden="true" tabindex="-1"></a>  mirt_params_c <span class="ot">&lt;-</span> mirt_params <span class="sc">-</span> <span class="fu">mean</span>(mirt_params) <span class="sc">+</span> input_params_correction</span>
-<span id="cb19-380"><a href="#cb19-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-381"><a href="#cb19-381" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PAIR</span></span>
-<span id="cb19-382"><a href="#cb19-382" aria-hidden="true" tabindex="-1"></a>  pair_out <span class="ot">&lt;-</span> <span class="fu">pair</span>(testData, <span class="at">m =</span> <span class="dv">5</span>)</span>
-<span id="cb19-383"><a href="#cb19-383" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> <span class="fu">deltapar</span>(pair_out) <span class="sc">%&gt;%</span></span>
-<span id="cb19-384"><a href="#cb19-384" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>()</span>
-<span id="cb19-385"><a href="#cb19-385" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-386"><a href="#cb19-386" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> pair_params[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
-<span id="cb19-387"><a href="#cb19-387" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-388"><a href="#cb19-388" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-389"><a href="#cb19-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-390"><a href="#cb19-390" aria-hidden="true" tabindex="-1"></a>  pair_params_c <span class="ot">&lt;-</span> pair_params <span class="sc">-</span> <span class="fu">mean</span>(pair_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-372"><a href="#cb19-372" aria-hidden="true" tabindex="-1"></a>  tam_params_c <span class="ot">&lt;-</span> tam_params <span class="sc">-</span> <span class="fu">mean</span>(tam_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-373"><a href="#cb19-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-374"><a href="#cb19-374" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mirt</span></span>
+<span id="cb19-375"><a href="#cb19-375" aria-hidden="true" tabindex="-1"></a>  mirt_out <span class="ot">&lt;-</span> <span class="fu">mirt</span>(<span class="at">data =</span> testData, <span class="at">model =</span> <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"Rasch"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-376"><a href="#cb19-376" aria-hidden="true" tabindex="-1"></a>  mirt_params <span class="ot">&lt;-</span> <span class="fu">coef</span>(mirt_out, <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">IRTpars =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>items <span class="sc">%&gt;%</span></span>
+<span id="cb19-377"><a href="#cb19-377" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-378"><a href="#cb19-378" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">!</span>a) <span class="sc">%&gt;%</span></span>
+<span id="cb19-379"><a href="#cb19-379" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-380"><a href="#cb19-380" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
+<span id="cb19-381"><a href="#cb19-381" aria-hidden="true" tabindex="-1"></a>  mirt_params_c <span class="ot">&lt;-</span> mirt_params <span class="sc">-</span> <span class="fu">mean</span>(mirt_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-382"><a href="#cb19-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-383"><a href="#cb19-383" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PAIR</span></span>
+<span id="cb19-384"><a href="#cb19-384" aria-hidden="true" tabindex="-1"></a>  pair_out <span class="ot">&lt;-</span> <span class="fu">pair</span>(testData, <span class="at">m =</span> <span class="dv">5</span>)</span>
+<span id="cb19-385"><a href="#cb19-385" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> <span class="fu">deltapar</span>(pair_out) <span class="sc">%&gt;%</span></span>
+<span id="cb19-386"><a href="#cb19-386" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>()</span>
+<span id="cb19-387"><a href="#cb19-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-388"><a href="#cb19-388" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> pair_params[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb19-389"><a href="#cb19-389" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-390"><a href="#cb19-390" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
 <span id="cb19-391"><a href="#cb19-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-392"><a href="#cb19-392" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine item parameters and calculate lowest to highest threshold distances</span></span>
-<span id="cb19-393"><a href="#cb19-393" aria-hidden="true" tabindex="-1"></a>  input_params <span class="sc">%&gt;%</span></span>
-<span id="cb19-394"><a href="#cb19-394" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-395"><a href="#cb19-395" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">T1 =</span> V1,</span>
-<span id="cb19-396"><a href="#cb19-396" aria-hidden="true" tabindex="-1"></a>           <span class="at">T2 =</span> V2,</span>
-<span id="cb19-397"><a href="#cb19-397" aria-hidden="true" tabindex="-1"></a>           <span class="at">T3 =</span> V3,</span>
-<span id="cb19-398"><a href="#cb19-398" aria-hidden="true" tabindex="-1"></a>           <span class="at">T4 =</span> V4) <span class="sc">%&gt;%</span></span>
-<span id="cb19-399"><a href="#cb19-399" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-400"><a href="#cb19-400" aria-hidden="true" tabindex="-1"></a>               <span class="at">Type =</span> <span class="st">"Input"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-401"><a href="#cb19-401" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-402"><a href="#cb19-402" aria-hidden="true" tabindex="-1"></a>      erm_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-403"><a href="#cb19-403" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-404"><a href="#cb19-404" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-405"><a href="#cb19-405" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"eRm"</span>)</span>
-<span id="cb19-406"><a href="#cb19-406" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-407"><a href="#cb19-407" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-408"><a href="#cb19-408" aria-hidden="true" tabindex="-1"></a>      tam_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-409"><a href="#cb19-409" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-410"><a href="#cb19-410" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-411"><a href="#cb19-411" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"TAM"</span>)</span>
-<span id="cb19-412"><a href="#cb19-412" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-413"><a href="#cb19-413" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-414"><a href="#cb19-414" aria-hidden="true" tabindex="-1"></a>      mirt_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-415"><a href="#cb19-415" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-416"><a href="#cb19-416" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-417"><a href="#cb19-417" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"mirt"</span>)</span>
-<span id="cb19-418"><a href="#cb19-418" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-419"><a href="#cb19-419" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-420"><a href="#cb19-420" aria-hidden="true" tabindex="-1"></a>      pair_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-421"><a href="#cb19-421" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-422"><a href="#cb19-422" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-423"><a href="#cb19-423" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"PAIR"</span>)</span>
-<span id="cb19-424"><a href="#cb19-424" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-425"><a href="#cb19-425" aria-hidden="true" tabindex="-1"></a>    <span class="fu">remove_rownames</span>()</span>
-<span id="cb19-426"><a href="#cb19-426" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-427"><a href="#cb19-427" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-428"><a href="#cb19-428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-429"><a href="#cb19-429" aria-hidden="true" tabindex="-1"></a><span class="fu">### Results</span></span>
+<span id="cb19-392"><a href="#cb19-392" aria-hidden="true" tabindex="-1"></a>  pair_params_c <span class="ot">&lt;-</span> pair_params <span class="sc">-</span> <span class="fu">mean</span>(pair_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-393"><a href="#cb19-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-394"><a href="#cb19-394" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine item parameters and calculate lowest to highest threshold distances</span></span>
+<span id="cb19-395"><a href="#cb19-395" aria-hidden="true" tabindex="-1"></a>  input_params <span class="sc">%&gt;%</span></span>
+<span id="cb19-396"><a href="#cb19-396" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-397"><a href="#cb19-397" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">T1 =</span> V1,</span>
+<span id="cb19-398"><a href="#cb19-398" aria-hidden="true" tabindex="-1"></a>           <span class="at">T2 =</span> V2,</span>
+<span id="cb19-399"><a href="#cb19-399" aria-hidden="true" tabindex="-1"></a>           <span class="at">T3 =</span> V3,</span>
+<span id="cb19-400"><a href="#cb19-400" aria-hidden="true" tabindex="-1"></a>           <span class="at">T4 =</span> V4) <span class="sc">%&gt;%</span></span>
+<span id="cb19-401"><a href="#cb19-401" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-402"><a href="#cb19-402" aria-hidden="true" tabindex="-1"></a>               <span class="at">Type =</span> <span class="st">"Input"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-403"><a href="#cb19-403" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-404"><a href="#cb19-404" aria-hidden="true" tabindex="-1"></a>      erm_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-405"><a href="#cb19-405" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-406"><a href="#cb19-406" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-407"><a href="#cb19-407" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"eRm"</span>)</span>
+<span id="cb19-408"><a href="#cb19-408" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-409"><a href="#cb19-409" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-410"><a href="#cb19-410" aria-hidden="true" tabindex="-1"></a>      tam_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-411"><a href="#cb19-411" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-412"><a href="#cb19-412" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-413"><a href="#cb19-413" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"TAM"</span>)</span>
+<span id="cb19-414"><a href="#cb19-414" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-415"><a href="#cb19-415" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-416"><a href="#cb19-416" aria-hidden="true" tabindex="-1"></a>      mirt_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-417"><a href="#cb19-417" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-418"><a href="#cb19-418" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-419"><a href="#cb19-419" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"mirt"</span>)</span>
+<span id="cb19-420"><a href="#cb19-420" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-421"><a href="#cb19-421" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-422"><a href="#cb19-422" aria-hidden="true" tabindex="-1"></a>      pair_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-423"><a href="#cb19-423" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-424"><a href="#cb19-424" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-425"><a href="#cb19-425" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"PAIR"</span>)</span>
+<span id="cb19-426"><a href="#cb19-426" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-427"><a href="#cb19-427" aria-hidden="true" tabindex="-1"></a>    <span class="fu">remove_rownames</span>()</span>
+<span id="cb19-428"><a href="#cb19-428" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-429"><a href="#cb19-429" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-430"><a href="#cb19-430" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-433"><a href="#cb19-433" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-434"><a href="#cb19-434" aria-hidden="true" tabindex="-1"></a><span class="co"># collect item threshold parameters to a single dataframe</span></span>
-<span id="cb19-435"><a href="#cb19-435" aria-hidden="true" tabindex="-1"></a>results_params_4t2 <span class="ot">&lt;-</span> <span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>iterations, <span class="sc">~</span> sim_results_4t2[[.x]] <span class="sc">%&gt;%</span></span>
-<span id="cb19-436"><a href="#cb19-436" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">mutate</span>(<span class="at">iteration =</span> .x))</span>
-<span id="cb19-437"><a href="#cb19-437" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-438"><a href="#cb19-438" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-431"><a href="#cb19-431" aria-hidden="true" tabindex="-1"></a><span class="fu">### Results</span></span>
+<span id="cb19-432"><a href="#cb19-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-435"><a href="#cb19-435" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-436"><a href="#cb19-436" aria-hidden="true" tabindex="-1"></a><span class="co"># collect item threshold parameters to a single dataframe</span></span>
+<span id="cb19-437"><a href="#cb19-437" aria-hidden="true" tabindex="-1"></a>results_params_4t2 <span class="ot">&lt;-</span> <span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>iterations, <span class="sc">~</span> sim_results_4t2[[.x]] <span class="sc">%&gt;%</span></span>
+<span id="cb19-438"><a href="#cb19-438" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">mutate</span>(<span class="at">iteration =</span> .x))</span>
 <span id="cb19-439"><a href="#cb19-439" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-440"><a href="#cb19-440" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Summary table</span></span>
+<span id="cb19-440"><a href="#cb19-440" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-441"><a href="#cb19-441" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-444"><a href="#cb19-444" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-445"><a href="#cb19-445" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate absolute differences between input and estimated item thresholds per estimator, average by item</span></span>
-<span id="cb19-446"><a href="#cb19-446" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t2 <span class="ot">&lt;-</span> results_params_4t2 <span class="sc">%&gt;%</span></span>
-<span id="cb19-447"><a href="#cb19-447" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb19-448"><a href="#cb19-448" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
-<span id="cb19-449"><a href="#cb19-449" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
-<span id="cb19-450"><a href="#cb19-450" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"Item"</span>)</span>
-<span id="cb19-451"><a href="#cb19-451" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-452"><a href="#cb19-452" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration, Item) <span class="sc">%&gt;%</span></span>
-<span id="cb19-453"><a href="#cb19-453" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-454"><a href="#cb19-454" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_eRm))<span class="sc">/</span><span class="dv">4</span>,</span>
-<span id="cb19-455"><a href="#cb19-455" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_TAM))<span class="sc">/</span><span class="dv">4</span>,</span>
-<span id="cb19-456"><a href="#cb19-456" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_mirt))<span class="sc">/</span><span class="dv">4</span>,</span>
-<span id="cb19-457"><a href="#cb19-457" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_PAIR))<span class="sc">/</span><span class="dv">4</span></span>
-<span id="cb19-458"><a href="#cb19-458" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-459"><a href="#cb19-459" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-460"><a href="#cb19-460" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb19-461"><a href="#cb19-461" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(diff_eRm, diff_TAM,diff_mirt,diff_PAIR),</span>
-<span id="cb19-462"><a href="#cb19-462" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">"Estimator"</span>),</span>
-<span id="cb19-463"><a href="#cb19-463" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">"_"</span>,</span>
-<span id="cb19-464"><a href="#cb19-464" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"diff"</span></span>
-<span id="cb19-465"><a href="#cb19-465" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-466"><a href="#cb19-466" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-467"><a href="#cb19-467" aria-hidden="true" tabindex="-1"></a><span class="co"># produce table with summary stats per estimator/package</span></span>
-<span id="cb19-468"><a href="#cb19-468" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t2 <span class="sc">%&gt;%</span></span>
-<span id="cb19-469"><a href="#cb19-469" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">%&gt;%</span></span>
-<span id="cb19-470"><a href="#cb19-470" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-471"><a href="#cb19-471" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-472"><a href="#cb19-472" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-473"><a href="#cb19-473" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-474"><a href="#cb19-474" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-475"><a href="#cb19-475" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-476"><a href="#cb19-476" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-477"><a href="#cb19-477" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-478"><a href="#cb19-478" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Package =</span> Estimator) <span class="sc">%&gt;%</span></span>
-<span id="cb19-479"><a href="#cb19-479" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Median) <span class="sc">%&gt;%</span></span>
-<span id="cb19-480"><a href="#cb19-480" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>()</span>
-<span id="cb19-481"><a href="#cb19-481" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-482"><a href="#cb19-482" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-483"><a href="#cb19-483" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Thresholds summary table</span></span>
+<span id="cb19-442"><a href="#cb19-442" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Summary table</span></span>
+<span id="cb19-443"><a href="#cb19-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-446"><a href="#cb19-446" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-447"><a href="#cb19-447" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate absolute differences between input and estimated item thresholds per estimator, average by item</span></span>
+<span id="cb19-448"><a href="#cb19-448" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t2 <span class="ot">&lt;-</span> results_params_4t2 <span class="sc">%&gt;%</span></span>
+<span id="cb19-449"><a href="#cb19-449" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb19-450"><a href="#cb19-450" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
+<span id="cb19-451"><a href="#cb19-451" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
+<span id="cb19-452"><a href="#cb19-452" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"Item"</span>)</span>
+<span id="cb19-453"><a href="#cb19-453" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-454"><a href="#cb19-454" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration, Item) <span class="sc">%&gt;%</span></span>
+<span id="cb19-455"><a href="#cb19-455" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-456"><a href="#cb19-456" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_eRm))<span class="sc">/</span><span class="dv">4</span>,</span>
+<span id="cb19-457"><a href="#cb19-457" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_TAM))<span class="sc">/</span><span class="dv">4</span>,</span>
+<span id="cb19-458"><a href="#cb19-458" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_mirt))<span class="sc">/</span><span class="dv">4</span>,</span>
+<span id="cb19-459"><a href="#cb19-459" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_PAIR))<span class="sc">/</span><span class="dv">4</span></span>
+<span id="cb19-460"><a href="#cb19-460" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-461"><a href="#cb19-461" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-462"><a href="#cb19-462" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb19-463"><a href="#cb19-463" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(diff_eRm, diff_TAM,diff_mirt,diff_PAIR),</span>
+<span id="cb19-464"><a href="#cb19-464" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">"Estimator"</span>),</span>
+<span id="cb19-465"><a href="#cb19-465" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">"_"</span>,</span>
+<span id="cb19-466"><a href="#cb19-466" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"diff"</span></span>
+<span id="cb19-467"><a href="#cb19-467" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-468"><a href="#cb19-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-469"><a href="#cb19-469" aria-hidden="true" tabindex="-1"></a><span class="co"># produce table with summary stats per estimator/package</span></span>
+<span id="cb19-470"><a href="#cb19-470" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t2 <span class="sc">%&gt;%</span></span>
+<span id="cb19-471"><a href="#cb19-471" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">%&gt;%</span></span>
+<span id="cb19-472"><a href="#cb19-472" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-473"><a href="#cb19-473" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-474"><a href="#cb19-474" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-475"><a href="#cb19-475" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-476"><a href="#cb19-476" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-477"><a href="#cb19-477" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-478"><a href="#cb19-478" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-479"><a href="#cb19-479" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-480"><a href="#cb19-480" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Package =</span> Estimator) <span class="sc">%&gt;%</span></span>
+<span id="cb19-481"><a href="#cb19-481" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Median) <span class="sc">%&gt;%</span></span>
+<span id="cb19-482"><a href="#cb19-482" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>()</span>
+<span id="cb19-483"><a href="#cb19-483" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-484"><a href="#cb19-484" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-487"><a href="#cb19-487" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-488"><a href="#cb19-488" aria-hidden="true" tabindex="-1"></a><span class="co"># table summarizing all thresholds and estimators</span></span>
-<span id="cb19-489"><a href="#cb19-489" aria-hidden="true" tabindex="-1"></a>results_params_4t2 <span class="sc">%&gt;%</span></span>
-<span id="cb19-490"><a href="#cb19-490" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
-<span id="cb19-491"><a href="#cb19-491" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
-<span id="cb19-492"><a href="#cb19-492" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
-<span id="cb19-493"><a href="#cb19-493" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-494"><a href="#cb19-494" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
-<span id="cb19-495"><a href="#cb19-495" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-496"><a href="#cb19-496" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> <span class="fu">abs</span>(T1_eRm <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-497"><a href="#cb19-497" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> <span class="fu">abs</span>(T2_eRm <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-498"><a href="#cb19-498" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> <span class="fu">abs</span>(T3_eRm <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-499"><a href="#cb19-499" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> <span class="fu">abs</span>(T4_eRm <span class="sc">-</span> T4_Input),</span>
-<span id="cb19-500"><a href="#cb19-500" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> <span class="fu">abs</span>(T1_TAM <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-501"><a href="#cb19-501" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> <span class="fu">abs</span>(T2_TAM <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-502"><a href="#cb19-502" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> <span class="fu">abs</span>(T3_TAM <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-503"><a href="#cb19-503" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> <span class="fu">abs</span>(T4_TAM <span class="sc">-</span> T4_Input),</span>
-<span id="cb19-504"><a href="#cb19-504" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> <span class="fu">abs</span>(T1_mirt <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-505"><a href="#cb19-505" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> <span class="fu">abs</span>(T2_mirt <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-506"><a href="#cb19-506" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> <span class="fu">abs</span>(T3_mirt <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-507"><a href="#cb19-507" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> <span class="fu">abs</span>(T4_mirt <span class="sc">-</span> T4_Input),</span>
-<span id="cb19-508"><a href="#cb19-508" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> <span class="fu">abs</span>(T1_PAIR <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-509"><a href="#cb19-509" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> <span class="fu">abs</span>(T2_PAIR <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-510"><a href="#cb19-510" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> <span class="fu">abs</span>(T3_PAIR <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-511"><a href="#cb19-511" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> <span class="fu">abs</span>(T4_PAIR <span class="sc">-</span> T4_Input)</span>
-<span id="cb19-512"><a href="#cb19-512" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-513"><a href="#cb19-513" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-514"><a href="#cb19-514" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
-<span id="cb19-515"><a href="#cb19-515" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
-<span id="cb19-516"><a href="#cb19-516" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
-<span id="cb19-517"><a href="#cb19-517" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-518"><a href="#cb19-518" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-519"><a href="#cb19-519" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Package, Threshold) <span class="sc">%&gt;%</span></span>
-<span id="cb19-520"><a href="#cb19-520" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-521"><a href="#cb19-521" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-522"><a href="#cb19-522" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-523"><a href="#cb19-523" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-524"><a href="#cb19-524" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-525"><a href="#cb19-525" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-526"><a href="#cb19-526" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-527"><a href="#cb19-527" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-528"><a href="#cb19-528" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Median) <span class="sc">%&gt;%</span></span>
-<span id="cb19-529"><a href="#cb19-529" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb19-530"><a href="#cb19-530" aria-hidden="true" tabindex="-1"></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>), <span class="at">j =</span> <span class="dv">2</span>, <span class="at">rowspan =</span> <span class="dv">4</span>, <span class="at">alignv =</span> <span class="st">"t"</span>)</span>
-<span id="cb19-531"><a href="#cb19-531" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-532"><a href="#cb19-532" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-533"><a href="#cb19-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-534"><a href="#cb19-534" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
+<span id="cb19-485"><a href="#cb19-485" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Thresholds summary table</span></span>
+<span id="cb19-486"><a href="#cb19-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-489"><a href="#cb19-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-490"><a href="#cb19-490" aria-hidden="true" tabindex="-1"></a><span class="co"># table summarizing all thresholds and estimators</span></span>
+<span id="cb19-491"><a href="#cb19-491" aria-hidden="true" tabindex="-1"></a>results_params_4t2 <span class="sc">%&gt;%</span></span>
+<span id="cb19-492"><a href="#cb19-492" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
+<span id="cb19-493"><a href="#cb19-493" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
+<span id="cb19-494"><a href="#cb19-494" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
+<span id="cb19-495"><a href="#cb19-495" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-496"><a href="#cb19-496" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
+<span id="cb19-497"><a href="#cb19-497" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-498"><a href="#cb19-498" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> <span class="fu">abs</span>(T1_eRm <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-499"><a href="#cb19-499" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> <span class="fu">abs</span>(T2_eRm <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-500"><a href="#cb19-500" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> <span class="fu">abs</span>(T3_eRm <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-501"><a href="#cb19-501" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> <span class="fu">abs</span>(T4_eRm <span class="sc">-</span> T4_Input),</span>
+<span id="cb19-502"><a href="#cb19-502" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> <span class="fu">abs</span>(T1_TAM <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-503"><a href="#cb19-503" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> <span class="fu">abs</span>(T2_TAM <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-504"><a href="#cb19-504" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> <span class="fu">abs</span>(T3_TAM <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-505"><a href="#cb19-505" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> <span class="fu">abs</span>(T4_TAM <span class="sc">-</span> T4_Input),</span>
+<span id="cb19-506"><a href="#cb19-506" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> <span class="fu">abs</span>(T1_mirt <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-507"><a href="#cb19-507" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> <span class="fu">abs</span>(T2_mirt <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-508"><a href="#cb19-508" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> <span class="fu">abs</span>(T3_mirt <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-509"><a href="#cb19-509" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> <span class="fu">abs</span>(T4_mirt <span class="sc">-</span> T4_Input),</span>
+<span id="cb19-510"><a href="#cb19-510" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> <span class="fu">abs</span>(T1_PAIR <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-511"><a href="#cb19-511" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> <span class="fu">abs</span>(T2_PAIR <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-512"><a href="#cb19-512" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> <span class="fu">abs</span>(T3_PAIR <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-513"><a href="#cb19-513" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> <span class="fu">abs</span>(T4_PAIR <span class="sc">-</span> T4_Input)</span>
+<span id="cb19-514"><a href="#cb19-514" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-515"><a href="#cb19-515" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-516"><a href="#cb19-516" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
+<span id="cb19-517"><a href="#cb19-517" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
+<span id="cb19-518"><a href="#cb19-518" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
+<span id="cb19-519"><a href="#cb19-519" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-520"><a href="#cb19-520" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-521"><a href="#cb19-521" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Package, Threshold) <span class="sc">%&gt;%</span></span>
+<span id="cb19-522"><a href="#cb19-522" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-523"><a href="#cb19-523" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-524"><a href="#cb19-524" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-525"><a href="#cb19-525" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-526"><a href="#cb19-526" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-527"><a href="#cb19-527" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-528"><a href="#cb19-528" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-529"><a href="#cb19-529" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-530"><a href="#cb19-530" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Median) <span class="sc">%&gt;%</span></span>
+<span id="cb19-531"><a href="#cb19-531" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb19-532"><a href="#cb19-532" aria-hidden="true" tabindex="-1"></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>), <span class="at">j =</span> <span class="dv">2</span>, <span class="at">rowspan =</span> <span class="dv">4</span>, <span class="at">alignv =</span> <span class="st">"t"</span>)</span>
+<span id="cb19-533"><a href="#cb19-533" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-534"><a href="#cb19-534" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-535"><a href="#cb19-535" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-538"><a href="#cb19-538" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-539"><a href="#cb19-539" aria-hidden="true" tabindex="-1"></a>results_params_4t2 <span class="sc">%&gt;%</span></span>
-<span id="cb19-540"><a href="#cb19-540" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
-<span id="cb19-541"><a href="#cb19-541" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
-<span id="cb19-542"><a href="#cb19-542" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
-<span id="cb19-543"><a href="#cb19-543" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-544"><a href="#cb19-544" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
-<span id="cb19-545"><a href="#cb19-545" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-546"><a href="#cb19-546" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> T1_eRm <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-547"><a href="#cb19-547" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> T2_eRm <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-548"><a href="#cb19-548" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> T3_eRm <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-549"><a href="#cb19-549" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> T4_eRm <span class="sc">-</span> T4_Input,</span>
-<span id="cb19-550"><a href="#cb19-550" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> T1_TAM <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-551"><a href="#cb19-551" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> T2_TAM <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-552"><a href="#cb19-552" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> T3_TAM <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-553"><a href="#cb19-553" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> T4_TAM <span class="sc">-</span> T4_Input,</span>
-<span id="cb19-554"><a href="#cb19-554" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> T1_mirt <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-555"><a href="#cb19-555" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> T2_mirt <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-556"><a href="#cb19-556" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> T3_mirt <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-557"><a href="#cb19-557" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> T4_mirt <span class="sc">-</span> T4_Input,</span>
-<span id="cb19-558"><a href="#cb19-558" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> T1_PAIR <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-559"><a href="#cb19-559" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> T2_PAIR <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-560"><a href="#cb19-560" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> T3_PAIR <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-561"><a href="#cb19-561" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> T4_PAIR <span class="sc">-</span> T4_Input</span>
-<span id="cb19-562"><a href="#cb19-562" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-563"><a href="#cb19-563" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-564"><a href="#cb19-564" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
-<span id="cb19-565"><a href="#cb19-565" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
-<span id="cb19-566"><a href="#cb19-566" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
-<span id="cb19-567"><a href="#cb19-567" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-568"><a href="#cb19-568" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-569"><a href="#cb19-569" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Threshold =</span> car<span class="sc">::</span><span class="fu">recode</span>(Threshold,<span class="st">"'T1'='Threshold 1';'T2'='Threshold 2';'T3'='Threshold 3';'T4'='Threshold 4';"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-570"><a href="#cb19-570" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> diff, <span class="at">y =</span> Package, <span class="at">slab_fill =</span> <span class="fu">after_stat</span>(level))) <span class="sc">+</span></span>
-<span id="cb19-571"><a href="#cb19-571" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_dotsinterval</span>(<span class="at">quantiles =</span> <span class="dv">250</span>, <span class="at">point_interval =</span> <span class="st">"median_qi"</span>,</span>
-<span id="cb19-572"><a href="#cb19-572" aria-hidden="true" tabindex="-1"></a>                    <span class="at">layout =</span> <span class="st">"weave"</span>, <span class="at">slab_color =</span> <span class="cn">NA</span>, <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">66</span>,.<span class="dv">95</span>)) <span class="sc">+</span></span>
-<span id="cb19-573"><a href="#cb19-573" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"Point interval: median_qi (.66 and .95). Based on 250 simulated datasets with 9 items and 108 respondents each."</span>),</span>
-<span id="cb19-574"><a href="#cb19-574" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bias (logit scale)"</span>,</span>
-<span id="cb19-575"><a href="#cb19-575" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Package"</span>,</span>
-<span id="cb19-576"><a href="#cb19-576" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Distribution of item threshold estimation bias"</span>,</span>
-<span id="cb19-577"><a href="#cb19-577" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Rasch Partial Credit Model"</span>) <span class="sc">+</span></span>
-<span id="cb19-578"><a href="#cb19-578" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">guide =</span> <span class="st">"none"</span>, <span class="at">values =</span> scales<span class="sc">::</span><span class="fu">brewer_pal</span>()(<span class="dv">3</span>)[<span class="sc">-</span><span class="dv">1</span>], <span class="at">aesthetics =</span> <span class="st">"slab_fill"</span>) <span class="sc">+</span></span>
-<span id="cb19-579"><a href="#cb19-579" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Threshold, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb19-580"><a href="#cb19-580" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb19-581"><a href="#cb19-581" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb19-582"><a href="#cb19-582" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-583"><a href="#cb19-583" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-536"><a href="#cb19-536" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
+<span id="cb19-537"><a href="#cb19-537" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-540"><a href="#cb19-540" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-541"><a href="#cb19-541" aria-hidden="true" tabindex="-1"></a>results_params_4t2 <span class="sc">%&gt;%</span></span>
+<span id="cb19-542"><a href="#cb19-542" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
+<span id="cb19-543"><a href="#cb19-543" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
+<span id="cb19-544"><a href="#cb19-544" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
+<span id="cb19-545"><a href="#cb19-545" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-546"><a href="#cb19-546" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
+<span id="cb19-547"><a href="#cb19-547" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-548"><a href="#cb19-548" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> T1_eRm <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-549"><a href="#cb19-549" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> T2_eRm <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-550"><a href="#cb19-550" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> T3_eRm <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-551"><a href="#cb19-551" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> T4_eRm <span class="sc">-</span> T4_Input,</span>
+<span id="cb19-552"><a href="#cb19-552" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> T1_TAM <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-553"><a href="#cb19-553" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> T2_TAM <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-554"><a href="#cb19-554" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> T3_TAM <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-555"><a href="#cb19-555" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> T4_TAM <span class="sc">-</span> T4_Input,</span>
+<span id="cb19-556"><a href="#cb19-556" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> T1_mirt <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-557"><a href="#cb19-557" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> T2_mirt <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-558"><a href="#cb19-558" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> T3_mirt <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-559"><a href="#cb19-559" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> T4_mirt <span class="sc">-</span> T4_Input,</span>
+<span id="cb19-560"><a href="#cb19-560" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> T1_PAIR <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-561"><a href="#cb19-561" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> T2_PAIR <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-562"><a href="#cb19-562" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> T3_PAIR <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-563"><a href="#cb19-563" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> T4_PAIR <span class="sc">-</span> T4_Input</span>
+<span id="cb19-564"><a href="#cb19-564" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-565"><a href="#cb19-565" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-566"><a href="#cb19-566" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
+<span id="cb19-567"><a href="#cb19-567" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
+<span id="cb19-568"><a href="#cb19-568" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
+<span id="cb19-569"><a href="#cb19-569" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-570"><a href="#cb19-570" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-571"><a href="#cb19-571" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Threshold =</span> car<span class="sc">::</span><span class="fu">recode</span>(Threshold,<span class="st">"'T1'='Threshold 1';'T2'='Threshold 2';'T3'='Threshold 3';'T4'='Threshold 4';"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-572"><a href="#cb19-572" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> diff, <span class="at">y =</span> Package, <span class="at">slab_fill =</span> <span class="fu">after_stat</span>(level))) <span class="sc">+</span></span>
+<span id="cb19-573"><a href="#cb19-573" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_dotsinterval</span>(<span class="at">quantiles =</span> <span class="dv">250</span>, <span class="at">point_interval =</span> <span class="st">"median_qi"</span>,</span>
+<span id="cb19-574"><a href="#cb19-574" aria-hidden="true" tabindex="-1"></a>                    <span class="at">layout =</span> <span class="st">"weave"</span>, <span class="at">slab_color =</span> <span class="cn">NA</span>, <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">66</span>,.<span class="dv">95</span>)) <span class="sc">+</span></span>
+<span id="cb19-575"><a href="#cb19-575" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"Point interval: median_qi (.66 and .95). Based on 250 simulated datasets with 9 items and 108 respondents each."</span>),</span>
+<span id="cb19-576"><a href="#cb19-576" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bias (logit scale)"</span>,</span>
+<span id="cb19-577"><a href="#cb19-577" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Package"</span>,</span>
+<span id="cb19-578"><a href="#cb19-578" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Distribution of item threshold estimation bias"</span>,</span>
+<span id="cb19-579"><a href="#cb19-579" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Rasch Partial Credit Model"</span>) <span class="sc">+</span></span>
+<span id="cb19-580"><a href="#cb19-580" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">guide =</span> <span class="st">"none"</span>, <span class="at">values =</span> scales<span class="sc">::</span><span class="fu">brewer_pal</span>()(<span class="dv">3</span>)[<span class="sc">-</span><span class="dv">1</span>], <span class="at">aesthetics =</span> <span class="st">"slab_fill"</span>) <span class="sc">+</span></span>
+<span id="cb19-581"><a href="#cb19-581" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Threshold, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-582"><a href="#cb19-582" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb19-583"><a href="#cb19-583" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
 <span id="cb19-584"><a href="#cb19-584" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-585"><a href="#cb19-585" aria-hidden="true" tabindex="-1"></a><span class="fu">## Even smaller sample</span></span>
+<span id="cb19-585"><a href="#cb19-585" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-586"><a href="#cb19-586" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-587"><a href="#cb19-587" aria-hidden="true" tabindex="-1"></a>n = 54, 2 per threshold estimated.</span>
+<span id="cb19-587"><a href="#cb19-587" aria-hidden="true" tabindex="-1"></a><span class="fu">## Even smaller sample</span></span>
 <span id="cb19-588"><a href="#cb19-588" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-591"><a href="#cb19-591" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-592"><a href="#cb19-592" aria-hidden="true" tabindex="-1"></a><span class="fu">registerDoParallel</span>(<span class="at">cores =</span> <span class="dv">8</span>)</span>
-<span id="cb19-593"><a href="#cb19-593" aria-hidden="true" tabindex="-1"></a>iterations <span class="ot">=</span> <span class="dv">250</span></span>
-<span id="cb19-594"><a href="#cb19-594" aria-hidden="true" tabindex="-1"></a>samplesize <span class="ot">=</span> <span class="dv">54</span> <span class="co"># n = 2 per threshold (instead of 20/threshold)</span></span>
-<span id="cb19-595"><a href="#cb19-595" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-596"><a href="#cb19-596" aria-hidden="true" tabindex="-1"></a>sim_results_4t3 <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb19-589"><a href="#cb19-589" aria-hidden="true" tabindex="-1"></a>n = 54, 2 per threshold estimated.</span>
+<span id="cb19-590"><a href="#cb19-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-593"><a href="#cb19-593" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-594"><a href="#cb19-594" aria-hidden="true" tabindex="-1"></a><span class="fu">registerDoParallel</span>(<span class="at">cores =</span> <span class="dv">8</span>)</span>
+<span id="cb19-595"><a href="#cb19-595" aria-hidden="true" tabindex="-1"></a>iterations <span class="ot">=</span> <span class="dv">250</span></span>
+<span id="cb19-596"><a href="#cb19-596" aria-hidden="true" tabindex="-1"></a>samplesize <span class="ot">=</span> <span class="dv">54</span> <span class="co"># n = 2 per threshold (instead of 20/threshold)</span></span>
 <span id="cb19-597"><a href="#cb19-597" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-598"><a href="#cb19-598" aria-hidden="true" tabindex="-1"></a>sim_results_4t3 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span>iterations) <span class="sc">%dopar%</span> {</span>
+<span id="cb19-598"><a href="#cb19-598" aria-hidden="true" tabindex="-1"></a>sim_results_4t3 <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb19-599"><a href="#cb19-599" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-600"><a href="#cb19-600" aria-hidden="true" tabindex="-1"></a>  input_params <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>input_params</span>
-<span id="cb19-601"><a href="#cb19-601" aria-hidden="true" tabindex="-1"></a>  testData <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>data[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">720</span>, samplesize), ]</span>
-<span id="cb19-602"><a href="#cb19-602" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-603"><a href="#cb19-603" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check mean/centrality (item parameters should have been centered before data generation)</span></span>
-<span id="cb19-604"><a href="#cb19-604" aria-hidden="true" tabindex="-1"></a>  input_params_correction <span class="ot">&lt;-</span> <span class="fu">mean</span>(input_params)</span>
-<span id="cb19-605"><a href="#cb19-605" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-606"><a href="#cb19-606" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eRm</span></span>
-<span id="cb19-607"><a href="#cb19-607" aria-hidden="true" tabindex="-1"></a>  erm_out <span class="ot">&lt;-</span> <span class="fu">PCM</span>(testData)</span>
-<span id="cb19-608"><a href="#cb19-608" aria-hidden="true" tabindex="-1"></a>  erm_params <span class="ot">&lt;-</span> <span class="fu">thresholds</span>(erm_out)[[<span class="dv">3</span>]][[<span class="dv">1</span>]][,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
-<span id="cb19-609"><a href="#cb19-609" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-610"><a href="#cb19-610" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-611"><a href="#cb19-611" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-612"><a href="#cb19-612" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-613"><a href="#cb19-613" aria-hidden="true" tabindex="-1"></a>  erm_params_c <span class="ot">&lt;-</span> erm_params <span class="sc">-</span> <span class="fu">mean</span>(erm_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-600"><a href="#cb19-600" aria-hidden="true" tabindex="-1"></a>sim_results_4t3 <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">i =</span> <span class="dv">1</span><span class="sc">:</span>iterations) <span class="sc">%dopar%</span> {</span>
+<span id="cb19-601"><a href="#cb19-601" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-602"><a href="#cb19-602" aria-hidden="true" tabindex="-1"></a>  input_params <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>input_params</span>
+<span id="cb19-603"><a href="#cb19-603" aria-hidden="true" tabindex="-1"></a>  testData <span class="ot">&lt;-</span> sim_data_4t[[i]]<span class="sc">$</span>data[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">720</span>, samplesize), ]</span>
+<span id="cb19-604"><a href="#cb19-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-605"><a href="#cb19-605" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check mean/centrality (item parameters should have been centered before data generation)</span></span>
+<span id="cb19-606"><a href="#cb19-606" aria-hidden="true" tabindex="-1"></a>  input_params_correction <span class="ot">&lt;-</span> <span class="fu">mean</span>(input_params)</span>
+<span id="cb19-607"><a href="#cb19-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-608"><a href="#cb19-608" aria-hidden="true" tabindex="-1"></a>  <span class="co"># eRm</span></span>
+<span id="cb19-609"><a href="#cb19-609" aria-hidden="true" tabindex="-1"></a>  erm_out <span class="ot">&lt;-</span> <span class="fu">PCM</span>(testData)</span>
+<span id="cb19-610"><a href="#cb19-610" aria-hidden="true" tabindex="-1"></a>  erm_params <span class="ot">&lt;-</span> <span class="fu">thresholds</span>(erm_out)[[<span class="dv">3</span>]][[<span class="dv">1</span>]][,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb19-611"><a href="#cb19-611" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-612"><a href="#cb19-612" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-613"><a href="#cb19-613" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
 <span id="cb19-614"><a href="#cb19-614" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-615"><a href="#cb19-615" aria-hidden="true" tabindex="-1"></a>  <span class="co"># TAM</span></span>
-<span id="cb19-616"><a href="#cb19-616" aria-hidden="true" tabindex="-1"></a>  tam_out <span class="ot">&lt;-</span> <span class="fu">tam</span>(<span class="fu">as.matrix</span>(testData), <span class="at">irtmodel =</span> <span class="st">"PCM"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-617"><a href="#cb19-617" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-618"><a href="#cb19-618" aria-hidden="true" tabindex="-1"></a>  tam_params <span class="ot">&lt;-</span> tam_out<span class="sc">$</span>item_irt <span class="sc">%&gt;%</span></span>
-<span id="cb19-619"><a href="#cb19-619" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-620"><a href="#cb19-620" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"tau"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-621"><a href="#cb19-621" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-622"><a href="#cb19-622" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-623"><a href="#cb19-623" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-624"><a href="#cb19-624" aria-hidden="true" tabindex="-1"></a>  tam_params_c <span class="ot">&lt;-</span> tam_params <span class="sc">-</span> <span class="fu">mean</span>(tam_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-615"><a href="#cb19-615" aria-hidden="true" tabindex="-1"></a>  erm_params_c <span class="ot">&lt;-</span> erm_params <span class="sc">-</span> <span class="fu">mean</span>(erm_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-616"><a href="#cb19-616" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-617"><a href="#cb19-617" aria-hidden="true" tabindex="-1"></a>  <span class="co"># TAM</span></span>
+<span id="cb19-618"><a href="#cb19-618" aria-hidden="true" tabindex="-1"></a>  tam_out <span class="ot">&lt;-</span> <span class="fu">tam</span>(<span class="fu">as.matrix</span>(testData), <span class="at">irtmodel =</span> <span class="st">"PCM"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-619"><a href="#cb19-619" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-620"><a href="#cb19-620" aria-hidden="true" tabindex="-1"></a>  tam_params <span class="ot">&lt;-</span> tam_out<span class="sc">$</span>item_irt <span class="sc">%&gt;%</span></span>
+<span id="cb19-621"><a href="#cb19-621" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-622"><a href="#cb19-622" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"tau"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-623"><a href="#cb19-623" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-624"><a href="#cb19-624" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
 <span id="cb19-625"><a href="#cb19-625" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-626"><a href="#cb19-626" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mirt</span></span>
-<span id="cb19-627"><a href="#cb19-627" aria-hidden="true" tabindex="-1"></a>  mirt_out <span class="ot">&lt;-</span> <span class="fu">mirt</span>(<span class="at">data =</span> testData, <span class="at">model =</span> <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"Rasch"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb19-628"><a href="#cb19-628" aria-hidden="true" tabindex="-1"></a>  mirt_params <span class="ot">&lt;-</span> <span class="fu">coef</span>(mirt_out, <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">IRTpars =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>items <span class="sc">%&gt;%</span></span>
-<span id="cb19-629"><a href="#cb19-629" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-630"><a href="#cb19-630" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">!</span>a) <span class="sc">%&gt;%</span></span>
-<span id="cb19-631"><a href="#cb19-631" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-632"><a href="#cb19-632" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-633"><a href="#cb19-633" aria-hidden="true" tabindex="-1"></a>  mirt_params_c <span class="ot">&lt;-</span> mirt_params <span class="sc">-</span> <span class="fu">mean</span>(mirt_params) <span class="sc">+</span> input_params_correction</span>
-<span id="cb19-634"><a href="#cb19-634" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-635"><a href="#cb19-635" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PAIR</span></span>
-<span id="cb19-636"><a href="#cb19-636" aria-hidden="true" tabindex="-1"></a>  pair_out <span class="ot">&lt;-</span> <span class="fu">pair</span>(testData, <span class="at">m =</span> <span class="dv">5</span>)</span>
-<span id="cb19-637"><a href="#cb19-637" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> <span class="fu">deltapar</span>(pair_out) <span class="sc">%&gt;%</span></span>
-<span id="cb19-638"><a href="#cb19-638" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>()</span>
-<span id="cb19-639"><a href="#cb19-639" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-640"><a href="#cb19-640" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> pair_params[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
-<span id="cb19-641"><a href="#cb19-641" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-642"><a href="#cb19-642" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb19-643"><a href="#cb19-643" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-644"><a href="#cb19-644" aria-hidden="true" tabindex="-1"></a>  pair_params_c <span class="ot">&lt;-</span> pair_params <span class="sc">-</span> <span class="fu">mean</span>(pair_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-626"><a href="#cb19-626" aria-hidden="true" tabindex="-1"></a>  tam_params_c <span class="ot">&lt;-</span> tam_params <span class="sc">-</span> <span class="fu">mean</span>(tam_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-627"><a href="#cb19-627" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-628"><a href="#cb19-628" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mirt</span></span>
+<span id="cb19-629"><a href="#cb19-629" aria-hidden="true" tabindex="-1"></a>  mirt_out <span class="ot">&lt;-</span> <span class="fu">mirt</span>(<span class="at">data =</span> testData, <span class="at">model =</span> <span class="dv">1</span>, <span class="at">itemtype =</span> <span class="st">"Rasch"</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-630"><a href="#cb19-630" aria-hidden="true" tabindex="-1"></a>  mirt_params <span class="ot">&lt;-</span> <span class="fu">coef</span>(mirt_out, <span class="at">simplify =</span> <span class="cn">TRUE</span>, <span class="at">IRTpars =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>items <span class="sc">%&gt;%</span></span>
+<span id="cb19-631"><a href="#cb19-631" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-632"><a href="#cb19-632" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">!</span>a) <span class="sc">%&gt;%</span></span>
+<span id="cb19-633"><a href="#cb19-633" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-634"><a href="#cb19-634" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
+<span id="cb19-635"><a href="#cb19-635" aria-hidden="true" tabindex="-1"></a>  mirt_params_c <span class="ot">&lt;-</span> mirt_params <span class="sc">-</span> <span class="fu">mean</span>(mirt_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-636"><a href="#cb19-636" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-637"><a href="#cb19-637" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PAIR</span></span>
+<span id="cb19-638"><a href="#cb19-638" aria-hidden="true" tabindex="-1"></a>  pair_out <span class="ot">&lt;-</span> <span class="fu">pair</span>(testData, <span class="at">m =</span> <span class="dv">5</span>)</span>
+<span id="cb19-639"><a href="#cb19-639" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> <span class="fu">deltapar</span>(pair_out) <span class="sc">%&gt;%</span></span>
+<span id="cb19-640"><a href="#cb19-640" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>()</span>
+<span id="cb19-641"><a href="#cb19-641" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-642"><a href="#cb19-642" aria-hidden="true" tabindex="-1"></a>  pair_params <span class="ot">&lt;-</span> pair_params[,<span class="sc">-</span><span class="dv">1</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb19-643"><a href="#cb19-643" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"T1"</span>,<span class="st">"T2"</span>,<span class="st">"T3"</span>,<span class="st">"T4"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-644"><a href="#cb19-644" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
 <span id="cb19-645"><a href="#cb19-645" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-646"><a href="#cb19-646" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine item parameters and calculate lowest to highest threshold distances</span></span>
-<span id="cb19-647"><a href="#cb19-647" aria-hidden="true" tabindex="-1"></a>  input_params <span class="sc">%&gt;%</span></span>
-<span id="cb19-648"><a href="#cb19-648" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-649"><a href="#cb19-649" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">T1 =</span> V1,</span>
-<span id="cb19-650"><a href="#cb19-650" aria-hidden="true" tabindex="-1"></a>           <span class="at">T2 =</span> V2,</span>
-<span id="cb19-651"><a href="#cb19-651" aria-hidden="true" tabindex="-1"></a>           <span class="at">T3 =</span> V3,</span>
-<span id="cb19-652"><a href="#cb19-652" aria-hidden="true" tabindex="-1"></a>           <span class="at">T4 =</span> V4) <span class="sc">%&gt;%</span></span>
-<span id="cb19-653"><a href="#cb19-653" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-654"><a href="#cb19-654" aria-hidden="true" tabindex="-1"></a>               <span class="at">Type =</span> <span class="st">"Input"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-655"><a href="#cb19-655" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-656"><a href="#cb19-656" aria-hidden="true" tabindex="-1"></a>      erm_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-657"><a href="#cb19-657" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-658"><a href="#cb19-658" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-659"><a href="#cb19-659" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"eRm"</span>)</span>
-<span id="cb19-660"><a href="#cb19-660" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-661"><a href="#cb19-661" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-662"><a href="#cb19-662" aria-hidden="true" tabindex="-1"></a>      tam_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-663"><a href="#cb19-663" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-664"><a href="#cb19-664" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-665"><a href="#cb19-665" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"TAM"</span>)</span>
-<span id="cb19-666"><a href="#cb19-666" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-667"><a href="#cb19-667" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-668"><a href="#cb19-668" aria-hidden="true" tabindex="-1"></a>      mirt_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-669"><a href="#cb19-669" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-670"><a href="#cb19-670" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-671"><a href="#cb19-671" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"mirt"</span>)</span>
-<span id="cb19-672"><a href="#cb19-672" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-673"><a href="#cb19-673" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb19-674"><a href="#cb19-674" aria-hidden="true" tabindex="-1"></a>      pair_params_c <span class="sc">%&gt;%</span></span>
-<span id="cb19-675"><a href="#cb19-675" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-676"><a href="#cb19-676" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
-<span id="cb19-677"><a href="#cb19-677" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"PAIR"</span>)</span>
-<span id="cb19-678"><a href="#cb19-678" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-679"><a href="#cb19-679" aria-hidden="true" tabindex="-1"></a>    <span class="fu">remove_rownames</span>()</span>
-<span id="cb19-680"><a href="#cb19-680" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-681"><a href="#cb19-681" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-682"><a href="#cb19-682" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-683"><a href="#cb19-683" aria-hidden="true" tabindex="-1"></a><span class="fu">### Results</span></span>
+<span id="cb19-646"><a href="#cb19-646" aria-hidden="true" tabindex="-1"></a>  pair_params_c <span class="ot">&lt;-</span> pair_params <span class="sc">-</span> <span class="fu">mean</span>(pair_params) <span class="sc">+</span> input_params_correction</span>
+<span id="cb19-647"><a href="#cb19-647" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-648"><a href="#cb19-648" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine item parameters and calculate lowest to highest threshold distances</span></span>
+<span id="cb19-649"><a href="#cb19-649" aria-hidden="true" tabindex="-1"></a>  input_params <span class="sc">%&gt;%</span></span>
+<span id="cb19-650"><a href="#cb19-650" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-651"><a href="#cb19-651" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">T1 =</span> V1,</span>
+<span id="cb19-652"><a href="#cb19-652" aria-hidden="true" tabindex="-1"></a>           <span class="at">T2 =</span> V2,</span>
+<span id="cb19-653"><a href="#cb19-653" aria-hidden="true" tabindex="-1"></a>           <span class="at">T3 =</span> V3,</span>
+<span id="cb19-654"><a href="#cb19-654" aria-hidden="true" tabindex="-1"></a>           <span class="at">T4 =</span> V4) <span class="sc">%&gt;%</span></span>
+<span id="cb19-655"><a href="#cb19-655" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-656"><a href="#cb19-656" aria-hidden="true" tabindex="-1"></a>               <span class="at">Type =</span> <span class="st">"Input"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-657"><a href="#cb19-657" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-658"><a href="#cb19-658" aria-hidden="true" tabindex="-1"></a>      erm_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-659"><a href="#cb19-659" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-660"><a href="#cb19-660" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-661"><a href="#cb19-661" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"eRm"</span>)</span>
+<span id="cb19-662"><a href="#cb19-662" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-663"><a href="#cb19-663" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-664"><a href="#cb19-664" aria-hidden="true" tabindex="-1"></a>      tam_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-665"><a href="#cb19-665" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-666"><a href="#cb19-666" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-667"><a href="#cb19-667" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"TAM"</span>)</span>
+<span id="cb19-668"><a href="#cb19-668" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-669"><a href="#cb19-669" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-670"><a href="#cb19-670" aria-hidden="true" tabindex="-1"></a>      mirt_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-671"><a href="#cb19-671" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-672"><a href="#cb19-672" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-673"><a href="#cb19-673" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"mirt"</span>)</span>
+<span id="cb19-674"><a href="#cb19-674" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-675"><a href="#cb19-675" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb19-676"><a href="#cb19-676" aria-hidden="true" tabindex="-1"></a>      pair_params_c <span class="sc">%&gt;%</span></span>
+<span id="cb19-677"><a href="#cb19-677" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-678"><a href="#cb19-678" aria-hidden="true" tabindex="-1"></a>        <span class="fu">add_column</span>(<span class="at">Item =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb19-679"><a href="#cb19-679" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Type =</span> <span class="st">"PAIR"</span>)</span>
+<span id="cb19-680"><a href="#cb19-680" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-681"><a href="#cb19-681" aria-hidden="true" tabindex="-1"></a>    <span class="fu">remove_rownames</span>()</span>
+<span id="cb19-682"><a href="#cb19-682" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-683"><a href="#cb19-683" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-684"><a href="#cb19-684" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-687"><a href="#cb19-687" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-688"><a href="#cb19-688" aria-hidden="true" tabindex="-1"></a><span class="co"># collect item threshold parameters to a single dataframe</span></span>
-<span id="cb19-689"><a href="#cb19-689" aria-hidden="true" tabindex="-1"></a>results_params_4t3 <span class="ot">&lt;-</span> <span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>iterations, <span class="sc">~</span> sim_results_4t3[[.x]] <span class="sc">%&gt;%</span></span>
-<span id="cb19-690"><a href="#cb19-690" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">mutate</span>(<span class="at">iteration =</span> .x))</span>
-<span id="cb19-691"><a href="#cb19-691" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-692"><a href="#cb19-692" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-685"><a href="#cb19-685" aria-hidden="true" tabindex="-1"></a><span class="fu">### Results</span></span>
+<span id="cb19-686"><a href="#cb19-686" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-689"><a href="#cb19-689" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-690"><a href="#cb19-690" aria-hidden="true" tabindex="-1"></a><span class="co"># collect item threshold parameters to a single dataframe</span></span>
+<span id="cb19-691"><a href="#cb19-691" aria-hidden="true" tabindex="-1"></a>results_params_4t3 <span class="ot">&lt;-</span> <span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>iterations, <span class="sc">~</span> sim_results_4t3[[.x]] <span class="sc">%&gt;%</span></span>
+<span id="cb19-692"><a href="#cb19-692" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">mutate</span>(<span class="at">iteration =</span> .x))</span>
 <span id="cb19-693"><a href="#cb19-693" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-694"><a href="#cb19-694" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Summary table</span></span>
+<span id="cb19-694"><a href="#cb19-694" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-695"><a href="#cb19-695" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-698"><a href="#cb19-698" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-699"><a href="#cb19-699" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate absolute differences between input and estimated item thresholds per estimator, average by item</span></span>
-<span id="cb19-700"><a href="#cb19-700" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t3 <span class="ot">&lt;-</span> results_params_4t3 <span class="sc">%&gt;%</span></span>
-<span id="cb19-701"><a href="#cb19-701" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb19-702"><a href="#cb19-702" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
-<span id="cb19-703"><a href="#cb19-703" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
-<span id="cb19-704"><a href="#cb19-704" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"Item"</span>)</span>
-<span id="cb19-705"><a href="#cb19-705" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-706"><a href="#cb19-706" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration, Item) <span class="sc">%&gt;%</span></span>
-<span id="cb19-707"><a href="#cb19-707" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-708"><a href="#cb19-708" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_eRm))<span class="sc">/</span><span class="dv">4</span>,</span>
-<span id="cb19-709"><a href="#cb19-709" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_TAM))<span class="sc">/</span><span class="dv">4</span>,</span>
-<span id="cb19-710"><a href="#cb19-710" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_mirt))<span class="sc">/</span><span class="dv">4</span>,</span>
-<span id="cb19-711"><a href="#cb19-711" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_PAIR))<span class="sc">/</span><span class="dv">4</span></span>
-<span id="cb19-712"><a href="#cb19-712" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-713"><a href="#cb19-713" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-714"><a href="#cb19-714" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb19-715"><a href="#cb19-715" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(diff_eRm, diff_TAM,diff_mirt,diff_PAIR),</span>
-<span id="cb19-716"><a href="#cb19-716" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">"Estimator"</span>),</span>
-<span id="cb19-717"><a href="#cb19-717" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">"_"</span>,</span>
-<span id="cb19-718"><a href="#cb19-718" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"diff"</span></span>
-<span id="cb19-719"><a href="#cb19-719" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb19-720"><a href="#cb19-720" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-721"><a href="#cb19-721" aria-hidden="true" tabindex="-1"></a><span class="co"># produce table with summary stats per estimator/package</span></span>
-<span id="cb19-722"><a href="#cb19-722" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t3 <span class="sc">%&gt;%</span></span>
-<span id="cb19-723"><a href="#cb19-723" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">%&gt;%</span></span>
-<span id="cb19-724"><a href="#cb19-724" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-725"><a href="#cb19-725" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-726"><a href="#cb19-726" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-727"><a href="#cb19-727" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-728"><a href="#cb19-728" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-729"><a href="#cb19-729" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-730"><a href="#cb19-730" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-731"><a href="#cb19-731" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-732"><a href="#cb19-732" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Package =</span> Estimator) <span class="sc">%&gt;%</span></span>
-<span id="cb19-733"><a href="#cb19-733" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Median) <span class="sc">%&gt;%</span></span>
-<span id="cb19-734"><a href="#cb19-734" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>()</span>
-<span id="cb19-735"><a href="#cb19-735" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-736"><a href="#cb19-736" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-737"><a href="#cb19-737" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Thresholds summary table</span></span>
+<span id="cb19-696"><a href="#cb19-696" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Summary table</span></span>
+<span id="cb19-697"><a href="#cb19-697" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-700"><a href="#cb19-700" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-701"><a href="#cb19-701" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate absolute differences between input and estimated item thresholds per estimator, average by item</span></span>
+<span id="cb19-702"><a href="#cb19-702" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t3 <span class="ot">&lt;-</span> results_params_4t3 <span class="sc">%&gt;%</span></span>
+<span id="cb19-703"><a href="#cb19-703" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb19-704"><a href="#cb19-704" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
+<span id="cb19-705"><a href="#cb19-705" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
+<span id="cb19-706"><a href="#cb19-706" aria-hidden="true" tabindex="-1"></a>    <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"Item"</span>)</span>
+<span id="cb19-707"><a href="#cb19-707" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-708"><a href="#cb19-708" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration, Item) <span class="sc">%&gt;%</span></span>
+<span id="cb19-709"><a href="#cb19-709" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-710"><a href="#cb19-710" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_eRm) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_eRm))<span class="sc">/</span><span class="dv">4</span>,</span>
+<span id="cb19-711"><a href="#cb19-711" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_TAM) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_TAM))<span class="sc">/</span><span class="dv">4</span>,</span>
+<span id="cb19-712"><a href="#cb19-712" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_mirt) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_mirt))<span class="sc">/</span><span class="dv">4</span>,</span>
+<span id="cb19-713"><a href="#cb19-713" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(T1_Input <span class="sc">-</span> T1_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T2_Input <span class="sc">-</span> T2_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T3_Input <span class="sc">-</span> T3_PAIR) <span class="sc">+</span> <span class="fu">abs</span>(T4_Input <span class="sc">-</span> T4_PAIR))<span class="sc">/</span><span class="dv">4</span></span>
+<span id="cb19-714"><a href="#cb19-714" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-715"><a href="#cb19-715" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-716"><a href="#cb19-716" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb19-717"><a href="#cb19-717" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(diff_eRm, diff_TAM,diff_mirt,diff_PAIR),</span>
+<span id="cb19-718"><a href="#cb19-718" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">"Estimator"</span>),</span>
+<span id="cb19-719"><a href="#cb19-719" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_sep =</span> <span class="st">"_"</span>,</span>
+<span id="cb19-720"><a href="#cb19-720" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"diff"</span></span>
+<span id="cb19-721"><a href="#cb19-721" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-722"><a href="#cb19-722" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-723"><a href="#cb19-723" aria-hidden="true" tabindex="-1"></a><span class="co"># produce table with summary stats per estimator/package</span></span>
+<span id="cb19-724"><a href="#cb19-724" aria-hidden="true" tabindex="-1"></a>results_params_diff_4t3 <span class="sc">%&gt;%</span></span>
+<span id="cb19-725"><a href="#cb19-725" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">%&gt;%</span></span>
+<span id="cb19-726"><a href="#cb19-726" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-727"><a href="#cb19-727" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-728"><a href="#cb19-728" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-729"><a href="#cb19-729" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-730"><a href="#cb19-730" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-731"><a href="#cb19-731" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-732"><a href="#cb19-732" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-733"><a href="#cb19-733" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-734"><a href="#cb19-734" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Package =</span> Estimator) <span class="sc">%&gt;%</span></span>
+<span id="cb19-735"><a href="#cb19-735" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Median) <span class="sc">%&gt;%</span></span>
+<span id="cb19-736"><a href="#cb19-736" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>()</span>
+<span id="cb19-737"><a href="#cb19-737" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb19-738"><a href="#cb19-738" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-741"><a href="#cb19-741" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-742"><a href="#cb19-742" aria-hidden="true" tabindex="-1"></a><span class="co"># table summarizing all thresholds and estimators</span></span>
-<span id="cb19-743"><a href="#cb19-743" aria-hidden="true" tabindex="-1"></a>results_params_4t3 <span class="sc">%&gt;%</span></span>
-<span id="cb19-744"><a href="#cb19-744" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
-<span id="cb19-745"><a href="#cb19-745" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
-<span id="cb19-746"><a href="#cb19-746" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
-<span id="cb19-747"><a href="#cb19-747" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-748"><a href="#cb19-748" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
-<span id="cb19-749"><a href="#cb19-749" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-750"><a href="#cb19-750" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> <span class="fu">abs</span>(T1_eRm <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-751"><a href="#cb19-751" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> <span class="fu">abs</span>(T2_eRm <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-752"><a href="#cb19-752" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> <span class="fu">abs</span>(T3_eRm <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-753"><a href="#cb19-753" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> <span class="fu">abs</span>(T4_eRm <span class="sc">-</span> T4_Input),</span>
-<span id="cb19-754"><a href="#cb19-754" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> <span class="fu">abs</span>(T1_TAM <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-755"><a href="#cb19-755" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> <span class="fu">abs</span>(T2_TAM <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-756"><a href="#cb19-756" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> <span class="fu">abs</span>(T3_TAM <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-757"><a href="#cb19-757" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> <span class="fu">abs</span>(T4_TAM <span class="sc">-</span> T4_Input),</span>
-<span id="cb19-758"><a href="#cb19-758" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> <span class="fu">abs</span>(T1_mirt <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-759"><a href="#cb19-759" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> <span class="fu">abs</span>(T2_mirt <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-760"><a href="#cb19-760" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> <span class="fu">abs</span>(T3_mirt <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-761"><a href="#cb19-761" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> <span class="fu">abs</span>(T4_mirt <span class="sc">-</span> T4_Input),</span>
-<span id="cb19-762"><a href="#cb19-762" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> <span class="fu">abs</span>(T1_PAIR <span class="sc">-</span> T1_Input),</span>
-<span id="cb19-763"><a href="#cb19-763" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> <span class="fu">abs</span>(T2_PAIR <span class="sc">-</span> T2_Input),</span>
-<span id="cb19-764"><a href="#cb19-764" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> <span class="fu">abs</span>(T3_PAIR <span class="sc">-</span> T3_Input),</span>
-<span id="cb19-765"><a href="#cb19-765" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> <span class="fu">abs</span>(T4_PAIR <span class="sc">-</span> T4_Input)</span>
-<span id="cb19-766"><a href="#cb19-766" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-767"><a href="#cb19-767" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-768"><a href="#cb19-768" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
-<span id="cb19-769"><a href="#cb19-769" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
-<span id="cb19-770"><a href="#cb19-770" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
-<span id="cb19-771"><a href="#cb19-771" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-772"><a href="#cb19-772" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-773"><a href="#cb19-773" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Package, Threshold) <span class="sc">%&gt;%</span></span>
-<span id="cb19-774"><a href="#cb19-774" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-775"><a href="#cb19-775" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-776"><a href="#cb19-776" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-777"><a href="#cb19-777" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-778"><a href="#cb19-778" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-779"><a href="#cb19-779" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-780"><a href="#cb19-780" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-781"><a href="#cb19-781" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb19-782"><a href="#cb19-782" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Median) <span class="sc">%&gt;%</span></span>
-<span id="cb19-783"><a href="#cb19-783" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb19-784"><a href="#cb19-784" aria-hidden="true" tabindex="-1"></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>), <span class="at">j =</span> <span class="dv">2</span>, <span class="at">rowspan =</span> <span class="dv">4</span>, <span class="at">alignv =</span> <span class="st">"t"</span>)</span>
-<span id="cb19-785"><a href="#cb19-785" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-786"><a href="#cb19-786" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-787"><a href="#cb19-787" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-788"><a href="#cb19-788" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
+<span id="cb19-739"><a href="#cb19-739" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Thresholds summary table</span></span>
+<span id="cb19-740"><a href="#cb19-740" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-743"><a href="#cb19-743" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-744"><a href="#cb19-744" aria-hidden="true" tabindex="-1"></a><span class="co"># table summarizing all thresholds and estimators</span></span>
+<span id="cb19-745"><a href="#cb19-745" aria-hidden="true" tabindex="-1"></a>results_params_4t3 <span class="sc">%&gt;%</span></span>
+<span id="cb19-746"><a href="#cb19-746" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
+<span id="cb19-747"><a href="#cb19-747" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
+<span id="cb19-748"><a href="#cb19-748" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
+<span id="cb19-749"><a href="#cb19-749" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-750"><a href="#cb19-750" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
+<span id="cb19-751"><a href="#cb19-751" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-752"><a href="#cb19-752" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> <span class="fu">abs</span>(T1_eRm <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-753"><a href="#cb19-753" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> <span class="fu">abs</span>(T2_eRm <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-754"><a href="#cb19-754" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> <span class="fu">abs</span>(T3_eRm <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-755"><a href="#cb19-755" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> <span class="fu">abs</span>(T4_eRm <span class="sc">-</span> T4_Input),</span>
+<span id="cb19-756"><a href="#cb19-756" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> <span class="fu">abs</span>(T1_TAM <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-757"><a href="#cb19-757" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> <span class="fu">abs</span>(T2_TAM <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-758"><a href="#cb19-758" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> <span class="fu">abs</span>(T3_TAM <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-759"><a href="#cb19-759" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> <span class="fu">abs</span>(T4_TAM <span class="sc">-</span> T4_Input),</span>
+<span id="cb19-760"><a href="#cb19-760" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> <span class="fu">abs</span>(T1_mirt <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-761"><a href="#cb19-761" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> <span class="fu">abs</span>(T2_mirt <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-762"><a href="#cb19-762" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> <span class="fu">abs</span>(T3_mirt <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-763"><a href="#cb19-763" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> <span class="fu">abs</span>(T4_mirt <span class="sc">-</span> T4_Input),</span>
+<span id="cb19-764"><a href="#cb19-764" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> <span class="fu">abs</span>(T1_PAIR <span class="sc">-</span> T1_Input),</span>
+<span id="cb19-765"><a href="#cb19-765" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> <span class="fu">abs</span>(T2_PAIR <span class="sc">-</span> T2_Input),</span>
+<span id="cb19-766"><a href="#cb19-766" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> <span class="fu">abs</span>(T3_PAIR <span class="sc">-</span> T3_Input),</span>
+<span id="cb19-767"><a href="#cb19-767" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> <span class="fu">abs</span>(T4_PAIR <span class="sc">-</span> T4_Input)</span>
+<span id="cb19-768"><a href="#cb19-768" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-769"><a href="#cb19-769" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-770"><a href="#cb19-770" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
+<span id="cb19-771"><a href="#cb19-771" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
+<span id="cb19-772"><a href="#cb19-772" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
+<span id="cb19-773"><a href="#cb19-773" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-774"><a href="#cb19-774" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-775"><a href="#cb19-775" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Package, Threshold) <span class="sc">%&gt;%</span></span>
+<span id="cb19-776"><a href="#cb19-776" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-777"><a href="#cb19-777" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">median</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-778"><a href="#cb19-778" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAD =</span> <span class="fu">mad</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-779"><a href="#cb19-779" aria-hidden="true" tabindex="-1"></a>    <span class="at">IQR =</span> <span class="fu">IQR</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-780"><a href="#cb19-780" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">mean</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-781"><a href="#cb19-781" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">sd</span>(diff, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-782"><a href="#cb19-782" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-783"><a href="#cb19-783" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x,<span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-784"><a href="#cb19-784" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Threshold,Median) <span class="sc">%&gt;%</span></span>
+<span id="cb19-785"><a href="#cb19-785" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb19-786"><a href="#cb19-786" aria-hidden="true" tabindex="-1"></a>  <span class="fu">style_tt</span>(<span class="at">i =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>), <span class="at">j =</span> <span class="dv">2</span>, <span class="at">rowspan =</span> <span class="dv">4</span>, <span class="at">alignv =</span> <span class="st">"t"</span>)</span>
+<span id="cb19-787"><a href="#cb19-787" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-788"><a href="#cb19-788" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-789"><a href="#cb19-789" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-792"><a href="#cb19-792" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-793"><a href="#cb19-793" aria-hidden="true" tabindex="-1"></a>results_params_4t3 <span class="sc">%&gt;%</span></span>
-<span id="cb19-794"><a href="#cb19-794" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
-<span id="cb19-795"><a href="#cb19-795" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
-<span id="cb19-796"><a href="#cb19-796" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
-<span id="cb19-797"><a href="#cb19-797" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-798"><a href="#cb19-798" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
-<span id="cb19-799"><a href="#cb19-799" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb19-800"><a href="#cb19-800" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> T1_eRm <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-801"><a href="#cb19-801" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> T2_eRm <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-802"><a href="#cb19-802" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> T3_eRm <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-803"><a href="#cb19-803" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> T4_eRm <span class="sc">-</span> T4_Input,</span>
-<span id="cb19-804"><a href="#cb19-804" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> T1_TAM <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-805"><a href="#cb19-805" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> T2_TAM <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-806"><a href="#cb19-806" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> T3_TAM <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-807"><a href="#cb19-807" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> T4_TAM <span class="sc">-</span> T4_Input,</span>
-<span id="cb19-808"><a href="#cb19-808" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> T1_mirt <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-809"><a href="#cb19-809" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> T2_mirt <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-810"><a href="#cb19-810" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> T3_mirt <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-811"><a href="#cb19-811" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> T4_mirt <span class="sc">-</span> T4_Input,</span>
-<span id="cb19-812"><a href="#cb19-812" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> T1_PAIR <span class="sc">-</span> T1_Input,</span>
-<span id="cb19-813"><a href="#cb19-813" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> T2_PAIR <span class="sc">-</span> T2_Input,</span>
-<span id="cb19-814"><a href="#cb19-814" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> T3_PAIR <span class="sc">-</span> T3_Input,</span>
-<span id="cb19-815"><a href="#cb19-815" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> T4_PAIR <span class="sc">-</span> T4_Input</span>
-<span id="cb19-816"><a href="#cb19-816" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-817"><a href="#cb19-817" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-818"><a href="#cb19-818" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
-<span id="cb19-819"><a href="#cb19-819" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
-<span id="cb19-820"><a href="#cb19-820" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
-<span id="cb19-821"><a href="#cb19-821" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-822"><a href="#cb19-822" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-823"><a href="#cb19-823" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Threshold =</span> car<span class="sc">::</span><span class="fu">recode</span>(Threshold,<span class="st">"'T1'='Threshold 1';'T2'='Threshold 2';'T3'='Threshold 3';'T4'='Threshold 4';"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-824"><a href="#cb19-824" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> diff, <span class="at">y =</span> Package, <span class="at">slab_fill =</span> <span class="fu">after_stat</span>(level))) <span class="sc">+</span></span>
-<span id="cb19-825"><a href="#cb19-825" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_dotsinterval</span>(<span class="at">quantiles =</span> <span class="dv">250</span>, <span class="at">point_interval =</span> <span class="st">"median_qi"</span>,</span>
-<span id="cb19-826"><a href="#cb19-826" aria-hidden="true" tabindex="-1"></a>                    <span class="at">layout =</span> <span class="st">"weave"</span>, <span class="at">slab_color =</span> <span class="cn">NA</span>, <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">66</span>,.<span class="dv">95</span>)) <span class="sc">+</span></span>
-<span id="cb19-827"><a href="#cb19-827" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"Point interval: median_qi (.66 and .95). Based on 250 simulated datasets with 9 items and 54 respondents each. X-axis omits extreme values."</span>),</span>
-<span id="cb19-828"><a href="#cb19-828" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bias (logit scale)"</span>,</span>
-<span id="cb19-829"><a href="#cb19-829" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Package"</span>,</span>
-<span id="cb19-830"><a href="#cb19-830" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Distribution of item threshold estimation bias"</span>,</span>
-<span id="cb19-831"><a href="#cb19-831" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Rasch Partial Credit Model"</span>) <span class="sc">+</span></span>
-<span id="cb19-832"><a href="#cb19-832" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">guide =</span> <span class="st">"none"</span>, <span class="at">values =</span> scales<span class="sc">::</span><span class="fu">brewer_pal</span>()(<span class="dv">3</span>)[<span class="sc">-</span><span class="dv">1</span>], <span class="at">aesthetics =</span> <span class="st">"slab_fill"</span>) <span class="sc">+</span></span>
-<span id="cb19-833"><a href="#cb19-833" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Threshold, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb19-834"><a href="#cb19-834" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb19-835"><a href="#cb19-835" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb19-836"><a href="#cb19-836" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>,<span class="fl">2.5</span>))</span>
-<span id="cb19-837"><a href="#cb19-837" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-838"><a href="#cb19-838" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-790"><a href="#cb19-790" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
+<span id="cb19-791"><a href="#cb19-791" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-794"><a href="#cb19-794" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-795"><a href="#cb19-795" aria-hidden="true" tabindex="-1"></a>results_params_4t3 <span class="sc">%&gt;%</span></span>
+<span id="cb19-796"><a href="#cb19-796" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">values_from =</span> <span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>),</span>
+<span id="cb19-797"><a href="#cb19-797" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_from =</span> <span class="st">"Type"</span>,</span>
+<span id="cb19-798"><a href="#cb19-798" aria-hidden="true" tabindex="-1"></a>              <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"iteration"</span>,<span class="st">"Item"</span>)</span>
+<span id="cb19-799"><a href="#cb19-799" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-800"><a href="#cb19-800" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(iteration,Item) <span class="sc">%&gt;%</span></span>
+<span id="cb19-801"><a href="#cb19-801" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb19-802"><a href="#cb19-802" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T1 =</span> T1_eRm <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-803"><a href="#cb19-803" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T2 =</span> T2_eRm <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-804"><a href="#cb19-804" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T3 =</span> T3_eRm <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-805"><a href="#cb19-805" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_eRm.T4 =</span> T4_eRm <span class="sc">-</span> T4_Input,</span>
+<span id="cb19-806"><a href="#cb19-806" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T1 =</span> T1_TAM <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-807"><a href="#cb19-807" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T2 =</span> T2_TAM <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-808"><a href="#cb19-808" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T3 =</span> T3_TAM <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-809"><a href="#cb19-809" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_TAM.T4 =</span> T4_TAM <span class="sc">-</span> T4_Input,</span>
+<span id="cb19-810"><a href="#cb19-810" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T1 =</span> T1_mirt <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-811"><a href="#cb19-811" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T2 =</span> T2_mirt <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-812"><a href="#cb19-812" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T3 =</span> T3_mirt <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-813"><a href="#cb19-813" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_mirt.T4 =</span> T4_mirt <span class="sc">-</span> T4_Input,</span>
+<span id="cb19-814"><a href="#cb19-814" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T1 =</span> T1_PAIR <span class="sc">-</span> T1_Input,</span>
+<span id="cb19-815"><a href="#cb19-815" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T2 =</span> T2_PAIR <span class="sc">-</span> T2_Input,</span>
+<span id="cb19-816"><a href="#cb19-816" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T3 =</span> T3_PAIR <span class="sc">-</span> T3_Input,</span>
+<span id="cb19-817"><a href="#cb19-817" aria-hidden="true" tabindex="-1"></a>    <span class="at">diff_PAIR.T4 =</span> T4_PAIR <span class="sc">-</span> T4_Input</span>
+<span id="cb19-818"><a href="#cb19-818" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb19-819"><a href="#cb19-819" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-820"><a href="#cb19-820" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"diff"</span>),</span>
+<span id="cb19-821"><a href="#cb19-821" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"Estimator"</span>,<span class="st">"Threshold"</span>),</span>
+<span id="cb19-822"><a href="#cb19-822" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>,</span>
+<span id="cb19-823"><a href="#cb19-823" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-824"><a href="#cb19-824" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Package =</span> <span class="fu">gsub</span>(<span class="st">"diff_"</span>,<span class="st">""</span>,Estimator)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-825"><a href="#cb19-825" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Threshold =</span> car<span class="sc">::</span><span class="fu">recode</span>(Threshold,<span class="st">"'T1'='Threshold 1';'T2'='Threshold 2';'T3'='Threshold 3';'T4'='Threshold 4';"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-826"><a href="#cb19-826" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> diff, <span class="at">y =</span> Package, <span class="at">slab_fill =</span> <span class="fu">after_stat</span>(level))) <span class="sc">+</span></span>
+<span id="cb19-827"><a href="#cb19-827" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_dotsinterval</span>(<span class="at">quantiles =</span> <span class="dv">250</span>, <span class="at">point_interval =</span> <span class="st">"median_qi"</span>,</span>
+<span id="cb19-828"><a href="#cb19-828" aria-hidden="true" tabindex="-1"></a>                    <span class="at">layout =</span> <span class="st">"weave"</span>, <span class="at">slab_color =</span> <span class="cn">NA</span>, <span class="at">.width =</span> <span class="fu">c</span>(.<span class="dv">66</span>,.<span class="dv">95</span>)) <span class="sc">+</span></span>
+<span id="cb19-829"><a href="#cb19-829" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="fu">str_wrap</span>(<span class="st">"Point interval: median_qi (.66 and .95). Based on 250 simulated datasets with 9 items and 54 respondents each. X-axis omits extreme values."</span>),</span>
+<span id="cb19-830"><a href="#cb19-830" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Bias (logit scale)"</span>,</span>
+<span id="cb19-831"><a href="#cb19-831" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Package"</span>,</span>
+<span id="cb19-832"><a href="#cb19-832" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Distribution of item threshold estimation bias"</span>,</span>
+<span id="cb19-833"><a href="#cb19-833" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Rasch Partial Credit Model"</span>) <span class="sc">+</span></span>
+<span id="cb19-834"><a href="#cb19-834" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">guide =</span> <span class="st">"none"</span>, <span class="at">values =</span> scales<span class="sc">::</span><span class="fu">brewer_pal</span>()(<span class="dv">3</span>)[<span class="sc">-</span><span class="dv">1</span>], <span class="at">aesthetics =</span> <span class="st">"slab_fill"</span>) <span class="sc">+</span></span>
+<span id="cb19-835"><a href="#cb19-835" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Threshold, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-836"><a href="#cb19-836" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb19-837"><a href="#cb19-837" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb19-838"><a href="#cb19-838" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.5</span>,<span class="fl">2.5</span>))</span>
 <span id="cb19-839"><a href="#cb19-839" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-842"><a href="#cb19-842" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-843"><a href="#cb19-843" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb19-844"><a href="#cb19-844" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-845"><a href="#cb19-845" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-846"><a href="#cb19-846" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb19-840"><a href="#cb19-840" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-841"><a href="#cb19-841" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-844"><a href="#cb19-844" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-845"><a href="#cb19-845" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb19-846"><a href="#cb19-846" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-847"><a href="#cb19-847" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-848"><a href="#cb19-848" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

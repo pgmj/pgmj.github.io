@@ -318,7 +318,9 @@ results_params_4t %>%
 
 ## Smaller sample
 
-Since the pairwise method has been claimed to be good with small samples [@Finch_French_2019], I was interested to have a quick look at this. We'll use the same 250 datasets again, but randomly select 108 respondents (3 per threshold estimated) from each dataset.
+Since the pairwise method has been claimed to be good with small samples, at least compared to MML [@Finch_French_2019]. Notably, the paper mentions using the `ltm` package for MML estimation (which is referred to as "standard MLE" in the paper), for PCM estimation, but PCM is not available in `ltm`.
+
+I was interested to have a quick look at this. We'll use the same 250 datasets again, but randomly select 108 respondents (3 per threshold estimated) from each dataset.
 
 ```{r}
 registerDoParallel(cores = 8)
