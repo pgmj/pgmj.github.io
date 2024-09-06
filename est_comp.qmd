@@ -13,8 +13,6 @@ citation:
   type: 'webpage'
 format: 
   html:
-    fig-cap-location: top
-    tbl-cap-location: bottom
     code-fold: true
 execute: 
   cache: true
@@ -178,7 +176,9 @@ results_params_4t <- map_df(1:iterations, ~ sim_results_4t[[.x]] %>%
 
 ```
 
-### Summary table
+### Summary table MAE
+
+Mean Absolute Error
 
 ```{r}
 # calculate absolute differences between input and estimated item thresholds per estimator, average by item
@@ -211,7 +211,7 @@ results_params_diff_4t %>%
     MAD = mad(diff),
     IQR = IQR(diff),
     Mean = mean(diff),
-    SD = sd(diff),
+    SD = sd(diff)
   ) %>%
   mutate(across(where(is.numeric), ~ round(.x,3))) %>%
   rename(Package = Estimator) %>%
@@ -219,7 +219,47 @@ results_params_diff_4t %>%
   tt()
 ```
 
-### Thresholds summary table
+### Summary table RMSE
+
+Root Mean Squared Error
+
+```{r}
+# RMSE
+results_params_4t %>%
+  pivot_wider(
+    values_from = c("T1", "T2", "T3", "T4"),
+    names_from = "Type",
+    id_cols = c("iteration", "Item")
+  ) %>%
+  group_by(iteration, Item) %>% # sqrt(mean((data$actual - data$predicted)^2))
+  summarise(
+    rmse_eRm = sqrt(mean(((T1_Input - T1_eRm)^2) + ((T2_Input - T2_eRm)^2) + ((T3_Input - T3_eRm)^2) + ((T4_Input - T4_eRm))^2)),
+        rmse_TAM = sqrt(mean(((T1_Input - T1_TAM)^2) + ((T2_Input - T2_TAM)^2) + ((T3_Input - T3_TAM)^2) + ((T4_Input - T4_TAM))^2)),
+        rmse_mirt = sqrt(mean(((T1_Input - T1_mirt)^2) + ((T2_Input - T2_mirt)^2) + ((T3_Input - T3_mirt)^2) + ((T4_Input - T4_mirt))^2)),
+        rmse_PAIR = sqrt(mean(((T1_Input - T1_PAIR)^2) + ((T2_Input - T2_PAIR)^2) + ((T3_Input - T3_PAIR)^2) + ((T4_Input - T4_PAIR))^2))
+  ) %>%
+  ungroup() %>%
+  pivot_longer(
+    cols = c(rmse_eRm, rmse_TAM,rmse_mirt,rmse_PAIR),
+    names_to = c(NA, "Estimator"),
+    names_sep = "_",
+    values_to = "rmse"
+  ) %>% 
+  group_by(Estimator) %>%
+  summarise(
+    Median = median(rmse),
+    MAD = mad(rmse),
+    IQR = IQR(rmse),
+    Mean = mean(rmse),
+    SD = sd(rmse)
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(.x,3))) %>%
+  rename(Package = Estimator) %>%
+  arrange(Median) %>% 
+  tt()
+```
+
+### Thresholds summary MAE
 
 ```{r}
 # table summarizing all thresholds and estimators
@@ -423,7 +463,7 @@ results_params_4t2 <- map_df(1:iterations, ~ sim_results_4t2[[.x]] %>%
 
 ```
 
-#### Summary table
+#### Summary table MAE
 
 ```{r}
 # calculate absolute differences between input and estimated item thresholds per estimator, average by item
@@ -464,7 +504,46 @@ results_params_diff_4t2 %>%
   tt()
 ```
 
-#### Thresholds summary table
+#### Summary table RMSE
+
+```{r}
+# RMSE
+results_params_4t2 %>%
+  pivot_wider(
+    values_from = c("T1", "T2", "T3", "T4"),
+    names_from = "Type",
+    id_cols = c("iteration", "Item")
+  ) %>%
+  group_by(iteration, Item) %>% # sqrt(mean((data$actual - data$predicted)^2))
+  summarise(
+    rmse_eRm = sqrt(mean(((T1_Input - T1_eRm)^2) + ((T2_Input - T2_eRm)^2) + ((T3_Input - T3_eRm)^2) + ((T4_Input - T4_eRm))^2)),
+        rmse_TAM = sqrt(mean(((T1_Input - T1_TAM)^2) + ((T2_Input - T2_TAM)^2) + ((T3_Input - T3_TAM)^2) + ((T4_Input - T4_TAM))^2)),
+        rmse_mirt = sqrt(mean(((T1_Input - T1_mirt)^2) + ((T2_Input - T2_mirt)^2) + ((T3_Input - T3_mirt)^2) + ((T4_Input - T4_mirt))^2)),
+        rmse_PAIR = sqrt(mean(((T1_Input - T1_PAIR)^2) + ((T2_Input - T2_PAIR)^2) + ((T3_Input - T3_PAIR)^2) + ((T4_Input - T4_PAIR))^2))
+  ) %>%
+  ungroup() %>%
+  pivot_longer(
+    cols = c(rmse_eRm, rmse_TAM,rmse_mirt,rmse_PAIR),
+    names_to = c(NA, "Estimator"),
+    names_sep = "_",
+    values_to = "rmse"
+  ) %>% 
+  group_by(Estimator) %>%
+  summarise(
+    Median = median(rmse, na.rm = T),
+    MAD = mad(rmse, na.rm = T),
+    IQR = IQR(rmse, na.rm = T),
+    Mean = mean(rmse, na.rm = T),
+    SD = sd(rmse, na.rm = T)
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(.x,3))) %>%
+  rename(Package = Estimator) %>%
+  arrange(Median) %>% 
+  tt()
+```
+
+
+#### Thresholds summary MAE
 
 ```{r}
 # table summarizing all thresholds and estimators
@@ -667,7 +746,7 @@ results_params_4t3 <- map_df(1:iterations, ~ sim_results_4t3[[.x]] %>%
 
 ```
 
-#### Summary table
+#### Summary table MAE
 
 ```{r}
 # calculate absolute differences between input and estimated item thresholds per estimator, average by item
@@ -708,7 +787,45 @@ results_params_diff_4t3 %>%
   tt()
 ```
 
-#### Thresholds summary table
+#### Summary table RMSE
+
+```{r}
+# RMSE
+results_params_4t3 %>%
+  pivot_wider(
+    values_from = c("T1", "T2", "T3", "T4"),
+    names_from = "Type",
+    id_cols = c("iteration", "Item")
+  ) %>%
+  group_by(iteration, Item) %>% # sqrt(mean((data$actual - data$predicted)^2))
+  summarise(
+    rmse_eRm = sqrt(mean(((T1_Input - T1_eRm)^2) + ((T2_Input - T2_eRm)^2) + ((T3_Input - T3_eRm)^2) + ((T4_Input - T4_eRm))^2)),
+        rmse_TAM = sqrt(mean(((T1_Input - T1_TAM)^2) + ((T2_Input - T2_TAM)^2) + ((T3_Input - T3_TAM)^2) + ((T4_Input - T4_TAM))^2)),
+        rmse_mirt = sqrt(mean(((T1_Input - T1_mirt)^2) + ((T2_Input - T2_mirt)^2) + ((T3_Input - T3_mirt)^2) + ((T4_Input - T4_mirt))^2)),
+        rmse_PAIR = sqrt(mean(((T1_Input - T1_PAIR)^2) + ((T2_Input - T2_PAIR)^2) + ((T3_Input - T3_PAIR)^2) + ((T4_Input - T4_PAIR))^2))
+  ) %>%
+  ungroup() %>%
+  pivot_longer(
+    cols = c(rmse_eRm, rmse_TAM,rmse_mirt,rmse_PAIR),
+    names_to = c(NA, "Estimator"),
+    names_sep = "_",
+    values_to = "rmse"
+  ) %>% 
+  group_by(Estimator) %>%
+  summarise(
+    Median = median(rmse, na.rm = T),
+    MAD = mad(rmse, na.rm = T),
+    IQR = IQR(rmse, na.rm = T),
+    Mean = mean(rmse, na.rm = T),
+    SD = sd(rmse, na.rm = T)
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(.x,3))) %>%
+  rename(Package = Estimator) %>%
+  arrange(Median) %>% 
+  tt()
+```
+
+#### Thresholds summary MAE
 
 ```{r}
 # table summarizing all thresholds and estimators
