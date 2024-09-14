@@ -371,7 +371,9 @@ RIitemfit(df, simfit1)
 
 `RIitemfit()` works with both dichotomous and polytomous data (no option needed).
 
-Since the distribution of item fit statistics are not known, we need to make simulations to get appropriate cutoff threshold values for the current sample and items. Important to note is that the new (since version 0.2.2, dated 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020]. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this.
+It is important to note that the new (since version 0.2.2, released 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020].
+
+Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items.  `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this. `RIitemfit()` can also be used without cutoffs and conditional highlighting. For a useful rule-of-thumb cutoff for infit MSQ only, use the option `cutoff = "Smith98"` [@smith_using_1998;@muller_item_2020].
 
 Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
 
