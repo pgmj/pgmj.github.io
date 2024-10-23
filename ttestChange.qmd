@@ -194,7 +194,7 @@ Using Weighted Likelihood (Warm, 1989) to minimize bias.
 
 ```{r}
 # estimate thetas/person locations, based on eRm estimated item thresholds
-erm_thetas <- RIestThetas(td, itemParams = erm_item_parameters)
+erm_thetas <- RIestThetasOLD(td, itemParams = erm_item_parameters)
 
 # estimate measurement error (SEM)
 erm_sem <- map_vec(erm_thetas, ~ catR::semTheta(.x, it = erm_item_parameters, method = "WL", model = "PCM"))
@@ -206,6 +206,8 @@ d_long$erm_sem <- erm_sem
 ## Change
 
 How many have changed 0.5+ logits (the mean change simulated, also corresponding to 0.5 SD) in the generated data? This could serve as a reference.
+
+ADD: identify which ID's have changed to make a comparison later on.
 
 ```{r}
 d <- d %>% 
@@ -260,22 +262,87 @@ for (i in 1:nrow(d_wide_tt)) {
  t_values[i] <- (d_wide_tt$erm_thetas_3[i] - d_wide_tt$erm_thetas_1[i]) / sqrt(d_wide_tt$erm_sem_3[i] + d_wide_tt$erm_sem_1[i])
 }
 
-data.frame(t_values = t_values,
+tt_results <- data.frame(t_values = t_values,
            group = rep(c("Intervention","Control"), each = 250)) %>% 
-  mutate(result = case_when(t_values > 1.96 ~ "Improved",
+  mutate(result95 = case_when(t_values > 1.96 ~ "Improved",
                             t_values < -1.96 ~ "Worsened",
                             TRUE ~ "No detectable change")) %>% 
+  mutate(result84 = case_when(t_values > 1.405 ~ "Improved",
+                            t_values < -1.405 ~ "Worsened",
+                            TRUE ~ "No detectable change"))
+
+tt_results %>% 
+  group_by(group) %>%
+  count(result95) %>%
+  kbl_rise(tbl_width = 40) %>%
+  row_spec(c(1,4),bold=TRUE)
+
+# as estimated using 84% CI
+tt_results %>% 
+  group_by(group) %>%
+  count(result84) %>%
+  kbl_rise(tbl_width = 40) %>%
+  row_spec(c(1,4),bold=TRUE)
+
+# actual change
+d %>% 
+  mutate(change_grp = case_when(change > 0.5 ~ "Improved > 0.5",
+                                change < -0.5 ~ "Worsened > 0.5",
+                                TRUE ~ "In between")) %>% 
   group_by(group) %>% 
-  count(result) %>% 
+  count(change_grp) %>% 
   kbl_rise(tbl_width = 40) %>% 
   row_spec(c(1,4),bold=TRUE)
 
+# ratio of control/intervention improvement
+#82/124
+#32/62
 ```
+
+### Linear mixed model
+
+```{r}
+library(lme4)
+library(marginaleffects)
+
+m0 <- lmer(erm_thetas ~ time + (1 + time | id),
+          data = d_long,
+          REML = TRUE)
+m0_slopes <- slopes(m0)
+
+m0_slopes_unique <- m0_slopes %>% 
+  group_by(id) %>% 
+  summarise(estimate = mean(estimate),
+            conf.low = mean(conf.low),
+            conf.high = mean(conf.high),
+            p.value = mean(p.value)
+            ) %>% 
+  ungroup()
+
+hist(m0_slopes_unique$estimate)
+
+PIDs <- d_long %>% 
+  filter(time == 1) %>% 
+  pull(id)
+
+tt_slopes_comp <- tt_results %>% 
+  add_column(id = PIDs) %>% 
+  left_join(m0_slopes_unique, by = "id")
+
+tt_slopes_comp %>%
+  mutate(sign.change = ifelse(p.value < 0.05, "sig change","no change")) %>% 
+  mutate(posneg = ifelse(estimate > 0, "pos change","neg change")) %>% 
+  count(sign.change,posneg)
+```
+
 
 
 ### "Recovery" of n changed
 
 Again, strongly affected by precision/reliability
+
+ADD: compare % correctly identified in each of the three groups.
+ALSO: use 84% CI instead (1.405 instead of 1.96) to see how that affects detection rate.
 
 
 
