@@ -45,7 +45,9 @@ As shown in the separate post on reliability (LINK), SEM * 1.96 will contain the
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 library(tidyverse)
 library(eRm)
 library(janitor)
@@ -97,6 +99,7 @@ theme_rise <- function(fontfamily = "Lato", axissize = 13, titlesize = 15,
 
 theme_set(theme_rise())
 ```
+:::
 
 
 
@@ -108,7 +111,9 @@ theme_set(theme_rise())
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 set.seed(1523)
 
 data_g1 <- rnorm_multi(n = 250, 
@@ -135,8 +140,8 @@ d_long <- d %>%
   pivot_longer(starts_with("t")) %>% 
   mutate(time = as.numeric(gsub("t_","",name))) %>% 
   select(!name)
-
 ```
+:::
 
 
 
@@ -146,7 +151,9 @@ d_long <- d %>%
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 # item list for simulation
 tlist <- list(
   t1 = list(1.2, 1.8, 2.4),
@@ -189,6 +196,7 @@ td <- SimPartialScore(
 ) %>%
   as.data.frame()
 ```
+:::
 
 
 
@@ -200,7 +208,9 @@ We could use the parameters from the input, but to add some real world usage to 
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 erm_item_parameters <- RIitemparams(td, output = "dataframe") %>% 
   select(!Location) %>% 
   rename(T1 = `Threshold 1`,
@@ -211,6 +221,7 @@ erm_item_parameters <- RIitemparams(td, output = "dataframe") %>%
 # center item parameters to sum = 0
 erm_item_parameters <- erm_item_parameters - mean(erm_item_parameters)
 ```
+:::
 
 
 
@@ -222,7 +233,9 @@ Using Weighted Likelihood (Warm, 1989) to minimize bias.
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 # estimate thetas/person locations, based on eRm estimated item thresholds
 erm_thetas <- RIestThetasOLD(td, itemParams = erm_item_parameters)
 
@@ -232,6 +245,7 @@ erm_sem <- map_vec(erm_thetas, ~ catR::semTheta(.x, it = erm_item_parameters, me
 d_long$erm_thetas <- erm_thetas
 d_long$erm_sem <- erm_sem
 ```
+:::
 
 
 
@@ -245,20 +259,64 @@ ADD: identify which ID's have changed to make a comparison later on.
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 d <- d %>% 
   mutate(change = t_3 - t_1)
 
 summary(d$change)
-sd(d$change)
-sd(d$t_3)
+```
 
+::: {.cell-output .cell-output-stdout}
+
+```
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-2.4126 -0.4427  0.2565  0.2682  0.9909  3.0004 
+```
+
+
+:::
+
+```{.r .cell-code}
+sd(d$change)
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] 1.00556
+```
+
+
+:::
+
+```{.r .cell-code}
+sd(d$t_3)
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] 1.02455
+```
+
+
+:::
+
+```{.r .cell-code}
 ggplot(d, aes(x = change, fill = group, color = group)) +
   #geom_histogram() +
   stat_dotsinterval(color = "black", slab_color = "white", slab_linewidth = 0.5) +
   facet_wrap(~ group) +
   guides(fill = "none", color = "none")
+```
 
+::: {.cell-output-display}
+![](ttestChange_files/figure-html/unnamed-chunk-6-1.png){width=1050}
+:::
+
+```{.r .cell-code}
 d %>% 
   mutate(change_grp = case_when(change > 0.5 ~ "Improved > 0.5",
                                 change < -0.5 ~ "Worsened > 0.5",
@@ -267,8 +325,55 @@ d %>%
   count(change_grp) %>% 
   kbl_rise(tbl_width = 40) %>% 
   row_spec(c(1,4),bold=TRUE)
-
 ```
+
+::: {.cell-output-display}
+`````{=html}
+<table data-quarto-disable-processing="true" style="width:40%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> group </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> change_grp </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> control </td>
+   <td style="text-align:left;font-weight: bold;"> Improved &gt; 0.5 </td>
+   <td style="text-align:right;font-weight: bold;"> 82 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> control </td>
+   <td style="text-align:left;"> In between </td>
+   <td style="text-align:right;"> 95 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> control </td>
+   <td style="text-align:left;"> Worsened &gt; 0.5 </td>
+   <td style="text-align:right;"> 73 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> treatment </td>
+   <td style="text-align:left;font-weight: bold;"> Improved &gt; 0.5 </td>
+   <td style="text-align:right;font-weight: bold;"> 124 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> treatment </td>
+   <td style="text-align:left;"> In between </td>
+   <td style="text-align:right;"> 85 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> treatment </td>
+   <td style="text-align:left;"> Worsened &gt; 0.5 </td>
+   <td style="text-align:right;"> 41 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+:::
 
 
 
@@ -278,9 +383,16 @@ d %>%
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 RItif(td, samplePSI = TRUE)
 ```
+
+::: {.cell-output-display}
+![](ttestChange_files/figure-html/unnamed-chunk-7-1.png){width=1050}
+:::
+:::
 
 
 
@@ -293,7 +405,9 @@ Only using t1 and t3 estimated person locations/thetas and SEM values.
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 d_wide_tt <- d_long %>% 
   pivot_wider(values_from = c(erm_thetas,erm_sem),
               id_cols = c(id,group),
@@ -324,14 +438,112 @@ tt_results %>%
   count(result95) %>%
   kbl_rise(tbl_width = 40) %>%
   row_spec(c(1,4),bold=TRUE)
+```
 
+::: {.cell-output-display}
+`````{=html}
+<table data-quarto-disable-processing="true" style="width:40%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> group </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> result95 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> Control </td>
+   <td style="text-align:left;font-weight: bold;"> Improved </td>
+   <td style="text-align:right;font-weight: bold;"> 13 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Control </td>
+   <td style="text-align:left;"> No detectable change </td>
+   <td style="text-align:right;"> 228 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Control </td>
+   <td style="text-align:left;"> Worsened </td>
+   <td style="text-align:right;"> 9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> Intervention </td>
+   <td style="text-align:left;font-weight: bold;"> Improved </td>
+   <td style="text-align:right;font-weight: bold;"> 27 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Intervention </td>
+   <td style="text-align:left;"> No detectable change </td>
+   <td style="text-align:right;"> 219 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Intervention </td>
+   <td style="text-align:left;"> Worsened </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+
+```{.r .cell-code}
 # as estimated using 84% CI
 tt_results %>% 
   group_by(group) %>%
   count(result84) %>%
   kbl_rise(tbl_width = 40) %>%
   row_spec(c(1,4),bold=TRUE)
+```
 
+::: {.cell-output-display}
+`````{=html}
+<table data-quarto-disable-processing="true" style="width:40%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> group </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> result84 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> Control </td>
+   <td style="text-align:left;font-weight: bold;"> Improved </td>
+   <td style="text-align:right;font-weight: bold;"> 32 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Control </td>
+   <td style="text-align:left;"> No detectable change </td>
+   <td style="text-align:right;"> 182 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Control </td>
+   <td style="text-align:left;"> Worsened </td>
+   <td style="text-align:right;"> 36 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> Intervention </td>
+   <td style="text-align:left;font-weight: bold;"> Improved </td>
+   <td style="text-align:right;font-weight: bold;"> 62 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Intervention </td>
+   <td style="text-align:left;"> No detectable change </td>
+   <td style="text-align:right;"> 179 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Intervention </td>
+   <td style="text-align:left;"> Worsened </td>
+   <td style="text-align:right;"> 9 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+
+```{.r .cell-code}
 # actual change
 d %>% 
   mutate(change_grp = case_when(change > 0.5 ~ "Improved > 0.5",
@@ -341,11 +553,61 @@ d %>%
   count(change_grp) %>% 
   kbl_rise(tbl_width = 40) %>% 
   row_spec(c(1,4),bold=TRUE)
+```
 
+::: {.cell-output-display}
+`````{=html}
+<table data-quarto-disable-processing="true" style="width:40%; font-size: 14px;  font-family: Arial; margin-left: auto; margin-right: auto;" class="table table-striped table-hover lightable-classic">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> group </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> change_grp </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> control </td>
+   <td style="text-align:left;font-weight: bold;"> Improved &gt; 0.5 </td>
+   <td style="text-align:right;font-weight: bold;"> 82 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> control </td>
+   <td style="text-align:left;"> In between </td>
+   <td style="text-align:right;"> 95 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> control </td>
+   <td style="text-align:left;"> Worsened &gt; 0.5 </td>
+   <td style="text-align:right;"> 73 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> treatment </td>
+   <td style="text-align:left;font-weight: bold;"> Improved &gt; 0.5 </td>
+   <td style="text-align:right;font-weight: bold;"> 124 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> treatment </td>
+   <td style="text-align:left;"> In between </td>
+   <td style="text-align:right;"> 85 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> treatment </td>
+   <td style="text-align:left;"> Worsened &gt; 0.5 </td>
+   <td style="text-align:right;"> 41 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+
+```{.r .cell-code}
 # ratio of control/intervention improvement
 #82/124
 #32/62
 ```
+:::
 
 
 
@@ -355,7 +617,9 @@ d %>%
 
 
 
-```{r}
+::: {.cell}
+
+```{.r .cell-code}
 library(lme4)
 library(marginaleffects)
 
@@ -374,7 +638,13 @@ m0_slopes_unique <- m0_slopes %>%
   ungroup()
 
 hist(m0_slopes_unique$estimate)
+```
 
+::: {.cell-output-display}
+![](ttestChange_files/figure-html/unnamed-chunk-9-1.png){width=1050}
+:::
+
+```{.r .cell-code}
 PIDs <- d_long %>% 
   filter(time == 1) %>% 
   pull(id)
@@ -388,6 +658,17 @@ tt_slopes_comp %>%
   mutate(posneg = ifelse(estimate > 0, "pos change","neg change")) %>% 
   count(sign.change,posneg)
 ```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+  sign.change     posneg   n
+1  sig change pos change 500
+```
+
+
+:::
+:::
 
 
 

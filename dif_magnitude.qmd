@@ -554,26 +554,26 @@ First, the test information function (TIF) curve could be of interest to underst
 #| fig-width: 9
 RItif(d, samplePSI = TRUE)
 ```
-
+### SEM original data
 ```{r}
 RIscoreSE(d, output = "table")
 ```
 
-The lowest SEM is 0.384, at logit score 0.356.
-
-
-#### TIF/SEM without q3
+#### TIF without q3
 
 ```{r}
 #| fig-width: 9
 RItif(d %>% select(!q3), samplePSI = TRUE)
 ```
-
+#### SEM without q3
 ```{r}
 RIscoreSE(d %>% select(!q3), output = "table")
 ```
-Lowest SEM = 0.416, around 0.322 to 0.491, which makes a difference in minimal SEM of about 0.032 compared to including the DIF item.
 :::
+
+The lowest SEM with q3 is 0.384, at logit score 0.356. 
+
+Lowest SEM without q3 is 0.416, at logit score 0.322 to 0.491, which makes a difference in minimal SEM of about 0.032 compared to including the DIF item. 0.032 * 1.96 = 0.064 for a 95% CI.
 
 #### Theta estimation bias
 
@@ -594,7 +594,9 @@ c_diff %>%
        y = "Absolute difference in logits") +
   guides(fill = "none", linetype = "none") +
   scale_x_continuous(breaks = seq(-5,5,1)) +
-  scale_y_continuous(limits = c(0,NA), breaks = seq(0,2,0.1))
+  scale_y_continuous(limits = c(0,NA), breaks = seq(0,2,0.1)) +
+  facet_wrap(~name, ncol = 2) +
+  theme_rise()
 ```
 
 Without points for a cleaner view.
