@@ -35,6 +35,7 @@ website:
          - datawrangling.qmd
          - simcutoffs.qmd
          - est_comp.qmd
+         - dif_magnitude.qmd
       - icon: github
         href: https://github.com/pgmj/pgmj.github.io
         aria-label: GitHub

@@ -1,5 +1,5 @@
 ---
-title: "Rasch DIF magnitude, item split, and theta difference"
+title: "Rasch DIF magnitude & item split"
 subtitle: "Brief exploration of Differential Item Functioning in R"
 author: 
   name: Magnus Johansson
@@ -31,13 +31,15 @@ Out of interest of better understanding som aspects of differential item functio
 
 We'll use simulated data in order to have knowledge of the thetas used to generate response data ("input thetas" in the text below), and make objective comparisons using the different estimated thetas.
 
+Ideally, this would be a simulation study where we create lots of datasets with a systematic variation in some parameters to investigate effects. But maybe this is a first step towards that.
+
 
 ```{r}
 #| code-fold: true
 library(tidyverse)
 library(eRm)
 library(iarm)
-library(RISEkbmRasch)
+library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch", dependencies = TRUE)
 library(summarytools)
 library(ghibli)
 
@@ -87,33 +89,19 @@ theme_set(theme_rise())
 First define input parameters for items.
 
 ```{r}
-# item list for simulation for group 1
-tlist1 <- list(
-  q1 = list(1.2, 1.8, 2.4),
-  q2 = list(-1.3, -0.5, 0.5),
-  q3 = list(-0.3, 0.3, 1.2),
-  q4 = list(0.1, 0.6, 1.6),
-  q5 = list(-0.3, 0.7, 1.5),
-  q6 = list(-1.6, -1, -0.3),
-  q7 = list(1, 1.8, 2.5),
-  q8 = list(-1.3, -0.7, 0.4),
-  q9 = list(-0.8, 1.4, 1.9),
-  q10 = list(0.25, 1.25, 2.15)
-)
-
 # make a tibble/dataframe also, for possible later use
 inputParams1 <- tibble(
-  q1 = c(1.2, 1.8, 2.4),
-  q2 = c(-1.3, -0.5, 0.5),
-  q4 = c(0.1, 0.6, 1.6),
-  q5 = c(-0.3, 0.7, 1.5),
-  q6 = c(-1.6, -1, -0.3),
-  q7 = c(1, 1.8, 2.5),
-  q8 = c(-1.3, -0.7, 0.4),
-  q9 = c(-0.8, 1.4, 1.9),
-  q10 = c(0.25, 1.25, 2.15),
-  q3a = c(-0.3, 0.3, 1.2),
-  q3b = c(-0.3+1, 0.3+1, 1.2+1)
+  q1  = c(1.2, 1.8, 2.4),
+  q2  = c(-1.3, -0.5, 0.5),
+  q3a = c(-0.3, 0.3, 1.2), # this is the DIF item
+  q3b = c(-0.3+1, 0.3+1, 1.2+1), # this is the DIF item
+  q4  = c(0.1, 0.6, 1.6),
+  q5  = c(-0.3, 0.7, 1.5),
+  q6  = c(-1.6, -1, -0.3),
+  q7  = c(1, 1.8, 2.5),
+  q8  = c(-1.3, -0.7, 0.4),
+  q9  = c(-0.8, 1.4, 1.9),
+  q10 = c(0.25, 1.25, 2.15)
 ) %>%
   t() %>%
   as.matrix()
@@ -121,18 +109,32 @@ inputParams1 <- tibble(
 # center to 0
 inputParams1c <- inputParams1 - mean(inputParams1)
 
+# item list for simulation for group 1
+tlist1 <- list(
+  q1 =  list(inputParams1c[1,]),
+  q2 =  list(inputParams1c[2,]),
+  q3 =  list(inputParams1c[3,]), # this is the DIF item
+  q4 =  list(inputParams1c[5,]),
+  q5 =  list(inputParams1c[6,]),
+  q6 =  list(inputParams1c[7,]),
+  q7 =  list(inputParams1c[8,]),
+  q8 =  list(inputParams1c[9,]),
+  q9 =  list(inputParams1c[10,]),
+  q10 = list(inputParams1c[11,])
+)
+
 # item list for simulation for group 2
 tlist2 <- list(
-  q1 = list(1.2, 1.8, 2.4),
-  q2 = list(-1.3, -0.5, 0.5),
-  q3 = list(-0.3+1, 0.3+1, 1.2+1),
-  q4 = list(0.1, 0.6, 1.6),
-  q5 = list(-0.3, 0.7, 1.5),
-  q6 = list(-1.6, -1, -0.3),
-  q7 = list(1, 1.8, 2.5),
-  q8 = list(-1.3, -0.7, 0.4),
-  q9 = list(-0.8, 1.4, 1.9),
-  q10 = list(0.25, 1.25, 2.15)
+  q1 =  list(inputParams1c[1,]),
+  q2 =  list(inputParams1c[2,]),
+  q3 =  list(inputParams1c[4,]), # this is the DIF item
+  q4 =  list(inputParams1c[5,]),
+  q5 =  list(inputParams1c[6,]),
+  q6 =  list(inputParams1c[7,]),
+  q7 =  list(inputParams1c[8,]),
+  q8 =  list(inputParams1c[9,]),
+  q9 =  list(inputParams1c[10,]),
+  q10 = list(inputParams1c[11,])
 )
 ```
 
@@ -173,6 +175,7 @@ all_data <- list(simResponses = d,
 ```
 
 ```{r}
+# read simulated data for reprodubility
 all_data <- readRDS("dif_magnitude_1_0.Rdata")
 
 d <- all_data$simResponses
@@ -181,7 +184,7 @@ input_thetas <- all_data$input_thetas
 
 ```
 
-We now have 10 items with 4 categories each, 600 respondents with half of respondents having differential item functioning for one item (item q3), with 1 logit uniform difference in location (all thresholds for item q3 are + 1 logits).
+We now have 10 items with 4 categories each. There are 600 respondents in all, with 300 showing differential item functioning for one item (item q3). DIF is induced at +1 logit uniform difference in location (all thresholds for item q3 are +1 logits).
 
 ## DIF assessment
 
@@ -254,7 +257,7 @@ summary(thetas_together$WLE)
 summary(thetas_q3_removed$WLE)
 ```
 
-The upper range is rather different for the item split subgroup when using this method. Let's review the threshold locations.
+The upper range is rather different for the item split subgroup when using this method, with max score of 2.22, compared to (expected) ~ 4.1. Let's review the threshold locations.
 
 ### Comparing item parameters
 
@@ -268,13 +271,14 @@ RIitemparams(d)
 ```{r}
 RIitemparams(d2)
 ```
-
 #### DIF item removed
 ```{r}
 RIitemparams(d %>% select(!q3))
 ```
-#### Threshold differences
+
+#### Plot estimation bias
 ```{r}
+#| code-fold: true
 dp <- RIitemparams(d, output = "dataframe") %>% 
   select(!Location) %>% 
   set_names(paste0("orig_",1:3)) %>% 
@@ -306,8 +310,9 @@ dpin_long <- dpin %>%
                values_to = "input")
 ```
 
-#### Plot estimation bias
+
 ```{r}
+#| code-fold: true
 d_params %>% 
   pivot_longer(!item, 
                names_sep = "_",
@@ -317,13 +322,15 @@ d_params %>%
   summarise(abs_diff = abs(input - value)) %>% 
   
   ggplot(aes(x = threshold, y = abs_diff, color = source)) +
-  geom_point(alpha = 0.85) +
-  facet_wrap(~ item)
+  geom_point(size = 2, alpha = 0.85) +
+  geom_line(aes(group = source)) +
+  facet_wrap(~ item) +
+  labs(x = "Absolute bias (logits)")
   
 ```
 #### Summary plot estimation bias
 ```{r}
-
+#| code-fold: true
 itemlocs <- RIitemparams(d %>% select(!q3), output = "dataframe") %>% 
   pull(Location)
 
@@ -351,16 +358,114 @@ d_params %>%
              color = name)
          ) +
   geom_point(size = 3) +
-  labs(title = "Total estimation bias for each item and item set")
+  labs(title = "Total estimation bias for each item (all thresholds) and item set",
+       y = "Absolute bias (logits)",
+       x = "Item (and average location)") +
+  scale_y_continuous(limits = c(0,NA))
 ```
-#### 
 :::
 
-Maybe we can see some pattern here. Item split results in misestimation of items q6 and q8, which have low locations. On the other hand, item 2 has a lower location than 4, yet the item split data results in less bias for item 2.
 
-Then again, as with this whole experiment, all of this should be run through hundreds of simulated datasets to see the patterns correctly.
+#### `mirt` comparison
 
-The method for estimating item parameters and thetas used in the function `RIestThetas()` may be at fault? We can separate the two steps, and use a separate function for theta estimation with manual input of item parameters.
+Perhaps the `mirt` package could be more accurate in item threshold estimation when we have item split?
+
+```{r}
+#| code-fold: true
+mirt_out <- mirt(data = d, model = 1, itemtype = "Rasch", verbose = FALSE)
+mirt_params <- coef(mirt_out, simplify = TRUE, IRTpars = TRUE)$items %>%
+  as.data.frame() %>%
+  select(!a) %>%
+  set_names(paste0("orig_",1:3)) %>%   
+  as.matrix()
+dpm <- mirt_params - mean(mirt_params)
+
+dpm <- dpm %>% 
+  as.data.frame() %>% 
+  rownames_to_column("item") %>% 
+  filter(!str_detect(item,"q3"))
+
+mirt_out <- mirt(data = d2, model = 1, itemtype = "Rasch", verbose = FALSE)
+mirt_params <- coef(mirt_out, simplify = TRUE, IRTpars = TRUE)$items %>%
+  as.data.frame() %>%
+  select(!a) %>%
+  set_names(paste0("split_",1:3)) %>% 
+  as.matrix()
+dpm2 <- mirt_params - mean(mirt_params)
+
+dpm2 <- dpm2 %>% 
+  as.data.frame() %>% 
+  rownames_to_column("item") %>% 
+  filter(!str_detect(item,"q3"))
+
+mirt_out <- mirt(data = d %>% select(!q3), model = 1, itemtype = "Rasch", verbose = FALSE)
+mirt_params <- coef(mirt_out, simplify = TRUE, IRTpars = TRUE)$items %>%
+  as.data.frame() %>%
+  select(!a) %>%
+  set_names(paste0("q3rem_",1:3)) %>% 
+  as.matrix()
+dpm3 <- mirt_params - mean(mirt_params)
+
+dpm3 <- dpm3 %>% 
+  as.data.frame() %>% 
+  rownames_to_column("item") %>% 
+  filter(!str_detect(item,"q3"))
+
+
+d_params2 <- cbind(dpm,dpm2[,-1],dpm3[,-1]) # bind columns, keeping one "item" column
+```
+::: panel-tabset
+#### Plot estimation bias
+```{r}
+d_params2 %>% 
+  pivot_longer(!item, 
+               names_sep = "_",
+               names_to = c("source","threshold")) %>% 
+  left_join(dpin_long[,-2], by = c("item","threshold")) %>% 
+  group_by(source,item,threshold) %>% 
+  summarise(abs_diff = abs(input - value)) %>% 
+  
+  ggplot(aes(x = threshold, y = abs_diff, color = source)) +
+  geom_point(alpha = 0.85) +
+  facet_wrap(~ item)
+  
+```
+
+Seems indentical to eRm estimates.
+
+#### Summary plot estimation bias
+```{r}
+d_params2 %>% 
+  pivot_longer(!item, 
+               names_sep = "_",
+               names_to = c("source","threshold")) %>% 
+  left_join(dpin_long[,-2], by = c("item","threshold")) %>% 
+  group_by(source,item,threshold) %>% 
+  summarise(abs_diff = abs(input - value)) %>% 
+  ungroup() %>% 
+  group_by(source,item) %>% 
+  summarise(sum_diff = sum(abs_diff)) %>% 
+  ungroup() %>% 
+  pivot_wider(values_from = "sum_diff",
+              names_from = "source",
+              id_cols = "item") %>% 
+  pivot_longer(!item) %>% 
+  mutate(item = factor(item, levels = names(itemlocs), 
+                        labels = paste0(names(itemlocs),"_",as.numeric(itemlocs)))) %>% 
+  ggplot(aes(x = item, 
+             y = value, 
+             color = name)
+         ) +
+  geom_point(size = 3) +
+  labs(title = "mirt: Total estimation bias for each item and item set")
+```
+
+No difference here either.
+:::
+
+### Theta estimation investigated
+
+The method for estimating item parameters and thetas used in the function `RIestThetas()` may be at fault for the odd results in thetas estimated by the item set with item split? We can separate the two steps, and use a separate function for theta estimation with manual input of item parameters.
 
 ```{r}
 itemps <- RIitemparams(d2, output = "dataframe") %>% 
@@ -385,7 +490,7 @@ c %>%
   scale_x_continuous(breaks = seq(-5,5,1))
 ```
 
-Looks like the two step approach worked a lot better. Since the item parameter estimation is identical (both are using `eRm::PCM()`), the reason should be the difference in theta estimation. The two-step approach uses `catR::thetaEst()`, which probably is handling missing data in a more adequate way than `iarm::person_estimates()`. Both approaches use the Weighted Likelihood Estimation to minimize bias.
+Looks like the two step approach worked a lot better. Since the item parameter estimation is identical (both are using `eRm::PCM()`), the reason should be the difference in theta estimation. The two-step approach uses `catR::thetaEst()` for theta estimation, which is probably handling missing data better than `iarm::person_estimates()`. Note: both approaches use the Weighted Likelihood Estimation to minimize bias (Warm, 1989).
 
 ## Results 
 
@@ -411,7 +516,7 @@ c_diff %>%
 
 ```
 
-No clear pattern differentiating these histograms, from my ocular inspection of the plot at least.
+No huge differences between these histograms.
 
 ```{r}
 c_diff_descr <- descr(c_diff) %>% 
@@ -424,13 +529,14 @@ c_diff_descr[1:9,] %>%
   ggplot(aes(x = Parameter, y = value, color = name)) +
   geom_point(alpha = 0.85) +
   scale_color_viridis_d('Item set', end = 0.8) +
-  labs(y = "Logits")
+  labs(y = "Logits",
+       x = "Descriptive metric")
 ```
 
 ```{r}
 c_diff_descr[1:9,] %>% 
   mutate_if(is.numeric, round, 3) %>% 
-  kbl_rise()
+  kbl_rise(tbl_width = 50)
 ```
 
 Still not large differences anywhere.
@@ -439,8 +545,9 @@ We should look at the particular region where the DIF item is located, since it 
 
 ### Across the latent continuum
 
-First, the test information function (TIF) curve could be of interest to understand what to expect in terms of estimation bias due to reliability limitations.
+First, the test information function (TIF) curve could be of interest to understand what to expect in terms of estimation bias due to reliability limitations. Even more interesting is the table showing range of SEM.
 
+::: panel-tabset
 #### TIF original data
 
 ```{r}
@@ -448,10 +555,30 @@ First, the test information function (TIF) curve could be of interest to underst
 RItif(d, samplePSI = TRUE)
 ```
 
+```{r}
+RIscoreSE(d, output = "table")
+```
+
+The lowest SEM is 0.384, at logit score 0.356.
+
+
+#### TIF/SEM without q3
+
+```{r}
+#| fig-width: 9
+RItif(d %>% select(!q3), samplePSI = TRUE)
+```
+
+```{r}
+RIscoreSE(d %>% select(!q3), output = "table")
+```
+Lowest SEM = 0.416, around 0.322 to 0.491, which makes a difference in minimal SEM of about 0.032 compared to including the DIF item.
+:::
 
 #### Theta estimation bias
 
 ```{r}
+#| code-fold: true
 c_diff %>% 
   add_column(Theta = input_thetas) %>% 
   pivot_longer(!Theta) %>% 
@@ -466,8 +593,14 @@ c_diff %>%
        title = "Theta estimation bias",
        y = "Absolute difference in logits") +
   guides(fill = "none", linetype = "none") +
-  scale_x_continuous(breaks = seq(-5,5,1))
+  scale_x_continuous(breaks = seq(-5,5,1)) +
+  scale_y_continuous(limits = c(0,NA), breaks = seq(0,2,0.1))
+```
 
+Without points for a cleaner view.
+
+```{r}
+#| code-fold: true
 c_diff %>% 
   add_column(Theta = input_thetas) %>% 
   pivot_longer(!Theta) %>% 
@@ -480,90 +613,74 @@ c_diff %>%
   scale_fill_ghibli_d("MononokeMedium", direction = -1) +
   labs(color = "Item set",
        title = "Theta estimation bias",
-       y = "Absolute difference in logits") +
+       y = "Absolute difference (logits)") +
   guides(fill = "none", linetype = "none") +
-  scale_x_continuous(breaks = seq(-5,5,1))
+  scale_x_continuous(breaks = seq(-5,5,1)) +
+  scale_y_continuous(limits = c(0,NA), breaks = seq(0,1.2,0.1))
 ```
 
-Item split seems to increase bias in the lower range, from -4 to +1.
+Item split slightly reduces bias compared to keeping the DIF item (3), while removing item 3 increases bias from -1.5 to +1.5
 
-Keeping q3 and removing q3 are almost identical below 0.5, while removing q3 results in lower bias from 0.5 til 4 logits.
+### Statistical analysis
 
-#### Statistical analysis
-
-Using a robust method
+Comparing differences in theta estimation to input thetas.
 
 ```{r}
-c_diff %>% 
-  add_column(Theta = input_thetas) %>% 
-  pivot_longer(!Theta)
+library(broom)
+lm_all <- c %>% 
+  select(c(together_RIestThetas,input_thetas)) %>%
+  pivot_longer(everything()) %>% 
+  lm(value ~ name, data = .)
+
+lm_q3rem <- c %>% 
+  select(c(together_q3_rem,input_thetas)) %>%
+  pivot_longer(everything()) %>% 
+  lm(value ~ name, data = .)
+
+lm_q3split <- c %>% 
+  select(c(separate_catR,input_thetas)) %>%
+  pivot_longer(everything()) %>% 
+  lm(value ~ name, data = .)
+
+anova(lm_all,lm_q3rem,lm_q3split)
+
+bind_rows(glance(lm_all),
+          glance(lm_q3rem),
+          glance(lm_q3split)) %>% 
+  add_column(Model = c("All items","Q3 removed","Q3 split")) %>% 
+  select(Model,statistic,p.value,logLik,AIC,BIC,deviance)
+
 ```
 
-
-#### `lordif` package
-
-Also, the `lordif` package has a function to produce relevant output.
+Same analysis, but limited to the theta range from -1.5 to +1.5 logits, where differences seem the biggest.
 
 ```{r}
-#| eval: false
-library(lordif)
-g_dif <- lordif(as.data.frame(d), as.numeric(dif.group), # make sure that the data is in a dataframe-object and that the DIF variable is numeric
-                criterion = c("Chisqr"), 
-                alpha = 0.01, 
-                beta.change = 0.1,
-                model = "GPCM",
-                R2.change = 0.02)
+lm_all <- c %>% 
+  select(c(together_RIestThetas,input_thetas)) %>%
+  filter(input_thetas > -1.5 & input_thetas < 1.5) %>% 
+  pivot_longer(everything()) %>% 
+  lm(value ~ name, data = .)
 
-g_dif_sum <- summary(g_dif)
+lm_q3rem <- c %>% 
+  select(c(together_q3_rem,input_thetas)) %>%
+  filter(input_thetas > -1.5 & input_thetas < 1.5) %>% 
+  pivot_longer(everything()) %>% 
+  lm(value ~ name, data = .)
+
+lm_q3split <- c %>% 
+  select(c(separate_catR,input_thetas)) %>%
+  filter(input_thetas > -1.5 & input_thetas < 1.5) %>% 
+  pivot_longer(everything()) %>% 
+  lm(value ~ name, data = .)
+
+anova(lm_all,lm_q3rem,lm_q3split)
+
+bind_rows(glance(lm_all),
+          glance(lm_q3rem),
+          glance(lm_q3split)) %>% 
+  add_column(Model = c("All items","Q3 removed","Q3 split")) %>% 
+  select(Model,statistic,p.value,logLik,AIC,BIC,deviance)
+
 ```
 
-```{r}
-#| echo: false
-#| include: false
-library(lordif)
-g_dif <- lordif(as.data.frame(d), as.numeric(dif.group), # make sure that the data is in a dataframe-object and that the DIF variable is numeric
-                criterion = c("Chisqr"), 
-                alpha = 0.01, 
-                beta.change = 0.1,
-                model = "GPCM",
-                R2.change = 0.02)
 
-g_dif_sum <- summary(g_dif)
-```
-
-```{r}
-# threshold values for colorizing the table below
-alpha = 0.01
-beta.change = 0.1
-R2.change = 0.02
-
-g_dif_sum$stats %>% 
-  as.data.frame() %>% 
-  select(!all_of(c("df12","df13","df23"))) %>% 
-  round(3) %>% 
-  add_column(itemnr = names(df), .before = "ncat") %>% 
-  mutate(across(c(chi12,chi13,chi23), ~ cell_spec(.x,
-                               color = case_when(
-                                 .x < alpha ~ "red",
-                                 TRUE ~ "black"
-                               )))) %>%
-  mutate(across(starts_with("pseudo"), ~ cell_spec(.x,
-                               color = case_when(
-                                 .x > R2.change ~ "red",
-                                 TRUE ~ "black"
-                               )))) %>%
-  mutate(beta12 =  cell_spec(beta12,
-                               color = case_when(
-                                 beta12 > beta.change ~ "red",
-                                 TRUE ~ "black"
-                               ))) %>% 
-  kbl_rise()
-```
-
-This plot does not work in Quarto rendering, for some reason. I'll include a screenshot instead.
-
-```{r}
-plot(g_dif, graphics.off())
-```
-
-![lordif_plot](dif_magnitude_lordif.png)

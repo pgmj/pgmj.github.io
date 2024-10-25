@@ -70,6 +70,7 @@ library(kableExtra)
 library(readxl)
 library(tidyverse)
 library(eRm)
+library(iarm)
 library(mirt)
 library(psych)
 library(ggplot2)
@@ -81,6 +82,12 @@ library(patchwork)
 library(formattable) 
 library(glue)
 library(foreach)
+
+### some commands exist in multiple packages, here we define preferred ones that are frequently used
+select <- dplyr::select
+count <- dplyr::count
+recode <- car::recode
+rename <- dplyr::rename
 ```
 
 ::: {.callout-note icon="true"}
@@ -341,15 +348,15 @@ The eRm package and Conditional Maximum Likelihood (CML) estimation will be used
 
 This is also where the [five basic psychometric aspects](https://doi.org/10.31219/osf.io/3htzc) are good to recall.
 
--   Unidimensionality
+-   Unidimensionality & local independence
 -   Response categories
 -   Invariance
 -   Targeting
 -   Measurement uncertainties (reliability)
 
-We will begin by looking at unidimensionality, response categories, and targeting in parallel below. For unidimensionality, we are mostly interested in item fit and residual correlations, as well as PCA of residuals and loadings on the first residual contrast. At the same time, disordered response categories can influence item fit, and targeting can be useful if it is necessary to remove items due to residual correlations.
+We will begin by looking at unidimensionality, response categories, and targeting in parallel below. For unidimensionality, we are mostly interested in item fit and residual correlations, as well as PCA of residuals and loadings on the first residual contrast. At the same time, disordered response categories can influence item fit to some extent (and vice versa), and knowledge about targeting can be useful if it is necessary to remove items due to residual correlations.
 
-When unidimensionality and response categories are found to work adequately, we will move on to invariance testing (Differential Item Functioning, DIF). It should be noted that DIF should be evaluated in parallel with all other psychometric aspects, but since it is rather complex it is kept in a separate section in this vignette (as is person fit). Finally, when/if invariance also looks acceptable, we can investigate reliability/measurement uncertainties.
+When unidimensionality and response categories are found to work adequately, we will move on to invariance testing (Differential Item Functioning, DIF). It should be noted that DIF should be evaluated in parallel with all other psychometric aspects, but since it is a more complex issue it is kept in a separate section in this vignette (as is person fit). Finally, when/if invariance/DIF also looks acceptable, we can investigate reliability/measurement uncertainties.
 
 ::: {.callout-note}
 In the tabset-panel below, each tab contains explanatory text, which is sometimes a bit lengthy. Remember to **scroll back up and click on all tabs**.
@@ -362,7 +369,7 @@ RIlistItemsMargin(df, fontsize = 13)
 ```
 
 ::: panel-tabset
-### Item fit
+### Conditional item fit
 
 ```{r}
 simfit1 <- RIgetfit(df, iterations = 1000, cpu = 8) # save simulation output to object `simfit1`
@@ -373,13 +380,13 @@ RIitemfit(df, simfit1)
 
 It is important to note that the new (since version 0.2.2, released 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020].
 
-Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items.  `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this. `RIitemfit()` can also be used without cutoffs and conditional highlighting. For a useful rule-of-thumb cutoff for infit MSQ only, use the option `cutoff = "Smith98"` [@smith_using_1998;@muller_item_2020].
+Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items.  `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this. `RIitemfit()` can also be used without cutoffs and conditional highlighting. For a possibly useful rule-of-thumb cutoff for infit MSQ only, use the option `cutoff = "Smith98"` [@smith_using_1998;@muller_item_2020]. However, this cutoff is not applicable for all items, only for what can be expected for the *average* item fit. The simulation/bootstrap-based cutoff values will be more accurate for every item in your data.
 
 Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
 
-The simulation will take quite a bit of time to run if you have complex data/many participants, and/or choose to use many iterations. While insufficient testing has been done to make any strong recommendations, I think 1000 iterations is a good starting point, and probably no less than 500.
+The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. While insufficient testing has been done to make any strong recommendations, I think 500 iterations is a good starting point.
 
-For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 52 seconds to run on 8 cpu cores (Macbook Pro M1 Max).
+For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 52 seconds to run on 8 cpu cores (Macbook Pro M1 Max) for 1000 iterations.
 
 I'll cite Ostini & Nering [-@ostini_polytomous_2006] on the description of outfit and infit (pages 86-87):
 
@@ -391,9 +398,19 @@ A low item fit value (sometimes referred to as "overfitting" the Rasch model) in
 
 A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time or is ambiguous for other reasons.
 
-### Item fit curves
+### Item-restscore
+
+This is another useful function from the `iarm` package. It shows the expected and observed correlation between an item and a score based on the rest of the items [@kreiner_note_2011]. Similarly, but inverted, to item fit, a lower observed correlation value than expected indicates that the item may not belong to the dimension. A higher than expected observed value indicates an overfitting and possibly redundant item.
+
+```{r}
+RIrestscore(df)
+```
+
+### Conditional item characteristic curves
 
 The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions may be included in a future version of the `RISEkbmRasch` package. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
+
+These curves indicate item fit on a group level, where resondents are split into "class intervals" based on their sum score/factor score.
 
 ```{r}
 library(iarm)
@@ -415,7 +432,7 @@ CICCplot(PCM(df),
          grid.items = TRUE)
 ```
 
-### PCA
+### PCA of residuals
 
 Principal Component Analysis of Rasch model residuals.
 
@@ -423,13 +440,13 @@ Principal Component Analysis of Rasch model residuals.
 RIpcmPCA(df)
 ```
 
-Based on rule of thumb, the first eigenvalue should be below 2.0 to support unidimensionality. However, this is seldom accurate and needs to be complemented with checking item fit and residual correlations.
+Based on rule of thumb, the first eigenvalue should be below 2.0 to support unidimensionality. However, this is seldom accurate and needs to be complemented with checking item fit and residual correlations. The target value should probably be below 1.75, based on my experience, but really I find this metric redundant and only keep it here for those coming from Winsteps who might be looking for it. Speaking of Winsteps, the "explained variance" will not be comparable to Winsteps corresponding metric, since this one only shows the results from the analysis of residuals.
 
 ### Residual correlations
 
 Similarly to item fit, we need to run simulations to get a useful cutoff threshold value for when residual correlations amongst item pairs are too large to show model fit [@christensen2017].
 
-And again, the simulation can take quite a bit of time, but is necessary to set the appropriate cutoff value.
+And again, the simulation can take a bit of time, but it is necessary to set the appropriate cutoff value.
 
 ```{r}
 simcor1 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
@@ -437,6 +454,14 @@ RIresidcorr(df, cutoff = simcor1$p99)
 ```
 
 The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations crossing the threshold compared to the average item-pair correlation (for all item-pairs) [@christensen2017]. Rasch model residual correlations (Yen's Q3) are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
+
+### Partial gamma LD
+
+Another way to assess local (in)dependence is by partial gamma coefficients [@kreiner_analysis_2004]. This is also a function from the `iarm` package. See `?iarm::partgam_LD` for details.
+
+```{r}
+RIpartgamLD(df)
+```
 
 ### 1st contrast loadings
 
@@ -536,14 +561,14 @@ RIlistItemsMargin(df, fontsize = 13)
 ```
 
 ::: panel-tabset
-### Item fit
+### Conditional item fit
 
 ```{r}
 simfit2 <- RIgetfit(df, iterations = 1000, cpu = 8)
 RIitemfit(df, simcut = simfit2)
 ```
 
-### PCA
+### PCA of residuals
 
 ```{r}
 RIpcmPCA(df)
@@ -574,7 +599,6 @@ RItargeting(df, xlim = c(-4,4), bins = 45)
 ```{r}
 #| fig-height: 5
 RIitemHierarchy(df)
-
 ```
 :::
 
@@ -590,7 +614,7 @@ We'll be looking at whether item (threshold) locations are stable between demogr
 
 There are several DIF analysis tools available. The first one uses the package `psychotree`, which relies on statistical significance at p < .05 as an indicator for DIF. This is a criterion that is highly sample size sensitive, and we are always interested in the size/magnitude of DIF as well, since that will inform us about the impact of DIF on the estimated latent variable. 
 
-The structure of DIF is also an important and complex aspect, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. We can test this in R using the `lordif` package, as demonstrated in @sec-lordif.
+The structure of DIF is also an important and complex aspect, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. We can test this in R using the `lordif` package, as demonstrated in @sec-lordif. However, it should be noted that the `lordif` package does not provide an option to use Rasch models, and there may be results that are caused by also allowing the discrimination parameter to vary across items.
 
 A recent preprint [@henninger_partial_2024] does a great job illustrating "differential step functioning" (DSF), which is when item threshold locations in polytomous data show varying levels of DIF. It also describes a forthcoming development of the `psychotree` where one can use DIF effect size and purification functions to evaluate DIF/DSF. When the updated package is available, I will work to implement these new functions into the `RISEkbmRasch` package as well.
 
@@ -779,7 +803,7 @@ plot(g_dif) # use option `graphics.off()` to get the plots rendered one by one
 
 ### Partial gamma DIF
 
-The `iarm` package provides a function to assess DIF by partial gamma [@bjorner_differential_1998]. 
+The `iarm` package provides a function to assess DIF by partial gamma [@bjorner_differential_1998]. It should be noted that this function only shows a single partial gamma value per item, so if you have more than two groups in your comparison, you will want to also use other methods to understand your results better.
 
 There are some recommended cutoff-values mentioned in the paper above:
 
@@ -799,7 +823,7 @@ Moderate to large DIF:
 - significantly outside the interval -0.21 to 0.21
 
 ```{r}
-partgam_DIF(as.data.frame(df), dif.sex, p.adj = "BH")
+RIpartgamDIF(df, dif.sex)
 ```
 
 We can see "slight" DIF for item 17, with a statistically significant gamma of .23. 
