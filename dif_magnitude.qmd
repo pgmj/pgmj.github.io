@@ -554,13 +554,12 @@ First, the test information function (TIF) curve could be of interest to underst
 #| fig-width: 9
 RItif(d, samplePSI = TRUE)
 ```
-### SEM original data
+#### SEM original data
 ```{r}
 RIscoreSE(d, output = "table")
 ```
 
 #### TIF without q3
-
 ```{r}
 #| fig-width: 9
 RItif(d %>% select(!q3), samplePSI = TRUE)
