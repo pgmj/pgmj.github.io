@@ -683,4 +683,9 @@ bind_rows(glance(lm_all),
 
 ```
 
+## Session info
+
+```{r}
+sessionInfo()
+```
 
