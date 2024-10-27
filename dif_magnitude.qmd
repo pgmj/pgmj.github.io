@@ -39,9 +39,12 @@ Ideally, this would be a simulation study where we create lots of datasets with 
 library(tidyverse)
 library(eRm)
 library(iarm)
+library(mirt)
+library(catR)
 library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch", dependencies = TRUE)
 library(summarytools)
 library(ghibli)
+library(broom)
 
 ### some commands exist in multiple packages, here we define preferred ones that are frequently used
 select <- dplyr::select
@@ -184,7 +187,7 @@ input_thetas <- all_data$input_thetas
 
 ```
 
-We now have 10 items with 4 categories each. There are 600 respondents in all, with 300 showing differential item functioning for one item (item q3). DIF is induced at +1 logit uniform difference in location (all thresholds for item q3 are +1 logits).
+We now have 10 items with 4 categories each. There are 600 respondents in all, with 300 showing differential item functioning for one item (item q3). DIF is induced at +1 logit uniform difference in location (all thresholds for item q3 are unformly +1 logits).
 
 ## DIF assessment
 
@@ -206,7 +209,7 @@ RIpartgamDIF(d, dif.group)
 RIdifTable(d, dif.group)
 ```
 
-DIF clearly shown.
+DIF clearly shown, however it is closer to 0.8 logits than the 1.0 used in the input values. This is still generally considered to be a large DIF size, so it should serve our purpose.
 
 ### Item split
 
@@ -234,7 +237,9 @@ RImissing(d2)
 RItargeting(d2)
 ```
 
-Comparing to non-split data.
+Item threshold locations for the q3 split items range from -1 logits to +1.5 logits along the theta/latent continuum. This is roughly the range where we expect some impact from DIF.
+
+Comparing targeting to non-split data.
 
 ```{r}
 RItargeting(d)
@@ -266,7 +271,6 @@ The upper range is rather different for the item split subgroup when using this 
 ```{r}
 RIitemparams(d)
 ```
-
 #### Item split
 ```{r}
 RIitemparams(d2)
@@ -275,7 +279,6 @@ RIitemparams(d2)
 ```{r}
 RIitemparams(d %>% select(!q3))
 ```
-
 #### Plot estimation bias
 ```{r}
 #| code-fold: true
@@ -496,7 +499,7 @@ Looks like the two step approach worked a lot better. Since the item parameter e
 
 ### Summarised
 
-First, absolute differences in estimated thetas compared to input thetas.
+First, absolute differences in estimated thetas compared to input thetas. By using absolute differences we can assess both DIF groups simultaneously.
 
 ```{r}
 c_diff <- c %>% 
@@ -508,15 +511,13 @@ c_diff <- c %>%
 c_diff %>% 
   pivot_longer(everything()) %>% 
   ggplot(aes(x = value)) +
-  geom_histogram(bins = 50) +
+  geom_histogram(bins = 100) +
   facet_wrap(~ name, ncol = 1) +
   labs(x = "Absolute difference in logits",
        title = "Comparing input thetas to estimated",
        subtitle = "Distribution of bias")
 
 ```
-
-No huge differences between these histograms.
 
 ```{r}
 c_diff_descr <- descr(c_diff) %>% 
@@ -539,9 +540,9 @@ c_diff_descr[1:9,] %>%
   kbl_rise(tbl_width = 50)
 ```
 
-Still not large differences anywhere.
+No real differences in these summary metrics.
 
-We should look at the particular region where the DIF item is located, since it should have the most impact there.
+We should look more closely at the particular region where the DIF item is located, since it should have the most impact there.
 
 ### Across the latent continuum
 
@@ -556,8 +557,24 @@ RItif(d, samplePSI = TRUE)
 ```
 #### SEM original data
 ```{r}
-RIscoreSE(d, output = "table")
-```
+#| code-fold: true
+sem_orig <- RIscoreSE(d, output = "dataframe") %>% 
+  clean_names() %>% 
+  round(3)
+
+sem_orig_min <- min(sem_orig$logit_std_error)
+
+sem_orig %>% 
+  ggplot(aes(x = logit_score, y = logit_std_error)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  geom_text(data = . %>% 
+              filter(logit_std_error == sem_orig_min),
+            aes(label = sem_orig_min), 
+            position = position_nudge(y = -0.03)) +
+  scale_x_continuous(breaks = seq(-5,5,0.5)) +
+  scale_y_continuous(limits = c(0,NA), breaks = seq(0,1,0.1))
+``` 
 
 #### TIF without q3
 ```{r}
@@ -566,42 +583,38 @@ RItif(d %>% select(!q3), samplePSI = TRUE)
 ```
 #### SEM without q3
 ```{r}
-RIscoreSE(d %>% select(!q3), output = "table")
+#| code-fold: true
+sem_noq3 <- RIscoreSE(d %>% select(!q3), output = "dataframe") %>% 
+  clean_names() %>% 
+  round(3)
+
+sem_noq3_min <- min(sem_noq3$logit_std_error)
+
+sem_noq3 %>% 
+  ggplot(aes(x = logit_score, y = logit_std_error)) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  geom_text(data = . %>% 
+              filter(logit_std_error == sem_noq3_min) %>% 
+              slice(1),
+            aes(label = sem_noq3_min), 
+            position = position_nudge(y = -0.03)) +
+  scale_x_continuous(breaks = seq(-5,5,0.5)) +
+  scale_y_continuous(limits = c(0,NA), breaks = seq(0,1,0.1))
 ```
 :::
 
 The lowest SEM with q3 is 0.384, at logit score 0.356. 
 
-Lowest SEM without q3 is 0.416, at logit score 0.322 to 0.491, which makes a difference in minimal SEM of about 0.032 compared to including the DIF item. 0.032 * 1.96 = 0.064 for a 95% CI.
+Lowest SEM without q3 is 0.416, at logit score 0.322 to 0.491, which makes a difference in minimal SEM of about 0.032 compared to including the DIF item. 0.032 * 1.96 = 0.063 for a 95% CI.
 
-#### Theta estimation bias
+### Theta estimation bias
 
+::: panel-tabset
+#### Loess smoothing
 ```{r}
 #| code-fold: true
-c_diff %>% 
-  add_column(Theta = input_thetas) %>% 
-  pivot_longer(!Theta) %>% 
-  
-  ggplot(aes(x = Theta, y = value, color = factor(name), fill = factor(name))) +
-  geom_point(alpha = 0.85) +
-  geom_smooth(method = "loess",
-              aes(linetype = factor(name)), alpha = 0.15) +
-  scale_color_ghibli_d("MononokeMedium", direction = -1) +
-  scale_fill_ghibli_d("MononokeMedium", direction = -1) +
-  labs(color = "Item set",
-       title = "Theta estimation bias",
-       y = "Absolute difference in logits") +
-  guides(fill = "none", linetype = "none") +
-  scale_x_continuous(breaks = seq(-5,5,1)) +
-  scale_y_continuous(limits = c(0,NA), breaks = seq(0,2,0.1)) +
-  facet_wrap(~name, ncol = 2) +
-  theme_rise()
-```
-
-Without points for a cleaner view.
-
-```{r}
-#| code-fold: true
+#| label: fig-loess
 c_diff %>% 
   add_column(Theta = input_thetas) %>% 
   pivot_longer(!Theta) %>% 
@@ -620,70 +633,201 @@ c_diff %>%
   scale_y_continuous(limits = c(0,NA), breaks = seq(0,1.2,0.1)) +
   theme_rise()
 ```
+#### Scatterplot
+```{r}
+#| code-fold: true
+c_diff %>% 
+  add_column(Theta = input_thetas) %>% 
+  pivot_longer(!Theta) %>% 
+  
+  ggplot(aes(x = Theta, y = value, color = factor(name), fill = factor(name))) +
+  geom_point(alpha = 0.85) +
+  scale_color_ghibli_d("MononokeMedium", direction = -1) +
+  scale_fill_ghibli_d("MononokeMedium", direction = -1) +
+  labs(color = "Item set",
+       title = "Theta estimation bias",
+       y = "Absolute difference in logits") +
+  guides(fill = "none", linetype = "none") +
+  scale_x_continuous(breaks = seq(-5,5,1)) +
+  scale_y_continuous(limits = c(0,NA), breaks = seq(0,2,0.1)) +
+  theme_rise()
+```
+#### Loess "zoomed in"
+```{r}
+#| code-fold: true
+c_diff %>% 
+  add_column(Theta = input_thetas) %>% 
+  pivot_longer(!Theta) %>% 
+  
+  ggplot(aes(x = Theta, y = value, color = factor(name), fill = factor(name))) +
+  #geom_point(alpha = 0.85) +
+  geom_smooth(method = "loess",
+              aes(linetype = factor(name)), alpha = 0.15) +
+  scale_color_ghibli_d("MononokeMedium", direction = -1) +
+  scale_fill_ghibli_d("MononokeMedium", direction = -1) +
+  labs(color = "Item set",
+       title = "Theta estimation bias",
+       subtitle = "Cropped to improve readability",
+       y = "Absolute difference (logits)") +
+  guides(fill = "none", linetype = "none") +
+  scale_x_continuous(limits = c(-2,2), breaks = seq(-5,5,1)) +
+  scale_y_continuous(breaks = seq(0,1.2,0.05)) +
+  theme_rise()
+```
+:::
 
-Item split slightly reduces bias compared to keeping the DIF item (3), while removing item 3 increases bias from -1.5 to +1.5
+Item split slightly reduces bias compared to keeping the DIF item (3), while removing item 3 increases bias in the theta range of about -1 to +1.5 logits. The maximum bias looks like approximately 0.055 logits (at theta = 0), according to the loess smoothed line.
 
-### Statistical analysis
+### Statistical analysis of means (limited range)
 
-Comparing differences in theta estimation to input thetas.
+While the practical impact of theta estimation bias induced by a DIF variable should be judged by how problematic the maximum bias is for the intended use and need for precision, it could be interesting to quantify the differences using statistical analysis. It is sometimes suggested to look at the mean of the groups, but I think this is mistaken. The bias is local and related to the DIF item's location, which makes it relevant to look at that region separately. 
+
+As such, the comparison below is about mean differences in estimated thetas to input thetas, limited to the theta range from -0.5 to +1 logits, where differences seem the biggest according to [@fig-loess]. Note that the figure shows loess smoothed lines that include both groups.
+
+We need to do this separately for the two DIF groups, since the groups will have opposite effects of the DIF.
 
 ```{r}
-library(broom)
+#| code-fold: true
+c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 1) %>% 
+  select(c(separate_catR,input_thetas)) %>%
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
+  nrow()
+
+c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 2) %>% 
+  select(c(separate_catR,input_thetas)) %>%
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
+  nrow()
+```
+
+n = 130 and 115. More than a third of each group is located within the range affected by DIF.
+
+
+```{r}
+#| code-fold: true
 lm_all <- c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 1) %>% 
   select(c(together_RIestThetas,input_thetas)) %>%
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
   pivot_longer(everything()) %>% 
   lm(value ~ name, data = .)
 
 lm_q3rem <- c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 1) %>% 
   select(c(together_q3_rem,input_thetas)) %>%
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
   pivot_longer(everything()) %>% 
   lm(value ~ name, data = .)
 
 lm_q3split <- c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 1) %>% 
   select(c(separate_catR,input_thetas)) %>%
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
   pivot_longer(everything()) %>% 
   lm(value ~ name, data = .)
 
-anova(lm_all,lm_q3rem,lm_q3split)
-
-bind_rows(glance(lm_all),
-          glance(lm_q3rem),
-          glance(lm_q3split)) %>% 
-  add_column(Model = c("All items","Q3 removed","Q3 split")) %>% 
-  select(Model,statistic,p.value,logLik,AIC,BIC,deviance)
+g1 <- bind_rows(tidy(lm_all, conf.int = TRUE, conf.level = .84) %>% slice(2),
+          tidy(lm_q3rem, conf.int = TRUE, conf.level = .84) %>% slice(2),
+          tidy(lm_q3split, conf.int = TRUE, conf.level = .84) %>% slice(2)
+          ) %>% 
+  select(!term) %>% 
+  round(3) %>% 
+  add_column(Model = c("All items","Q3 removed","Q3 split"), .before = "estimate")
 
 ```
 
-Same analysis, but limited to the theta range from -1.5 to +1.5 logits, where differences seem the biggest.
 
 ```{r}
-lm_all <- c %>% 
+#| code-fold: true
+lm_all2 <- c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 2) %>% 
   select(c(together_RIestThetas,input_thetas)) %>%
-  filter(input_thetas > -1.5 & input_thetas < 1.5) %>% 
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
   pivot_longer(everything()) %>% 
   lm(value ~ name, data = .)
 
-lm_q3rem <- c %>% 
+lm_q3rem2 <- c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 2) %>% 
   select(c(together_q3_rem,input_thetas)) %>%
-  filter(input_thetas > -1.5 & input_thetas < 1.5) %>% 
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
   pivot_longer(everything()) %>% 
   lm(value ~ name, data = .)
 
-lm_q3split <- c %>% 
+lm_q3split2 <- c %>% 
+  add_column(group = dif.group) %>% 
+  filter(group == 2) %>% 
   select(c(separate_catR,input_thetas)) %>%
-  filter(input_thetas > -1.5 & input_thetas < 1.5) %>% 
+  filter(input_thetas > -0.5 & input_thetas < 1) %>% 
   pivot_longer(everything()) %>% 
   lm(value ~ name, data = .)
 
-anova(lm_all,lm_q3rem,lm_q3split)
-
-bind_rows(glance(lm_all),
-          glance(lm_q3rem),
-          glance(lm_q3split)) %>% 
-  add_column(Model = c("All items","Q3 removed","Q3 split")) %>% 
-  select(Model,statistic,p.value,logLik,AIC,BIC,deviance)
+g2 <- bind_rows(tidy(lm_all2, conf.int = TRUE, conf.level = .84) %>% slice(2),
+          tidy(lm_q3rem2, conf.int = TRUE, conf.level = .84) %>% slice(2),
+          tidy(lm_q3split2, conf.int = TRUE, conf.level = .84) %>% slice(2)
+          ) %>% 
+  select(!term) %>% 
+  round(3) %>% 
+  add_column(Model = c("All items","Q3 removed","Q3 split"), .before = "estimate")
 
 ```
+
+#### Results figure
+
+```{r}
+rbind(g1,g2) %>% 
+  add_column(Group = rep(c("Group 1","Group 2"), each = 3)) %>% 
+  
+  ggplot(aes(x = Group, y = estimate, color = Model)) +
+  geom_point(position = position_dodge(width = 0.2)) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high),
+                width = 0.1,
+                position = position_dodge(width = 0.2)) +
+  scale_color_ghibli_d("MononokeMedium", direction = -1) +
+  labs(color = "Item set",
+       title = "Mean bias in theta estimation",
+       subtitle = "Across a limited theta region (-0.5 to 1.0 logits)",
+       y = "Model estimate", 
+       x = "")
+```
+
+Since we are primarily interested in comparing the different item sets to each other, it is not the difference from input thetas (estimate = 0) that is most relevant here. As such, I chose to display 84% confidence intervals to be able to assess differences between item sets in each group by looking at whether the CI's overlap or not.
+
+#### Theta bias - loess by group
+
+```{r}
+#| code-fold: true
+c_diff %>% 
+  add_column(Theta = input_thetas) %>% 
+  mutate(Group = case_match(dif.group, 
+                            "1" ~ "Group 1",
+                            "2" ~ "Group 2")) %>% 
+  pivot_longer(!(c("Theta","Group"))) %>% 
+  
+  ggplot(aes(x = Theta, y = value, color = factor(name), fill = factor(name))) +
+  #geom_point(alpha = 0.85) +
+  geom_smooth(method = "loess",
+              aes(linetype = factor(name)), alpha = 0.15) +
+  scale_color_ghibli_d("MononokeMedium", direction = -1) +
+  scale_fill_ghibli_d("MononokeMedium", direction = -1) +
+  labs(color = "Item set",
+       title = "Theta estimation bias",
+       subtitle = "Cropped to improve readability",
+       y = "Absolute difference (logits)") +
+  guides(fill = "none", linetype = "none") +
+  scale_x_continuous(limits = c(-2,2), breaks = seq(-5,5,1)) +
+  scale_y_continuous(breaks = seq(0,1.2,0.05)) +
+  facet_wrap(~Group, ncol = 1,) +
+  theme_rise()
+```
+
 
 ## Session info
 
