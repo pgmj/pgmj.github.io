@@ -24,7 +24,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-This is an introduction to using the [`easyRasch` R package](https://github.com/pgmj/easyRasch). A changelog for package updates is available [here](https://github.com/pgmj/easyRasch/blob/main/NEWS.md).
+This is an introduction to using the [`easyRasch` R package](https://pgmj.github.io/easyRasch/). A changelog for package updates is available [here](https://pgmj.github.io/easyRasch/news/index.html).
 
 ::: {.callout-note icon="true"}
 ## Note
