@@ -1,6 +1,6 @@
 ---
 title: "easyRasch vignette"
-subtitle: "An R package for Rasch analysis"
+subtitle: "R package for Rasch analysis"
 author: 
   name: 'Magnus Johansson'
   affiliation: 'RISE Research Institutes of Sweden'

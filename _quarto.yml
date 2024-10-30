@@ -14,7 +14,7 @@ website:
   announcement: 
     icon: info-circle
     dismissable: true
-    content: "**Note:** The RISEkbmRasch vignette has new material on conditional item fit and simulation based cutoff values."
+    content: "**Note:** The RISEkbmRasch R package is now known as easyRasch."
     type: primary
     position: below-navbar
   navbar: 
