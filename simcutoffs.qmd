@@ -27,7 +27,7 @@ It has long been known that rule-of-thumb cutoff values in psychometrics are not
 
 My approach here is to write functions to help users easily run these simulations on their computers in R, when they do their psychometric analysis.
 
-This blog post will be incorporated into the [`RISEkbmRasch` vignette](https://pgmj.github.io/raschrvignette/RaschRvign.html) at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.
+This blog post will be incorporated into the [`easyRasch` package vignette](https://pgmj.github.io/raschrvignette/RaschRvign.html) at some point, but as I just put quite a bit of time into developing these functions I wanted to write something about it. Also, I have not put all that much time into testing, so I hope to hear about any problems you may run into if you try these functions out.
 
 Finally, I want to thank Karl Bang Christensen for a very nice presentation on item fit and simulations at the Scandinavian Applied Measurement Conference, which made me think about these things a lot until I came up with the idea to implement these functions.
 
@@ -47,7 +47,7 @@ The simulation then results in an empirical distribution of plausible values.
 This is the simpler of the two functions that have been added. It is based on the simulation study by Christensen et al. [-@christensen2017].
 
 ```{r}
-library(RISEkbmRasch)
+library(easyRasch)
 ```
 
 For simplicity, we will use the dataset `pcmdat2` included in the `eRm` package, which has polytomous data. Dichotomous data also works with all functions in this text. The functions will determine the proper model based on the data structure.

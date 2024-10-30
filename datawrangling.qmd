@@ -4,7 +4,7 @@ subtitle: "R code examples for psychometricians"
 author: 
   name: 'Magnus Johansson'
   affiliation: 'RISE Research Institutes of Sweden'
-  affiliation-url: 'https://www.ri.se/en/what-we-do/expertises/category-based-measurements'
+  affiliation-url: 'https://www.ri.se/en/shic'
   orcid: '0000-0003-1669-592X'
 date: 2023-12-19
 date-format: iso
@@ -16,7 +16,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-While the [RISEkbmRasch](https://github.com/pgmj/RISEkbmRasch) package simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the ["R for data science"](https://r4ds.had.co.nz/) book. This guide focuses on common data wrangling issues that occur in psychometric analyses.
+While the [`easyRasch` R package](https://pgmj.github.io/easyRasch/) simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the ["R for data science"](https://r4ds.had.co.nz/) book. This guide focuses on common data wrangling issues that occur in psychometric analyses.
 
 I will rely heavily on `library(tidyverse)` functions in most examples.
 
