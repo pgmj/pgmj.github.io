@@ -249,6 +249,8 @@ RIitemHierarchy(d)
 
 ### Estimating thetas
 
+First, we'll use the convenient function `RIestThetas()` that estimates item parameters (using `eRm`) and thetas (using `iarm`), to see how that works when we have a split item, each with missing data for 50% of respondents.
+
 ```{r}
 #| layout-ncol: 2
 thetas_separate <- RIestThetas(d2)
@@ -256,13 +258,11 @@ thetas_separate <- RIestThetas(d2)
 hist(thetas_separate$WLE, breaks = 30, col = "lightblue")
 hist(thetas_together$WLE, breaks = 30, col = "lightpink")
 hist(thetas_q3_removed$WLE, breaks = 30, , col = "sienna4")
-
-summary(thetas_separate$WLE)
-summary(thetas_together$WLE)
-summary(thetas_q3_removed$WLE)
 ```
 
-The upper range is rather different for the item split subgroup when using this method, with max score of 2.22, compared to (expected) ~ 4.1. Let's review the threshold locations.
+The upper range is rather different for the item split subgroup when using this method, with max score of about 2.2, compared to 4.1 for the item set with the original q3 item and entirely without q3. 
+
+Let's review the estimated threshold locations.
 
 ### Comparing item parameters
 
