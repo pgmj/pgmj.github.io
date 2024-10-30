@@ -6,7 +6,7 @@ author:
   affiliation: RISE Research Institutes of Sweden
   affiliation-url: https://www.ri.se/en/shic
   orcid: 0000-0003-1669-592X
-date: last-modified
+date: 2024-10-27
 citation:
   type: 'webpage'
 csl: apa.csl

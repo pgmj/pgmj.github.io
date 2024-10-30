@@ -6,7 +6,7 @@ author:
   affiliation: 'RISE Research Institutes of Sweden'
   affiliation-url: 'https://ri.se/shic'
   orcid: '0000-0003-1669-592X'
-date: last-modified
+date: 2024-09-06
 date-format: iso
 google-scholar: true
 citation:

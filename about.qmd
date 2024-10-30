@@ -6,7 +6,7 @@ title: "About"
 
 You can also find me on:
 
-- Twitter: [@pgmjoh](https://twitter.com/pgmjoh)
+- Bluesky: [@pgmj.bsky.social](https://bsky.app/profile/pgmj.bsky.social) 
 - ORCID: [0000-0003-1669-592X](https://orcid.org/0000-0003-1669-592X)
 - Mastodon: [@pgmj](https://scicomm.xyz/@pgmj)
 - OSF: [Open Science Framework](https://osf.io/8u2x3/)

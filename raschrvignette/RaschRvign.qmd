@@ -1,5 +1,5 @@
 ---
-title: "RISEkbmRasch vignette"
+title: "easyRasch vignette"
 subtitle: "An R package for Rasch analysis"
 author: 
   name: 'Magnus Johansson'
@@ -24,14 +24,14 @@ editor_options:
   chunk_output_type: console
 ---
 
-This is an introduction to using the [`RISEkbmRasch` R package](https://github.com/pgmj/RISEkbmRasch). A changelog for package updates is available [here](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md).
+This is an introduction to using the [`easyRasch` R package](https://github.com/pgmj/easyRasch). A changelog for package updates is available [here](https://github.com/pgmj/easyRasch/blob/main/NEWS.md).
 
 ::: {.callout-note icon="true"}
 ## Note
-Since August 9th 2024 (`RISEkbmRasch` package version 0.1.50.0) there has been a change in threshold estimation in Rasch Partial Credit Models to make the threshold locations sum to zero. This affects all functions that produce output related to item threshold locations.
+This packages was previously known as `RISEkbmRasch`.
 :::
 
-Details on package installation are available at the [package GitHub page](https://github.com/pgmj/RISEkbmRasch).
+Details on package installation are available at the [package GitHub page](https://pgmj.github.io/easyRasch).
 
 If you are new to Rasch Measurement Theory, you may find this intro presentation useful:
 <https://pgmj.github.io/RaschIRTlecture/slides.html>
@@ -52,17 +52,17 @@ Please note that this is just a sample analysis to showcase the R package. It is
 
 You can skip ahead to the Rasch analysis part in @sec-rasch if you are eager to look at the package output :)
 
-There is a separate GitHub repository containing a suggested template to simplify using the RISEkbmRasch package when conducting a reproducible Rasch analysis in R: <https://github.com/pgmj/RISEraschTemplate>
+There is a separate GitHub repository containing a template R-project to simplify using the `easyRasch` package when conducting a reproducible Rasch analysis in R: <https://github.com/pgmj/RISEraschTemplate>
 
 
 ## Getting started
 
 Since the package is intended for use with Quarto, this vignette has also been created with Quarto. A "template" .qmd file [is available](https://github.com/pgmj/RISEraschTemplate/blob/main/analysis.qmd) that can be useful to have handy for copy&paste when running a new analysis.  You can also download a complete copy of the Quarto/R code to produce this document [here](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd).
 
-Loading the `RISEkbmRasch` package will automatically load all the packages it depends on. However, it could be desirable to explicitly load all packages used, to simplify the automatic creation of citations for them, using the `grateful` package (see @sec-grateful).
+Loading the `easyRasch` package will automatically load all the packages it depends on. However, it could be desirable to explicitly load all packages used, to simplify the automatic creation of citations for them, using the `grateful` package (see @sec-grateful).
 
 ```{r}
-library(RISEkbmRasch) # devtools::install_github("pgmj/RISEkbmRasch")
+library(easyRasch) # devtools::install_github("pgmj/easyRasch", dependencies = TRUE)
 library(grateful)
 library(ggrepel)
 library(car)
@@ -92,7 +92,7 @@ rename <- dplyr::rename
 
 ::: {.callout-note icon="true"}
 ## Note
-Quarto automatically adds links to R packages and functions throughout this document. However, this feature only works properly for packages available on [CRAN](https://cran.r-project.org/). Since the `RISEkbmRasch` package is not on CRAN the links related to functions starting with **RI** will not work.
+Quarto automatically adds links to R packages and functions throughout this document. However, this feature only works properly for packages available on [CRAN](https://cran.r-project.org/). Since the `easyRasch` package is not on CRAN the links related to functions starting with **RI** will not work.
 :::
 
 ### Loading data
@@ -408,7 +408,7 @@ RIrestscore(df)
 
 ### Conditional item characteristic curves
 
-The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions may be included in a future version of the `RISEkbmRasch` package. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
+The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions may be included in a future version of the `easyRasch` package. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
 
 These curves indicate item fit on a group level, where resondents are split into "class intervals" based on their sum score/factor score.
 
@@ -616,7 +616,7 @@ There are several DIF analysis tools available. The first one uses the package `
 
 The structure of DIF is also an important and complex aspect, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. We can test this in R using the `lordif` package, as demonstrated in @sec-lordif. However, it should be noted that the `lordif` package does not provide an option to use Rasch models, and there may be results that are caused by also allowing the discrimination parameter to vary across items.
 
-A recent preprint [@henninger_partial_2024] does a great job illustrating "differential step functioning" (DSF), which is when item threshold locations in polytomous data show varying levels of DIF. It also describes a forthcoming development of the `psychotree` where one can use DIF effect size and purification functions to evaluate DIF/DSF. When the updated package is available, I will work to implement these new functions into the `RISEkbmRasch` package as well.
+A recent preprint [@henninger_partial_2024] does a great job illustrating "differential step functioning" (DSF), which is when item threshold locations in polytomous data show varying levels of DIF. It also describes a forthcoming development of the `psychotree` where one can use DIF effect size and purification functions to evaluate DIF/DSF. When the updated package is available, I will work to implement these new functions into the `easyRasch` package as well.
 
 ::: {.callout-note icon="true"}
 It is important to ensure that no cells in the data are empty for subgroups when conducting a DIF analysis. Split the data using the DIF-variable and create separate tileplots to review the response distribution in the DIF-groups.
@@ -695,10 +695,6 @@ RIdifTable2(df, dif.sex, dif.age)
 No interaction effect found for sex and age. The analysis only shows the previously identified DIF for sex.
 
 ### LRT-based DIF {#sec-diflrt}
-
-::: {.callout-note icon="true"}
-As of `RISEkbmRasch` package version 0.1.16, there are four new functions for analyzing item location DIF. These are all making use of the function `LRtest()` from the `eRm` package. And, since version 0.1.31.0, these are also correctly extracting item locations/threshold locations. Results will not be identical to the results from the previous functions that use the `psychotree` package, since they make some different choices in estimation. I refer the curious to the respective package's documentation.
-:::
 
 We'll use the group variable as an example. First, we can simply run the test to get the overall result.
 
@@ -911,7 +907,7 @@ While 11.8% of respondents had a floor effect based on the raw sum scored data, 
 
 ## Person fit
 
-We can also look at how the respondents fit the Rasch model with these items. By default, `RIpfit()` outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented in the `RISEkbmRasch` package, and the curious analyst is suggested to look at the package [PerFit](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package) for more tools.
+We can also look at how the respondents fit the Rasch model with these items. By default, `RIpfit()` outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented in the `easyRasch` package, and the curious analyst is suggested to look at the package [PerFit](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package) for more tools.
 
 ```{r}
 RIpfit(df)
@@ -929,7 +925,7 @@ Person fit is a useful way to identify respondents with unexpected response patt
 
 ### `PerFit` sample code
 
-While none of the functions in the `PerFit` package has been implemented in `RISEkbmRasch`, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package [documentation](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package).
+While none of the functions in the `PerFit` package has been implemented in `easyRasch`, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package [documentation](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package).
 
 For this example, we'll use the non-parametric U3 statistic generalized to polytomous items [@emons_nonparametric_2008].
 
@@ -1054,7 +1050,7 @@ Most of the figures created by the functions can be styled (colors, fonts, etc) 
 
 You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a `+` sign.
 
-A custom theme function, `theme_rise()`, is included in the RISEkbmRasch package. It might be easier to use if you are not familiar with `theme()`.
+A custom theme function, `theme_rise()`, is included in the `easyRasch` package. It might be easier to use if you are not familiar with `theme()`.
 
 For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.
 
@@ -1064,7 +1060,7 @@ RIitemHierarchy(df) +
   theme_rise(fontfamily = "Lato") # then apply theme_rise, which simplifies making changes to all plot elements
 ```
 
-As of package version 0.1.30.0, the `RItargeting()` function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the [NEWS](https://github.com/pgmj/RISEkbmRasch/blob/main/NEWS.md#01300) file for more details. Since the `RItargeting()` function uses the `patchwork` library to combine plots, you can also make use of [the many functions that `patchwork` includes](https://patchwork.data-imaginist.com/articles/patchwork.html). For instance, you can set a title with a specific theme:
+As of package version 0.1.30.0, the `RItargeting()` function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the [NEWS](https://github.com/pgmj/easyRasch/blob/main/NEWS.md#01300) file for more details. Since the `RItargeting()` function uses the `patchwork` library to combine plots, you can also make use of [the many functions that `patchwork` includes](https://patchwork.data-imaginist.com/articles/patchwork.html). For instance, you can set a title with a specific theme:
 
 ``` {r}
 RItargeting(df) + plot_annotation(title = "Targeting", theme = theme_rise(fontfamily = "Arial"))
