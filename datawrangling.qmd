@@ -6,7 +6,7 @@ author:
   affiliation: 'RISE Research Institutes of Sweden'
   affiliation-url: 'https://www.ri.se/en/shic'
   orcid: '0000-0003-1669-592X'
-date: 2023-12-19
+date: 2024-11-01
 date-format: iso
 execute: 
   cache: false
@@ -46,7 +46,7 @@ The `length()` function is used to count the number of items in the vector, and 
 
 ## Recoding response categories
 
-Many options are available. I have settled on primarily using `car::recode()` from `library(car)` since I find the syntax to be logical and consistent. Another option to consider is `dplyr::recode()`.
+Many options are available. I have settled on primarily using `car::recode()` from `library(car)` since I find the syntax to be logical and consistent. Another option to consider is `dplyr::case_when()`.
 
 The basic syntax of `car::recode()` (henceforth referred to as only `recode()`) is this:
 
@@ -65,18 +65,18 @@ Remember to define your preferred recoding function in your script to avoid head
 There are some more or less clever ways to use `recode()`. You can simply copy&paste code for each variable, such as:
 
 ``` r
-df$q1 <- recode(df$q1, "0=1;2=1;3=2", as.factor = FALSE)
-df$q2 <- recode(df$q2, "0=1;2=1;3=2", as.factor = FALSE)
-df$q3 <- recode(df$q3, "0=1;2=1;3=2", as.factor = FALSE)
-df$q4 <- recode(df$q4, "0=1;2=1;3=2", as.factor = FALSE)
-df$q5 <- recode(df$q5, "0=1;2=1;3=2", as.factor = FALSE)
+df$q1 <- recode(df$q1, "1=0;2=1;3=2", as.factor = FALSE)
+df$q2 <- recode(df$q2, "1=0;2=1;3=2", as.factor = FALSE)
+df$q3 <- recode(df$q3, "1=0;2=1;3=2", as.factor = FALSE)
+df$q4 <- recode(df$q4, "1=0;2=1;3=2", as.factor = FALSE)
+df$q5 <- recode(df$q5, "1=0;2=1;3=2", as.factor = FALSE)
 ```
 
 Such an approach might actually be sensible if each variable needed different recodings. But when you want to make the same changes to many variables, there are of course more efficient strategies. The code above could be rewritten as:
 
 ``` r
 df %>% 
-  mutate(across(q1:q5, ~ car::recode(.x, "0=1;2=1;3=2", as.factor = FALSE)))
+  mutate(across(q1:q5, ~ car::recode(.x, "1=0;2=1;3=2", as.factor = FALSE)))
 ```
 
 Or, in this case, where we only want to recode our scale from the range of 1-3 to 0-2, i.e. subtract one:
@@ -88,8 +88,23 @@ df %>%
 
 The syntax in these two examples is related to how `tidyverse` uses unnamed functions by the combination of `~` and `.x`, where the latter becomes a placeholder for the variables defined in the first term of `across()`.
 
+It is good practice to check that your recoding worked as intended. The first step I recommend is `RItileplot()`.
 
-Below is another example, where we have multiple cell contents that we want to make into `NA` value to ensure that R interprets them as missing data. We want to recode three different things:
+``` r
+df %>% 
+  mutate(across(q1:q5, ~ car::recode(.x, "1=0;2=1;3=2", as.factor = FALSE))) %>% 
+  RItileplot()
+```
+
+If you are trying out different ways to merge response categories to resolve issues with disordered thresholds, you may also want to review the probability curves before committing your recode to a new data object.
+
+``` r
+df %>% 
+  mutate(across(q1:q5, ~ car::recode(.x, "1=0;2=1;3=2", as.factor = FALSE))) %>% 
+  RIitemCats(legend = "left")
+```
+
+Below is an example where we have multiple cell contents that we want to recode to `NA` to ensure that R interprets them as missing data. We want to recode three different things:
 
 - all the numbers from 990 to 999 (usually a way to differentiate between types of missing data)
 - blank cells

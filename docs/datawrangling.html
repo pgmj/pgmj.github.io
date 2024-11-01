@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2023-12-19">
+<meta name="dcterms.date" content="2024-11-01">
 
 <title>Data wrangling for psychometrics in R – R, Rasch, etc</title>
 <style>
@@ -249,7 +249,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2023-12-19</p>
+      <p class="date">2024-11-01</p>
     </div>
   </div>
   
@@ -285,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="recoding-response-categories" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="recoding-response-categories"><span class="header-section-number">3</span> Recoding response categories</h2>
-<p>Many options are available. I have settled on primarily using <code>car::recode()</code> from <code>library(car)</code> since I find the syntax to be logical and consistent. Another option to consider is <code>dplyr::recode()</code>.</p>
+<p>Many options are available. I have settled on primarily using <code>car::recode()</code> from <code>library(car)</code> since I find the syntax to be logical and consistent. Another option to consider is <code>dplyr::case_when()</code>.</p>
 <p>The basic syntax of <code>car::recode()</code> (henceforth referred to as only <code>recode()</code>) is this:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">recode</span>(variable_to_recode, <span class="st">"newvalue1=oldvalue1;newvalue2=oldvalue2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span><span class="sc">/</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As you can see, semi-colon <code>;</code> is used to separate recodings. When numbers are recoded, you just write them out as <code>1=0</code>. When characters are involved, you need the single quote symbol to enclose the character string, i.e <code>'Never'=0</code> for recoding to numerics (which also necessitates the option <code>as.factor = FALSE</code> if you want the recoded variable to be numeric), or <code>'Never'='Nevver'</code> when you need to correct misspelled response options.</p>
@@ -304,41 +304,49 @@ Tip
 </div>
 </div>
 <p>There are some more or less clever ways to use <code>recode()</code>. You can simply copy&amp;paste code for each variable, such as:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q1 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q1, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q2 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q2, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q3 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q3, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q4 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q4, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q5 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q5, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q1 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q1, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q2 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q2, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q3 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q3, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q4 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q4, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q5 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q5, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Such an approach might actually be sensible if each variable needed different recodings. But when you want to make the same changes to many variables, there are of course more efficient strategies. The code above could be rewritten as:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Or, in this case, where we only want to recode our scale from the range of 1-3 to 0-2, i.e.&nbsp;subtract one:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> .x <span class="sc">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The syntax in these two examples is related to how <code>tidyverse</code> uses unnamed functions by the combination of <code>~</code> and <code>.x</code>, where the latter becomes a placeholder for the variables defined in the first term of <code>across()</code>.</p>
-<p>Below is another example, where we have multiple cell contents that we want to make into <code>NA</code> value to ensure that R interprets them as missing data. We want to recode three different things:</p>
+<p>It is good practice to check that your recoding worked as intended. The first step I recommend is <code>RItileplot()</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RItileplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you are trying out different ways to merge response categories to resolve issues with disordered thresholds, you may also want to review the probability curves before committing your recode to a new data object.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RIitemCats</span>(<span class="at">legend =</span> <span class="st">"left"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Below is an example where we have multiple cell contents that we want to recode to <code>NA</code> to ensure that R interprets them as missing data. We want to recode three different things:</p>
 <ul>
 <li>all the numbers from 990 to 999 (usually a way to differentiate between types of missing data)</li>
 <li>blank cells</li>
 <li>“Don’t know” responses</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q45 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q45,<span class="st">"990:999=NA;''=NA;'Don't know'=NA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q45 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q45,<span class="st">"990:999=NA;''=NA;'Don't know'=NA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The <code>:</code> means that all numbers from 990 to 999 will be recoded into <code>NA</code>.</p>
 </section>
 <section id="item-split" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="item-split"><span class="header-section-number">4</span> Item split</h2>
 <p>It can be desirable to split an item due to issues with DIF. This refers to taking a variable and creating two (or more) replacement variables, one for each demographic group. For each variable, data will be missing for the other group. Often this is relevant for gender DIF, which we will use in this example.</p>
 <p>This example assumes that there is a (DIF) vector variable <code>dif.gender</code> with the gender data, which has the same length as the number of rows in the dataset <code>df</code>. We’ll create a new dataframe to store the dataset with the item split. Item q10 is the one we want to split.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.q10split <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">q10f =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Female"</span>, q10, <span class="cn">NA</span>), <span class="co"># create variable q10f when gender is "Female"</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">q10m =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Male"</span>, q10, <span class="cn">NA</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>gender) <span class="sc">%&gt;%</span> <span class="co"># remove gender and q10 variables from the dataset</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>q10)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># check the data</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">RItileplot</span>(df.q10split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df.q10split <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">q10f =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Female"</span>, q10, <span class="cn">NA</span>), <span class="co"># create variable q10f when gender is "Female"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">q10m =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Male"</span>, q10, <span class="cn">NA</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>gender) <span class="sc">%&gt;%</span> <span class="co"># remove gender and q10 variables from the dataset</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>q10)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># check the data</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">RItileplot</span>(df.q10split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The <code>if_else()</code> function used within <code>mutate()</code> has three inputs/options in the example above:</p>
 <ul>
 <li>condition (logical statement)</li>
@@ -350,24 +358,24 @@ Tip
 <h2 data-number="5" class="anchored" data-anchor-id="item-merge"><span class="header-section-number">5</span> Item merge</h2>
 <p>Sometimes it is desirable to merge two items into one. This is often done when there is a high residual correlation between two items. This is called a testlet. The items are merged into a new variable, and the original items are removed from the dataset.</p>
 <p>It is usually a good idea to create a new dataframe with the merged variable, in case you need to go back to the original dataset.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sdq2_15 =</span> sdq2 <span class="sc">+</span> sdq15) <span class="sc">%&gt;%</span> <span class="co"># create variable by adding them</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq2) <span class="sc">%&gt;%</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq15)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sdq2_15 =</span> sdq2 <span class="sc">+</span> sdq15) <span class="sc">%&gt;%</span> <span class="co"># create variable by adding them</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq2) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq15)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then you should check the ICC curves for the merged item:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemCats</span>(df2, <span class="at">item =</span> <span class="st">"sdq2_15"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemCats</span>(df2, <span class="at">item =</span> <span class="st">"sdq2_15"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="checking-response-distribution-prior-to-dif-analysis" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="checking-response-distribution-prior-to-dif-analysis"><span class="header-section-number">6</span> Checking response distribution prior to DIF analysis</h2>
 <p>This example assumes that you have previously created a DIF variable (vector) for gender with two groups. The variable is a factor with the labels “Female” and “Male”.</p>
 <p>The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.</p>
 </section>
 <section id="links" class="level2" data-number="7">
@@ -855,173 +863,188 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <input type="hidden" id="giscus-base-theme" value="light">
 <input type="hidden" id="giscus-alt-theme" value="dark"><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb11" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data wrangling for psychometrics in R"</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "R code examples for psychometricians"</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> </span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">  name: 'Magnus Johansson'</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: 'RISE Research Institutes of Sweden'</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: 'https://www.ri.se/en/shic'</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">  orcid: '0000-0003-1669-592X'</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2023-12-19</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="an">date-format:</span><span class="co"> iso</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: false</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>While the <span class="co">[</span><span class="ot">`easyRasch` R package</span><span class="co">](https://pgmj.github.io/easyRasch/)</span> simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the <span class="co">[</span><span class="ot">"R for data science"</span><span class="co">](https://r4ds.had.co.nz/)</span> book. This guide focuses on common data wrangling issues that occur in psychometric analyses.</span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>I will rely heavily on <span class="in">`library(tidyverse)`</span> functions in most examples.</span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>This page will be updated intermittently. The planned content includes:</span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>dividing a set of items into two or more dataframes in order to run separate analyses (for instance based on an exploratory analysis of a large item set, or based on a demographic variable)</span>
-<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>recoding/merging response categories</span>
-<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>splitting an item into two based on a DIF variable</span>
-<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>merging two items into a super-item/testlet</span>
-<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Removing respondents with missing data</span></span>
-<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>There may be situations where you want to specify a minimum number of items that a respondent must have answered in order to be included in the analysis. This is done by using the <span class="in">`filter()`</span> function from <span class="in">`library(dplyr)`</span>. The syntax is as follows:</span>
-<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>min.responses <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="co"># set the minimum number of responses</span></span>
-<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">length</span>(itemlabels<span class="sc">$</span>itemnr) <span class="sc">-</span> <span class="fu">rowSums</span>(<span class="fu">is.na</span>(.[itemlabels<span class="sc">$</span>itemnr])) <span class="sc">&gt;=</span>     min.responses)</span>
-<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>The object <span class="in">`itemlabels$itemnr`</span> is a vector (column in a dataframe) with the short item labels as they are used in the dataframe <span class="in">`df`</span> which contain the data, with items as columns using the corresponding labels. </span>
-<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>The <span class="in">`length()`</span> function is used to count the number of items in the vector, and <span class="in">`rowSums(is.na())`</span> is used to count the number of missing values in each row. Then a simple subtraction is done, total number of items minus number of missing responses. The <span class="in">`&gt;=`</span> operator is used to compare the number of responses to the minimum number of responses specified in the object <span class="in">`min.responses`</span>. The <span class="in">`filter()`</span> function removes all rows that do not meet the criteria. And the new dataset is saved to <span class="in">`df2`</span>.</span>
-<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dividing a dataset</span></span>
-<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recoding response categories</span></span>
-<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>Many options are available. I have settled on primarily using <span class="in">`car::recode()`</span> from <span class="in">`library(car)`</span> since I find the syntax to be logical and consistent. Another option to consider is <span class="in">`dplyr::recode()`</span>.</span>
-<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>The basic syntax of <span class="in">`car::recode()`</span> (henceforth referred to as only <span class="in">`recode()`</span>) is this:</span>
-<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a><span class="fu">recode</span>(variable_to_recode, <span class="st">"newvalue1=oldvalue1;newvalue2=oldvalue2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span><span class="sc">/</span><span class="cn">TRUE</span>)</span>
-<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>As you can see, semi-colon <span class="in">`;`</span> is used to separate recodings. When numbers are recoded, you just write them out as <span class="in">`1=0`</span>. When characters are involved, you need the single quote symbol to enclose the character string, i.e <span class="in">`'Never'=0`</span> for recoding to numerics (which also necessitates the option <span class="in">`as.factor = FALSE`</span> if you want the recoded variable to be numeric), or <span class="in">`'Never'='Nevver'`</span> when you need to correct misspelled response options.</span>
-<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>Remember to define your preferred recoding function in your script to avoid headaches due to unexpected error messages. This is done by using the assignment operator <span class="in">`&lt;-`</span>. Example below.</span>
-<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="in">`recode &lt;- car::recode`</span></span>
-<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>There are some more or less clever ways to use <span class="in">`recode()`</span>. You can simply copy&amp;paste code for each variable, such as:</span>
-<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q1 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q1, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q2 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q2, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q3 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q3, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q4 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q4, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q5 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q5, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>Such an approach might actually be sensible if each variable needed different recodings. But when you want to make the same changes to many variables, there are of course more efficient strategies. The code above could be rewritten as:</span>
-<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
-<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"0=1;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)))</span>
-<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a>Or, in this case, where we only want to recode our scale from the range of 1-3 to 0-2, i.e. subtract one:</span>
-<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
-<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> .x <span class="sc">-</span> <span class="dv">1</span>))</span>
-<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a>The syntax in these two examples is related to how <span class="in">`tidyverse`</span> uses unnamed functions by the combination of <span class="in">`~`</span> and <span class="in">`.x`</span>, where the latter becomes a placeholder for the variables defined in the first term of <span class="in">`across()`</span>.</span>
-<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a>Below is another example, where we have multiple cell contents that we want to make into <span class="in">`NA`</span> value to ensure that R interprets them as missing data. We want to recode three different things:</span>
-<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>all the numbers from 990 to 999 (usually a way to differentiate between types of missing data)</span>
-<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>blank cells</span>
-<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>"Don't know" responses</span>
-<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-98"><a href="#cb11-98" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-99"><a href="#cb11-99" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q45 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q45,<span class="st">"990:999=NA;''=NA;'Don't know'=NA"</span>)</span>
-<span id="cb11-100"><a href="#cb11-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-101"><a href="#cb11-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-102"><a href="#cb11-102" aria-hidden="true" tabindex="-1"></a>The <span class="in">`:`</span> means that all numbers from 990 to 999 will be recoded into <span class="in">`NA`</span>.</span>
-<span id="cb11-103"><a href="#cb11-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-104"><a href="#cb11-104" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item split</span></span>
-<span id="cb11-105"><a href="#cb11-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-106"><a href="#cb11-106" aria-hidden="true" tabindex="-1"></a>It can be desirable to split an item due to issues with DIF. This refers to taking a variable and creating two (or more) replacement variables, one for each demographic group. For each variable, data will be missing for the other group. Often this is relevant for gender DIF, which we will use in this example.</span>
-<span id="cb11-107"><a href="#cb11-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-108"><a href="#cb11-108" aria-hidden="true" tabindex="-1"></a>This example assumes that there is a (DIF) vector variable <span class="in">`dif.gender`</span> with the gender data, which has the same length as the number of rows in the dataset <span class="in">`df`</span>. We'll create a new dataframe to store the dataset with the item split. Item q10 is the one we want to split.</span>
-<span id="cb11-109"><a href="#cb11-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-110"><a href="#cb11-110" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-111"><a href="#cb11-111" aria-hidden="true" tabindex="-1"></a>df.q10split <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb11-112"><a href="#cb11-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-113"><a href="#cb11-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">q10f =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Female"</span>, q10, <span class="cn">NA</span>), <span class="co"># create variable q10f when gender is "Female"</span></span>
-<span id="cb11-114"><a href="#cb11-114" aria-hidden="true" tabindex="-1"></a>         <span class="at">q10m =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Male"</span>, q10, <span class="cn">NA</span>)</span>
-<span id="cb11-115"><a href="#cb11-115" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-116"><a href="#cb11-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>gender) <span class="sc">%&gt;%</span> <span class="co"># remove gender and q10 variables from the dataset</span></span>
-<span id="cb11-117"><a href="#cb11-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>q10)</span>
-<span id="cb11-118"><a href="#cb11-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-119"><a href="#cb11-119" aria-hidden="true" tabindex="-1"></a><span class="co"># check the data</span></span>
-<span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a><span class="fu">RItileplot</span>(df.q10split)</span>
-<span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-122"><a href="#cb11-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-123"><a href="#cb11-123" aria-hidden="true" tabindex="-1"></a>The <span class="in">`if_else()`</span> function used within <span class="in">`mutate()`</span> has three inputs/options in the example above:</span>
-<span id="cb11-124"><a href="#cb11-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-125"><a href="#cb11-125" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>condition (logical statement)</span>
-<span id="cb11-126"><a href="#cb11-126" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>assignment if the condition true</span>
-<span id="cb11-127"><a href="#cb11-127" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>assignment if false</span>
-<span id="cb11-128"><a href="#cb11-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-129"><a href="#cb11-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item merge</span></span>
-<span id="cb11-130"><a href="#cb11-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-131"><a href="#cb11-131" aria-hidden="true" tabindex="-1"></a>Sometimes it is desirable to merge two items into one. This is often done when there is a high residual correlation between two items. This is called a testlet. The items are merged into a new variable, and the original items are removed from the dataset.</span>
-<span id="cb11-132"><a href="#cb11-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-133"><a href="#cb11-133" aria-hidden="true" tabindex="-1"></a>It is usually a good idea to create a new dataframe with the merged variable, in case you need to go back to the original dataset.</span>
-<span id="cb11-134"><a href="#cb11-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-135"><a href="#cb11-135" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-136"><a href="#cb11-136" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb11-137"><a href="#cb11-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sdq2_15 =</span> sdq2 <span class="sc">+</span> sdq15) <span class="sc">%&gt;%</span> <span class="co"># create variable by adding them</span></span>
-<span id="cb11-138"><a href="#cb11-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq2) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-139"><a href="#cb11-139" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq15)</span>
-<span id="cb11-140"><a href="#cb11-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-141"><a href="#cb11-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-142"><a href="#cb11-142" aria-hidden="true" tabindex="-1"></a>Then you should check the ICC curves for the merged item:</span>
-<span id="cb11-143"><a href="#cb11-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-144"><a href="#cb11-144" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-145"><a href="#cb11-145" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemCats</span>(df2, <span class="at">item =</span> <span class="st">"sdq2_15"</span>)</span>
-<span id="cb11-146"><a href="#cb11-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-147"><a href="#cb11-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-148"><a href="#cb11-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## Checking response distribution prior to DIF analysis</span></span>
-<span id="cb11-149"><a href="#cb11-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-150"><a href="#cb11-150" aria-hidden="true" tabindex="-1"></a>This example assumes that you have previously created a DIF variable (vector) for gender with two groups. The variable is a factor with the labels "Female" and "Male".</span>
-<span id="cb11-151"><a href="#cb11-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-152"><a href="#cb11-152" aria-hidden="true" tabindex="-1"></a>The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.</span>
-<span id="cb11-153"><a href="#cb11-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-154"><a href="#cb11-154" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb11-155"><a href="#cb11-155" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb11-156"><a href="#cb11-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-157"><a href="#cb11-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
-<span id="cb11-158"><a href="#cb11-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
-<span id="cb11-159"><a href="#cb11-159" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span>
-<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.</span>
-<span id="cb11-164"><a href="#cb11-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-165"><a href="#cb11-165" aria-hidden="true" tabindex="-1"></a><span class="fu">## Links</span></span>
-<span id="cb11-166"><a href="#cb11-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-167"><a href="#cb11-167" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;https://github.com/Cghlewis/data-wrangling-functions/wiki&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data wrangling for psychometrics in R"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "R code examples for psychometricians"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">  name: 'Magnus Johansson'</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: 'RISE Research Institutes of Sweden'</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: 'https://www.ri.se/en/shic'</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">  orcid: '0000-0003-1669-592X'</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-11-01</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="an">date-format:</span><span class="co"> iso</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span><span class="co"> </span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">  cache: false</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>While the <span class="co">[</span><span class="ot">`easyRasch` R package</span><span class="co">](https://pgmj.github.io/easyRasch/)</span> simplifies the process of doing Rasch analysis in R, users still need to be able to import and often make modifications to their data. This demands some knowledge in R data wrangling. For a comprehensive treatment of this topic, please see the <span class="co">[</span><span class="ot">"R for data science"</span><span class="co">](https://r4ds.had.co.nz/)</span> book. This guide focuses on common data wrangling issues that occur in psychometric analyses.</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>I will rely heavily on <span class="in">`library(tidyverse)`</span> functions in most examples.</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>This page will be updated intermittently. The planned content includes:</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>dividing a set of items into two or more dataframes in order to run separate analyses (for instance based on an exploratory analysis of a large item set, or based on a demographic variable)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>recoding/merging response categories</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>splitting an item into two based on a DIF variable</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>merging two items into a super-item/testlet</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Removing respondents with missing data</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>There may be situations where you want to specify a minimum number of items that a respondent must have answered in order to be included in the analysis. This is done by using the <span class="in">`filter()`</span> function from <span class="in">`library(dplyr)`</span>. The syntax is as follows:</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>min.responses <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="co"># set the minimum number of responses</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">length</span>(itemlabels<span class="sc">$</span>itemnr) <span class="sc">-</span> <span class="fu">rowSums</span>(<span class="fu">is.na</span>(.[itemlabels<span class="sc">$</span>itemnr])) <span class="sc">&gt;=</span>     min.responses)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>The object <span class="in">`itemlabels$itemnr`</span> is a vector (column in a dataframe) with the short item labels as they are used in the dataframe <span class="in">`df`</span> which contain the data, with items as columns using the corresponding labels. </span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>The <span class="in">`length()`</span> function is used to count the number of items in the vector, and <span class="in">`rowSums(is.na())`</span> is used to count the number of missing values in each row. Then a simple subtraction is done, total number of items minus number of missing responses. The <span class="in">`&gt;=`</span> operator is used to compare the number of responses to the minimum number of responses specified in the object <span class="in">`min.responses`</span>. The <span class="in">`filter()`</span> function removes all rows that do not meet the criteria. And the new dataset is saved to <span class="in">`df2`</span>.</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dividing a dataset</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recoding response categories</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>Many options are available. I have settled on primarily using <span class="in">`car::recode()`</span> from <span class="in">`library(car)`</span> since I find the syntax to be logical and consistent. Another option to consider is <span class="in">`dplyr::case_when()`</span>.</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>The basic syntax of <span class="in">`car::recode()`</span> (henceforth referred to as only <span class="in">`recode()`</span>) is this:</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a><span class="fu">recode</span>(variable_to_recode, <span class="st">"newvalue1=oldvalue1;newvalue2=oldvalue2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span><span class="sc">/</span><span class="cn">TRUE</span>)</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>As you can see, semi-colon <span class="in">`;`</span> is used to separate recodings. When numbers are recoded, you just write them out as <span class="in">`1=0`</span>. When characters are involved, you need the single quote symbol to enclose the character string, i.e <span class="in">`'Never'=0`</span> for recoding to numerics (which also necessitates the option <span class="in">`as.factor = FALSE`</span> if you want the recoded variable to be numeric), or <span class="in">`'Never'='Nevver'`</span> when you need to correct misspelled response options.</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>Remember to define your preferred recoding function in your script to avoid headaches due to unexpected error messages. This is done by using the assignment operator <span class="in">`&lt;-`</span>. Example below.</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a><span class="in">`recode &lt;- car::recode`</span></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>There are some more or less clever ways to use <span class="in">`recode()`</span>. You can simply copy&amp;paste code for each variable, such as:</span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q1 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q1, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q2 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q2, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q3 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q3, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q4 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q4, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q5 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q5, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>Such an approach might actually be sensible if each variable needed different recodings. But when you want to make the same changes to many variables, there are of course more efficient strategies. The code above could be rewritten as:</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>)))</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>Or, in this case, where we only want to recode our scale from the range of 1-3 to 0-2, i.e. subtract one:</span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> .x <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>The syntax in these two examples is related to how <span class="in">`tidyverse`</span> uses unnamed functions by the combination of <span class="in">`~`</span> and <span class="in">`.x`</span>, where the latter becomes a placeholder for the variables defined in the first term of <span class="in">`across()`</span>.</span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a>It is good practice to check that your recoding worked as intended. The first step I recommend is <span class="in">`RItileplot()`</span>.</span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RItileplot</span>()</span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a>If you are trying out different ways to merge response categories to resolve issues with disordered thresholds, you may also want to review the probability curves before committing your recode to a new data object.</span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(q1<span class="sc">:</span>q5, <span class="sc">~</span> car<span class="sc">::</span><span class="fu">recode</span>(.x, <span class="st">"1=0;2=1;3=2"</span>, <span class="at">as.factor =</span> <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RIitemCats</span>(<span class="at">legend =</span> <span class="st">"left"</span>)</span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a>Below is an example where we have multiple cell contents that we want to recode to <span class="in">`NA`</span> to ensure that R interprets them as missing data. We want to recode three different things:</span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>all the numbers from 990 to 999 (usually a way to differentiate between types of missing data)</span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>blank cells</span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>"Don't know" responses</span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>q45 <span class="ot">&lt;-</span> <span class="fu">recode</span>(df<span class="sc">$</span>q45,<span class="st">"990:999=NA;''=NA;'Don't know'=NA"</span>)</span>
+<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-117"><a href="#cb13-117" aria-hidden="true" tabindex="-1"></a>The <span class="in">`:`</span> means that all numbers from 990 to 999 will be recoded into <span class="in">`NA`</span>.</span>
+<span id="cb13-118"><a href="#cb13-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item split</span></span>
+<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a>It can be desirable to split an item due to issues with DIF. This refers to taking a variable and creating two (or more) replacement variables, one for each demographic group. For each variable, data will be missing for the other group. Often this is relevant for gender DIF, which we will use in this example.</span>
+<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a>This example assumes that there is a (DIF) vector variable <span class="in">`dif.gender`</span> with the gender data, which has the same length as the number of rows in the dataset <span class="in">`df`</span>. We'll create a new dataframe to store the dataset with the item split. Item q10 is the one we want to split.</span>
+<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a>df.q10split <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">q10f =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Female"</span>, q10, <span class="cn">NA</span>), <span class="co"># create variable q10f when gender is "Female"</span></span>
+<span id="cb13-129"><a href="#cb13-129" aria-hidden="true" tabindex="-1"></a>         <span class="at">q10m =</span> <span class="fu">if_else</span>(gender <span class="sc">==</span> <span class="st">"Male"</span>, q10, <span class="cn">NA</span>)</span>
+<span id="cb13-130"><a href="#cb13-130" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>gender) <span class="sc">%&gt;%</span> <span class="co"># remove gender and q10 variables from the dataset</span></span>
+<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>q10)</span>
+<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a><span class="co"># check the data</span></span>
+<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a><span class="fu">RItileplot</span>(df.q10split)</span>
+<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a>The <span class="in">`if_else()`</span> function used within <span class="in">`mutate()`</span> has three inputs/options in the example above:</span>
+<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>condition (logical statement)</span>
+<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>assignment if the condition true</span>
+<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>assignment if false</span>
+<span id="cb13-143"><a href="#cb13-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-144"><a href="#cb13-144" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item merge</span></span>
+<span id="cb13-145"><a href="#cb13-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-146"><a href="#cb13-146" aria-hidden="true" tabindex="-1"></a>Sometimes it is desirable to merge two items into one. This is often done when there is a high residual correlation between two items. This is called a testlet. The items are merged into a new variable, and the original items are removed from the dataset.</span>
+<span id="cb13-147"><a href="#cb13-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-148"><a href="#cb13-148" aria-hidden="true" tabindex="-1"></a>It is usually a good idea to create a new dataframe with the merged variable, in case you need to go back to the original dataset.</span>
+<span id="cb13-149"><a href="#cb13-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-150"><a href="#cb13-150" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-151"><a href="#cb13-151" aria-hidden="true" tabindex="-1"></a>df2 <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-152"><a href="#cb13-152" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sdq2_15 =</span> sdq2 <span class="sc">+</span> sdq15) <span class="sc">%&gt;%</span> <span class="co"># create variable by adding them</span></span>
+<span id="cb13-153"><a href="#cb13-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq2) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-154"><a href="#cb13-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>sdq15)</span>
+<span id="cb13-155"><a href="#cb13-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a>Then you should check the ICC curves for the merged item:</span>
+<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-160"><a href="#cb13-160" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemCats</span>(df2, <span class="at">item =</span> <span class="st">"sdq2_15"</span>)</span>
+<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-162"><a href="#cb13-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Checking response distribution prior to DIF analysis</span></span>
+<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a>This example assumes that you have previously created a DIF variable (vector) for gender with two groups. The variable is a factor with the labels "Female" and "Male".</span>
+<span id="cb13-166"><a href="#cb13-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-167"><a href="#cb13-167" aria-hidden="true" tabindex="-1"></a>The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.</span>
+<span id="cb13-168"><a href="#cb13-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-169"><a href="#cb13-169" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb13-170"><a href="#cb13-170" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-171"><a href="#cb13-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-172"><a href="#cb13-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
+<span id="cb13-173"><a href="#cb13-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
+<span id="cb13-174"><a href="#cb13-174" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-175"><a href="#cb13-175" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb13-176"><a href="#cb13-176" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span>
+<span id="cb13-177"><a href="#cb13-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-178"><a href="#cb13-178" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.</span>
+<span id="cb13-179"><a href="#cb13-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-180"><a href="#cb13-180" aria-hidden="true" tabindex="-1"></a><span class="fu">## Links</span></span>
+<span id="cb13-181"><a href="#cb13-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-182"><a href="#cb13-182" aria-hidden="true" tabindex="-1"></a><span class="ot">&lt;https://github.com/Cghlewis/data-wrangling-functions/wiki&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
