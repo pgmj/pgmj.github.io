@@ -372,11 +372,11 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Conditional item fit
 
 ```{r}
-simfit1 <- RIgetfit(df, iterations = 1000, cpu = 8) # save simulation output to object `simfit1`
+simfit1 <- RIgetfit(df, iterations = 400, cpu = 8) # save simulation output to object `simfit1`
 RIitemfit(df, simfit1)
 ```
 
-`RIitemfit()` works with both dichotomous and polytomous data (no option needed).
+`RIitemfit()` and `RIgetfit()` both work with both dichotomous and polytomous data (using the partial credit model) and automatically selects the model based on the data structure.
 
 It is important to note that the new (since version 0.2.2, released 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020].
 
@@ -384,9 +384,9 @@ Since the distribution of item fit statistics are not known, we need to use simu
 
 Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
 
-The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. While insufficient testing has been done to make any strong recommendations, I think 500 iterations is a good starting point.
+The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Testing indicates that 200-400 iterations should be useful. Fewer than 200 seems to result in unstable values while more than 400 iterations does not improve detection rate, but may actually decrease it.
 
-For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 52 seconds to run on 8 cpu cores (Macbook Pro M1 Max) for 1000 iterations.
+For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 24 seconds to run on 8 cpu cores (Macbook Pro M1 Max) for 400 iterations.
 
 I'll cite Ostini & Nering [-@ostini_polytomous_2006] on the description of outfit and infit (pages 86-87):
 
@@ -394,17 +394,26 @@ I'll cite Ostini & Nering [-@ostini_polytomous_2006] on the description of outfi
 
 > A weighted version of this statistic was developed to counteract its sensitivity to outliers (Smith, 2000). In its weighted form, the squared standardized residual is multiplied by the observed response variance and then divided by the sum of the item response variances. This is sometimes referred to as an **information weighted mean square** and has become known as **“infit”** (Smith et al., 1998; Wu, 1997).
 
-A low item fit value (sometimes referred to as "overfitting" the Rasch model) indicates that responses are too predictable and provide little information. This is often the case for items that are very general/broad in scope in relation to the latent variable.
+A low item fit value (sometimes referred to as an item "overfitting" the Rasch model) indicates that responses are too predictable and provide little information. This is often the case for items that are very general/broad in scope in relation to the latent variable. You will often find overfitting items to also have residual correlations with other items.
 
-A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret. This could for instance be a question that asks about two things at the same time or is ambiguous for other reasons.
+A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret and thus has noisy response data. The latter could for instance be caused by a question that asks about two things at the same time or is ambiguous for other reasons.
 
 ### Item-restscore
 
-This is another useful function from the `iarm` package. It shows the expected and observed correlation between an item and a score based on the rest of the items [@kreiner_note_2011]. Similarly, but inverted, to item fit, a lower observed correlation value than expected indicates that the item may not belong to the dimension. A higher than expected observed value indicates an overfitting and possibly redundant item.
+This is another useful function from the `iarm` package. It shows the expected and observed correlation between an item and a score based on the rest of the items [@kreiner_note_2011]. Similarly, but inverted, to item fit, a lower observed correlation value than expected indicates underfit, that the item may not belong to the dimension. A higher than expected observed value indicates an overfitting and possibly redundant item.
 
 ```{r}
 RIrestscore(df)
 ```
+
+### Item-restscore bootstrap
+
+Both item-restscore and conditional item infit/outfit will indicate "false misfit" when sample sizes are large (even when using simulation/bootstrap based cutoff values). This behavior can occur from about n = 500, and certainly will occur at samples of 800 and above. This "false misfit" is caused by truly misfitting items, which underlines the importance of removing one item at a time when one finds issues with misfit/multidimensionality. However, a useful way to get additional information about the probability of actual misfit is to use non-parametric bootstrapping. This function resamples with replacement from your response data and reports the percentage and type of misfit indicated by the item-restscore function. You will also get information about conditional MSQ infit (based on the full sample, using complete responders). Simulation tests indicate that a sample size of 800 results in 95+% detection rate of 1-3 misfitting items amongst 20 dichotomous items.
+
+```{r}
+RIbootRestscore(df, iterations = 250, samplesize = 800)
+```
+
 
 ### Conditional item characteristic curves
 
@@ -413,7 +422,6 @@ The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@
 These curves indicate item fit on a group level, where resondents are split into "class intervals" based on their sum score/factor score.
 
 ```{r}
-library(iarm)
 ICCplot(as.data.frame(df), 
         itemnumber = 1:4, 
         method = "cut", 
@@ -440,16 +448,16 @@ Principal Component Analysis of Rasch model residuals.
 RIpcmPCA(df)
 ```
 
-Based on rule of thumb, the first eigenvalue should be below 2.0 to support unidimensionality. However, this is seldom accurate and needs to be complemented with checking item fit and residual correlations. The target value should probably be below 1.75, based on my experience, but really I find this metric redundant and only keep it here for those coming from Winsteps who might be looking for it. Speaking of Winsteps, the "explained variance" will not be comparable to Winsteps corresponding metric, since this one only shows the results from the analysis of residuals.
+Based on rule of thumb, the first eigenvalue should be below 2.0 to support unidimensionality. However, this is seldom accurate and needs to be complemented with checking item fit and residual correlations. The target value should probably be closer to 1.5, based on my experience, but really I find this metric redundant and only keep it here for those coming from Winsteps who might be looking for it. Speaking of Winsteps, the "explained variance" will not be comparable to Winsteps corresponding metric, since this one only shows the results from the analysis of residuals and not the explained variance of the Rasch model itself.
 
 ### Residual correlations
 
-Similarly to item fit, we need to run simulations to get a useful cutoff threshold value for when residual correlations amongst item pairs are too large to show model fit [@christensen2017].
+Similarly to item fit, we need to run simulations to get a useful cutoff threshold value for when residual correlations amongst item pairs are larger than would be expected from items that fit the Rasch model [@christensen2017].
 
 And again, the simulation can take a bit of time, but it is necessary to set the appropriate cutoff value.
 
 ```{r}
-simcor1 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
+simcor1 <- RIgetResidCor(df, iterations = 400, cpu = 8)
 RIresidcorr(df, cutoff = simcor1$p99)
 ```
 
@@ -564,8 +572,14 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Conditional item fit
 
 ```{r}
-simfit2 <- RIgetfit(df, iterations = 1000, cpu = 8)
+simfit2 <- RIgetfit(df, iterations = 400, cpu = 8)
 RIitemfit(df, simcut = simfit2)
+```
+
+### Item-restscore bootstrap
+
+```{r}
+RIbootRestscore(df, iterations = 250, samplesize = 800)
 ```
 
 ### PCA of residuals
@@ -577,7 +591,7 @@ RIpcmPCA(df)
 ### Residual correlations
 
 ```{r}
-simcor2 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
+simcor2 <- RIgetResidCor(df, iterations = 400, cpu = 8)
 RIresidcorr(df, cutoff = simcor2$p99)
 ```
 
@@ -851,8 +865,14 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Item fit
 
 ```{r}
-simfit3 <- RIgetfit(df, iterations = 1000, cpu = 8)
+simfit3 <- RIgetfit(df, iterations = 400, cpu = 8)
 RIitemfit(df, simfit3)
+```
+
+### Item-restscore bootstrap
+
+```{r}
+RIbootRestscore(df, iterations = 250, samplesize = 800)
 ```
 
 ### CICC
@@ -867,7 +887,7 @@ CICCplot(PCM(df),
 ### Residual correlations
 
 ```{r}
-simcor3 <- RIgetResidCor(df, iterations = 1000, cpu = 8)
+simcor3 <- RIgetResidCor(df, iterations = 400, cpu = 8)
 RIresidcorr(df, cutoff = simcor3$p99)
 ```
 
