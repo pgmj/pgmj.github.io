@@ -1,0 +1,68 @@
+---
+title: "Regression with binary outcomes"
+subtitle: "A notebook"
+author:
+  name: 'Magnus Johansson'
+  affiliation: 'RISE Research Institutes of Sweden'
+  affiliation-url: 'https://ri.se/shic'
+  orcid: '0000-0003-1669-592X'
+date: last-modified
+date-format: iso
+google-scholar: true
+citation:
+  type: 'webpage'
+format: 
+  html:
+    code-fold: true
+execute: 
+  cache: true
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+bibliography: binary_outcomes.bib
+---
+
+glmrob och poissonirr ser nästan identiska ut, men glmrob har något större SE/CI för interceptet, men mindre för övriga parametrar.
+
+dock oklart varför glmrob inte funkar med tidy(exponentiate), men den verkar funka med modelsummary
+
+punktestimaten är samma för rqlm som glmrob och poissonirr, medan SE/CI är smalare för rqlm. Det ser ut som att rqlm använder samma robusta SE som "firthb+robust SE"
+
+glmrob och poissonirr() funkar med predictions, vilket rqlm inte gör.
+
+Firth med improved robust SE har lite skillnader i både estimat och CI, med betydligt smalare CI.
+
+```{r}
+#| eval: false
+modelsummary(list("poissonirr()" = m_poissonirr[["fit"]],
+                  "glmrob()" = m_glmrob),
+             exponentiate = T)
+```
+
+```{r}
+#| eval: false
+library(robustbase)
+m_glmrob <- glmrob(formula = sjuk_kort_dik ~ osa_15 * antal_anställda,
+                   data = d_sick_osa,
+                   family = poisson(link = "log"),
+                   method = "Mqle")
+
+library(mfx)
+m_poissonirr <- poissonirr(formula = sjuk_kort_dik ~ osa_15 * antal_anställda,
+                           data = d_sick_osa,
+                           robust = T)
+
+library(firthb) # https://github.com/nomahi/firthb
+m_firthb <- firthb(formula = sjuk_kort_dik ~ osa_15 * antal_anställda,
+                   data = d_sick_osa, 
+                   measure = "RR")
+
+library(rqlm)
+m_rqlm <- rqlm(formula = sjuk_kort_dik ~ osa_15 * antal_anställda,
+               data = d_sick_osa,
+               family = poisson,
+               eform = TRUE) # results are transformed to exponential scale.
+```
+
+Dock ger varken rqlm eller firthb model output som går att använda med predictions(). Om analysen bara kräver att rapportera koefficienter (Risk Ratio) verkar firthb vara lämpligaste alternativet. Men annars är det glmrob() från library(robustbase) eller poissonirr() från library(mfx) som är bästa alternativen. Kan ivf vara bra att jämföra resultat med firthb också, eftersom det verkar finnas tänkbara scenarion där det blir påtagliga skillnader.
