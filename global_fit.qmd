@@ -1,0 +1,74 @@
+---
+format: html
+---
+
+# Study 6: Tests of global fit 
+
+Tests of global fit are often used in published psychometric research...
+
+```{r}
+pcasim <- function(dat, iterations, samplesize, cpu = 9) {
+  
+  require(doParallel)
+  registerDoParallel(cores = cpu)
+  
+  fit <- data.frame()
+  fit <- foreach(i = 1:iterations, .combine = rbind) %dopar% {
+    data <- dat[sample(1:nrow(dat), samplesize), ]
+    
+    erm_out <- RM(data)
+    ple <- eRm::person.parameter(erm_out)
+    item.fit <- eRm::itemfit(ple)
+    std.resids <- item.fit$st.res
+    
+    pca <- pca(std.resids, nfactors = ncol(data), rotate = "oblimin")
+    pca$values[1]
+  }
+  return(fit)
+}
+
+test <- pcasim(simdata3, 100, 500, cpu = 1)
+# expected values when the data fits, no misfitting items
+baseline_pca <- pcasim(simdata[[1]][,-9], 100, 500, cpu = 1)
+```
+
+```{r}
+hist(test)
+hist(baseline_pca)
+```
+
+
+```{r}
+lrtsim <- function(dat, iterations, samplesize, cpu = 9) {
+  
+  require(doParallel)
+  registerDoParallel(cores = cpu)
+  
+  fit <- data.frame()
+  fit <- foreach(i = 1:iterations, .combine = rbind) %dopar% {
+    data <- dat[sample(1:nrow(dat), samplesize), ]
+    
+    erm_out <- RM(data)
+    lrt <- LRtest(erm_out)
+    lrt[["pvalue"]]
+    # same p-values with clr_tests()
+    #clr <- clr_tests(dat.items = data, model = "RM")
+    #clr[,3]
+    
+  }
+  return(fit)
+}
+
+test_lrt <- lrtsim(simdata3, 100, 500, cpu = 1)
+test_lrt2 <- lrtsim(simdata3, 100, 500, cpu = 1)
+
+# expected values when the data fits, no misfitting items
+baseline_lrt <- lrtsim(simdata[[1]][,-9], 100, 500, cpu = 1)
+```
+
+```{r}
+hist(as.numeric(test_lrt))
+hist(test_lrt2)
+hist(as.numeric(baseline_lrt))
+```
+

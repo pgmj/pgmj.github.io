@@ -380,11 +380,11 @@ RIitemfit(df, simfit1)
 
 It is important to note that the new (since version 0.2.2, released 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020].
 
-Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items.  `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this. `RIitemfit()` can also be used without cutoffs and conditional highlighting. For a possibly useful rule-of-thumb cutoff for infit MSQ only, use the option `cutoff = "Smith98"` [@smith_using_1998;@muller_item_2020]. However, this cutoff is not applicable for all items, only for what can be expected for the *average* item fit. The simulation/bootstrap-based cutoff values will be more accurate for every item in your data.
+Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this. `RIitemfit()` can also be used without cutoffs and conditional highlighting. For a possibly useful rule-of-thumb cutoff for infit MSQ only, use the option `cutoff = "Smith98"` [@smith_using_1998;@muller_item_2020]. However, this cutoff is not applicable for all items, only for what can be expected for the *average* item fit. The simulation/bootstrap-based cutoff values will be more accurate for every item in your data.
 
 Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
 
-The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Testing indicates that 200-400 iterations should be useful. Fewer than 200 seems to result in unstable values while more than 400 iterations does not improve detection rate, but may actually decrease it.
+The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Simulation experiments [@johansson_detecting_2025] indicate that 100-400 iterations should be a useful range, where smaller samples (n < 300) should use 100 iterations, and 200-400 is more appropriate when one has larger samples. Another important finding from simulation studies is that there is a large risk of false positive indication of misfit in sample larger than n = 1000 when using item infit or item-restscore. The recommended primary method for large samples is the bootstrapped item-restscore [@johansson_detecting_2025], as illustrated in an adjacent tab labeled "Item-restscore bootstrap" .
 
 For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 24 seconds to run on 8 cpu cores (Macbook Pro M1 Max) for 400 iterations.
 
@@ -398,9 +398,13 @@ A low item fit value (sometimes referred to as an item "overfitting" the Rasch m
 
 A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret and thus has noisy response data. The latter could for instance be caused by a question that asks about two things at the same time or is ambiguous for other reasons.
 
+::: {.callout-note}
+Remember to **scroll back up and click on all tabs**.
+:::
+
 ### Item-restscore
 
-This is another useful function from the `iarm` package. It shows the expected and observed correlation between an item and a score based on the rest of the items [@kreiner_note_2011]. Similarly, but inverted, to item fit, a lower observed correlation value than expected indicates underfit, that the item may not belong to the dimension. A higher than expected observed value indicates an overfitting and possibly redundant item.
+This is another useful function from the `iarm` package. It shows the expected and observed correlation between an item and a score based on the rest of the items [@kreiner_note_2011]. Similarly, but inverted, to item fit, a lower observed correlation value than expected indicates underfit, that the item may not belong to the dimension. A higher than expected observed value indicates an overfitting and possibly redundant item. Overfitting items will often also show issues with residual correlations. Both of these problems can often be (at least partially) resolved by removing underfitting items.
 
 ```{r}
 RIrestscore(df)
@@ -408,7 +412,7 @@ RIrestscore(df)
 
 ### Item-restscore bootstrap
 
-Both item-restscore and conditional item infit/outfit will indicate "false misfit" when sample sizes are large (even when using simulation/bootstrap based cutoff values). This behavior can occur from about n = 500, and certainly will occur at samples of 800 and above. This "false misfit" is caused by truly misfitting items, which underlines the importance of removing one item at a time when one finds issues with misfit/multidimensionality. However, a useful way to get additional information about the probability of actual misfit is to use non-parametric bootstrapping. This function resamples with replacement from your response data and reports the percentage and type of misfit indicated by the item-restscore function. You will also get information about conditional MSQ infit (based on the full sample, using complete responders). Simulation tests indicate that a sample size of 800 results in 95+% detection rate of 1-3 misfitting items amongst 20 dichotomous items.
+Both item-restscore and conditional item infit/outfit will indicate "false misfit" when sample sizes are large (even when using simulation/bootstrap based cutoff values). This behavior can occur from about n = 500, and certainly will occur at samples of 800 and above [@johansson_detecting_2025]. This "false misfit" is caused by truly misfitting items, which underlines the importance of removing one item at a time when one finds issues with misfit/multidimensionality. However, a useful way to get additional information about the probability of actual misfit is to use non-parametric bootstrapping. This function resamples with replacement from your response data and reports the percentage and type of misfit indicated by the item-restscore function. You will also get information about conditional MSQ infit (based on the full sample, using complete responders). Simulation studies indicate that a sample size of 800 results in 95+% detection rate of 1-3 misfitting items amongst 20 dichotomous items [@johansson_detecting_2025].
 
 ```{r}
 RIbootRestscore(df, iterations = 250, samplesize = 800)
@@ -419,7 +423,7 @@ RIbootRestscore(df, iterations = 250, samplesize = 800)
 
 The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions may be included in a future version of the `easyRasch` package. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
 
-These curves indicate item fit on a group level, where resondents are split into "class intervals" based on their sum score/factor score.
+These curves indicate item fit on a group level, where respondents are split into "class intervals" based on their sum score/factor score.
 
 ```{r}
 ICCplot(as.data.frame(df), 
@@ -448,13 +452,19 @@ Principal Component Analysis of Rasch model residuals.
 RIpcmPCA(df)
 ```
 
-Based on rule of thumb, the first eigenvalue should be below 2.0 to support unidimensionality. However, this is seldom accurate and needs to be complemented with checking item fit and residual correlations. The target value should probably be closer to 1.5, based on my experience, but really I find this metric redundant and only keep it here for those coming from Winsteps who might be looking for it. Speaking of Winsteps, the "explained variance" will not be comparable to Winsteps corresponding metric, since this one only shows the results from the analysis of residuals and not the explained variance of the Rasch model itself.
+Based on an old rule-of-thumb, the first eigenvalue should be below 1.5 to support unidimensionality [@smith_detecting_2002]. However, as with many other metrics this is dependent on sample size and test length [@chou_checking_2010] and needs to be used together with checking item fit (or item-restscore) and residual correlations (local dependence). I personally find this metric less useful and prefer to use the Conditional Likelihood Ratio Test as a global test of model fit. The PCA eigenvalues are only included here for those coming from Winsteps who might be looking for it. Speaking of Winsteps, the "explained variance" will not be comparable to Winsteps corresponding metric, since this one only shows the results from the analysis of residuals and not the explained variance of the Rasch model itself.
+
+### Conditional LRT
+
+The Conditional Likelihood Ratio Test [LRT, @andersen_goodness_1973] is a global test of fit and can be a useful addition to more informative item-level metrics [@johansson_detecting_2025]. 
 
 ### Residual correlations
 
-Similarly to item fit, we need to run simulations to get a useful cutoff threshold value for when residual correlations amongst item pairs are larger than would be expected from items that fit the Rasch model [@christensen2017].
+In order to support unidimensionality, items should only be related to each other through the latent variable. This is called "local independence". By investigating patterns in model residuals, we can determine whether items are independent or not.
 
-And again, the simulation can take a bit of time, but it is necessary to set the appropriate cutoff value.
+Similarly to item fit, we need to run simulations to get a useful cutoff threshold value for when residual correlations amongst item pairs are larger than would be expected from items that fit a unidimensional Rasch model [@christensen2017].
+
+The simulation/bootstrap procedure can take some time to run, depending on the complexity of your data, but it is necessary to set the appropriate cutoff value.
 
 ```{r}
 simcor1 <- RIgetResidCor(df, iterations = 400, cpu = 8)
@@ -569,17 +579,17 @@ RIlistItemsMargin(df, fontsize = 13)
 ```
 
 ::: panel-tabset
+### Item-restscore bootstrap
+
+```{r}
+RIbootRestscore(df, iterations = 250, samplesize = 800)
+```
+
 ### Conditional item fit
 
 ```{r}
 simfit2 <- RIgetfit(df, iterations = 400, cpu = 8)
 RIitemfit(df, simcut = simfit2)
-```
-
-### Item-restscore bootstrap
-
-```{r}
-RIbootRestscore(df, iterations = 250, samplesize = 800)
 ```
 
 ### PCA of residuals
@@ -862,17 +872,17 @@ RIlistItemsMargin(df, fontsize = 13)
 ```
 
 ::: panel-tabset
+### Item-restscore bootstrap
+
+```{r}
+RIbootRestscore(df, iterations = 250, samplesize = 800)
+```
+
 ### Item fit
 
 ```{r}
 simfit3 <- RIgetfit(df, iterations = 400, cpu = 8)
 RIitemfit(df, simfit3)
-```
-
-### Item-restscore bootstrap
-
-```{r}
-RIbootRestscore(df, iterations = 250, samplesize = 800)
 ```
 
 ### CICC
