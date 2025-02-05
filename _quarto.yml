@@ -36,6 +36,7 @@ website:
          - simcutoffs.qmd
          - est_comp.qmd
          - dif_magnitude.qmd
+         - clrt.qmd
       - icon: github
         href: https://github.com/pgmj/pgmj.github.io
         aria-label: GitHub

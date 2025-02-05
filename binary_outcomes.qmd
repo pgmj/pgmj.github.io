@@ -33,6 +33,9 @@ glmrob och poissonirr() funkar med predictions, vilket rqlm inte gör.
 
 Firth med improved robust SE har lite skillnader i både estimat och CI, med betydligt smalare CI.
 
+
+glm(family = "poisson") + robusta SE med sandwich bör ge samma värden?
+
 ```{r}
 #| eval: false
 modelsummary(list("poissonirr()" = m_poissonirr[["fit"]],

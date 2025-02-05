@@ -2,7 +2,7 @@
 title: "About"
 ---
 
-[Magnus Johansson](https://www.ri.se/en/person/magnus-p-johansson) is a licensed psychologist with a PhD in behavior analysis. I work as a scientist at [RISE Research Institutes of Sweden](https://ri.se/en), primarily with psychometrics, measurement, prevention and public health.
+[Magnus Johansson](https://www.ri.se/en/person/magnus-p-johansson) is a licensed psychologist with a PhD in behavior analysis. I work as a scientist at [RISE Research Institutes of Sweden](https://ri.se/en), primarily with psychometrics, measurement, prevention and public health. I am also an affiliated researcher at Karolinska Institutet & Stockholm Health Care Services, Centre for Psychiatry Research, Department of Clinical Neuroscience.
 
 You can also find me on:
 

@@ -1,0 +1,70 @@
+---
+title: "Conditional Likelihood Ratio Test and sample size"
+subtitle: "False positive rate simulation tests"
+author:
+  name: 'Magnus Johansson'
+  affiliation: 'RISE Research Institutes of Sweden'
+  affiliation-url: 'https://ri.se/shic'
+  orcid: '0000-0003-1669-592X'
+date: 2025-02-05
+date-format: iso
+google-scholar: true
+citation:
+  type: 'webpage'
+format: 
+  html:
+    code-fold: true
+execute: 
+  cache: false
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+bibliography: clrt.bib
+---
+
+# Introduction
+
+In my recent preprint on detection of item misfit in Rasch models [@johansson_detecting_2025], the conditional likelihood ratio test [LRT, @andersen_goodness_1973] was part of one of the simulation studies. In that study, only the detection rate of misfitting items was assessed. In this brief note, the false detection rate across varying sample sizes will be investigated.
+
+# Method
+
+For simplicity, [the simulated dataset](https://github.com/pgmj/rasch_itemfit/blob/main/data/simdata10000.rds) from the previously mentioned preprint will be re-used, and the misfitting item removed. This results in 19 dichotomous items, all simulated to fit the Rasch model. The `easyRasch` [@johansson_easyrasch] package contains a function to use non-parametric bootstrap with the LRT. The code to do so is presented below.
+
+```{r}
+#| eval: false
+#| code-fold: false
+RIbootLRT(simdata[[1]][,-9], iterations = 5000, samplesize = 300, cpu = 8)
+```
+
+Each sample size variation used 5000 bootstrap iterations. 
+
+# Results
+
+Results are presented in @fig-results.
+
+```{r}
+#| label: fig-results
+#| fig-cap: Percent of false positives indicated by LRT bootstrap procedure across sample sizes
+library(dplyr)
+library(ggplot2)
+data.frame(Percent = c(6.6,6.8,8.2,10.4,12.2), 
+           n = c(250,500,1000,1500,2000)) %>% 
+  ggplot(aes(x = n, y = Percent)) + 
+  geom_hline(yintercept = 5, linetype = "dashed") +
+  geom_col(fill = "#009ca6") +
+  geom_text(aes(label = paste0(Percent,"%")),
+            position = position_nudge(y = -0.6),
+            color = "white") +
+  scale_x_continuous(limits = c(0,2200), breaks = c(0,250,500,1000,1500,2000)) +
+  scale_y_continuous(limits = c(0,20)) +
+  theme_bw()
+```
+
+
+# Discussion
+
+This is a brief note, not a full scale simulation study. Many variables could be manipulated to better understand the expected behavior of LRT when item's fit a Rasch model. Nevertheless, this small study  provides some useful information about the relationship between sample size and false positive rate for the LRT. Even at the smaller sample sizes of 250 and 500, the false positive rate is above the expected 5%. It seems clear that one should not rely too heavily on the LRT in determining model fit, especially when sample size is above 1000.
+
+# References
+
