@@ -4,7 +4,7 @@ subtitle: "R package for Rasch analysis"
 author: 
   name: 'Magnus Johansson'
   affiliation: 'RISE Research Institutes of Sweden'
-  affiliation-url: 'https://www.ri.se/en/what-we-do/expertises/category-based-measurements'
+  affiliation-url: 'https://www.ri.se/en/person/magnus-p-johansson'
   orcid: '0000-0003-1669-592X'
 date: last-modified
 google-scholar: true
@@ -147,49 +147,43 @@ itemlabels
 
 Variables for invariance tests such as Differential Item Functioning (DIF) need to be separated into vectors (ideally as factors with specified levels and labels) with the same length as the number of rows in the dataset. This means that any kind of removal of respondents/rows with missing data needs to be done before separating the DIF variables.
 
-We need to check how the `Sex` variable has been coded and which responses are present in the data.
+First, we'll have a look at the class of our variables.
+
+```{r}
+df %>% 
+  select(Sex,age,Group) %>% 
+  glimpse()
+```
+
+`Sex` and `Group` are class character, while `age` is numeric. Below are the response categories represented in data.
 
 ```{r}
 table(df$Sex)
 ```
 
-Since there are only 5 respondents using labels outside of Female/Male (too few for meaningful statistical analysis), we will remove them to have a complete dataset for all variables in this example.
+Since there are only 5 respondents using labels that are not Female or Male (too few for meaningful statistical analysis), we will remove them to have a complete dataset for all variables in this example.
 
 ```{r}
 df <- df %>% 
-  filter(Sex %in% c("Female","Male"))
+  filter(Sex %in% c("Female","Male")) # filtering to only include those with Sex being either Female or Male.
 ```
 
-Let's make the variable a factor (instead of class "character") and put in in a vector separate from the item dataframe.
+Let's make the variable a factor (instead of class "character"), since that will be helpful in our later analyses.
 
 ```{r}
-dif.sex <- factor(df$Sex)
+df$Sex <- factor(df$Sex)
 ```
 
-And remove our DIF demographic variable from the item dataset.
+Sometimes age is provided in categories, but here we have a numeric variable with age in years. Let's have a quick look at the age distribution using a histogram, and get some summary statistics.
 
 ```{r}
-df$Sex <- NULL
+summary(df$age)
 ```
-
-We can now make use of a very simple function included in this package!
-
-```{r}
-RIdemographics(dif.sex, "Sex")
-```
-
-Let's move on to the age variable.
-
-```{r}
-glimpse(df$age)
-```
-
-Sometimes age is provided in categories, but here we have a numeric variable with age in years. Let's have a quick look at the age distribution using a histogram, and calculate mean, sd and range.
 
 ```{r}
 ### simpler version of the ggplot below using base R function hist()
 # hist(df$age, col = "#009ca6")
-# abline(v = mean(age, na.rm = TRUE))
+# abline(v = median(age, na.rm = TRUE))
 # 
 # df %>% 
 #   summarise(Mean = round(mean(age, na.rm = T),1),
@@ -201,39 +195,52 @@ ggplot(df) +
                  fill = "#009ca6",
                  col = "black") +
   # add the average as a vertical line
-  geom_vline(xintercept = mean(df$age), 
+  geom_vline(xintercept = median(df$age), 
              linewidth = 1.5,
              linetype = 2,
              col = "orange") +
   # add a light grey field indicating the standard deviation
   annotate("rect", ymin = 0, ymax = Inf, 
-           xmin = (mean(df$age, na.rm = TRUE) - sd(df$age, na.rm = TRUE)), xmax = (mean(df$age, na.rm = TRUE) + sd(df$age, na.rm = TRUE)), 
+           xmin = summary(df$age)[2], 
+           xmax = summary(df$age)[5], 
            alpha = .2) +
   labs(title = "",
        x = "Age in years",
        y = "Number of respondents",
-       caption = glue("Note. Mean age is {round(mean(df$age, na.rm = T),1)} years with a standard deviation of {round(sd(df$age, na.rm = T),1)}. Age range is {min(df$age)} to {max(df$age)}.")
-       ) +
-  theme(plot.caption = element_text(hjust = 0, face = "italic"))
+       caption = str_wrap(glue("Note. Median age is {round(median(df$age, na.rm = T),1)}, shown with the dashed vertical line. Age range is {min(df$age)} to {max(df$age)}. Interquartile range ({summary(df$age)[2]} to {summary(df$age)[5]}) is indicated with the grey area.")
+       )) +
+  scale_x_continuous(limits = c(18,75)) +
+  theme_bw() +
+  theme(plot.caption = element_text(hjust = 0, face = "italic")) 
 
 ```
 
-Age also needs to be a separate vector, and removed from the item dataframe.
-
-```{r}
-dif.age <- df$age
-df$age <- NULL
-```
+Since the distribution of the age variable is clearly not following a gaussian (normal) distribution, the median seems like a better option than the mean.
 
 There is also a grouping variable which needs to be converted to a factor.
 
 ```{r}
-dif.group <- factor(df$Group)
-df$Group <- NULL
-RIdemographics(dif.group, "Group")
+df$Group <- factor(df$Group)
 ```
 
-With only item data remaining in the dataframe, we can easily rename the items in the item dataframe. These names match the `itemlabels` variable `itemnr`.
+Now our demographic data has been checked, and we need to move it to a separate dataframe from the item data.
+
+```{r}
+dif <- df %>% 
+  select(Sex,age,Group) %>% 
+  rename(Age = age) # just for consistency
+
+df <- df %>% 
+  select(!c(Sex,age,Group))
+```
+
+To create a "Table 1" containing participant demographic information, the `tbl_summary()` function from the `gtsummary` package is really handy to get a nice table.
+
+```{r}
+gtsummary::tbl_summary(dif)
+```
+
+With only item data remaining in the `df` dataframe, we can easily rename the items in the item dataframe and make sure that they match the `itemlabels` variable `itemnr`. It will be useful to have short item labels to get less clutter in the tables and figures during analysis.
 
 ```{r}
 names(df) <- itemlabels$itemnr
@@ -268,7 +275,7 @@ Most R packages for Rasch analysis require the lowest response category to be ze
 ```{r}
 
 df <- df %>% 
-  mutate(across(everything(), ~ car::recode(.x, "1=0;2=1;3=2;4=3;5=4", as.factor = F)))
+  mutate(across(everything(), ~ .x - 1))
 
 # always check that your recoding worked as intended.
 RIallresp(df)
@@ -277,17 +284,17 @@ RIallresp(df)
 
 #### Floor/ceiling effects
 
-Now, we can also look at the raw distribution of sum scores. The `RIrawdist()` function is a bit crude, since it requires responses in all response categories to accurately calculate max and min scores.
+We can also look at the raw distribution of ordinal sum scores. The `RIrawdist()` function is a bit crude, since it requires responses in all response categories to accurately calculate max and min scores.
 
 ```{r}
 RIrawdist(df)
 ```
 
-We can see a floor effect with 11.8% of participants responding in the lowest category for all items.
+There is a floor effect with 11.8% of participants responding in the lowest category for all items.
 
 #### Guttman structure
 
-While not really necessary, it could be interesting to see whether the response patterns follow a Guttman-like structure. Items and persons are sorted based on lower-\>higher responses, and we should see the color move from yellow in the lower left corner to blue in the upper right corner.
+While not really necessary, it can be interesting to see whether the response patterns follow a Guttman-like structure. Items and persons are sorted based on lower-\>higher responses, and we should see the color move from yellow in the lower left corner to blue in the upper right corner.
 
 ```{r}
 RIheatmap(df) +
@@ -384,7 +391,11 @@ Since the distribution of item fit statistics are not known, we need to use simu
 
 Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
 
-The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Simulation experiments [@johansson_detecting_2025] indicate that 100-400 iterations should be a useful range, where smaller samples (n < 300) should use 100 iterations, and 200-400 is more appropriate when one has larger samples. Another important finding from simulation studies is that there is a large risk of false positive indication of misfit in sample larger than n = 1000 when using item infit or item-restscore. The recommended primary method for large samples is the bootstrapped item-restscore [@johansson_detecting_2025], as illustrated in an adjacent tab labeled "Item-restscore bootstrap" .
+The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Simulation experiments [@johansson_detecting_2025] indicate that 100-400 iterations should be a useful range, where smaller samples (n < 300) should use 100 iterations, and 200-400 is more appropriate when one has larger samples. 
+
+::: {.callout-note}
+Another important finding from simulation studies is that there is a risk of false positive indication of misfit in samples larger than n = 1000 when using item infit or item-restscore. The recommended primary method for determining item fit in large samples is the bootstrapped item-restscore [@johansson_detecting_2025], as illustrated in an adjacent tab labeled "Item-restscore bootstrap" .
+:::
 
 For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 24 seconds to run on 8 cpu cores (Macbook Pro M1 Max) for 400 iterations.
 
@@ -649,7 +660,7 @@ It is important to ensure that no cells in the data are empty for subgroups when
 ```{r}
 #| fig-height: 5
 difPlots <- df %>% # save the output into the `difPlots` object
-  add_column(gender = dif.sex) %>% # add the DIF variable to the dataframe
+  add_column(gender = dif$Sex) %>% # add the DIF variable to the dataframe
   split(.$gender) %>% # split the data using the DIF variable
   map(~ RItileplot(.x %>% dplyr::select(!gender)) + labs(title = .x$gender)) # create separate tileplots for each group
 
@@ -669,19 +680,19 @@ RIlistItemsMargin(df, fontsize = 13)
 
 ```{r}
 #| fig-height: 3
-RIdifTable(df, dif.sex)
+RIdifTable(df, dif$Sex)
 ```
 
 #### Figure items
 
 ```{r}
-RIdifFigure(df, dif.sex)
+RIdifFigure(df, dif$Sex)
 ```
 
 #### Figure thresholds
 
 ```{r}
-RIdifFigThresh(df, dif.sex)
+RIdifFigThresh(df, dif$Sex)
 ```
 :::
 
@@ -694,7 +705,7 @@ The results do not require any action since the difference is small.
 The `psychotree` package uses a model-based recursive partitioning that is particularly useful when you have a continuous variable such as age in years and a large enough sample. It will test different ways to partition the age variable to determine potential group differences [@strobl2015; @strobl2021].
 
 ```{r}
-RIdifTable(df, dif.age)
+RIdifTable(df, dif$Age)
 ```
 
 No DIF found for age.
@@ -702,7 +713,7 @@ No DIF found for age.
 ### Group
 
 ```{r}
-RIdifTable(df, dif.group)
+RIdifTable(df, dif$Group)
 ```
 
 And no DIF for group.
@@ -712,7 +723,7 @@ And no DIF for group.
 The `psychotree` package also allows for DIF interaction analysis with multiple DIF variables. We can use `RIdifTable2()` to input two DIF variables.
 
 ```{r}
-RIdifTable2(df, dif.sex, dif.age)
+RIdifTable2(df, dif$Sex, dif$Age)
 
 ```
 
@@ -724,7 +735,7 @@ We'll use the group variable as an example. First, we can simply run the test to
 
 ```{r}
 erm.out <- PCM(df)
-LRtest(erm.out, splitcr = dif.group)
+LRtest(erm.out, splitcr = dif$Group)
 ```
 
 Review the documentation for further details, using `?LRtest` in your R console panel in Rstudio. There is also a plotting function, `plotGOF()` that may be of interest.
@@ -738,21 +749,21 @@ RIlistItemsMargin(df, fontsize = 13)
 ::: panel-tabset
 #### Item location table
 ```{r}
-RIdifTableLR(df, dif.group)
+RIdifTableLR(df, dif$Group)
 ```
 #### Item location figure
 ```{r}
 #| fig-height: 7
-RIdifFigureLR(df, dif.group) + theme_rise()
+RIdifFigureLR(df, dif$Group) + theme_rise()
 ```
 #### Item threshold table
 ```{r}
-RIdifThreshTblLR(df, dif.group)
+RIdifThreshTblLR(df, dif$Group)
 ```
 #### Item threshold figure
 ```{r}
 #| fig-height: 7
-RIdifThreshFigLR(df, dif.group) + theme_rise()
+RIdifThreshFigLR(df, dif$Group) + theme_rise()
 ```
 :::
 
@@ -770,7 +781,7 @@ Below is some sample code to get you started with `lordif`.
 #| results: hide
 library(lordif)
 
-g_dif <- lordif(as.data.frame(df), as.numeric(dif.sex), # make sure that the data is in a dataframe-object and that the DIF variable is numeric
+g_dif <- lordif(as.data.frame(df), as.numeric(dif$Sex), # make sure that the data is in a dataframe-object and that the DIF variable is numeric
                 criterion = c("Chisqr"), 
                 alpha = 0.01, 
                 beta.change = 0.1,
@@ -843,7 +854,7 @@ Moderate to large DIF:
 - significantly outside the interval -0.21 to 0.21
 
 ```{r}
-RIpartgamDIF(df, dif.sex)
+RIpartgamDIF(df, dif$Sex)
 ```
 
 We can see "slight" DIF for item 17, with a statistically significant gamma of .23. 
@@ -948,7 +959,7 @@ You can export the person fit values to a new variable in the dataframe by speci
 You can also specify a grouping variable to visualize the person fit for different groups.
 
 ```{r}
-RIpfit(df, group = dif.sex, output = "heatmap")
+RIpfit(df, group = dif$Sex, output = "heatmap")
 ```
 
 Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.
