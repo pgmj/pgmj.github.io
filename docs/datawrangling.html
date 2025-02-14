@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -71,10 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-074a19b54fe6aff043f7e53d5f6dac4a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -180,6 +180,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="./dif_magnitude.html">
  <span class="dropdown-text">Rasch DIF magnitude &amp; item split</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clrt.html">
+ <span class="dropdown-text">Conditional Likelihood Ratio Test and sample size</span></a>
   </li>  
     </ul>
   </li>
@@ -368,16 +372,16 @@ Tip
 </section>
 <section id="checking-response-distribution-prior-to-dif-analysis" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="checking-response-distribution-prior-to-dif-analysis"><span class="header-section-number">6</span> Checking response distribution prior to DIF analysis</h2>
-<p>This example assumes that you have previously created a DIF variable (vector) for gender with two groups. The variable is a factor with the labels “Female” and “Male”.</p>
+<p>This example assumes that you have previously created a DIF variable <code>dif.gender</code> for gender using two factor levels, using the labels Female and Male.</p>
 <p>The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>difplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">dif =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>dif) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>dif)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>dif))</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.</p>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>difplots<span class="sc">$</span>Female <span class="sc">+</span> difplots<span class="sc">$</span>Male</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset. You can also access the plots using <code>difplots[[1]]</code> for the first plot. There will be one plot for each level of your factor variable.</p>
 </section>
 <section id="simulating-data-based-on-known-item-parameters" class="level2" data-number="7">
 <h2 data-number="7" class="anchored" data-anchor-id="simulating-data-based-on-known-item-parameters"><span class="header-section-number">7</span> Simulating data based on known item parameters</h2>
@@ -497,8 +501,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -660,7 +662,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1054,20 +1055,20 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb14-162"><a href="#cb14-162" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-163"><a href="#cb14-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Checking response distribution prior to DIF analysis</span></span>
 <span id="cb14-164"><a href="#cb14-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a>This example assumes that you have previously created a DIF variable (vector) for gender with two groups. The variable is a factor with the labels "Female" and "Male".</span>
+<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a>This example assumes that you have previously created a DIF variable <span class="in">`dif.gender`</span> for gender using two factor levels, using the labels Female and Male.</span>
 <span id="cb14-166"><a href="#cb14-166" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-167"><a href="#cb14-167" aria-hidden="true" tabindex="-1"></a>The reason for doing this is making sure that there are no empty cells (particularly in lower response categories) in either group prior to running the DIF analysis, since this could lead to DIF being indicated incorrectly.</span>
 <span id="cb14-168"><a href="#cb14-168" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-169"><a href="#cb14-169" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb14-170"><a href="#cb14-170" aria-hidden="true" tabindex="-1"></a>difGenderTileplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb14-171"><a href="#cb14-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">gender =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-172"><a href="#cb14-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>gender) <span class="sc">%&gt;%</span></span>
-<span id="cb14-173"><a href="#cb14-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>gender)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>gender))</span>
+<span id="cb14-170"><a href="#cb14-170" aria-hidden="true" tabindex="-1"></a>difplots <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb14-171"><a href="#cb14-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_column</span>(<span class="at">dif =</span> dif.gender) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-172"><a href="#cb14-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>dif) <span class="sc">%&gt;%</span></span>
+<span id="cb14-173"><a href="#cb14-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">RItileplot</span>(.x <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">!</span>dif)) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> .x<span class="sc">$</span>dif))</span>
 <span id="cb14-174"><a href="#cb14-174" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb14-175"><a href="#cb14-175" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb14-176"><a href="#cb14-176" aria-hidden="true" tabindex="-1"></a>difGenderTileplots<span class="sc">$</span>Female <span class="sc">+</span> difGenderTileplots<span class="sc">$</span>Male</span>
+<span id="cb14-176"><a href="#cb14-176" aria-hidden="true" tabindex="-1"></a>difplots<span class="sc">$</span>Female <span class="sc">+</span> difplots<span class="sc">$</span>Male</span>
 <span id="cb14-177"><a href="#cb14-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset.</span>
+<span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a>The last part will make the tile plots show up side by side, labeled with the gender variable as it is coded in the dataset. You will need to adapt the code to the factor labels in your own dataset. You can also access the plots using <span class="in">`difplots[[1]]`</span> for the first plot. There will be one plot for each level of your factor variable.</span>
 <span id="cb14-179"><a href="#cb14-179" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-180"><a href="#cb14-180" aria-hidden="true" tabindex="-1"></a><span class="fu">## Simulating data based on known item parameters</span></span>
 <span id="cb14-181"><a href="#cb14-181" aria-hidden="true" tabindex="-1"></a></span>
