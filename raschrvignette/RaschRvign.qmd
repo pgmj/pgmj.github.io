@@ -321,10 +321,8 @@ Most people will be familiar with the barplot, and this is probably most intuiti
 RIlistItemsMargin(df, fontsize = 13)
 ```
 
-::: column-page-left
 ::: panel-tabset
 #### Tile plot
-
 ```{r}
 RItileplot(df)
 ```
@@ -332,7 +330,6 @@ RItileplot(df)
 While response patterns are skewed for all items, there are more than 10 responses in each category for all items which is helpful for the analysis.
 
 #### Stacked bars
-
 ```{r}
 RIbarstack(df) +
   theme_minimal() + # theming is optional, see section 11 for more on this
@@ -340,13 +337,13 @@ RIbarstack(df) +
 ```
 
 #### Barplots
-
 ```{r}
-#| layout-ncol: 2
-RIbarplot(df)
+#| fig-height: 9
+RIitemcols(df)
+
 ```
 :::
-:::
+
 
 
 ## Rasch analysis 1 {#sec-rasch}
@@ -432,19 +429,16 @@ RIbootRestscore(df, iterations = 250, samplesize = 800)
 
 ### Conditional item characteristic curves
 
-The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions may be included in a future version of the `easyRasch` package. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
+The [`iarm`](https://cran.r-project.org/web/packages/iarm/index.html) package [@mueller_iarm_2022] provides several interesting functions for assessing item fit, DIF and other things. Some of these functions have been implemented in simplified versions in `easyRasch`, and others may be included in a future version. Below are conditional item characteristic curves (ICC's) using the estimated theta (factor score).
 
 These curves indicate item fit on a group level, where respondents are split into "class intervals" based on their sum score/factor score.
 
 ```{r}
-ICCplot(as.data.frame(df), 
-        itemnumber = 1:4, 
-        method = "cut", 
-        cinumber = 6, # number of class intervals to split respondents into
-        itemdescrip = c("PANAS_11","PANAS_12","PANAS_13","PANAS_14"))
+RIciccPlot(df) +
+  guide_area() # this relocates the legend/guide
 ```
 
-A similar, but even more informative and flexible, visualization has been made available in the [`RASCHplot`](https://github.com/ERRTG/RASCHplot/) package [@buchardt_visualizing_2023], which needs to be installed from GitHub (see code below). The linked paper is recommended reading, not least for descriptions of the useful options available. Below are some sample plots showing conditional ICC's using the raw sum score.
+A similar visualization, even more informative and flexible, has been made available in the [`RASCHplot`](https://github.com/ERRTG/RASCHplot/) package [@buchardt_visualizing_2023]. The package needs to be installed from GitHub (see commented code below). The linked paper is recommended reading, not least for descriptions of the useful options available. Below are some sample plots showing conditional ICC's using the raw sum score.
 
 ```{r}
 library(RASCHplot) # devtools::install_github("ERRTG/RASCHplot")
@@ -467,7 +461,13 @@ Based on an old rule-of-thumb, the first eigenvalue should be below 1.5 to suppo
 
 ### Conditional LRT
 
-The Conditional Likelihood Ratio Test [LRT, @andersen_goodness_1973] is a global test of fit and can be a useful addition to more informative item-level metrics [@johansson_detecting_2025]. 
+The Conditional Likelihood Ratio Test [LRT, @andersen_goodness_1973] is a global test of fit and can be a useful addition to more informative item-level metrics [@johansson_detecting_2025]. However, it is sensitive to large sample sizes and may produce false positives, see <https://pgmj.github.io/clrt.html> for a very small simulation study. To avoid the sample size issue, a bootstrap function has been implemented, where one can set the sample size manually. The function will then sample with replacement from the response data and conduct a separate LRT for each sample drawn. 
+
+```{r}
+RIbootLRT(df, iterations = 1000, samplesize = 500, cpu = 8)
+```
+
+If data fits the Rasch model well, the test will not be statistically significant. 
 
 ### Residual correlations
 
@@ -498,7 +498,8 @@ RIpartgamLD(df)
 RIloadLoc(df)
 ```
 
-Here we see item locations and their loadings on the first residual contrast. This figure can be helpful to identify clusters in data or multidimensionality.
+Here we see item locations and their loadings on the first residual contrast. This figure can be helpful to identify clusters in data or multidimensionality. You can get a table with standardized factor loadings using `RIloadLoc(df, output = "table")`.
+
 
 ### Analysis of response categories
 
@@ -769,6 +770,16 @@ RIdifThreshFigLR(df, dif$Group) + theme_rise()
 
 The item threshold table shows that the top threshold for item 13 differs more than 0.5 logits between groups. In this set of 8 items with 4 thresholds each, it is unlikely to result in problematic differences in estimated person scores.
 
+### Conditional ICC
+
+The `iarm` package function for CICC plots also includes the option to use a DIF variable.
+
+```{r}
+RIciccPlot(df, dif = "yes", dif_var = dif$Sex)
+
+```
+
+
 ### Logistic Ordinal Regression DIF {#sec-lordif}
 
 The `lordif` package [@choi_lordif_2011] does not use a Rasch measurement model, it only offers a choice between the Graded Response Model (GRM) and the Generalized Partial Credit Model (GPCM). Both of these are 2PL models, meaning that they estimate a discrimination parameter for each item in addition to the item threshold parameters. `lordif` relies on the `mirt` package.
@@ -899,10 +910,8 @@ RIitemfit(df, simfit3)
 ### CICC
 
 ```{r}
-CICCplot(PCM(df),
-         which.item = c(1:3,7),
-         lower.groups = c(0,7,14,21,28),
-         grid.items = TRUE)
+RIciccPlot(df)
+
 ```
 
 ### Residual correlations
@@ -910,6 +919,11 @@ CICCplot(PCM(df),
 ```{r}
 simcor3 <- RIgetResidCor(df, iterations = 400, cpu = 8)
 RIresidcorr(df, cutoff = simcor3$p99)
+```
+
+### LRT
+```{r}
+RIbootLRT(df, iterations = 1000, samplesize = 500, cpu = 8)
 ```
 
 ### Targeting
