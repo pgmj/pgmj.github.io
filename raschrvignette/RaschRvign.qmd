@@ -353,7 +353,7 @@ The eRm package and Conditional Maximum Likelihood (CML) estimation will be used
 This is also where the [five basic psychometric aspects](https://doi.org/10.31219/osf.io/3htzc) are good to recall.
 
 -   Unidimensionality & local independence
--   Response categories
+-   Ordering of response categories
 -   Invariance
 -   Targeting
 -   Measurement uncertainties (reliability)
@@ -361,6 +361,13 @@ This is also where the [five basic psychometric aspects](https://doi.org/10.3121
 We will begin by looking at unidimensionality, response categories, and targeting in parallel below. For unidimensionality, we are mostly interested in item fit and residual correlations, as well as PCA of residuals and loadings on the first residual contrast. At the same time, disordered response categories can influence item fit to some extent (and vice versa), and knowledge about targeting can be useful if it is necessary to remove items due to residual correlations.
 
 When unidimensionality and response categories are found to work adequately, we will move on to invariance testing (Differential Item Functioning, DIF). It should be noted that DIF should be evaluated in parallel with all other psychometric aspects, but since it is a more complex issue it is kept in a separate section in this vignette (as is person fit). Finally, when/if invariance/DIF also looks acceptable, we can investigate reliability/measurement uncertainties.
+
+Since our sample is quite large (n > 800), the sample size sensitive tests (item fit and item-restscore) that are likely to produce problematic false positive rates [@johansson_detecting_2025] will use a randomly selected smaller sample of n = 500 as examples. When analyzing large datasets, item-restscore bootstrap is recommended as the primary method of assessing item fit to the Rasch model.
+
+```{r}
+df500 <- df %>% 
+  slice_sample(n = 500)
+```
 
 ::: {.callout-note}
 In the tabset-panel below, each tab contains explanatory text, which is sometimes a bit lengthy. Remember to **scroll back up and click on all tabs**.
@@ -376,8 +383,8 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Conditional item fit
 
 ```{r}
-simfit1 <- RIgetfit(df, iterations = 400, cpu = 8) # save simulation output to object `simfit1`
-RIitemfit(df, simfit1)
+simfit1 <- RIgetfit(df500, iterations = 200, cpu = 8) # save simulation output to object `simfit1`
+RIitemfit(df500, simfit1)
 ```
 
 `RIitemfit()` and `RIgetfit()` both work with both dichotomous and polytomous data (using the partial credit model) and automatically selects the model based on the data structure.
@@ -406,6 +413,8 @@ A low item fit value (sometimes referred to as an item "overfitting" the Rasch m
 
 A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret and thus has noisy response data. The latter could for instance be caused by a question that asks about two things at the same time or is ambiguous for other reasons.
 
+Outfit is not a useful method to detect item misfit, infit should be relied upon when sample sizes are appropriate [@johansson_detecting_2025].
+
 ::: {.callout-note}
 Remember to **scroll back up and click on all tabs**.
 :::
@@ -415,7 +424,7 @@ Remember to **scroll back up and click on all tabs**.
 This is another useful function from the `iarm` package. It shows the expected and observed correlation between an item and a score based on the rest of the items [@kreiner_note_2011]. Similarly, but inverted, to item fit, a lower observed correlation value than expected indicates underfit, that the item may not belong to the dimension. A higher than expected observed value indicates an overfitting and possibly redundant item. Overfitting items will often also show issues with residual correlations. Both of these problems can often be (at least partially) resolved by removing underfitting items.
 
 ```{r}
-RIrestscore(df)
+RIrestscore(df500)
 ```
 
 ### Item-restscore bootstrap
@@ -461,13 +470,13 @@ Based on an old rule-of-thumb, the first eigenvalue should be below 1.5 to suppo
 
 ### Conditional LRT
 
-The Conditional Likelihood Ratio Test [LRT, @andersen_goodness_1973] is a global test of fit and can be a useful addition to more informative item-level metrics [@johansson_detecting_2025]. However, it is sensitive to large sample sizes and may produce false positives, see <https://pgmj.github.io/clrt.html> for a very small simulation study. To avoid the sample size issue, a bootstrap function has been implemented, where one can set the sample size manually. The function will then sample with replacement from the response data and conduct a separate LRT for each sample drawn. 
+The Conditional Likelihood Ratio Test [LRT, @andersen_goodness_1973] is a global test of fit and can be a useful addition to more informative item-level metrics [@johansson_detecting_2025]. However, it is sensitive to large sample sizes and number of items, and produces false positives, see <https://pgmj.github.io/clrt.html> for a very small simulation study. To avoid the sample size issue, a bootstrap function has been implemented, where one can set the sample size manually. The function will then sample with replacement from the response data and conduct a separate LRT for each sample drawn. 
 
 ```{r}
-RIbootLRT(df, iterations = 1000, samplesize = 500, cpu = 8)
+RIbootLRT(df, iterations = 1000, samplesize = 400, cpu = 8)
 ```
 
-If data fits the Rasch model well, the test will not be statistically significant. 
+If data fits the Rasch model well, the test will usually not be statistically significant.
 
 ### Residual correlations
 
@@ -599,9 +608,11 @@ RIbootRestscore(df, iterations = 250, samplesize = 800)
 
 ### Conditional item fit
 
+Still using the smaller sample of n = 500.
+
 ```{r}
-simfit2 <- RIgetfit(df, iterations = 400, cpu = 8)
-RIitemfit(df, simcut = simfit2)
+simfit2 <- RIgetfit(df500, iterations = 400, cpu = 8)
+RIitemfit(df500, simcut = simfit2)
 ```
 
 ### PCA of residuals
@@ -903,8 +914,8 @@ RIbootRestscore(df, iterations = 250, samplesize = 800)
 ### Item fit
 
 ```{r}
-simfit3 <- RIgetfit(df, iterations = 400, cpu = 8)
-RIitemfit(df, simfit3)
+simfit3 <- RIgetfit(df500, iterations = 200, cpu = 8)
+RIitemfit(df500, simfit3)
 ```
 
 ### CICC
@@ -943,7 +954,7 @@ RIitemHierarchy(df)
 
 ### Analysis 3 comments
 
-No problematic residual correlations remaining. Several items show misfit but we will end this sample analysis here and move on to show other functions.
+There are still problematic residual correlations and several items show misfit, but we will end this sample analysis here and move on to show other functions.
 
 There are several item thresholds that are very closely located, as shown in the item hierarchy figure. This is not ideal, since it will inflate reliability estimates. However, we will not modify the response categories for this analysis, we only note that this is not workable and should be dealt with by trying variations of merged response categories to achieve better separation of threshold locations without disordering.
 
@@ -956,7 +967,7 @@ RItif(df)
 
 The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).
 
-The default cutoff value used in `RItif()` is TIF = 3.33, which corresponds to person separation index (PSI) = 0.7. PSI is similar to reliability coefficients such as omega and alpha, ranging from 0 to 1. You can change the TIF cutoff by using the option `cutoff`, for instance `cutoff = 2.5` (TIF values range from 1 and up).
+The default cutoff value used in `RItif()` is TIF = 3.33, which roughly corresponds to person separation index (PSI) = 0.7 (although this is not always the case). PSI is similar to reliability coefficients such as omega and alpha, ranging from 0 to 1. You can change the TIF cutoff by using the option `cutoff`, for instance `cutoff = 2.5` (TIF values range from 1 and up).
 
 While 11.8% of respondents had a floor effect based on the raw sum scored data, the figure above shows us that 41.8% are located below the point where the items produce a PSI of 0.7 or higher. Again, note that this figure shows the reliability of the test/scale, not the sample. If you want to add the sample reliability use option `samplePSI = TRUE`. More details are available in the documentation `?RItif`.
 
