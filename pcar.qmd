@@ -1,0 +1,177 @@
+---
+title: "PCA of residuals & unidimensionality in Rasch models"
+subtitle: "Simulation tests"
+author:
+  name: 'Magnus Johansson'
+  affiliation: 'RISE Research Institutes of Sweden'
+  affiliation-url: 'https://ri.se/shic'
+  orcid: '0000-0003-1669-592X'
+date: last-modified
+date-format: iso
+google-scholar: true
+citation:
+  type: 'webpage'
+format: 
+  html:
+    code-fold: true
+execute: 
+  cache: false
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+#bibliography: pcar.bib
+---
+
+# Introduction
+
+
+PCAR = 
+
+# Method
+
+For simplicity, [the simulated dataset](https://github.com/pgmj/rasch_itemfit/blob/main/data/simdata10000.rds) from the previously mentioned preprint will be re-used, and the misfitting item removed. This results in 19 dichotomous items, all simulated to fit the Rasch model. The `easyRasch` [@johansson_easyrasch] package contains a function to use non-parametric bootstrap with the PCAR. The code to do so is presented below. 
+
+```{r}
+library(easyRasch)
+d <- readRDS("simdata10000.rds")
+
+d500 <- d[[1]][,-9] %>% 
+  as.data.frame() %>% 
+  slice_sample(n = 500)
+clr_tests(d500, model = "PCM")
+RIrestscore(d500)
+RIpartgamLD(d500)
+```
+
+All looks good. Estimating the largest eigenvalues of PCA of residuals.
+
+```{r}
+RIrmPCA(d500)
+```
+
+1.48.
+
+Let's see what the expected distribution of PCA of residuals largest eigenvalues are, using 1000 parametric bootstrap samples.
+
+```{r}
+simpca <- RIbootPCA(d500, iterations = 1000, cpu = 8)
+
+simpca$p95
+simpca$p99
+simpca$p995
+simpca$p999
+simpca$max
+```
+
+95th percentile seems too tight as a comparison. Our sample estimate of 1.48 is just below the 99th percentile of 1.49.
+
+Is sample 250 different?
+
+```{r}
+d250 <- d[[1]][,-9] %>% 
+  as.data.frame() %>% 
+  slice_sample(n = 250)
+
+RIrmPCA(d250)
+```
+
+1.51
+
+```{r}
+simpca2 <- RIbootPCA(d250, iterations = 1000, cpu = 8)
+
+simpca2$p95
+simpca2$p99
+simpca2$p995
+simpca2$p999
+simpca2$max
+```
+
+Much larger margin to the observed value. This variation is expected.
+
+```{r}
+summary(simpca2$results)
+```
+
+Even below the 1st quartile.
+
+To get a better understanding of relationship between observed and expected PCAR eigenvalues we need more simulation iterations.
+
+```{r}
+pcasim <- function(dat, iterations, samplesize, cpu = 1) {
+  
+  # require(doParallel)
+  # registerDoParallel(cores = cpu)
+  
+  fit <- data.frame()
+  fit <- foreach(i = 1:iterations, .combine = rbind) %do% {
+    data <- dat[sample(1:nrow(dat), samplesize), ]
+    
+    erm_out <- RM(data)
+    ple <- eRm::person.parameter(erm_out)
+    item.fit <- eRm::itemfit(ple)
+    pca <- psych::pca(item.fit$st.res, nfactors = ncol(data), rotate = "oblimin")
+    pca_table <- pca$values[1] %>% round(3)
+    
+    simpca <- RIbootPCA(data, iterations = 600, cpu = 8)
+    
+    data.frame(pcar_eigenv = pca_table,
+               n = samplesize,
+               mean = mean(simpca$results),
+               p95 = simpca$p95,
+               p99 = simpca$p99,
+               p995 = simpca$p995,
+               p999 = simpca$p999,
+               pmax = simpca$max)
+  }
+  return(fit)
+}
+
+#samplesizes <- c(150,250,500,1000,2000)
+samplesizes <- c(150,250,500,1000)
+
+pca_results <- map(samplesizes, ~ pcasim(d[[1]][,-9], iterations = 10, samplesize = .x))
+saveRDS(pca_results,"pca_sim.rds")
+#pcasim
+```
+
+
+Each sample size variation used 100 bootstrap iterations, and the parametric bootstrap function used 600 iterations to determine expected values.
+
+# Results
+
+Results are presented in @fig-results.
+
+```{r}
+#| label: fig-results
+#| fig-cap: Percent of false positives indicated by LRT bootstrap procedure across sample sizes
+library(dplyr)
+library(ggplot2)
+data.frame(Percent = c(6.6,6.8,8.2,10.4,12.2, 5.3, 5.4, 5.3, 5.9, 6.7), 
+           n = c(250,500,1000,1500,2000,250,500,1000,1500,2000),
+           k = factor(c(19,19,19,19,19,10,10,10,10,10))) %>% 
+  ggplot(aes(x = n, y = Percent, color = k)) + 
+  geom_hline(yintercept = 5, linetype = "dashed") +
+  geom_point(position = "dodge") +
+  geom_line() +
+  geom_text(aes(label = paste0(Percent,"%")),
+            position = position_dodge(width = 9),
+            hjust = 0.3, vjust = -1,
+            color = "black"
+            ) +
+  scale_x_continuous('Sample size', limits = c(0,2200), breaks = c(0,250,500,1000,1500,2000)) +
+  scale_y_continuous('% false positives', limits = c(0,20)) +
+  scale_color_brewer('Items',palette = "Dark2") +
+  theme_bw()
+```
+
+
+# Discussion
+
+This is a brief note, not a full scale simulation study. Many variables could be manipulated to better understand the expected behavior of LRT when all items fit a Rasch model. Nevertheless, this small study provides some useful information about the relationship between sample size, number of items, and false positive rate for the LRT. Even at the smaller sample sizes of 250 and 500, the false positive rate is above the expected 5%. The effect is stronger for the condition with more items. It seems clear that one should not rely too heavily on the LRT in determining model fit, especially when sample size is above 1000 and number of items is high.
+
+I will add a condition using polytomous items later on.
+
+# References
+
