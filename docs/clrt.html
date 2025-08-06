@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2025-02-07">
+<meta name="dcterms.date" content="2025-08-06">
 <title>Conditional Likelihood Ratio Test and sample size – R, Rasch, etc</title>
 <style>
 code{white-space: pre-wrap;}
@@ -127,10 +127,10 @@ div.csl-indent {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="citation_title" content="Conditional Likelihood Ratio Test and sample size">
 <meta name="citation_author" content="Magnus Johansson">
-<meta name="citation_publication_date" content="2025-02-07">
-<meta name="citation_cover_date" content="2025-02-07">
+<meta name="citation_publication_date" content="2025-08-06">
+<meta name="citation_cover_date" content="2025-08-06">
 <meta name="citation_year" content="2025">
-<meta name="citation_online_date" content="2025-02-07">
+<meta name="citation_online_date" content="2025-08-06">
 <meta name="citation_fulltext_html_url" content="https://pgmj.github.io/clrt.html">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=A goodness of fit test for the rasch model;,citation_author=Erling B. Andersen;,citation_publication_date=1973-03;,citation_cover_date=1973-03;,citation_year=1973;,citation_fulltext_html_url=https://doi.org/10.1007/BF02291180;,citation_issue=1;,citation_doi=10.1007/BF02291180;,citation_issn=1860-0980;,citation_volume=38;,citation_journal_title=Psychometrika;">
@@ -266,7 +266,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-02-07</p>
+      <p class="date">2025-08-06</p>
     </div>
   </div>
   
@@ -278,6 +278,20 @@ div.csl-indent {
 </header><section id="introduction" class="level1" data-number="1"><h1 data-number="1">
 <span class="header-section-number">1</span> Introduction</h1>
 <p>In my recent preprint on detection of item misfit in Rasch models <span class="citation" data-cites="johansson_detecting_2025">(<a href="#ref-johansson_detecting_2025" role="doc-biblioref">Johansson 2025a</a>)</span>, the conditional likelihood ratio test <span class="citation" data-cites="andersen_goodness_1973">(LRT, <a href="#ref-andersen_goodness_1973" role="doc-biblioref">Andersen 1973</a>)</span> was part of one of the simulation studies. In that study, only the detection rate of misfitting items was assessed. In this brief note, the false detection rate across varying sample sizes will be investigated.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The preprint was published in March 2025 in Educational Methods &amp; Psychometrics and can be accessed at <a href="https://pgmj.github.io/rasch_itemfit/" class="uri">https://pgmj.github.io/rasch_itemfit/</a></p>
+<p>On August 6th 2025, I added results for n = 150. This text was originally published on February 7th 2025.</p>
+</div>
+</div>
 </section><section id="method" class="level1" data-number="2"><h1 data-number="2">
 <span class="header-section-number">2</span> Method</h1>
 <p>For simplicity, <a href="https://github.com/pgmj/rasch_itemfit/blob/main/data/simdata10000.rds">the simulated dataset</a> from the previously mentioned preprint will be re-used, and the misfitting item removed. This results in 19 dichotomous items, all simulated to fit the Rasch model. The <code>easyRasch</code> <span class="citation" data-cites="johansson_easyrasch">(<a href="#ref-johansson_easyrasch" role="doc-biblioref">Johansson 2025b</a>)</span> package contains a function to use non-parametric bootstrap with the LRT. The code to do so is presented below. As a comparison, a subset of 10 items from the same data was used to evaluate the impact of number of items on LRT false positive performance.</p>
@@ -291,19 +305,19 @@ div.csl-indent {
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">6.6</span>,<span class="fl">6.8</span>,<span class="fl">8.2</span>,<span class="fl">10.4</span>,<span class="fl">12.2</span>, <span class="fl">5.3</span>, <span class="fl">5.4</span>, <span class="fl">5.3</span>, <span class="fl">5.9</span>, <span class="fl">6.7</span><span class="op">)</span>, </span>
-<span>           n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">250</span>,<span class="fl">500</span>,<span class="fl">1000</span>,<span class="fl">1500</span>,<span class="fl">2000</span>,<span class="fl">250</span>,<span class="fl">500</span>,<span class="fl">1000</span>,<span class="fl">1500</span>,<span class="fl">2000</span><span class="op">)</span>,</span>
-<span>           k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5.8</span>,<span class="fl">6.6</span>,<span class="fl">6.8</span>,<span class="fl">8.2</span>,<span class="fl">10.4</span>,<span class="fl">12.2</span>, <span class="fl">4.9</span>, <span class="fl">5.3</span>, <span class="fl">5.4</span>, <span class="fl">5.3</span>, <span class="fl">5.9</span>, <span class="fl">6.7</span><span class="op">)</span>, </span>
+<span>           n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">150</span>,<span class="fl">250</span>,<span class="fl">500</span>,<span class="fl">1000</span>,<span class="fl">1500</span>,<span class="fl">2000</span>,<span class="fl">150</span>,<span class="fl">250</span>,<span class="fl">500</span>,<span class="fl">1000</span>,<span class="fl">1500</span>,<span class="fl">2000</span><span class="op">)</span>,</span>
+<span>           k <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">19</span>,<span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">n</span>, y <span class="op">=</span> <span class="va">Percent</span>, color <span class="op">=</span> <span class="va">k</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">5</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"dodge"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">Percent</span>,<span class="st">"%"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>            position <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
 <span>            hjust <span class="op">=</span> <span class="fl">0.3</span>, vjust <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
 <span>            color <span class="op">=</span> <span class="st">"black"</span></span>
 <span>            <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span><span class="st">'Sample size'</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2200</span><span class="op">)</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">250</span>,<span class="fl">500</span>,<span class="fl">1000</span>,<span class="fl">1500</span>,<span class="fl">2000</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span><span class="st">'Sample size'</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">2200</span><span class="op">)</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">150</span>,<span class="fl">250</span>,<span class="fl">500</span>,<span class="fl">1000</span>,<span class="fl">1500</span>,<span class="fl">2000</span><span class="op">)</span>, minor_breaks <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span><span class="st">'% false positives'</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_color_brewer</a></span><span class="op">(</span><span class="st">'Items'</span>,palette <span class="op">=</span> <span class="st">"Dark2"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -320,7 +334,8 @@ Figure&nbsp;1: Percent of false positives indicated by LRT bootstrap procedure a
 </div>
 </section><section id="discussion" class="level1" data-number="4"><h1 data-number="4">
 <span class="header-section-number">4</span> Discussion</h1>
-<p>This is a brief note, not a full scale simulation study. Many variables could be manipulated to better understand the expected behavior of LRT when all items fit a Rasch model. Nevertheless, this small study provides some useful information about the relationship between sample size, number of items, and false positive rate for the LRT. Even at the smaller sample sizes of 250 and 500, the false positive rate is above the expected 5%. The effect is stronger for the condition with more items. It seems clear that one should not rely too heavily on the LRT in determining model fit, especially when sample size is above 1000 and number of items is high.</p>
+<p>This is a brief note, not a full scale simulation study. Many variables could be manipulated to better understand the expected behavior of LRT when all items fit a Rasch model. Nevertheless, this small study provides some useful information about the relationship between sample size, number of items, and false positive rate for the LRT. Even at the smaller sample sizes of 250 and 500, the false positive rate is above the expected 5% for both 10 and 19 item conditions. The effect is stronger for the condition with more items. It seems clear that one should not rely too heavily on the LRT in determining model fit, especially when sample size is above 1000 and number of items is high.</p>
+<p>While the <code>RIbootLRT()</code> function could be used instead of the standard CLRT, one would need to run simulations adapted to the dataset being analyzed to understand which sample size should be used with the bootstrap CLRT function. I might write such a function at some point in time.</p>
 <p>I will add a condition using polytomous items later on.</p>
 </section><section id="references" class="level1" data-number="5">
 
@@ -342,13 +357,13 @@ Johansson, Magnus. 2025a. <span>“Detecting Item Misfit in <span>Rasch</span> M
 </div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{johansson2025,
   author = {Johansson, Magnus},
   title = {Conditional {Likelihood} {Ratio} {Test} and Sample Size},
-  date = {2025-02-07},
+  date = {2025-08-06},
   url = {https://pgmj.github.io/clrt.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2025" class="csl-entry quarto-appendix-citeas" role="listitem">
 Johansson, Magnus. 2025. <span>“Conditional Likelihood Ratio Test and
-Sample Size.”</span> February 7, 2025. <a href="https://pgmj.github.io/clrt.html">https://pgmj.github.io/clrt.html</a>.
+Sample Size.”</span> August 6, 2025. <a href="https://pgmj.github.io/clrt.html">https://pgmj.github.io/clrt.html</a>.
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -826,7 +841,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation: 'RISE Research Institutes of Sweden'</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">  affiliation-url: 'https://ri.se/shic'</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">  orcid: '0000-0003-1669-592X'</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2025-02-07</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2025-08-06</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="an">date-format:</span><span class="co"> iso</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="an">google-scholar:</span><span class="co"> true</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="an">citation:</span></span>
@@ -847,53 +862,61 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>In my recent preprint on detection of item misfit in Rasch models <span class="co">[</span><span class="ot">@johansson_detecting_2025</span><span class="co">]</span>, the conditional likelihood ratio test <span class="co">[</span><span class="ot">LRT, @andersen_goodness_1973</span><span class="co">]</span> was part of one of the simulation studies. In that study, only the detection rate of misfitting items was assessed. In this brief note, the false detection rate across varying sample sizes will be investigated.</span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># Method</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>For simplicity, <span class="co">[</span><span class="ot">the simulated dataset</span><span class="co">](https://github.com/pgmj/rasch_itemfit/blob/main/data/simdata10000.rds)</span> from the previously mentioned preprint will be re-used, and the misfitting item removed. This results in 19 dichotomous items, all simulated to fit the Rasch model. The <span class="in">`easyRasch`</span> <span class="co">[</span><span class="ot">@johansson_easyrasch</span><span class="co">]</span> package contains a function to use non-parametric bootstrap with the LRT. The code to do so is presented below. As a comparison, a subset of 10 items from the same data was used to evaluate the impact of number of items on LRT false positive performance.</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: false</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">RIbootLRT</span>(simdata[[<span class="dv">1</span>]][,<span class="sc">-</span><span class="dv">9</span>], <span class="at">iterations =</span> <span class="dv">5000</span>, <span class="at">samplesize =</span> <span class="dv">300</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>Each sample size variation used 5000 bootstrap iterations. </span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>Results are presented in @fig-results.</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>The preprint was published in March 2025 in Educational Methods &amp; Psychometrics and can be accessed at <span class="ot">&lt;https://pgmj.github.io/rasch_itemfit/&gt;</span> </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>On August 6th 2025, I added results for n = 150. This text was originally published on February 7th 2025.</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="fu"># Method</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>For simplicity, <span class="co">[</span><span class="ot">the simulated dataset</span><span class="co">](https://github.com/pgmj/rasch_itemfit/blob/main/data/simdata10000.rds)</span> from the previously mentioned preprint will be re-used, and the misfitting item removed. This results in 19 dichotomous items, all simulated to fit the Rasch model. The <span class="in">`easyRasch`</span> <span class="co">[</span><span class="ot">@johansson_easyrasch</span><span class="co">]</span> package contains a function to use non-parametric bootstrap with the LRT. The code to do so is presented below. As a comparison, a subset of 10 items from the same data was used to evaluate the impact of number of items on LRT false positive performance.</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: false</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="fu">RIbootLRT</span>(simdata[[<span class="dv">1</span>]][,<span class="sc">-</span><span class="dv">9</span>], <span class="at">iterations =</span> <span class="dv">5000</span>, <span class="at">samplesize =</span> <span class="dv">300</span>, <span class="at">cpu =</span> <span class="dv">8</span>)</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-results</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Percent of false positives indicated by LRT bootstrap procedure across sample sizes</span></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">Percent =</span> <span class="fu">c</span>(<span class="fl">6.6</span>,<span class="fl">6.8</span>,<span class="fl">8.2</span>,<span class="fl">10.4</span>,<span class="fl">12.2</span>, <span class="fl">5.3</span>, <span class="fl">5.4</span>, <span class="fl">5.3</span>, <span class="fl">5.9</span>, <span class="fl">6.7</span>), </span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>           <span class="at">n =</span> <span class="fu">c</span>(<span class="dv">250</span>,<span class="dv">500</span>,<span class="dv">1000</span>,<span class="dv">1500</span>,<span class="dv">2000</span>,<span class="dv">250</span>,<span class="dv">500</span>,<span class="dv">1000</span>,<span class="dv">1500</span>,<span class="dv">2000</span>),</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>           <span class="at">k =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">y =</span> Percent, <span class="at">color =</span> k)) <span class="sc">+</span> </span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(Percent,<span class="st">"%"</span>)),</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="dv">9</span>),</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="fl">0.3</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"black"</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>            ) <span class="sc">+</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">'Sample size'</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2200</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">250</span>,<span class="dv">500</span>,<span class="dv">1000</span>,<span class="dv">1500</span>,<span class="dv">2000</span>)) <span class="sc">+</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="st">'% false positives'</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">20</span>)) <span class="sc">+</span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="st">'Items'</span>,<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discussion</span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>This is a brief note, not a full scale simulation study. Many variables could be manipulated to better understand the expected behavior of LRT when all items fit a Rasch model. Nevertheless, this small study provides some useful information about the relationship between sample size, number of items, and false positive rate for the LRT. Even at the smaller sample sizes of 250 and 500, the false positive rate is above the expected 5%. The effect is stronger for the condition with more items. It seems clear that one should not rely too heavily on the LRT in determining model fit, especially when sample size is above 1000 and number of items is high.</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>I will add a condition using polytomous items later on.</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>Each sample size variation used 5000 bootstrap iterations. </span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>Results are presented in @fig-results.</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-results</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Percent of false positives indicated by LRT bootstrap procedure across sample sizes</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">Percent =</span> <span class="fu">c</span>(<span class="fl">5.8</span>,<span class="fl">6.6</span>,<span class="fl">6.8</span>,<span class="fl">8.2</span>,<span class="fl">10.4</span>,<span class="fl">12.2</span>, <span class="fl">4.9</span>, <span class="fl">5.3</span>, <span class="fl">5.4</span>, <span class="fl">5.3</span>, <span class="fl">5.9</span>, <span class="fl">6.7</span>), </span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>           <span class="at">n =</span> <span class="fu">c</span>(<span class="dv">150</span>,<span class="dv">250</span>,<span class="dv">500</span>,<span class="dv">1000</span>,<span class="dv">1500</span>,<span class="dv">2000</span>,<span class="dv">150</span>,<span class="dv">250</span>,<span class="dv">500</span>,<span class="dv">1000</span>,<span class="dv">1500</span>,<span class="dv">2000</span>),</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>           <span class="at">k =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">19</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">y =</span> Percent, <span class="at">color =</span> k)) <span class="sc">+</span> </span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(Percent,<span class="st">"%"</span>)),</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="dv">9</span>),</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="fl">0.3</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"black"</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>            ) <span class="sc">+</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="st">'Sample size'</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">2200</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>,<span class="dv">250</span>,<span class="dv">500</span>,<span class="dv">1000</span>,<span class="dv">1500</span>,<span class="dv">2000</span>), <span class="at">minor_breaks =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="st">'% false positives'</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">20</span>)) <span class="sc">+</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="st">'Items'</span>,<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="fu"># References</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="fu"># Discussion</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>This is a brief note, not a full scale simulation study. Many variables could be manipulated to better understand the expected behavior of LRT when all items fit a Rasch model. Nevertheless, this small study provides some useful information about the relationship between sample size, number of items, and false positive rate for the LRT. Even at the smaller sample sizes of 250 and 500, the false positive rate is above the expected 5% for both 10 and 19 item conditions. The effect is stronger for the condition with more items. It seems clear that one should not rely too heavily on the LRT in determining model fit, especially when sample size is above 1000 and number of items is high.</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>While the <span class="in">`RIbootLRT()`</span> function could be used instead of the standard CLRT, one would need to run simulations adapted to the dataset being analyzed to understand which sample size should be used with the bootstrap CLRT function. I might write such a function at some point in time.</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>I will add a condition using polytomous items later on.</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="fu"># References</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
