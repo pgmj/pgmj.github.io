@@ -174,7 +174,7 @@ td <- SimPartialScore(
 
 ### Estimating item threshold locations
 
-We could use the parameters from the input, but to add some real world usage to the setup, we'll stack the response data and estimate the item threshold locations using the `eRm` package with the Partial Credig Model and Conditional Maximum Likelihood.
+We could use the parameters from the input, but to add some real world usage to the setup, we'll stack the response data and estimate the item threshold locations using the `eRm` package with the Partial Credit Model and Conditional Maximum Likelihood.
 
 ```{r}
 erm_item_parameters <- RIitemparams(td, output = "dataframe") %>% 

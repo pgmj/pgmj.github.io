@@ -14,7 +14,7 @@ website:
   announcement: 
     icon: info-circle
     dismissable: true
-    content: "**Note:** The RISEkbmRasch R package is now known as easyRasch."
+    content: "**Note:** easyRasch has new functions, check <https://pgmj.github.io/easyRasch/news/index.html>"
     type: primary
     position: below-navbar
   navbar: 

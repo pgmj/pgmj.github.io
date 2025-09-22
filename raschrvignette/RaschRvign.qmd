@@ -260,7 +260,13 @@ First, we visualize the proportion of missing data on item level.
 RImissing(df)
 ```
 
-No missing data in this dataset. If we had missing data, we could also use `RImissingP()` to look at which respondents have missing data and how much.
+No missing data in this dataset. If we had missing data, we could also use `RImissingP()` to look at which respondents have missing data and how much. Just to show what the output of these functions looks like, we'll use `mice::ampute()` to temporarily remove 15% of data.
+
+```{r}
+RImissing(mice::ampute(df, prop = 0.1)$amp)
+RImissingP(mice::ampute(df, prop = 0.1)$amp, N = 20)
+```
+
 
 ### Overall responses
 
@@ -362,7 +368,7 @@ We will begin by looking at unidimensionality, response categories, and targetin
 
 When unidimensionality and response categories are found to work adequately, we will move on to invariance testing (Differential Item Functioning, DIF). It should be noted that DIF should be evaluated in parallel with all other psychometric aspects, but since it is a more complex issue it is kept in a separate section in this vignette (as is person fit). Finally, when/if invariance/DIF also looks acceptable, we can investigate reliability/measurement uncertainties.
 
-Since our sample is quite large (n > 800), the sample size sensitive tests (item fit and item-restscore) that are likely to produce problematic false positive rates [@johansson_detecting_2025] will use a randomly selected smaller sample of n = 500 as examples. When analyzing large datasets, item-restscore bootstrap is recommended as the primary method of assessing item fit to the Rasch model. The use of one smaller subsample in this vignette is only for demonstration purposes, it is not a recommended method of analysis for large datasets.
+Since our sample is quite large (n > 800), the sample size sensitive tests (item fit and item-restscore) that are likely to produce problematic false positive rates [@johansson_detecting_2025] will use a randomly selected smaller sample of n = 500 as examples. When analyzing large datasets, item-restscore bootstrap is recommended as the primary method of assessing item fit to the Rasch model. **The use of one smaller subsample in this vignette is only for demonstration purposes, it is not a recommended method of analysis for large datasets.**
 
 ```{r}
 df500 <- df %>% 
@@ -389,13 +395,13 @@ RIitemfit(df500, simfit1)
 
 `RIitemfit()` and `RIgetfit()` both work with both dichotomous and polytomous data (using the partial credit model) and automatically selects the model based on the data structure.
 
-It is important to note that the new (since version 0.2.2, released 2024-08-19) `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020].
+It is important to note that the `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020].
 
-Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this. `RIitemfit()` can also be used without cutoffs and conditional highlighting. For a possibly useful rule-of-thumb cutoff for infit MSQ only, use the option `cutoff = "Smith98"` [@smith_using_1998;@muller_item_2020]. However, this cutoff is not applicable for all items, only for what can be expected for the *average* item fit. The simulation/bootstrap-based cutoff values will be more accurate for every item in your data.
+Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this.
 
-Briefly stated, the simulation uses the properties of the current sample and items, and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
+Briefly stated, the simulation uses the estimated properties of the current sample and items (your dataset), and simulates n iterations of data that fit the Rasch model to get an empirical distribution of item fit that we can use for comparison with the observed data. This is also known as "parametric bootstrapping".
 
-The simulation can take quite a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Simulation experiments [@johansson_detecting_2025] indicate that 100-400 iterations should be a useful range, where smaller samples (n < 300) should use 100 iterations, and 200-400 is more appropriate when one has larger samples. 
+The simulations can take a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Simulation experiments [@johansson_detecting_2025] indicate that 100-400 iterations should be a useful range, where smaller samples (n < 300) should use 100 iterations, and 200-400 is more appropriate when one has larger samples. To improve speed, make good use of your CPU cores.
 
 ::: {.callout-note}
 Another important finding from simulation studies is that there is a risk of false positive indication of misfit in samples larger than n = 1000 when using item infit or item-restscore. The recommended primary method for determining item fit in large samples is the bootstrapped item-restscore [@johansson_detecting_2025], as illustrated in an adjacent tab labeled "Item-restscore bootstrap" .
@@ -405,15 +411,15 @@ For reference, the simulation above, using 10 items with 5 response categories e
 
 I'll cite Ostini & Nering [-@ostini_polytomous_2006] on the description of outfit and infit (pages 86-87):
 
-> Response residuals can be summed over respondents to obtain an item fit measure. Generally, the accumulation is done with squared standardized residuals, which are then divided by the total number of respondents to obtain a mean square statistic. In this form, the statistic is referred to as an **unweighted mean square** (Masters & Wright, 1997; Wright & Masters, 1982) and has also come to be known as **“outfit”** (Smith, Schumacker, & Bush, 1998; Wu, 1997), perhaps because it is highly sensitive to outlier responses (Adams & Khoo, 1996; Smith et al., 1998; Wright & Masters, 1982).
+> Response residuals can be summed over respondents to obtain an item fit measure. Generally, the accumulation is done with squared standardized residuals, which are then divided by the total number of respondents to obtain a mean square statistic. In this form, the statistic is referred to as an **unweighted mean square** (Masters & Wright, 1997; Wright & Masters, 1982) and has also come to be known as **“outfit”** (Smith, Schumacker, & Bush, 1998; Wu, 1997) [...]
 
 > A weighted version of this statistic was developed to counteract its sensitivity to outliers (Smith, 2000). In its weighted form, the squared standardized residual is multiplied by the observed response variance and then divided by the sum of the item response variances. This is sometimes referred to as an **information weighted mean square** and has become known as **“infit”** (Smith et al., 1998; Wu, 1997).
 
-A low item fit value (sometimes referred to as an item "overfitting" the Rasch model) indicates that responses are too predictable and provide little information. This is often the case for items that are very general/broad in scope in relation to the latent variable. You will often find overfitting items to also have residual correlations with other items.
+A low item fit value (sometimes referred to as an item "overfitting" the Rasch model) indicates that responses may be too predictable. This is often the case for items that are very general/broad in scope in relation to the latent variable, for instance asking about feeling depressed in a depression questionnaire. You will often find overfitting items to also have residual correlations with other items. Overfit may be likened to having a much stronger factor loading than other items in a confirmatory factor analysis.
 
 A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret and thus has noisy response data. The latter could for instance be caused by a question that asks about two things at the same time or is ambiguous for other reasons.
 
-Outfit is not a useful method to detect item misfit, infit should be relied upon when sample sizes are appropriate [@johansson_detecting_2025].
+Outfit has been found to be a not very useful method to detect item misfit, infit should be relied upon when sample sizes are appropriate [@johansson_detecting_2025]. Outfit was removed from the output in version 0.3.9.
 
 ::: {.callout-note}
 Remember to **scroll back up and click on all tabs**.
@@ -444,7 +450,7 @@ These curves indicate item fit on a group level, where respondents are split int
 
 ```{r}
 RIciccPlot(df) +
-  guide_area() # this relocates the legend/guide
+  guide_area() # this relocates the legend/guide, which may produce a nicer output
 ```
 
 A similar visualization, even more informative and flexible, has been made available in the [`RASCHplot`](https://github.com/ERRTG/RASCHplot/) package [@buchardt_visualizing_2023]. The package needs to be installed from GitHub (see commented code below). The linked paper is recommended reading, not least for descriptions of the useful options available. Below are some sample plots showing conditional ICC's using the raw sum score.
@@ -487,13 +493,13 @@ The Conditional Likelihood Ratio Test [CLRT, @andersen_goodness_1973] is a globa
 clr_tests(df500, model = "PCM")
 ```
 
-The test is clearly statistically significant, even with the small sample, which indicates that unidimensionality does not hold. However, CLRT is sensitive to large sample sizes and number of items, and produces false positives above the nominal 5% level. See <https://pgmj.github.io/clrt.html> for a very small simulation study. To minimize the sample size issue, a non-parametric bootstrap function has been implemented in `easyRasch`, where one can set the sample size manually. The function will then sample with replacement from the response data and conduct a separate CLRT for each sample drawn. 
+The test is clearly statistically significant, even with the smaller sample, which indicates that unidimensionality does not hold. However, CLRT is sensitive to large sample sizes and number of items, and produces false positives above the nominal 5% level. See <https://pgmj.github.io/clrt.html> for a very small simulation study. To minimize the sample size issue, a non-parametric bootstrap function has been implemented in `easyRasch`, where one can set the sample size manually. The function will then sample with replacement from the response data and conduct a separate CLRT for each sample drawn. 
 
 ```{r}
 RIbootLRT(df, iterations = 1000, samplesize = 400, cpu = 8)
 ```
 
-Clearly statistically significant with the bootstrap method as well.
+The bootstrap method also shows a strong majority of statistically significant results.
 
 Global tests do not provide any information about the reason for misfit. The `iarm` package has also implemented a function to get item specific information related to the CLRT, showing observed and expected values for each item.
 
@@ -502,22 +508,38 @@ item_obsexp(PCM(df500))
 ```
 
 
-### Residual correlations
+### Local dependence (Q^3^)
 
-In order to support unidimensionality, items should only be related to each other through the latent variable. This is called "local independence". By investigating patterns in model residuals, we can determine whether items are independent or not.
+In order to support unidimensionality, items should only be related to each other through the latent variable, and otherwise be independent of each other. This is called "local independence" when fulfilled and "local dependence" (LD) when there are issues. The extreme case of dependence is when all respondents give the same response for two items. Two aspects of LD are often described [@chen_local_1997]:
 
-Similarly to item fit, we need to run simulations to get a useful cutoff threshold value for when residual correlations amongst item pairs are larger than would be expected from items that fit a unidimensional Rasch model [@christensen2017].
+1. Underlying local dependence (ULD), which is when the locally dependent items are measuring a different latent variable than the other items.
+2. Surface local dependence (SLD), when item content is very similar.
 
-The simulation/bootstrap procedure can take some time to run, depending on the complexity of your data, but it is necessary to set the appropriate cutoff value.
+By investigating patterns in model residuals, we can determine whether items are independent or not. There are several tests that can be used to assess LD, of which Yen's Q^3^ generally has good properties. Please see [@edwards_diagnostic_2018] for an overview of different methods. It is recommended to use multiple methods, since they may perform differently with different types of LD. For instance, Chen & Thissen [-@chen_local_1997] report that G^2^ is slightly more powerful than Yen's Q^3^ in detecting SLD, while the reverse is true for ULD.
+
+Similarly to item fit, we need to run simulations based on the observed data to get a useful cutoff threshold value for when residual correlations amongst item pairs are larger than would be expected from items that fit a unidimensional Rasch model [@christensen2017].
+
+The simulation/bootstrap procedure can take some time to run, depending on the complexity of your data, but it is necessary to set the appropriate cutoff value. The number of iterations to use has yet to be systematically evaluated, but I recommend no less than 500, and ideally at least 1000 as a starting point. T
 
 ```{r}
-simcor1 <- RIgetResidCor(df, iterations = 400, cpu = 8)
-RIresidcorr(df, cutoff = simcor1$p99)
+simcor1 <- RIgetResidCor(df, iterations = 500, cpu = 8)
+RIresidcorr(df, cutoff = simcor1$p995)
 ```
 
-The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations crossing the threshold compared to the average item-pair correlation (for all item-pairs) [@christensen2017]. Rasch model residual correlations (Yen's Q3) are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
+The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations crossing the threshold compared to the average item-pair correlation (for all item-pairs) [@christensen2017]. The threshold used in the example above has selected the 99.5th percentile from the simulations. The `simcor1` object also pre-calculates values for the 95th, 99th and 99.9th percentiles as well as the maximum. If you desire another percentile, you can manually calculate it from the results in the `simcor1` object using `quantile()`.
 
-### Partial gamma LD
+Rasch model residual correlations  using Yen's Q^3^ are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
+
+### Local dependence (G^2^)
+
+Rasch model residual correlations  using Chen & Thissen's G^2^ are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
+
+```{r}
+simcor_g2 <- RIgetResidCorG2(df, iterations = 500, cpu = 8)
+RIresidcorrG2(df, cutoff = simcor_g2$p995)
+```
+
+### LD (partial gamma)
 
 Another way to assess local (in)dependence is by partial gamma coefficients [@kreiner_analysis_2004]. This is also a function from the `iarm` package. See `?iarm::partgam_LD` for details.
 
@@ -547,7 +569,7 @@ Each response category for each item should have a curve that indicates it to be
 
 ### Response categories MIRT
 
-For a more compact figure.
+This produces a single figure with all items. Note that `mirt()` uses marginal maximum likelihood (MML) estimation which may produce slightly different results compared to eRm/CML when the distribution of person locations/scores are non-normal.
 
 ```{r}
 mirt(df, model=1, itemtype='Rasch', verbose = FALSE) %>% 
@@ -681,9 +703,13 @@ RIitemHierarchy(df)
 
 Items 16 & 19, and 12 & 14 show problematic residual correlations.
 
-Let's look at DIF before taking action upon this information. While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the `panel-tabset` above (on item fit, PCA, residual correlations, etc).
+Let's look at DIF before taking action upon this information. **While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the `panel-tabset` above (on item fit, PCA, residual correlations, etc).**
 
 ## DIF - differential item functioning
+
+::: {.callout-note icon="true"}
+While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the parallel analysis above (on item fit, targeting, residual correlations, etc) since DIF tests will help you understand or evaluate item functioning together with the other tests.
+:::
 
 We'll be looking at whether item (threshold) locations are stable between demographic subgroups.
 
@@ -698,13 +724,7 @@ It is important to ensure that no cells in the data are empty for subgroups when
 :::
 
 ```{r}
-#| fig-height: 5
-difPlots <- df %>% # save the output into the `difPlots` object
-  add_column(gender = dif$Sex) %>% # add the DIF variable to the dataframe
-  split(.$gender) %>% # split the data using the DIF variable
-  map(~ RItileplot(.x %>% dplyr::select(!gender)) + labs(title = .x$gender)) # create separate tileplots for each group
-
-difPlots$Female + difPlots$Male # the actual name of the plots (in this case Male/Female) will be determined by the factor labels
+RIdifTileplot(df, dif$Sex)
 ```
 
 ### Sex
@@ -771,7 +791,13 @@ No interaction effect found for sex and age. The analysis only shows the previou
 
 ### LRT-based DIF {#sec-diflrt}
 
-We'll use the group variable as an example. First, we can simply run the test to get the overall result.
+We'll use the group variable as an example. It's always important to review the response distribution across DIF groups prior to running the DIF analysis. We need to make sure that there are responses in all cells in all subgroups.
+
+```{r}
+RIdifTileplot(df, dif$Group)
+```
+
+First, we can simply run the test to get the overall result.
 
 ```{r}
 erm.out <- PCM(df)
@@ -811,13 +837,11 @@ The item threshold table shows that the top threshold for item 13 differs more t
 
 ### Conditional ICC
 
-The `iarm` package function for CICC plots also includes the option to use a DIF variable.
+The `iarm` package function for CICC plots also includes the option to use a DIF variable. This gives us information about DIF across the latent continuum when class intervals are created based on latent score groups. If your analysis contains two groups and the lines for the groups cross each other, DIF is non-uniform.
 
 ```{r}
 RIciccPlot(df, dif = "yes", dif_var = dif$Sex)
-
 ```
-
 
 ### Logistic Ordinal Regression DIF {#sec-lordif}
 

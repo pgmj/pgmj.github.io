@@ -10,3 +10,5 @@
 __*/**
 /Plots
 **/.~lock*
+
+**/*.quarto_ipynb

@@ -21,9 +21,6 @@ editor_options:
 bibliography: ttest.bib
 ---
 
-
-
-
 ## Introduction
 
 When one uses Rasch or Item Response Theory to estimate measurement values on the latent scale it is also easy to estimate an "individualized" measurement error for each value estimated. It has been suggested that a useful way to use this output when analyzing data with two repeated measurement points is to conduct one paired t-test for each individual, comparing the pre/post measurements and using their respective measurement error as the "population standard error" [@hobart_effect_2010].
@@ -41,9 +38,6 @@ The reliability of the scale/test will of course heavily influence the possibili
 Later in this post, I will present a figure describing the Test Information Function, and then a figure with the SEM values across the latent continuum.
 
 As shown in the separate post on reliability (LINK), SEM * 1.96 will contain the true value in  95% of cases.
-
-
-
 
 ::: {.cell}
 
@@ -101,15 +95,9 @@ theme_set(theme_rise())
 ```
 :::
 
-
-
-
 ## Simulating longitudinal data
 
 3 time points for later use. First, we'll focus on t1 and t3 and run the t-tests focusing on individual change.
-
-
-
 
 ::: {.cell}
 
@@ -143,13 +131,7 @@ d_long <- d %>%
 ```
 :::
 
-
-
-
 ### Simulate response data
-
-
-
 
 ::: {.cell}
 
@@ -198,15 +180,9 @@ td <- SimPartialScore(
 ```
 :::
 
-
-
-
 ### Estimating item threshold locations
 
-We could use the parameters from the input, but to add some real world usage to the setup, we'll stack the response data and estimate the item threshold locations using the `eRm` package with the Partial Credig Model and Conditional Maximum Likelihood.
-
-
-
+We could use the parameters from the input, but to add some real world usage to the setup, we'll stack the response data and estimate the item threshold locations using the `eRm` package with the Partial Credit Model and Conditional Maximum Likelihood.
 
 ::: {.cell}
 
@@ -223,15 +199,9 @@ erm_item_parameters <- erm_item_parameters - mean(erm_item_parameters)
 ```
 :::
 
-
-
-
 ### Estimating person locations and SEM
 
 Using Weighted Likelihood (Warm, 1989) to minimize bias.
-
-
-
 
 ::: {.cell}
 
@@ -247,17 +217,11 @@ d_long$erm_sem <- erm_sem
 ```
 :::
 
-
-
-
 ## Change
 
 How many have changed 0.5+ logits (the mean change simulated, also corresponding to 0.5 SD) in the generated data? This could serve as a reference.
 
 ADD: identify which ID's have changed to make a comparison later on.
-
-
-
 
 ::: {.cell}
 
@@ -375,13 +339,7 @@ d %>%
 :::
 :::
 
-
-
-
 ### Test information function
-
-
-
 
 ::: {.cell}
 
@@ -395,15 +353,9 @@ RItif(td, samplePSI = TRUE)
 :::
 
 
-
-
-
 ## t-tests of individual change
 
 Only using t1 and t3 estimated person locations/thetas and SEM values.
-
-
-
 
 ::: {.cell}
 
@@ -609,13 +561,7 @@ d %>%
 ```
 :::
 
-
-
-
 ### Linear mixed model
-
-
-
 
 ::: {.cell}
 
@@ -669,9 +615,6 @@ tt_slopes_comp %>%
 
 :::
 :::
-
-
-
 
 
 
