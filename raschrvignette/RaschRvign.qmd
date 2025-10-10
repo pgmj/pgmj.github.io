@@ -389,13 +389,13 @@ RIlistItemsMargin(df, fontsize = 13)
 ### Conditional item fit
 
 ```{r}
-simfit1 <- RIgetfit(df500, iterations = 200, cpu = 8) # save simulation output to object `simfit1`
+simfit1 <- RIgetfit(df500, iterations = 400, cpu = 8) # save simulation output to object `simfit1`
 RIitemfit(df500, simfit1)
 ```
 
 `RIitemfit()` and `RIgetfit()` both work with both dichotomous and polytomous data (using the partial credit model) and automatically selects the model based on the data structure.
 
-It is important to note that the `RIitemfit()` function uses **conditional** outfit/infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020].
+It is important to note that the `RIitemfit()` function uses **conditional** infit, which is both robust to different sample sizes and makes ZSTD unnecessary [@muller_item_2020]. Müller also questions the usefulness of outfit, and my simulation study [@johansson_detecting_2025] concluded the same. Thus, outfit is not reported any more.
 
 Since the distribution of item fit statistics are not known, we need to use simulation to determine appropriate cutoff threshold values for the current sample and items. `RIitemfit()` can also use the simulation based cutoff values and use them for conditional highlighting of misfitting items. See the [blog post on simulation based cutoffs](https://pgmj.github.io/simcutoffs.html) for some more details on this.
 
@@ -404,7 +404,7 @@ Briefly stated, the simulation uses the estimated properties of the current samp
 The simulations can take a bit of time to run if you have complex data/many items/many participants, and/or choose to use many iterations. Simulation experiments [@johansson_detecting_2025] indicate that 100-400 iterations should be a useful range, where smaller samples (n < 300) should use 100 iterations, and 200-400 is more appropriate when one has larger samples. To improve speed, make good use of your CPU cores.
 
 ::: {.callout-note}
-Another important finding from simulation studies is that there is a risk of false positive indication of misfit in samples larger than n = 1000 when using item infit or item-restscore. The recommended primary method for determining item fit in large samples is the bootstrapped item-restscore [@johansson_detecting_2025], as illustrated in an adjacent tab labeled "Item-restscore bootstrap" .
+Another important finding from simulation studies is that there is a risk of false positive indication of misfit in samples larger than n = 800 or so when using item infit or item-restscore. The recommended primary method for determining item fit in large samples is the bootstrapped item-restscore [@johansson_detecting_2025], as illustrated in an adjacent tab labeled "Item-restscore bootstrap" .
 :::
 
 For reference, the simulation above, using 10 items with 5 response categories each and 1851 respondents, takes about 24 seconds to run on 8 cpu cores (Macbook Pro M1 Max) for 400 iterations.
@@ -415,7 +415,7 @@ I'll cite Ostini & Nering [-@ostini_polytomous_2006] on the description of outfi
 
 > A weighted version of this statistic was developed to counteract its sensitivity to outliers (Smith, 2000). In its weighted form, the squared standardized residual is multiplied by the observed response variance and then divided by the sum of the item response variances. This is sometimes referred to as an **information weighted mean square** and has become known as **“infit”** (Smith et al., 1998; Wu, 1997).
 
-A low item fit value (sometimes referred to as an item "overfitting" the Rasch model) indicates that responses may be too predictable. This is often the case for items that are very general/broad in scope in relation to the latent variable, for instance asking about feeling depressed in a depression questionnaire. You will often find overfitting items to also have residual correlations with other items. Overfit may be likened to having a much stronger factor loading than other items in a confirmatory factor analysis.
+A low item fit value (sometimes referred to as an item "overfitting" the Rasch model) indicates that responses may be too predictable. This is often the case for items that are very general/broad in scope in relation to the latent variable, for instance asking about feeling depressed in a depression questionnaire. You will often find overfitting items to also have residual correlations (local dependencies) with other items. Overfit may be likened to having a much stronger factor loading than other items in a confirmatory factor analysis.
 
 A high item fit value (sometimes referred to as "underfitting" the Rasch model) can indicate several things, often multidimensionality or a question that is difficult to interpret and thus has noisy response data. The latter could for instance be caused by a question that asks about two things at the same time or is ambiguous for other reasons.
 
@@ -1014,15 +1014,14 @@ There are several item thresholds that are very closely located, as shown in the
 ## Reliability
 
 ```{r}
-#| fig-height: 6
-RItif(df)
+RIreliability(df)
 ```
 
-The figure above shows the Test Information Function (TIF), which indicates the reliability of all items making up the test/scale (not the reliability of the sample).
+Reliability (or measurement uncertainty) is often reported as a point estimate only, which implies constant reliability across the latent variables. This does not reflect the targeting aspect and the limitations of reliability at the outskirts of the measure. One way to try to better describe the varying reliability is by using the Test Information Function (TIF), which is curve. I have previously advocated for reporting the TIF curve, but have also found some unexpected results when using it. When I finally sat down to try to figure out the issues with TIF, I found a paper showing that it behaves quite erratically, especially with few items [@milanzi_reliability_2015]. While the `RItif()` function remains, I advice careful use of it. The new (since `easyRasch` 0.4.0) function `RIreliability()` will produce several point estimates of reliability. One of these is based on a recent preprint [@bignardi_general_2025] which describes a general reliability metric that includes uncertainty around the point estimate, called RMU, "Relative Measurement Uncertainty". Bignardi and colleagues use Bayesian estimation and posterior draws of each respondents latent scores (thetas/locations) to determine the mean and 95% highest density continuous interval (HDCI) of the distribution of correlations between draws [@bignardi_general_2025]. I have adapted code that the authors made available, and adapted it to simpler use by grace of the `TAM` package and its function to generate plausible values [@mislevy_randomization-based_1991;@wu_role_2005] instead of having to learn to specify Bayesian models. Preliminary investigations indicate similar results, see the example code in the documentation `?RIreliability` for an example.
 
-The default cutoff value used in `RItif()` is TIF = 3.33, which roughly corresponds to person separation index (PSI) = 0.7 (although this is not always the case). PSI is similar to reliability coefficients such as omega and alpha, ranging from 0 to 1. You can change the TIF cutoff by using the option `cutoff`, for instance `cutoff = 2.5` (TIF values range from 1 and up).
+In addition to the RMU, `RIreliability()` outputs the Person Separation Index (PSI), the Expected A Posteriori (EAP), and a table with SEM values from the WL estimation. I suggest reporting PSI, EAP and RMU in publications. Also, the default setting is to use 1000 plausible values, and I think it would be prudent to use something like 4000 for a publication. Maybe more.
 
-While 11.8% of respondents had a floor effect based on the raw sum scored data, the figure above shows us that 41.8% are located below the point where the items produce a PSI of 0.7 or higher. Again, note that this figure shows the reliability of the test/scale, not the sample. If you want to add the sample reliability use option `samplePSI = TRUE`. More details are available in the documentation `?RItif`.
+To me, there are some outstanding issues with the reliability metrics produced by `RIreliability()`. For one, the TIF curve was based on item parameters, describing the test reliability. All point estimates are sample specific, describing the sample reliability. I think both are relevant, depending on what you are doing. For validating a measure, it would be most interesting to present the measures reliability. Also, it would be very neat to have a non-constant metric that describes the test reliability. And I still believe that a reliability curve would be optimal, rather than a point estimate with or without uncertainty interval. One way to look at this would be to use the estimated standard error of measurement from the Weighted Likelihood Estimation of person locations/scores, since these are varying across the latent continuum. A recent paper [@mcneish_reliability_2025], focusing on factor analysis, also arguing for the relevance of a conditional reliability
 
 ## Person fit
 
