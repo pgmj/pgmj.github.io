@@ -1014,16 +1014,41 @@ There are several item thresholds that are very closely located, as shown in the
 ## Reliability
 
 ```{r}
-RIreliability(df)
+rel <- RIreliability(df)
+
+rel$PSI
+rel$EAP
+rel$RMU
 ```
 
-Reliability (or measurement uncertainty) is often reported as a point estimate only, which implies constant reliability across the latent variable. This does not reflect the targeting aspect and the limitations of reliability at the outskirts of the measure. One way to try to better describe the varying reliability is by using the Test Information Function (TIF), which is a curve. I have previously advocated for reporting the TIF curve, but have also found some unexpected results when using it. When I finally sat down to try to figure out the issues with TIF, I found a paper showing that it behaves quite erratically, especially with few items [@milanzi_reliability_2015]. While the `RItif()` function remains, I advice careful use of it. 
+Reliability (or measurement uncertainty) is often reported as a point estimate only, which implies constant reliability across the latent variable. This does not reflect the targeting aspect and the limitations of reliability at the outskirts of the measure. One way to try to better describe the varying reliability is by using the Test Information Function (TIF), which is a curve. I have previously advocated for reporting the TIF curve, but have also found some unexpected results when using it. When I finally sat down to try to figure out the issues with TIF, I found a paper showing that it behaves quite erratically, especially with few items [@milanzi_reliability_2015]. While the `RItif()` function remains, I recommend careful use of it.
 
-The new (since `easyRasch` 0.4.0) function `RIreliability()` will produce several point estimates of reliability. One of these is based on a recent preprint [@bignardi_general_2025] which describes a general reliability metric that includes uncertainty around the point estimate, called RMU, "Relative Measurement Uncertainty". Bignardi and colleagues use Bayesian estimation and posterior draws of each respondents latent scores (thetas/locations) to determine the mean and 95% highest density continuous interval (HDCI) of the distribution of correlations between draws [@bignardi_general_2025]. I have adapted code that the authors made available, and adapted it to simpler use by grace of the `TAM` package and its function to generate plausible values [@mislevy_randomization-based_1991;@wu_role_2005] instead of having to learn to specify Bayesian models. Preliminary investigations indicate similar results, see the example code in the documentation `?RIreliability` for an example.
+The new (since `easyRasch` 0.4.0) function `RIreliability()` will produce several point estimates of reliability. The potentially most useful metric is a new one, based on a recent preprint [@bignardi_general_2025] which describes a general reliability metric that includes uncertainty around the point estimate, called RMU, "Relative Measurement Uncertainty". Bignardi and colleagues use Bayesian estimation and posterior draws of each respondents latent scores (thetas/locations) to determine the mean and 95% highest density continuous interval (HDCI) of the distribution of correlations between draws [@bignardi_general_2025]. I have adapted code that the authors made available, and adapted it to simpler use by grace of the `TAM` package and its function to generate plausible values [@mislevy_randomization-based_1991;@wu_role_2005] instead of having to learn to specify Bayesian models. Preliminary investigations indicate similar results, see the example code in the documentation `?RIreliability` for an example.
 
 In addition to the RMU, `RIreliability()` outputs the Person Separation Index (PSI), the Expected A Posteriori (EAP), and a table with SEM values from the WL estimation. I suggest reporting PSI, EAP and RMU in publications. Also, the default setting is to use 1000 plausible values, and I think it would be prudent to use something like 4000 for a publication. Maybe more.
 
-To me, there are some outstanding issues with the reliability metrics produced by `RIreliability()`. For one, the TIF curve was based on item parameters, describing the test reliability. All point estimates are sample specific, describing the sample reliability. I think both are relevant, depending on what you are doing. For validating a measure, it would be most interesting to present the measures reliability. Also, it would be very neat to have a non-constant metric that describes the test reliability. And I still believe that a reliability curve would be optimal, rather than a point estimate with or without uncertainty interval. One way to look at this would be to use the estimated standard error of measurement from the Weighted Likelihood Estimation of person locations/scores, since these are varying across the latent continuum. A recent paper [@mcneish_reliability_2025], focusing on factor analysis, also arguing for the relevance of a conditional reliability
+### Conditional reliability
+
+Another recent paper [@mcneish_reliability_2025] advocates for the relevance of a conditional reliability, which I think is a useful addition to the RMU metric presented above. I have again borrowed code from another open source project, namely the [`dynamic` R package](https://github.com/melissagwolf/dynamic/). `RIrelRep()` produces a Cronbach's alpha point estimate with a confidence interval and a conditional reliability curve showing varying levels of alpha across the ordinal sum score range. Alpha is a criticized metric [e.g @sijtsma_use_2008;@mcneish_thanks_2018], so again interpret this with care. One of alpha's issues is the assumption of tau-equivalence (equal factor loadings or discrimination parameters across all items), which is only fulfilled by the Rasch model. The `RIrelRep()` function also has an option for using omega instead of alpha, see the tab "Omega" below.
+
+::: panel-tabset
+#### Figure
+```{r}
+relrep <- RIrelRep(df)
+```
+#### Table
+```{r}
+relrep$stat
+relrep$table
+```
+#### Omega
+As a comparison, we can also get conditional omega.
+```{r}
+rr_omega <- RIrelRep(df, rel = "omega")
+```
+:::
+
+To me, there is one outstanding issue with the reliability metrics discussed and presented above. The TIF curve was based on item parameters, describing the test reliability. All estimates above are sample specific, describing the sample reliability. I think both are relevant, depending on what you are doing. For validating a measure, it would be interesting to present the measure's reliability.
 
 ## Person fit
 
