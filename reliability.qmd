@@ -1,0 +1,280 @@
+---
+title: "Reliability in Rasch models"
+subtitle: "Comparison of methods & Bayesian Rasch"
+author:
+  name: 'Magnus Johansson'
+  affiliation: 'Karolinska Institutet'
+  orcid: '0000-0003-1669-592X'
+date: 2025-10-11
+date-format: iso
+google-scholar: true
+citation:
+  type: 'webpage'
+format: 
+  html:
+    code-fold: true
+execute: 
+  cache: true
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+#bibliography: est_comp.bib
+---
+
+## Background
+
+Bignardi, G., Kievit, R., & Bürkner, P.-C. (2025). A general method for estimating reliability using Bayesian Measurement Uncertainty. OSF. https://doi.org/10.31234/osf.io/h54k8_v1
+
+Bürkner, P.-C. (2021). Bayesian Item Response Modeling in R with brms and Stan. Journal of Statistical Software, 100, 1–54. https://doi.org/10.18637/jss.v100.i05
+
+
+```{r}
+library(tidyverse)
+library(easyRasch)
+library(brms)
+library(qs2)
+```
+
+## Method
+
+We won't check model fit, just assuming things work here, to see how the reliability metrics compare and how you specify Rasch models using `brms`. Default priors are used initially, which is not recommended.
+
+## Rasch dichotomous model
+
+
+
+### Bayesian
+
+```{r}
+#| eval: false
+df <- eRm::raschdat1[,1:20] %>%
+  rownames_to_column("id") %>%
+  pivot_longer(!id, names_to = "item")
+
+brms_rasch = brm(
+  value ~ 1 + (1 | item) + (1 | id),
+  data    = df,
+  chains  = 4,
+  cores   = 4,
+  iter = 2000,
+  family = "bernoulli"
+)
+qs_save(brms_rasch, file = "brms_rasch4000.qs2")
+```
+
+
+```{r}
+brms_rasch8000 <- qs_read("brms_rasch8000.qs2")
+brms_rasch4000 <- qs_read("brms_rasch4000.qs2")
+
+# summary(brms_rasch)
+# loo(brms_rasch)
+
+posterior_draws_rm4000 = brms_rasch4000 %>%
+  as_draws_df() %>%
+  select(starts_with("r_id")) %>%
+  t()
+
+posterior_draws_rm8000 = brms_rasch8000 %>%
+  as_draws_df() %>%
+  select(starts_with("r_id")) %>%
+  t()
+```
+
+### Compare to plausible values
+
+```{r}
+#| echo: false
+RMUreliability(posterior_draws_rm4000)
+RMUreliability(posterior_draws_rm8000)
+
+rr_rm <- RIreliability(eRm::raschdat1[,1:20], draws = 4000)
+qs_save(rr_rm, file = "rr_rm.qs2")
+
+rr_rm$RMU
+rr_rm$EAP
+rr_rm$PSI
+
+rr_rm8000 <- RIreliability(eRm::raschdat1[,1:20], draws = 8000)
+qs_save(rr_rm8000, file = "rr_rm8000.qs2")
+rr_rm8000$RMU
+```
+
+### Conditional reliability
+
+```{r}
+RIrelRep(eRm::raschdat1[,1:20])$plot
+RIrelRep(eRm::raschdat1[,1:20], rel = "omega")$plot
+```
+
+
+### Summary table
+
+The `brms` model uses 
+
+```{r}
+data.frame(Metric = c("RMU Bayes 4000","RMU Bayes 8000","RMU PV 4000","RMU PV 8000","EAP","PSI","Alpha","Omega"),
+           Estimate = c("0.750, 95% HDCI [0.679, 0.819]",
+                        "0.750, 95% HDCI [0.682, 0.823]",
+                        "0.751, 95% HDCI [0.683, 0.818]",
+                        "0.754, 95% HDCI [0.686, 0.821]",
+                        "0.749",
+                        "0.747",
+                        "0.75 95% CrI [0.68,0.82]",
+                        "0.72 95% CrI [0.64,0.79]")
+           ) %>% 
+  knitr::kable()
+```
+
+
+## Partial credit model
+
+Polytomous/ordinal data. 
+
+### Bayesian
+
+To get a PCM, we need family "acat", which defaults to use logit link.
+
+By using `(cs(1) | item)` in the model spec, we get item varying thresholds.
+
+```{r}
+#| eval: false
+df2 <- pcmdat2 %>%
+  mutate(across(everything(), ~ .x + 1)) %>% # lowest category needs to be 1, unlike most Rasch packages that use 0
+  rownames_to_column("id") %>%
+  pivot_longer(!id, names_to = "item")
+
+brms_pcm = brm(
+  value | thres(gr = item) ~ 1 + (1 | id),
+  data    = df2,
+  chains  = 4,
+  cores   = 4,
+  iter = 2000,
+  family = "acat",
+  control = list(adapt_delta = 0.99)
+)
+loo(brms_pcm)
+
+qs_save(brms_pcm, file = "brms_pcm.qs2")
+```
+
+
+```{r}
+brms_pcm <- qs_read("brms_pcm.qs2")
+
+summary(brms_pcm)
+(brms_pcm_loo <- loo(brms_pcm))
+
+mcmc_plot(brms_pcm)
+
+posterior_draws_pcm = brms_pcm %>%
+  as_draws_df() %>%
+  select(starts_with("r_id")) %>%
+  t()
+```
+
+
+### Compare to plausible values
+
+```{r}
+RMUreliability(posterior_draws_pcm)
+
+rr_pcm <- RIreliability(eRm::pcmdat2, draws = 4000)
+qs_save(rr_pcm, file = "rr_pcm.qs2")
+rr_pcm$RMU
+rr_pcm$EAP
+rr_pcm$PSI
+```
+
+### Conditional reliability
+
+```{r}
+RIrelRep(eRm::pcmdat2)$plot
+RIrelRep(eRm::pcmdat2, rel = "omega")$plot
+```
+
+```{r}
+data.frame(Metric = c("RMU Bayes 4000","RMU PV 4000","EAP","PSI","Alpha","Omega"),
+           Estimate = c("0.670, 95% HDCI [0.610, 0.723]",
+                        "0.664, 95% HDCI [0.612, 0.713]",
+                        "0.669",
+                        "0.380",
+                        "0.66 95% CrI [0.59,0.72]",
+                        "0.63 95% CrI [0.57,0.70]")
+           ) %>% 
+  knitr::kable()
+```
+
+
+```{r}
+
+prior_pcm <- prior("normal(0, 3)", class = "Intercept") +
+  prior("normal(0, 3)", class = "sd", group = "id")
+
+get_prior(value | thres(gr = item) ~ 1 + (1 | id),
+  data    = df2,
+  family = "acat")
+
+brms_pcm2 = brm(
+  value | thres(gr = item) ~ 1 + (1 | id),
+  data    = df2,
+  prior = prior_pcm,
+  chains  = 4,
+  cores   = 4,
+  iter = 2000,
+  family = "acat",
+  control = list(adapt_delta = 0.99)
+)
+
+loo(brms_pcm2)
+plot(brms_pcm)
+#conditional_effects(brms_pcm, effects = "item")
+```
+
+checking item fit
+
+```{r}
+#pp_check(brms_pcm, type = "error_scatter_avg", group = "item")
+RIrestscore(pcmdat2)
+simfit <- RIgetfit(pcmdat2, iterations = 200, cpu = 8)
+RIitemfit(pcmdat2, simfit)
+
+pp_check(brms_pcm, type = "pit_ecdf_grouped", group = "item")
+pp_check(brms_pcm, type = "error_scatter_avg_grouped", group = "item")
+
+pp_check(brms_pcm, type = "km_overlay_grouped", group = "item", extrapolation_factor = Inf)
+pp_check(brms_pcm, type = "stat_freqpoly_grouped", group = "item")
+pp_check(brms_pcm, type = "bars_grouped", group = "item")
+pp_check(brms_pcm, type = "ecdf_overlay_grouped", group = "item", ndraws = 100)
+pp_check(brms_pcm, type = "intervals_grouped", group = "item")
+pp_check(brms_pcm, type = "ribbon_grouped", group = "item")
+
+
+
+```
+
+Item threshold locations
+
+```{r}
+mcmc_plot(brms_pcm)
+RItargeting(pcmdat2)
+```
+
+
+```{r}
+library(reliabilitydiag)
+
+calibration_plot <- \(fit, i) {
+  rd=reliabilitydiag(EMOS = E_loo((matrix(as.integer(posterior_predict(fit)),nrow=4000)<=i)+0,
+                                  loo(fit)$psis_object)$value,
+                     y = as.numeric(friends$friendship_importance<=i))
+  autoplot(rd)+
+    labs(x=paste0("Predicted probability of outcome <= ", i),
+         y="Conditional event probabilities")+
+    bayesplot::theme_default(base_family = "sans", base_size=16)
+}
+
+calibration_plot(brms_pcm, 1)
+```
+

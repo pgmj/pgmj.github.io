@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.8.24">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Magnus Johansson">
-<meta name="dcterms.date" content="2025-10-11">
+<meta name="dcterms.date" content="2025-10-15">
 <title>easyRasch vignette – R, Rasch, etc</title>
 <style>
 code{white-space: pre-wrap;}
@@ -131,10 +131,10 @@ div.csl-indent {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="citation_title" content="easyRasch vignette">
 <meta name="citation_author" content="Magnus Johansson">
-<meta name="citation_publication_date" content="2025-10-11">
-<meta name="citation_cover_date" content="2025-10-11">
+<meta name="citation_publication_date" content="2025-10-15">
+<meta name="citation_cover_date" content="2025-10-15">
 <meta name="citation_year" content="2025">
-<meta name="citation_online_date" content="2025-10-11">
+<meta name="citation_online_date" content="2025-10-15">
 <meta name="citation_language" content="en">
 <meta name="citation_reference" content="citation_title=Thanks coefficient alpha, we’ll take it from here.;,citation_abstract=Empirical studies in psychology commonly report Cronbach’s alpha as a measure of internal consistency reliability despite the fact that many methodological studies have shown that Cronbach’s alpha is riddled with problems stemming from unrealistic assumptions. In many circumstances, violating these assumptions yields estimates of reliability that are too small, making measures look less reliable than they actually are. Although methodological critiques of Cronbach’s alpha are being cited with increasing frequency in empirical studies, in this tutorial we discuss how the trend is not necessarily improving methodology used in the literature. That is, many studies continue to use Cronbach’s alpha without regard for its assumptions or merely cite methodological articles advising against its use to rationalize unfavorable Cronbach’s alpha estimates. This tutorial first provides evidence that recommendations against Cronbach’s alpha have not appreciably changed how empirical studies report reliability. Then, we summarize the drawbacks of Cronbach’s alpha conceptually without relying on mathematical or simulation-based arguments so that these arguments are accessible to a broad audience. We continue by discussing several alternative measures that make less rigid assumptions which provide justifiably higher estimates of reliability compared to Cronbach’s alpha. We conclude with empirical examples to illustrate advantages of alternative measures of reliability including omega total, Revelle’s omega total, the greatest lower bound, and Coefficient H. A detailed software appendix is also provided to help researchers implement alternative methods.;,citation_author=Daniel McNeish;,citation_publication_date=2018-09;,citation_cover_date=2018-09;,citation_year=2018;,citation_fulltext_html_url=http://doi.apa.org/getdoi.cfm?doi=10.1037/met0000144;,citation_issue=3;,citation_doi=10.1037/met0000144;,citation_issn=1939-1463, 1082-989X;,citation_volume=23;,citation_journal_title=Psychological Methods;">
 <meta name="citation_reference" content="citation_title=On the Use, the Misuse, and the Very Limited Usefulness of&nbsp;Cronbach’s Alpha;,citation_abstract=This discussion paper argues that both the use of Cronbach’s alpha as a reliability estimate and as a measure of internal consistency suffer from major problems. First, alpha always has a value, which cannot be equal to the test score’s reliability given the interitem covariance matrix and the usual assumptions about measurement error. Second, in practice, alpha is used more often as a measure of the test’s internal consistency than as an estimate of reliability. However, it can be shown easily that alpha is unrelated to the internal structure of the test. It is further discussed that statistics based on a single test administration do not convey much information about the accuracy of individuals’ test performance. The paper ends with a list of conclusions about the usefulness of alpha.;,citation_author=Klaas Sijtsma;,citation_publication_date=2008-12;,citation_cover_date=2008-12;,citation_year=2008;,citation_fulltext_html_url=https://doi.org/10.1007/s11336-008-9101-0;,citation_issue=1;,citation_doi=10.1007/s11336-008-9101-0;,citation_issn=1860-0980;,citation_volume=74;,citation_journal_title=Psychometrika;">
@@ -406,7 +406,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 11, 2025</p>
+      <p class="date">October 15, 2025</p>
     </div>
   </div>
   
@@ -5092,12 +5092,13 @@ Jittery
 <pre><code>[1] "RMU = 0.809 (95% HDCI [0.794, 0.821])"</code></pre>
 </div>
 </div>
-<p>Reliability (or measurement uncertainty) is often reported as a point estimate only, which implies constant reliability across the latent variable. This does not reflect the targeting aspect and the limitations of reliability at the outskirts of the measure. One way to try to better describe the varying reliability is by using the Test Information Function (TIF), which is a curve. I have previously advocated for reporting the TIF curve, but have also found some unexpected results when using it. When I finally sat down to try to figure out the issues with TIF, I found a paper showing that it behaves quite erratically, especially with few items <span class="citation" data-cites="milanzi_reliability_2015">(<a href="#ref-milanzi_reliability_2015" role="doc-biblioref">Milanzi et al., 2015</a>)</span>. While the <code><a href="https://pgmj.github.io/easyRasch/reference/RItif.html">RItif()</a></code> function remains, I recommend careful use of it.</p>
-<p>The new (since <code>easyRasch</code> 0.4.0) function <code><a href="https://pgmj.github.io/easyRasch/reference/RIreliability.html">RIreliability()</a></code> will produce several point estimates of reliability. The potentially most useful metric is a new one, based on a recent preprint <span class="citation" data-cites="bignardi_general_2025">(<a href="#ref-bignardi_general_2025" role="doc-biblioref">Bignardi et al., 2025</a>)</span> which describes a general reliability metric that includes uncertainty around the point estimate, called RMU, “Relative Measurement Uncertainty”. Bignardi and colleagues use Bayesian estimation and posterior draws of each respondents latent scores (thetas/locations) to determine the mean and 95% highest density continuous interval (HDCI) of the distribution of correlations between draws <span class="citation" data-cites="bignardi_general_2025">(<a href="#ref-bignardi_general_2025" role="doc-biblioref">Bignardi et al., 2025</a>)</span>. I have adapted code that the authors made available, and adapted it to simpler use by grace of the <code>TAM</code> package and its function to generate plausible values <span class="citation" data-cites="mislevy_randomization-based_1991 wu_role_2005">(<a href="#ref-mislevy_randomization-based_1991" role="doc-biblioref">Mislevy, 1991</a>; <a href="#ref-wu_role_2005" role="doc-biblioref">Wu, 2005</a>)</span> instead of having to learn to specify Bayesian models. Preliminary investigations indicate similar results, see the example code in the documentation <code><a href="https://pgmj.github.io/easyRasch/reference/RIreliability.html">?RIreliability</a></code> for an example.</p>
-<p>In addition to the RMU, <code><a href="https://pgmj.github.io/easyRasch/reference/RIreliability.html">RIreliability()</a></code> outputs the Person Separation Index (PSI), the Expected A Posteriori (EAP), and a table with SEM values from the WL estimation. I suggest reporting PSI, EAP and RMU in publications. Also, the default setting is to use 1000 plausible values, and I think it would be prudent to use something like 4000 for a publication. Maybe more.</p>
+<p>Reliability (or measurement uncertainty) is often reported as a point estimate only, which implies constant reliability across the latent variable. This does not reflect the targeting aspect and the limitations of reliability at the outskirts of the measure. One way to try to better describe the varying reliability is by using the Test Information Function (TIF), which is a curve. I have previously advocated for reporting the TIF curve, but have also found some unexpected results when using it. When I finally sat down to try to figure out the issues with TIF, I found a paper showing that it behaves quite erratically, especially with few items <span class="citation" data-cites="milanzi_reliability_2015">(<a href="#ref-milanzi_reliability_2015" role="doc-biblioref">Milanzi et al., 2015</a>)</span>. While the <code><a href="https://pgmj.github.io/easyRasch/reference/RItif.html">RItif()</a></code> function remains, I recommend careful use of it, or perhaps not using it at all.</p>
+<p>The most commonly used reliability metric in Rasch analysis is the PSI, person separation index. It is important to note that the PSI excludes extreme values (min/max scores), which explains why it is sometimes quite different from other metrics. The reason for this is that extreme scores cannot be estimated, they need to be imputed/interpolated along with their corresponding measurement error, which is what is used in the PSI metric.</p>
+<p>The new (since <code>easyRasch</code> 0.4.0) function <code><a href="https://pgmj.github.io/easyRasch/reference/RIreliability.html">RIreliability()</a></code> will produce several point estimates of reliability. The potentially most useful metric is a new one, based on a recent preprint <span class="citation" data-cites="bignardi_general_2025">(<a href="#ref-bignardi_general_2025" role="doc-biblioref">Bignardi et al., 2025</a>)</span> which describes a general reliability metric that includes uncertainty around the point estimate, called RMU, “Relative Measurement Uncertainty”. Bignardi and colleagues use Bayesian estimation and posterior draws of each respondents latent scores (thetas/locations) to determine the mean and 95% highest density continuous interval (HDCI) of the distribution of correlations between draws <span class="citation" data-cites="bignardi_general_2025">(<a href="#ref-bignardi_general_2025" role="doc-biblioref">Bignardi et al., 2025</a>)</span>. I have borrowed code that the authors made available, and adapted it to simplify the use by grace of the <code>TAM</code> package and its function to generate plausible values <span class="citation" data-cites="mislevy_randomization-based_1991 wu_role_2005">(<a href="#ref-mislevy_randomization-based_1991" role="doc-biblioref">Mislevy, 1991</a>; <a href="#ref-wu_role_2005" role="doc-biblioref">Wu, 2005</a>)</span> instead of having to learn to specify Bayesian models. Preliminary investigations indicate similar results for PVs and fully Bayesian model posteriors, see the example code in the documentation <code><a href="https://pgmj.github.io/easyRasch/reference/RIreliability.html">?RIreliability</a></code> for an example. It seems that RMU is similar, if not identical, to EAP as a point estimate, as more PVs/posterior draws are being used. The 95% HDCI is a useful addition, and by using PVs, extreme values are included in a reasonable way.</p>
+<p>In addition to the RMU, <code><a href="https://pgmj.github.io/easyRasch/reference/RIreliability.html">RIreliability()</a></code> outputs the Person Separation Index (PSI), the Expected A Posteriori (EAP), and a table with SEM values from the WL estimation. I suggest reporting RMU in publications. Also, the default setting is to use 1000 plausible values, and I think it would be prudent to use something like 4000 for a publication. Maybe more.</p>
 <section id="conditional-reliability" class="level3" data-number="7.1"><h3 data-number="7.1" class="anchored" data-anchor-id="conditional-reliability">
 <span class="header-section-number">7.1</span> Conditional reliability</h3>
-<p>Another recent paper <span class="citation" data-cites="mcneish_reliability_2025">(<a href="#ref-mcneish_reliability_2025" role="doc-biblioref">McNeish &amp; Dumas, 2025</a>)</span> advocates for the relevance of a conditional reliability, which I think is a useful addition to the RMU metric presented above. I have again borrowed code from another open source project, namely the <a href="https://github.com/melissagwolf/dynamic/"><code>dynamic</code> R package</a>. <code><a href="https://pgmj.github.io/easyRasch/reference/RelRep.html">RIrelRep()</a></code> produces a Cronbach’s alpha point estimate with a confidence interval and a conditional reliability curve showing varying levels of alpha across the ordinal sum score range. Alpha is a criticized metric <span class="citation" data-cites="sijtsma_use_2008 mcneish_thanks_2018">(<a href="#ref-mcneish_thanks_2018" role="doc-biblioref">McNeish, 2018</a>; e.g <a href="#ref-sijtsma_use_2008" role="doc-biblioref">Sijtsma, 2008</a>)</span>, so again interpret this with care. One of alpha’s issues is the assumption of tau-equivalence (equal factor loadings or discrimination parameters across all items), which is only fulfilled by the Rasch model. The <code><a href="https://pgmj.github.io/easyRasch/reference/RelRep.html">RIrelRep()</a></code> function also has an option for using omega instead of alpha, see the tab “Omega” below.</p>
+<p>Another recent paper <span class="citation" data-cites="mcneish_reliability_2025">(<a href="#ref-mcneish_reliability_2025" role="doc-biblioref">McNeish &amp; Dumas, 2025</a>)</span> advocates for the relevance of a conditional reliability, which I think is a useful addition to the RMU metric presented above. I have again borrowed code from another open source project, namely the <a href="https://github.com/melissagwolf/dynamic/"><code>dynamic</code> R package</a>. <code><a href="https://pgmj.github.io/easyRasch/reference/RelRep.html">RIrelRep()</a></code> produces a Cronbach’s alpha point estimate with a confidence interval and a conditional reliability curve showing varying levels of alpha across the ordinal sum score range. Alpha is a criticized metric <span class="citation" data-cites="sijtsma_use_2008 mcneish_thanks_2018">(<a href="#ref-mcneish_thanks_2018" role="doc-biblioref">McNeish, 2018</a>; e.g <a href="#ref-sijtsma_use_2008" role="doc-biblioref">Sijtsma, 2008</a>)</span>, so again interpret this with care. One of alpha’s issues is the assumption of tau-equivalence (equal factor loadings or discrimination parameters across all items), which is only fulfilled by the Rasch model, and also requires local independence of item. Alpha is a metric for ordinal sum scores, not estimated interval scores. The <code><a href="https://pgmj.github.io/easyRasch/reference/RelRep.html">RIrelRep()</a></code> function also has an option for using omega instead of alpha, see the tab “Omega” below.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
 <li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Figure</a></li>
@@ -6518,12 +6519,12 @@ Zhu, H. (2024). <em><span class="nocase">kableExtra</span>: Construct complex ta
 </div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{johansson2025,
   author = {Johansson, Magnus},
   title = {easyRasch Vignette},
-  date = {2025-10-11},
+  date = {2025-10-15},
   url = {https://pgmj.github.io/raschrvignette/RaschRvign.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johansson2025" class="csl-entry quarto-appendix-citeas" role="listitem">
-Johansson, M. (2025, October 11). <em>easyRasch vignette</em>. <a href="https://pgmj.github.io/raschrvignette/RaschRvign.html">https://pgmj.github.io/raschrvignette/RaschRvign.html</a>
+Johansson, M. (2025, October 15). <em>easyRasch vignette</em>. <a href="https://pgmj.github.io/raschrvignette/RaschRvign.html">https://pgmj.github.io/raschrvignette/RaschRvign.html</a>
 </div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -8023,234 +8024,236 @@ Johansson, M. (2025, October 11). <em>easyRasch vignette</em>. <a href="https://
 <span id="cb135-1188"><a href="#cb135-1188" aria-hidden="true" tabindex="-1"></a>rel<span class="sc">$</span>RMU</span>
 <span id="cb135-1189"><a href="#cb135-1189" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1190"><a href="#cb135-1190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1191"><a href="#cb135-1191" aria-hidden="true" tabindex="-1"></a>Reliability (or measurement uncertainty) is often reported as a point estimate only, which implies constant reliability across the latent variable. This does not reflect the targeting aspect and the limitations of reliability at the outskirts of the measure. One way to try to better describe the varying reliability is by using the Test Information Function (TIF), which is a curve. I have previously advocated for reporting the TIF curve, but have also found some unexpected results when using it. When I finally sat down to try to figure out the issues with TIF, I found a paper showing that it behaves quite erratically, especially with few items <span class="co">[</span><span class="ot">@milanzi_reliability_2015</span><span class="co">]</span>. While the <span class="in">`RItif()`</span> function remains, I recommend careful use of it.</span>
+<span id="cb135-1191"><a href="#cb135-1191" aria-hidden="true" tabindex="-1"></a>Reliability (or measurement uncertainty) is often reported as a point estimate only, which implies constant reliability across the latent variable. This does not reflect the targeting aspect and the limitations of reliability at the outskirts of the measure. One way to try to better describe the varying reliability is by using the Test Information Function (TIF), which is a curve. I have previously advocated for reporting the TIF curve, but have also found some unexpected results when using it. When I finally sat down to try to figure out the issues with TIF, I found a paper showing that it behaves quite erratically, especially with few items <span class="co">[</span><span class="ot">@milanzi_reliability_2015</span><span class="co">]</span>. While the <span class="in">`RItif()`</span> function remains, I recommend careful use of it, or perhaps not using it at all.</span>
 <span id="cb135-1192"><a href="#cb135-1192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1193"><a href="#cb135-1193" aria-hidden="true" tabindex="-1"></a>The new (since <span class="in">`easyRasch`</span> 0.4.0) function <span class="in">`RIreliability()`</span> will produce several point estimates of reliability. The potentially most useful metric is a new one, based on a recent preprint <span class="co">[</span><span class="ot">@bignardi_general_2025</span><span class="co">]</span> which describes a general reliability metric that includes uncertainty around the point estimate, called RMU, "Relative Measurement Uncertainty". Bignardi and colleagues use Bayesian estimation and posterior draws of each respondents latent scores (thetas/locations) to determine the mean and 95% highest density continuous interval (HDCI) of the distribution of correlations between draws <span class="co">[</span><span class="ot">@bignardi_general_2025</span><span class="co">]</span>. I have adapted code that the authors made available, and adapted it to simpler use by grace of the <span class="in">`TAM`</span> package and its function to generate plausible values <span class="co">[</span><span class="ot">@mislevy_randomization-based_1991;@wu_role_2005</span><span class="co">]</span> instead of having to learn to specify Bayesian models. Preliminary investigations indicate similar results, see the example code in the documentation <span class="in">`?RIreliability`</span> for an example.</span>
+<span id="cb135-1193"><a href="#cb135-1193" aria-hidden="true" tabindex="-1"></a>The most commonly used reliability metric in Rasch analysis is the PSI, person separation index. It is important to note that the PSI excludes extreme values (min/max scores), which explains why it is sometimes quite different from other metrics. The reason for this is that extreme scores cannot be estimated, they need to be imputed/interpolated along with their corresponding measurement error, which is what is used in the PSI metric.</span>
 <span id="cb135-1194"><a href="#cb135-1194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1195"><a href="#cb135-1195" aria-hidden="true" tabindex="-1"></a>In addition to the RMU, <span class="in">`RIreliability()`</span> outputs the Person Separation Index (PSI), the Expected A Posteriori (EAP), and a table with SEM values from the WL estimation. I suggest reporting PSI, EAP and RMU in publications. Also, the default setting is to use 1000 plausible values, and I think it would be prudent to use something like 4000 for a publication. Maybe more.</span>
+<span id="cb135-1195"><a href="#cb135-1195" aria-hidden="true" tabindex="-1"></a>The new (since <span class="in">`easyRasch`</span> 0.4.0) function <span class="in">`RIreliability()`</span> will produce several point estimates of reliability. The potentially most useful metric is a new one, based on a recent preprint <span class="co">[</span><span class="ot">@bignardi_general_2025</span><span class="co">]</span> which describes a general reliability metric that includes uncertainty around the point estimate, called RMU, "Relative Measurement Uncertainty". Bignardi and colleagues use Bayesian estimation and posterior draws of each respondents latent scores (thetas/locations) to determine the mean and 95% highest density continuous interval (HDCI) of the distribution of correlations between draws <span class="co">[</span><span class="ot">@bignardi_general_2025</span><span class="co">]</span>. I have borrowed code that the authors made available, and adapted it to simplify the use by grace of the <span class="in">`TAM`</span> package and its function to generate plausible values <span class="co">[</span><span class="ot">@mislevy_randomization-based_1991;@wu_role_2005</span><span class="co">]</span> instead of having to learn to specify Bayesian models. Preliminary investigations indicate similar results for PVs and fully Bayesian model posteriors, see the example code in the documentation <span class="in">`?RIreliability`</span> for an example. It seems that RMU is similar, if not identical, to EAP as a point estimate, as more PVs/posterior draws are being used. The 95% HDCI is a useful addition, and by using PVs, extreme values are included in a reasonable way.</span>
 <span id="cb135-1196"><a href="#cb135-1196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1197"><a href="#cb135-1197" aria-hidden="true" tabindex="-1"></a><span class="fu">### Conditional reliability</span></span>
+<span id="cb135-1197"><a href="#cb135-1197" aria-hidden="true" tabindex="-1"></a>In addition to the RMU, <span class="in">`RIreliability()`</span> outputs the Person Separation Index (PSI), the Expected A Posteriori (EAP), and a table with SEM values from the WL estimation. I suggest reporting RMU in publications. Also, the default setting is to use 1000 plausible values, and I think it would be prudent to use something like 4000 for a publication. Maybe more.</span>
 <span id="cb135-1198"><a href="#cb135-1198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1199"><a href="#cb135-1199" aria-hidden="true" tabindex="-1"></a>Another recent paper <span class="co">[</span><span class="ot">@mcneish_reliability_2025</span><span class="co">]</span> advocates for the relevance of a conditional reliability, which I think is a useful addition to the RMU metric presented above. I have again borrowed code from another open source project, namely the <span class="co">[</span><span class="ot">`dynamic` R package</span><span class="co">](https://github.com/melissagwolf/dynamic/)</span>. <span class="in">`RIrelRep()`</span> produces a Cronbach's alpha point estimate with a confidence interval and a conditional reliability curve showing varying levels of alpha across the ordinal sum score range. Alpha is a criticized metric <span class="co">[</span><span class="ot">e.g @sijtsma_use_2008;@mcneish_thanks_2018</span><span class="co">]</span>, so again interpret this with care. One of alpha's issues is the assumption of tau-equivalence (equal factor loadings or discrimination parameters across all items), which is only fulfilled by the Rasch model. The <span class="in">`RIrelRep()`</span> function also has an option for using omega instead of alpha, see the tab "Omega" below.</span>
+<span id="cb135-1199"><a href="#cb135-1199" aria-hidden="true" tabindex="-1"></a><span class="fu">### Conditional reliability</span></span>
 <span id="cb135-1200"><a href="#cb135-1200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1201"><a href="#cb135-1201" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb135-1202"><a href="#cb135-1202" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
-<span id="cb135-1205"><a href="#cb135-1205" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1206"><a href="#cb135-1206" aria-hidden="true" tabindex="-1"></a>relrep <span class="ot">&lt;-</span> <span class="fu">RIrelRep</span>(df)</span>
-<span id="cb135-1207"><a href="#cb135-1207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1208"><a href="#cb135-1208" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Table</span></span>
-<span id="cb135-1211"><a href="#cb135-1211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1212"><a href="#cb135-1212" aria-hidden="true" tabindex="-1"></a>relrep<span class="sc">$</span>stat</span>
-<span id="cb135-1213"><a href="#cb135-1213" aria-hidden="true" tabindex="-1"></a>relrep<span class="sc">$</span>table</span>
-<span id="cb135-1214"><a href="#cb135-1214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1215"><a href="#cb135-1215" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Omega</span></span>
-<span id="cb135-1216"><a href="#cb135-1216" aria-hidden="true" tabindex="-1"></a>As a comparison, we can also get conditional omega.</span>
-<span id="cb135-1219"><a href="#cb135-1219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1220"><a href="#cb135-1220" aria-hidden="true" tabindex="-1"></a>rr_omega <span class="ot">&lt;-</span> <span class="fu">RIrelRep</span>(df, <span class="at">rel =</span> <span class="st">"omega"</span>)</span>
-<span id="cb135-1221"><a href="#cb135-1221" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1222"><a href="#cb135-1222" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb135-1223"><a href="#cb135-1223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1224"><a href="#cb135-1224" aria-hidden="true" tabindex="-1"></a>To me, there is one outstanding issue with the reliability metrics discussed and presented above. The TIF curve was based on item parameters, describing the test reliability. All estimates above are sample specific, describing the sample reliability. I think both are relevant, depending on what you are doing. For validating a measure, it would be interesting to present the measure's reliability.</span>
+<span id="cb135-1201"><a href="#cb135-1201" aria-hidden="true" tabindex="-1"></a>Another recent paper <span class="co">[</span><span class="ot">@mcneish_reliability_2025</span><span class="co">]</span> advocates for the relevance of a conditional reliability, which I think is a useful addition to the RMU metric presented above. I have again borrowed code from another open source project, namely the <span class="co">[</span><span class="ot">`dynamic` R package</span><span class="co">](https://github.com/melissagwolf/dynamic/)</span>. <span class="in">`RIrelRep()`</span> produces a Cronbach's alpha point estimate with a confidence interval and a conditional reliability curve showing varying levels of alpha across the ordinal sum score range. Alpha is a criticized metric <span class="co">[</span><span class="ot">e.g @sijtsma_use_2008;@mcneish_thanks_2018</span><span class="co">]</span>, so again interpret this with care. One of alpha's issues is the assumption of tau-equivalence (equal factor loadings or discrimination parameters across all items), which is only fulfilled by the Rasch model, and also requires local independence of item. Alpha is a metric for ordinal sum scores, not estimated interval scores. The <span class="in">`RIrelRep()`</span> function also has an option for using omega instead of alpha, see the tab "Omega" below.</span>
+<span id="cb135-1202"><a href="#cb135-1202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1203"><a href="#cb135-1203" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb135-1204"><a href="#cb135-1204" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Figure</span></span>
+<span id="cb135-1207"><a href="#cb135-1207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1208"><a href="#cb135-1208" aria-hidden="true" tabindex="-1"></a>relrep <span class="ot">&lt;-</span> <span class="fu">RIrelRep</span>(df)</span>
+<span id="cb135-1209"><a href="#cb135-1209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1210"><a href="#cb135-1210" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Table</span></span>
+<span id="cb135-1213"><a href="#cb135-1213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1214"><a href="#cb135-1214" aria-hidden="true" tabindex="-1"></a>relrep<span class="sc">$</span>stat</span>
+<span id="cb135-1215"><a href="#cb135-1215" aria-hidden="true" tabindex="-1"></a>relrep<span class="sc">$</span>table</span>
+<span id="cb135-1216"><a href="#cb135-1216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1217"><a href="#cb135-1217" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Omega</span></span>
+<span id="cb135-1218"><a href="#cb135-1218" aria-hidden="true" tabindex="-1"></a>As a comparison, we can also get conditional omega.</span>
+<span id="cb135-1221"><a href="#cb135-1221" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1222"><a href="#cb135-1222" aria-hidden="true" tabindex="-1"></a>rr_omega <span class="ot">&lt;-</span> <span class="fu">RIrelRep</span>(df, <span class="at">rel =</span> <span class="st">"omega"</span>)</span>
+<span id="cb135-1223"><a href="#cb135-1223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1224"><a href="#cb135-1224" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb135-1225"><a href="#cb135-1225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1226"><a href="#cb135-1226" aria-hidden="true" tabindex="-1"></a><span class="fu">## Person fit</span></span>
+<span id="cb135-1226"><a href="#cb135-1226" aria-hidden="true" tabindex="-1"></a>To me, there is one outstanding issue with the reliability metrics discussed and presented above. The TIF curve was based on item parameters, describing the test reliability. All estimates above are sample specific, describing the sample reliability. I think both are relevant, depending on what you are doing. For validating a measure, it would be interesting to present the measure's reliability.</span>
 <span id="cb135-1227"><a href="#cb135-1227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1228"><a href="#cb135-1228" aria-hidden="true" tabindex="-1"></a>We can also look at how the respondents fit the Rasch model with these items. By default, <span class="in">`RIpfit()`</span> outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented in the <span class="in">`easyRasch`</span> package, and the curious analyst is suggested to look at the package <span class="co">[</span><span class="ot">PerFit</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span> for more tools.</span>
+<span id="cb135-1228"><a href="#cb135-1228" aria-hidden="true" tabindex="-1"></a><span class="fu">## Person fit</span></span>
 <span id="cb135-1229"><a href="#cb135-1229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1232"><a href="#cb135-1232" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1233"><a href="#cb135-1233" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df)</span>
-<span id="cb135-1234"><a href="#cb135-1234" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1235"><a href="#cb135-1235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1236"><a href="#cb135-1236" aria-hidden="true" tabindex="-1"></a>You can export the person fit values to a new variable in the dataframe by specifying <span class="in">`output = "dataframe"`</span>, or if you just want the row numbers for respondents with deviant infit values, <span class="in">`output = "rowid"`</span>.</span>
+<span id="cb135-1230"><a href="#cb135-1230" aria-hidden="true" tabindex="-1"></a>We can also look at how the respondents fit the Rasch model with these items. By default, <span class="in">`RIpfit()`</span> outputs a histogram and a hex heatmap with the person infit ZSTD statistic, using +/- 1.96 as cutoff values. This is currently the only person fit method implemented in the <span class="in">`easyRasch`</span> package, and the curious analyst is suggested to look at the package <span class="co">[</span><span class="ot">PerFit</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span> for more tools.</span>
+<span id="cb135-1231"><a href="#cb135-1231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1234"><a href="#cb135-1234" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1235"><a href="#cb135-1235" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df)</span>
+<span id="cb135-1236"><a href="#cb135-1236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1237"><a href="#cb135-1237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1238"><a href="#cb135-1238" aria-hidden="true" tabindex="-1"></a>You can also specify a grouping variable to visualize the person fit for different groups.</span>
+<span id="cb135-1238"><a href="#cb135-1238" aria-hidden="true" tabindex="-1"></a>You can export the person fit values to a new variable in the dataframe by specifying <span class="in">`output = "dataframe"`</span>, or if you just want the row numbers for respondents with deviant infit values, <span class="in">`output = "rowid"`</span>.</span>
 <span id="cb135-1239"><a href="#cb135-1239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1242"><a href="#cb135-1242" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1243"><a href="#cb135-1243" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df, <span class="at">group =</span> dif<span class="sc">$</span>Sex, <span class="at">output =</span> <span class="st">"heatmap"</span>)</span>
-<span id="cb135-1244"><a href="#cb135-1244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1245"><a href="#cb135-1245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1246"><a href="#cb135-1246" aria-hidden="true" tabindex="-1"></a>Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.</span>
+<span id="cb135-1240"><a href="#cb135-1240" aria-hidden="true" tabindex="-1"></a>You can also specify a grouping variable to visualize the person fit for different groups.</span>
+<span id="cb135-1241"><a href="#cb135-1241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1244"><a href="#cb135-1244" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1245"><a href="#cb135-1245" aria-hidden="true" tabindex="-1"></a><span class="fu">RIpfit</span>(df, <span class="at">group =</span> dif<span class="sc">$</span>Sex, <span class="at">output =</span> <span class="st">"heatmap"</span>)</span>
+<span id="cb135-1246"><a href="#cb135-1246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1247"><a href="#cb135-1247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1248"><a href="#cb135-1248" aria-hidden="true" tabindex="-1"></a><span class="fu">### `PerFit` sample code</span></span>
+<span id="cb135-1248"><a href="#cb135-1248" aria-hidden="true" tabindex="-1"></a>Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.</span>
 <span id="cb135-1249"><a href="#cb135-1249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1250"><a href="#cb135-1250" aria-hidden="true" tabindex="-1"></a>While none of the functions in the <span class="in">`PerFit`</span> package has been implemented in <span class="in">`easyRasch`</span>, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package <span class="co">[</span><span class="ot">documentation</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span>.</span>
+<span id="cb135-1250"><a href="#cb135-1250" aria-hidden="true" tabindex="-1"></a><span class="fu">### `PerFit` sample code</span></span>
 <span id="cb135-1251"><a href="#cb135-1251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1252"><a href="#cb135-1252" aria-hidden="true" tabindex="-1"></a>For this example, we'll use the non-parametric U3 statistic generalized to polytomous items <span class="co">[</span><span class="ot">@emons_nonparametric_2008</span><span class="co">]</span> and the smaller sample.</span>
+<span id="cb135-1252"><a href="#cb135-1252" aria-hidden="true" tabindex="-1"></a>While none of the functions in the <span class="in">`PerFit`</span> package has been implemented in <span class="in">`easyRasch`</span>, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package <span class="co">[</span><span class="ot">documentation</span><span class="co">](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package)</span>.</span>
 <span id="cb135-1253"><a href="#cb135-1253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1254"><a href="#cb135-1254" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb135-1255"><a href="#cb135-1255" aria-hidden="true" tabindex="-1"></a><span class="fu">#### U3poly</span></span>
-<span id="cb135-1258"><a href="#cb135-1258" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1259"><a href="#cb135-1259" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PerFit)</span>
-<span id="cb135-1260"><a href="#cb135-1260" aria-hidden="true" tabindex="-1"></a>pfit_u3poly <span class="ot">&lt;-</span> <span class="fu">U3poly</span>(<span class="at">matrix =</span> df500, </span>
-<span id="cb135-1261"><a href="#cb135-1261" aria-hidden="true" tabindex="-1"></a>                      <span class="at">Ncat =</span> <span class="dv">5</span>, <span class="co"># make sure to input number of response categories, not thresholds</span></span>
-<span id="cb135-1262"><a href="#cb135-1262" aria-hidden="true" tabindex="-1"></a>                      <span class="at">IRT.PModel =</span> <span class="st">"PCM"</span>)</span>
-<span id="cb135-1263"><a href="#cb135-1263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1264"><a href="#cb135-1264" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Cutoff information</span></span>
-<span id="cb135-1267"><a href="#cb135-1267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1268"><a href="#cb135-1268" aria-hidden="true" tabindex="-1"></a><span class="fu">cutoff</span>(pfit_u3poly)</span>
-<span id="cb135-1269"><a href="#cb135-1269" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1270"><a href="#cb135-1270" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Flagged respondents</span></span>
-<span id="cb135-1273"><a href="#cb135-1273" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1274"><a href="#cb135-1274" aria-hidden="true" tabindex="-1"></a><span class="fu">flagged.resp</span>(pfit_u3poly) <span class="sc">%&gt;%</span> </span>
-<span id="cb135-1275"><a href="#cb135-1275" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"Scores"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb135-1276"><a href="#cb135-1276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb135-1277"><a href="#cb135-1277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(PFscores))</span>
-<span id="cb135-1278"><a href="#cb135-1278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1279"><a href="#cb135-1279" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb135-1280"><a href="#cb135-1280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1281"><a href="#cb135-1281" aria-hidden="true" tabindex="-1"></a>The dataframe shown under the tab <span class="in">`Flagged respondents`</span> above contains a variable named <span class="in">`FlaggedID`</span> which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit may affect results of Andersen's LR-test for DIF <span class="co">[</span><span class="ot">@artner_simulation_2016</span><span class="co">]</span>.</span>
+<span id="cb135-1254"><a href="#cb135-1254" aria-hidden="true" tabindex="-1"></a>For this example, we'll use the non-parametric U3 statistic generalized to polytomous items <span class="co">[</span><span class="ot">@emons_nonparametric_2008</span><span class="co">]</span> and the smaller sample.</span>
+<span id="cb135-1255"><a href="#cb135-1255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1256"><a href="#cb135-1256" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb135-1257"><a href="#cb135-1257" aria-hidden="true" tabindex="-1"></a><span class="fu">#### U3poly</span></span>
+<span id="cb135-1260"><a href="#cb135-1260" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1261"><a href="#cb135-1261" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PerFit)</span>
+<span id="cb135-1262"><a href="#cb135-1262" aria-hidden="true" tabindex="-1"></a>pfit_u3poly <span class="ot">&lt;-</span> <span class="fu">U3poly</span>(<span class="at">matrix =</span> df500, </span>
+<span id="cb135-1263"><a href="#cb135-1263" aria-hidden="true" tabindex="-1"></a>                      <span class="at">Ncat =</span> <span class="dv">5</span>, <span class="co"># make sure to input number of response categories, not thresholds</span></span>
+<span id="cb135-1264"><a href="#cb135-1264" aria-hidden="true" tabindex="-1"></a>                      <span class="at">IRT.PModel =</span> <span class="st">"PCM"</span>)</span>
+<span id="cb135-1265"><a href="#cb135-1265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1266"><a href="#cb135-1266" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Cutoff information</span></span>
+<span id="cb135-1269"><a href="#cb135-1269" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1270"><a href="#cb135-1270" aria-hidden="true" tabindex="-1"></a><span class="fu">cutoff</span>(pfit_u3poly)</span>
+<span id="cb135-1271"><a href="#cb135-1271" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1272"><a href="#cb135-1272" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Flagged respondents</span></span>
+<span id="cb135-1275"><a href="#cb135-1275" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1276"><a href="#cb135-1276" aria-hidden="true" tabindex="-1"></a><span class="fu">flagged.resp</span>(pfit_u3poly) <span class="sc">%&gt;%</span> </span>
+<span id="cb135-1277"><a href="#cb135-1277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"Scores"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb135-1278"><a href="#cb135-1278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb135-1279"><a href="#cb135-1279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(PFscores))</span>
+<span id="cb135-1280"><a href="#cb135-1280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1281"><a href="#cb135-1281" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb135-1282"><a href="#cb135-1282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1283"><a href="#cb135-1283" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit without aberrant responses</span></span>
+<span id="cb135-1283"><a href="#cb135-1283" aria-hidden="true" tabindex="-1"></a>The dataframe shown under the tab <span class="in">`Flagged respondents`</span> above contains a variable named <span class="in">`FlaggedID`</span> which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit may affect results of Andersen's LR-test for DIF <span class="co">[</span><span class="ot">@artner_simulation_2016</span><span class="co">]</span>.</span>
 <span id="cb135-1284"><a href="#cb135-1284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1285"><a href="#cb135-1285" aria-hidden="true" tabindex="-1"></a>We can remove the misfitting persons to see how that affects item fit. Let's also compare with the misfitting respondents identified by <span class="in">`RIpfit()`</span>, also using the smaller sample.</span>
+<span id="cb135-1285"><a href="#cb135-1285" aria-hidden="true" tabindex="-1"></a><span class="fu">### Item fit without aberrant responses</span></span>
 <span id="cb135-1286"><a href="#cb135-1286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1289"><a href="#cb135-1289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1290"><a href="#cb135-1290" aria-hidden="true" tabindex="-1"></a>misfits <span class="ot">&lt;-</span> <span class="fu">flagged.resp</span>(pfit_u3poly) <span class="sc">%&gt;%</span> </span>
-<span id="cb135-1291"><a href="#cb135-1291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"Scores"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb135-1292"><a href="#cb135-1292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb135-1293"><a href="#cb135-1293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(FlaggedID)</span>
-<span id="cb135-1294"><a href="#cb135-1294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1295"><a href="#cb135-1295" aria-hidden="true" tabindex="-1"></a>misfits2 <span class="ot">&lt;-</span> <span class="fu">RIpfit</span>(df500, <span class="at">output =</span> <span class="st">"rowid"</span>)</span>
-<span id="cb135-1296"><a href="#cb135-1296" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1297"><a href="#cb135-1297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1298"><a href="#cb135-1298" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb135-1299"><a href="#cb135-1299" aria-hidden="true" tabindex="-1"></a><span class="fu">#### All respondents</span></span>
-<span id="cb135-1302"><a href="#cb135-1302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1303"><a href="#cb135-1303" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfit</span>(df500, <span class="at">simcut =</span> simfit3)</span>
-<span id="cb135-1304"><a href="#cb135-1304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1305"><a href="#cb135-1305" aria-hidden="true" tabindex="-1"></a><span class="fu">#### U3 misfit removed</span></span>
-<span id="cb135-1308"><a href="#cb135-1308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1309"><a href="#cb135-1309" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfit</span>(df500[<span class="sc">-</span>misfits,], <span class="at">simcut =</span> simfit3)</span>
-<span id="cb135-1310"><a href="#cb135-1310" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1311"><a href="#cb135-1311" aria-hidden="true" tabindex="-1"></a><span class="fu">#### ZSTD misfit removed</span></span>
-<span id="cb135-1314"><a href="#cb135-1314" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1315"><a href="#cb135-1315" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfit</span>(df500[<span class="sc">-</span>misfits2,], <span class="at">simcut =</span> simfit3)</span>
-<span id="cb135-1316"><a href="#cb135-1316" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1317"><a href="#cb135-1317" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb135-1318"><a href="#cb135-1318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1319"><a href="#cb135-1319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item parameters</span></span>
+<span id="cb135-1287"><a href="#cb135-1287" aria-hidden="true" tabindex="-1"></a>We can remove the misfitting persons to see how that affects item fit. Let's also compare with the misfitting respondents identified by <span class="in">`RIpfit()`</span>, also using the smaller sample.</span>
+<span id="cb135-1288"><a href="#cb135-1288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1291"><a href="#cb135-1291" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1292"><a href="#cb135-1292" aria-hidden="true" tabindex="-1"></a>misfits <span class="ot">&lt;-</span> <span class="fu">flagged.resp</span>(pfit_u3poly) <span class="sc">%&gt;%</span> </span>
+<span id="cb135-1293"><a href="#cb135-1293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"Scores"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb135-1294"><a href="#cb135-1294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb135-1295"><a href="#cb135-1295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(FlaggedID)</span>
+<span id="cb135-1296"><a href="#cb135-1296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1297"><a href="#cb135-1297" aria-hidden="true" tabindex="-1"></a>misfits2 <span class="ot">&lt;-</span> <span class="fu">RIpfit</span>(df500, <span class="at">output =</span> <span class="st">"rowid"</span>)</span>
+<span id="cb135-1298"><a href="#cb135-1298" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1299"><a href="#cb135-1299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1300"><a href="#cb135-1300" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb135-1301"><a href="#cb135-1301" aria-hidden="true" tabindex="-1"></a><span class="fu">#### All respondents</span></span>
+<span id="cb135-1304"><a href="#cb135-1304" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1305"><a href="#cb135-1305" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfit</span>(df500, <span class="at">simcut =</span> simfit3)</span>
+<span id="cb135-1306"><a href="#cb135-1306" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1307"><a href="#cb135-1307" aria-hidden="true" tabindex="-1"></a><span class="fu">#### U3 misfit removed</span></span>
+<span id="cb135-1310"><a href="#cb135-1310" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1311"><a href="#cb135-1311" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfit</span>(df500[<span class="sc">-</span>misfits,], <span class="at">simcut =</span> simfit3)</span>
+<span id="cb135-1312"><a href="#cb135-1312" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1313"><a href="#cb135-1313" aria-hidden="true" tabindex="-1"></a><span class="fu">#### ZSTD misfit removed</span></span>
+<span id="cb135-1316"><a href="#cb135-1316" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1317"><a href="#cb135-1317" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemfit</span>(df500[<span class="sc">-</span>misfits2,], <span class="at">simcut =</span> simfit3)</span>
+<span id="cb135-1318"><a href="#cb135-1318" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1319"><a href="#cb135-1319" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb135-1320"><a href="#cb135-1320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1321"><a href="#cb135-1321" aria-hidden="true" tabindex="-1"></a>To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the <span class="in">`thetaEst()`</span> function from the <span class="in">`catR`</span> package. This is implemented in the function <span class="in">`RIestThetasOLD()`</span>, see below for details.</span>
+<span id="cb135-1321"><a href="#cb135-1321" aria-hidden="true" tabindex="-1"></a><span class="fu">## Item parameters</span></span>
 <span id="cb135-1322"><a href="#cb135-1322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1323"><a href="#cb135-1323" aria-hidden="true" tabindex="-1"></a>First, we'll output the parameters into a table.</span>
+<span id="cb135-1323"><a href="#cb135-1323" aria-hidden="true" tabindex="-1"></a>To allow others (and oneself) to use the item parameters estimated for estimation of person locations/thetas, we should make the item parameters available. The function will also write a csv-file with the item threshold locations. Estimations of person locations/thetas can be done with the <span class="in">`thetaEst()`</span> function from the <span class="in">`catR`</span> package. This is implemented in the function <span class="in">`RIestThetasOLD()`</span>, see below for details.</span>
 <span id="cb135-1324"><a href="#cb135-1324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1327"><a href="#cb135-1327" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1328"><a href="#cb135-1328" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df)</span>
-<span id="cb135-1329"><a href="#cb135-1329" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1330"><a href="#cb135-1330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1331"><a href="#cb135-1331" aria-hidden="true" tabindex="-1"></a>The parameters can also be output to a dataframe or a file, using the option <span class="in">`output = "dataframe"`</span> or <span class="in">`output = "file"`</span>.</span>
+<span id="cb135-1325"><a href="#cb135-1325" aria-hidden="true" tabindex="-1"></a>First, we'll output the parameters into a table.</span>
+<span id="cb135-1326"><a href="#cb135-1326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1329"><a href="#cb135-1329" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1330"><a href="#cb135-1330" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemparams</span>(df)</span>
+<span id="cb135-1331"><a href="#cb135-1331" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1332"><a href="#cb135-1332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1333"><a href="#cb135-1333" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordinal sum score to interval score</span></span>
+<span id="cb135-1333"><a href="#cb135-1333" aria-hidden="true" tabindex="-1"></a>The parameters can also be output to a dataframe or a file, using the option <span class="in">`output = "dataframe"`</span> or <span class="in">`output = "file"`</span>.</span>
 <span id="cb135-1334"><a href="#cb135-1334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1335"><a href="#cb135-1335" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
+<span id="cb135-1335"><a href="#cb135-1335" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ordinal sum score to interval score</span></span>
 <span id="cb135-1336"><a href="#cb135-1336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1337"><a href="#cb135-1337" aria-hidden="true" tabindex="-1"></a>(An option will hopefully be added at some point to create this table based on only item parameters.)</span>
+<span id="cb135-1337"><a href="#cb135-1337" aria-hidden="true" tabindex="-1"></a>This table shows the corresponding "raw" ordinal sum score values and logit scores, with standard errors for each logit value. Interval scores are estimated using WL based on a simulated dataset using the item parameters estimated from the input dataset. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>.</span>
 <span id="cb135-1338"><a href="#cb135-1338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1341"><a href="#cb135-1341" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1342"><a href="#cb135-1342" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df)</span>
-<span id="cb135-1343"><a href="#cb135-1343" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1344"><a href="#cb135-1344" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1345"><a href="#cb135-1345" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal/interval figure</span></span>
+<span id="cb135-1339"><a href="#cb135-1339" aria-hidden="true" tabindex="-1"></a>(An option will hopefully be added at some point to create this table based on only item parameters.)</span>
+<span id="cb135-1340"><a href="#cb135-1340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1343"><a href="#cb135-1343" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1344"><a href="#cb135-1344" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df)</span>
+<span id="cb135-1345"><a href="#cb135-1345" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1346"><a href="#cb135-1346" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1347"><a href="#cb135-1347" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
+<span id="cb135-1347"><a href="#cb135-1347" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ordinal/interval figure</span></span>
 <span id="cb135-1348"><a href="#cb135-1348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1351"><a href="#cb135-1351" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1352"><a href="#cb135-1352" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
-<span id="cb135-1353"><a href="#cb135-1353" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1354"><a href="#cb135-1354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1355"><a href="#cb135-1355" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
+<span id="cb135-1349"><a href="#cb135-1349" aria-hidden="true" tabindex="-1"></a>The figure below can also be generated to illustrate the relationship between ordinal sum score and logit interval score. The errorbars default to show the standard error at each point, multiplied by 1.96.</span>
+<span id="cb135-1350"><a href="#cb135-1350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1353"><a href="#cb135-1353" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1354"><a href="#cb135-1354" aria-hidden="true" tabindex="-1"></a><span class="fu">RIscoreSE</span>(df, <span class="at">output =</span> <span class="st">"figure"</span>)</span>
+<span id="cb135-1355"><a href="#cb135-1355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1356"><a href="#cb135-1356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1357"><a href="#cb135-1357" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). <span class="in">`RIestThetas()`</span> by default uses WLE estimation based on item parameters from a partial credit model (PCM) and outputs a dataframe with person locations (WLE) and measurement error (SEM) on the logit scale.</span>
+<span id="cb135-1357"><a href="#cb135-1357" aria-hidden="true" tabindex="-1"></a><span class="fu">### Estimating interval level person scores</span></span>
 <span id="cb135-1358"><a href="#cb135-1358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1361"><a href="#cb135-1361" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1362"><a href="#cb135-1362" aria-hidden="true" tabindex="-1"></a>thetas <span class="ot">&lt;-</span> <span class="fu">RIestThetas</span>(df)</span>
-<span id="cb135-1363"><a href="#cb135-1363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1364"><a href="#cb135-1364" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(thetas)</span>
-<span id="cb135-1365"><a href="#cb135-1365" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1366"><a href="#cb135-1366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1367"><a href="#cb135-1367" aria-hidden="true" tabindex="-1"></a>Each individual has a standard error of measurement (SEM) associated with their estimated location/score. This is included in the output of the <span class="in">`RIestThetas()`</span> function as the <span class="in">`SEM`</span> variable, as seen above. We can review the distribution of measurement error with a figure.</span>
+<span id="cb135-1359"><a href="#cb135-1359" aria-hidden="true" tabindex="-1"></a>Based on the Rasch analysis output of item parameters, we can estimate each individuals location or score (also known as "theta"). <span class="in">`RIestThetas()`</span> by default uses WLE estimation based on item parameters from a partial credit model (PCM) and outputs a dataframe with person locations (WLE) and measurement error (SEM) on the logit scale.</span>
+<span id="cb135-1360"><a href="#cb135-1360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1363"><a href="#cb135-1363" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1364"><a href="#cb135-1364" aria-hidden="true" tabindex="-1"></a>thetas <span class="ot">&lt;-</span> <span class="fu">RIestThetas</span>(df)</span>
+<span id="cb135-1365"><a href="#cb135-1365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1366"><a href="#cb135-1366" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(thetas)</span>
+<span id="cb135-1367"><a href="#cb135-1367" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1368"><a href="#cb135-1368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1369"><a href="#cb135-1369" aria-hidden="true" tabindex="-1"></a>We can take a look at the distribution of person locations (thetas) using a histogram.</span>
+<span id="cb135-1369"><a href="#cb135-1369" aria-hidden="true" tabindex="-1"></a>Each individual has a standard error of measurement (SEM) associated with their estimated location/score. This is included in the output of the <span class="in">`RIestThetas()`</span> function as the <span class="in">`SEM`</span> variable, as seen above. We can review the distribution of measurement error with a figure.</span>
 <span id="cb135-1370"><a href="#cb135-1370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1373"><a href="#cb135-1373" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1374"><a href="#cb135-1374" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(thetas<span class="sc">$</span>WLE, </span>
-<span id="cb135-1375"><a href="#cb135-1375" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"#009ca6"</span>, </span>
-<span id="cb135-1376"><a href="#cb135-1376" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of person locations (thetas)"</span>, </span>
-<span id="cb135-1377"><a href="#cb135-1377" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">20</span>)</span>
-<span id="cb135-1378"><a href="#cb135-1378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1379"><a href="#cb135-1379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1380"><a href="#cb135-1380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1381"><a href="#cb135-1381" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetasOLD()`</span> can be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>. Similarly to <span class="in">`RIscoreSE()`</span> you can (and may indeed need to) change the range of logit scores, using the option <span class="in">`theta_range`</span>. The default is <span class="in">`c(-7,7)`</span>, which should hopefully work in most circumstances.</span>
+<span id="cb135-1371"><a href="#cb135-1371" aria-hidden="true" tabindex="-1"></a>We can take a look at the distribution of person locations (thetas) using a histogram.</span>
+<span id="cb135-1372"><a href="#cb135-1372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1375"><a href="#cb135-1375" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1376"><a href="#cb135-1376" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(thetas<span class="sc">$</span>WLE, </span>
+<span id="cb135-1377"><a href="#cb135-1377" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"#009ca6"</span>, </span>
+<span id="cb135-1378"><a href="#cb135-1378" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Histogram of person locations (thetas)"</span>, </span>
+<span id="cb135-1379"><a href="#cb135-1379" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">20</span>)</span>
+<span id="cb135-1380"><a href="#cb135-1380" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1381"><a href="#cb135-1381" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb135-1382"><a href="#cb135-1382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1383"><a href="#cb135-1383" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item threshold location matrix, this code may be helpful:</span>
+<span id="cb135-1383"><a href="#cb135-1383" aria-hidden="true" tabindex="-1"></a><span class="in">`RIestThetasOLD()`</span> can be used with a pre-specified item (threshold) location matrix. The choice of WL as default is due to the lower bias compared to ML estimation <span class="co">[</span><span class="ot">@warm1989</span><span class="co">]</span>. Similarly to <span class="in">`RIscoreSE()`</span> you can (and may indeed need to) change the range of logit scores, using the option <span class="in">`theta_range`</span>. The default is <span class="in">`c(-7,7)`</span>, which should hopefully work in most circumstances.</span>
 <span id="cb135-1384"><a href="#cb135-1384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1387"><a href="#cb135-1387" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1388"><a href="#cb135-1388" aria-hidden="true" tabindex="-1"></a>itemParameters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"itemParameters.csv"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb135-1389"><a href="#cb135-1389" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb135-1390"><a href="#cb135-1390" aria-hidden="true" tabindex="-1"></a>itemParameters</span>
-<span id="cb135-1391"><a href="#cb135-1391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1392"><a href="#cb135-1392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1393"><a href="#cb135-1393" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
+<span id="cb135-1385"><a href="#cb135-1385" aria-hidden="true" tabindex="-1"></a>If you would like to use an existing item threshold location matrix, this code may be helpful:</span>
+<span id="cb135-1386"><a href="#cb135-1386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1389"><a href="#cb135-1389" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1390"><a href="#cb135-1390" aria-hidden="true" tabindex="-1"></a>itemParameters <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"itemParameters.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb135-1391"><a href="#cb135-1391" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb135-1392"><a href="#cb135-1392" aria-hidden="true" tabindex="-1"></a>itemParameters</span>
+<span id="cb135-1393"><a href="#cb135-1393" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1394"><a href="#cb135-1394" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1395"><a href="#cb135-1395" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
+<span id="cb135-1395"><a href="#cb135-1395" aria-hidden="true" tabindex="-1"></a>As you can see, this is a matrix object (not a dataframe), with each item as a row, and the threshold locations as columns.</span>
 <span id="cb135-1396"><a href="#cb135-1396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1397"><a href="#cb135-1397" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
+<span id="cb135-1397"><a href="#cb135-1397" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure design</span></span>
 <span id="cb135-1398"><a href="#cb135-1398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1399"><a href="#cb135-1399" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
+<span id="cb135-1399"><a href="#cb135-1399" aria-hidden="true" tabindex="-1"></a>Most of the figures created by the functions can be styled (colors, fonts, etc) by adding theme settings to them. You can use the standard ggplot function <span class="in">`theme()`</span> and related theme-functions. As usual it is possible to "stack" theme functions, as seen in the example below.</span>
 <span id="cb135-1400"><a href="#cb135-1400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1401"><a href="#cb135-1401" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the <span class="in">`easyRasch`</span> package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
+<span id="cb135-1401"><a href="#cb135-1401" aria-hidden="true" tabindex="-1"></a>You can also change coloring, axis limits/breaks, etc, just by adding ggplot options with a <span class="in">`+`</span> sign.</span>
 <span id="cb135-1402"><a href="#cb135-1402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1403"><a href="#cb135-1403" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
+<span id="cb135-1403"><a href="#cb135-1403" aria-hidden="true" tabindex="-1"></a>A custom theme function, <span class="in">`theme_rise()`</span>, is included in the <span class="in">`easyRasch`</span> package. It might be easier to use if you are not familiar with <span class="in">`theme()`</span>.</span>
 <span id="cb135-1404"><a href="#cb135-1404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1407"><a href="#cb135-1407" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1408"><a href="#cb135-1408" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df) <span class="sc">+</span></span>
-<span id="cb135-1409"><a href="#cb135-1409" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
-<span id="cb135-1410"><a href="#cb135-1410" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
-<span id="cb135-1411"><a href="#cb135-1411" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1412"><a href="#cb135-1412" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1413"><a href="#cb135-1413" aria-hidden="true" tabindex="-1"></a>As of package version 0.1.30.0, the <span class="in">`RItargeting()`</span> function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the <span class="co">[</span><span class="ot">NEWS</span><span class="co">](https://github.com/pgmj/easyRasch/blob/main/NEWS.md#01300)</span> file for more details. Since the <span class="in">`RItargeting()`</span> function uses the <span class="in">`patchwork`</span> library to combine plots, you can also make use of <span class="co">[</span><span class="ot">the many functions that `patchwork` includes</span><span class="co">](https://patchwork.data-imaginist.com/articles/patchwork.html)</span>. For instance, you can set a title with a specific theme:</span>
+<span id="cb135-1405"><a href="#cb135-1405" aria-hidden="true" tabindex="-1"></a>For instance, you might like to change the font to "Lato" for the item hierarchy figure, and make the background transparent.</span>
+<span id="cb135-1406"><a href="#cb135-1406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1409"><a href="#cb135-1409" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1410"><a href="#cb135-1410" aria-hidden="true" tabindex="-1"></a><span class="fu">RIitemHierarchy</span>(df) <span class="sc">+</span></span>
+<span id="cb135-1411"><a href="#cb135-1411" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="co"># first apply the minimal theme to make the background transparent</span></span>
+<span id="cb135-1412"><a href="#cb135-1412" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Lato"</span>) <span class="co"># then apply theme_rise, which simplifies making changes to all plot elements</span></span>
+<span id="cb135-1413"><a href="#cb135-1413" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1414"><a href="#cb135-1414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1415"><a href="#cb135-1415" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r}</span></span>
-<span id="cb135-1416"><a href="#cb135-1416" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df) <span class="sc">+</span> <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"Targeting"</span>, <span class="at">theme =</span> <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Arial"</span>))</span>
-<span id="cb135-1417"><a href="#cb135-1417" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1418"><a href="#cb135-1418" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1419"><a href="#cb135-1419" aria-hidden="true" tabindex="-1"></a>In order to change font for text *inside* plots (such as "t1" for thresholds) you will need to add an additional line of code.</span>
+<span id="cb135-1415"><a href="#cb135-1415" aria-hidden="true" tabindex="-1"></a>As of package version 0.1.30.0, the <span class="in">`RItargeting()`</span> function allows more flexibility in styling too, by having an option to return a list object with the three separate plots. See the <span class="co">[</span><span class="ot">NEWS</span><span class="co">](https://github.com/pgmj/easyRasch/blob/main/NEWS.md#01300)</span> file for more details. Since the <span class="in">`RItargeting()`</span> function uses the <span class="in">`patchwork`</span> library to combine plots, you can also make use of <span class="co">[</span><span class="ot">the many functions that `patchwork` includes</span><span class="co">](https://patchwork.data-imaginist.com/articles/patchwork.html)</span>. For instance, you can set a title with a specific theme:</span>
+<span id="cb135-1416"><a href="#cb135-1416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1417"><a href="#cb135-1417" aria-hidden="true" tabindex="-1"></a><span class="in">``` {r}</span></span>
+<span id="cb135-1418"><a href="#cb135-1418" aria-hidden="true" tabindex="-1"></a><span class="fu">RItargeting</span>(df) <span class="sc">+</span> <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="st">"Targeting"</span>, <span class="at">theme =</span> <span class="fu">theme_rise</span>(<span class="at">fontfamily =</span> <span class="st">"Arial"</span>))</span>
+<span id="cb135-1419"><a href="#cb135-1419" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1420"><a href="#cb135-1420" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1421"><a href="#cb135-1421" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb135-1422"><a href="#cb135-1422" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato"</span>))</span>
-<span id="cb135-1423"><a href="#cb135-1423" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1424"><a href="#cb135-1424" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1425"><a href="#cb135-1425" aria-hidden="true" tabindex="-1"></a>Please note that the line of code above updates the default settings for <span class="in">`geom_text()`</span> for the whole session. Also, some functions, such as <span class="in">`RIloadLoc()`</span>, make use of <span class="in">`geom_text_repel()`</span>, for which you would need to change the code above from "text" to "text_repel".</span>
+<span id="cb135-1421"><a href="#cb135-1421" aria-hidden="true" tabindex="-1"></a>In order to change font for text *inside* plots (such as "t1" for thresholds) you will need to add an additional line of code.</span>
+<span id="cb135-1422"><a href="#cb135-1422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1423"><a href="#cb135-1423" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb135-1424"><a href="#cb135-1424" aria-hidden="true" tabindex="-1"></a><span class="fu">update_geom_defaults</span>(<span class="st">"text"</span>, <span class="fu">list</span>(<span class="at">family =</span> <span class="st">"Lato"</span>))</span>
+<span id="cb135-1425"><a href="#cb135-1425" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1426"><a href="#cb135-1426" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1427"><a href="#cb135-1427" aria-hidden="true" tabindex="-1"></a>A simple way to only change font family and font size would be to use <span class="in">`theme_minimal(base_family = "Calibri", base_size = 14)`</span>. Please see the <span class="co">[</span><span class="ot">reference page</span><span class="co">](https://ggplot2.tidyverse.org/reference/ggtheme.html)</span> for default ggplot themes for alternatives to <span class="in">`theme_minimal()`</span>.</span>
+<span id="cb135-1427"><a href="#cb135-1427" aria-hidden="true" tabindex="-1"></a>Please note that the line of code above updates the default settings for <span class="in">`geom_text()`</span> for the whole session. Also, some functions, such as <span class="in">`RIloadLoc()`</span>, make use of <span class="in">`geom_text_repel()`</span>, for which you would need to change the code above from "text" to "text_repel".</span>
 <span id="cb135-1428"><a href="#cb135-1428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1429"><a href="#cb135-1429" aria-hidden="true" tabindex="-1"></a><span class="fu">## Software used {#sec-grateful}</span></span>
+<span id="cb135-1429"><a href="#cb135-1429" aria-hidden="true" tabindex="-1"></a>A simple way to only change font family and font size would be to use <span class="in">`theme_minimal(base_family = "Calibri", base_size = 14)`</span>. Please see the <span class="co">[</span><span class="ot">reference page</span><span class="co">](https://ggplot2.tidyverse.org/reference/ggtheme.html)</span> for default ggplot themes for alternatives to <span class="in">`theme_minimal()`</span>.</span>
 <span id="cb135-1430"><a href="#cb135-1430" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1431"><a href="#cb135-1431" aria-hidden="true" tabindex="-1"></a>The <span class="in">`grateful`</span> package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span>
+<span id="cb135-1431"><a href="#cb135-1431" aria-hidden="true" tabindex="-1"></a><span class="fu">## Software used {#sec-grateful}</span></span>
 <span id="cb135-1432"><a href="#cb135-1432" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1435"><a href="#cb135-1435" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1436"><a href="#cb135-1436" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grateful)</span>
-<span id="cb135-1437"><a href="#cb135-1437" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">cite_packages</span>(<span class="at">cite.tidyverse =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb135-1438"><a href="#cb135-1438" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">"table"</span>,</span>
-<span id="cb135-1439"><a href="#cb135-1439" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bib.file =</span> <span class="st">"grateful-refs.bib"</span>,</span>
-<span id="cb135-1440"><a href="#cb135-1440" aria-hidden="true" tabindex="-1"></a>                      <span class="at">include.RStudio =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb135-1441"><a href="#cb135-1441" aria-hidden="true" tabindex="-1"></a>                      <span class="at">out.dir =</span> <span class="fu">getwd</span>())</span>
-<span id="cb135-1442"><a href="#cb135-1442" aria-hidden="true" tabindex="-1"></a><span class="co"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
-<span id="cb135-1443"><a href="#cb135-1443" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(pkgs, </span>
-<span id="cb135-1444"><a href="#cb135-1444" aria-hidden="true" tabindex="-1"></a>            <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 13px; font-family: Lato; width: 80%"'</span>)</span>
-<span id="cb135-1445"><a href="#cb135-1445" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1446"><a href="#cb135-1446" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1447"><a href="#cb135-1447" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional credits</span></span>
+<span id="cb135-1433"><a href="#cb135-1433" aria-hidden="true" tabindex="-1"></a>The <span class="in">`grateful`</span> package is a nice way to give credit to the packages used in making the analysis. The package can create both a bibliography file and a table object, which is handy for automatically creating a reference list based on the packages used (or at least explicitly loaded).</span>
+<span id="cb135-1434"><a href="#cb135-1434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1437"><a href="#cb135-1437" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1438"><a href="#cb135-1438" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grateful)</span>
+<span id="cb135-1439"><a href="#cb135-1439" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">cite_packages</span>(<span class="at">cite.tidyverse =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb135-1440"><a href="#cb135-1440" aria-hidden="true" tabindex="-1"></a>                      <span class="at">output =</span> <span class="st">"table"</span>,</span>
+<span id="cb135-1441"><a href="#cb135-1441" aria-hidden="true" tabindex="-1"></a>                      <span class="at">bib.file =</span> <span class="st">"grateful-refs.bib"</span>,</span>
+<span id="cb135-1442"><a href="#cb135-1442" aria-hidden="true" tabindex="-1"></a>                      <span class="at">include.RStudio =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb135-1443"><a href="#cb135-1443" aria-hidden="true" tabindex="-1"></a>                      <span class="at">out.dir =</span> <span class="fu">getwd</span>())</span>
+<span id="cb135-1444"><a href="#cb135-1444" aria-hidden="true" tabindex="-1"></a><span class="co"># If kbl() is used to generate this table, the references will not be added to the Reference list.</span></span>
+<span id="cb135-1445"><a href="#cb135-1445" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(pkgs, </span>
+<span id="cb135-1446"><a href="#cb135-1446" aria-hidden="true" tabindex="-1"></a>            <span class="at">table.attr =</span> <span class="st">'class=</span><span class="sc">\"</span><span class="st">table table-striped</span><span class="sc">\"</span><span class="st"> style="font-size: 13px; font-family: Lato; width: 80%"'</span>)</span>
+<span id="cb135-1447"><a href="#cb135-1447" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb135-1448"><a href="#cb135-1448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1449"><a href="#cb135-1449" aria-hidden="true" tabindex="-1"></a>Thanks to my <span class="co">[</span><span class="ot">colleagues at RISE</span><span class="co">](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements)</span> for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to <span class="co">[</span><span class="ot">Mike Linacre</span><span class="co">](https://www.winsteps.com/linacre.htm)</span> and <span class="co">[</span><span class="ot">Jeanette Melin</span><span class="co">](https://www.ri.se/en/person/jeanette-melin)</span> for providing useful feedback to improve this vignette.</span>
+<span id="cb135-1449"><a href="#cb135-1449" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional credits</span></span>
 <span id="cb135-1450"><a href="#cb135-1450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1451"><a href="#cb135-1451" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb135-1451"><a href="#cb135-1451" aria-hidden="true" tabindex="-1"></a>Thanks to my <span class="co">[</span><span class="ot">colleagues at RISE</span><span class="co">](https://www.ri.se/en/what-we-do/projects/center-for-category-based-measurements)</span> for providing feedback and testing the package on Windows and MacOS platforms. Also, thanks to <span class="co">[</span><span class="ot">Mike Linacre</span><span class="co">](https://www.winsteps.com/linacre.htm)</span> and <span class="co">[</span><span class="ot">Jeanette Melin</span><span class="co">](https://www.ri.se/en/person/jeanette-melin)</span> for providing useful feedback to improve this vignette.</span>
 <span id="cb135-1452"><a href="#cb135-1452" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1455"><a href="#cb135-1455" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb135-1456"><a href="#cb135-1456" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb135-1457"><a href="#cb135-1457" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb135-1458"><a href="#cb135-1458" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1459"><a href="#cb135-1459" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb135-1460"><a href="#cb135-1460" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb135-1453"><a href="#cb135-1453" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb135-1454"><a href="#cb135-1454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1457"><a href="#cb135-1457" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb135-1458"><a href="#cb135-1458" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb135-1459"><a href="#cb135-1459" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb135-1460"><a href="#cb135-1460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1461"><a href="#cb135-1461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-1462"><a href="#cb135-1462" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
