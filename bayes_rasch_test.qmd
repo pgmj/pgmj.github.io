@@ -1,0 +1,124 @@
+
+
+
+```{r}
+
+prior_pcm <- prior("normal(0, 3)", class = "Intercept") +
+  prior("normal(0, 3)", class = "sd", group = "id")
+
+get_prior(value | thres(gr = item) ~ 1 + (1 | id),
+  data    = df2,
+  family = "acat")
+
+brms_pcm2 = brm(
+  value | thres(gr = item) ~ 1 + (1 | id),
+  data    = df2,
+  prior = prior_pcm,
+  chains  = 4,
+  cores   = 4,
+  iter = 2000,
+  family = "acat",
+  control = list(adapt_delta = 0.99)
+)
+
+loo(brms_pcm2)
+plot(brms_pcm)
+#conditional_effects(brms_pcm, effects = "item")
+```
+
+checking item fit(?)
+
+```{r}
+#pp_check(brms_pcm, type = "error_scatter_avg", group = "item")
+RIrestscore(pcmdat2)
+simfit <- RIgetfit(pcmdat2, iterations = 200, cpu = 8)
+RIitemfit(pcmdat2, simfit)
+
+pp_check(brms_pcm, type = "pit_ecdf_grouped", group = "item")
+pp_check(brms_pcm, type = "error_scatter_avg_grouped", group = "item")
+
+pp_check(brms_pcm, type = "km_overlay_grouped", group = "item", extrapolation_factor = Inf)
+pp_check(brms_pcm, type = "stat_freqpoly_grouped", group = "item")
+pp_check(brms_pcm, type = "bars_grouped", group = "item")
+pp_check(brms_pcm, type = "ecdf_overlay_grouped", group = "item", ndraws = 100)
+pp_check(brms_pcm, type = "intervals_grouped", group = "item")
+pp_check(brms_pcm, type = "ribbon_grouped", group = "item")
+
+```
+
+residuals
+
+```{r}
+library(tidybayes)
+res <- df2 %>% add_residual_draws(brms_pcm2)
+res <- df %>% add_residual_draws(brms_rasch, re_formula = ~ item)
+
+res %>%
+  group_by(item, id) %>%
+  summarise(q3 = mean(value - .residual)) %>%
+  pivot_wider(id_cols = id, names_from = item, values_from = q3) %>%
+  correlation::correlation() %>%
+  as.data.frame() %>%
+
+  # ggplot(aes(x = r)) +
+  # geom_histogram()
+  summarise(mean = mean(r), max = max(r), min = min(r))
+
+rescor <- RIgetResidCor(eRm::raschdat1[, 1:20], iterations = 1000, cpu = 8)
+RIresidcorr(eRm::raschdat1[, 1:20], rescor$p99)
+
+mirt.rasch <- mirt(
+  eRm::raschdat1[, 1:20],
+  model = 1,
+  itemtype = "Rasch",
+  verbose = FALSE,
+  accelerate = "squarem"
+)
+resid <- residuals(mirt.rasch, type = "Q3", digits = 2, verbose = FALSE)
+diag(resid) <- NA
+resid <- as.data.frame(resid)
+mean.resid <- resid %>% as.matrix() %>% mean(na.rm = TRUE)
+
+max(resid, na.rm = T)
+min(resid, na.rm = T)
+
+
+res %>%
+  group_by(item, id) %>%
+  summarise(q3 = mean(value - .residual)) %>%
+  pivot_wider(id_cols = id, names_from = item, values_from = q3) %>%
+  correlation::correlation() %>%
+  as.data.frame() %>% 
+  filter(r > 0.2)
+
+resid %>% 
+  filter(I16 > 0.1)
+```
+
+
+Item threshold locations
+
+```{r}
+mcmc_plot(brms_pcm)
+RItargeting(pcmdat2)
+# set_rescor(TRUE)
+```
+
+
+```{r}
+library(reliabilitydiag)
+
+calibration_plot <- \(fit, i) {
+  rd=reliabilitydiag(EMOS = E_loo((matrix(as.integer(posterior_predict(fit)),nrow=4000)<=i)+0,
+                                  loo(fit)$psis_object)$value,
+                     y = as.numeric(friends$friendship_importance<=i))
+  autoplot(rd)+
+    labs(x=paste0("Predicted probability of outcome <= ", i),
+         y="Conditional event probabilities")+
+    bayesplot::theme_default(base_family = "sans", base_size=16)
+}
+
+calibration_plot(brms_pcm, 1)
+```
+
+

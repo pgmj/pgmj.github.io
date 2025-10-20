@@ -703,19 +703,21 @@ RIitemHierarchy(df)
 
 Items 16 & 19, and 12 & 14 show problematic residual correlations.
 
-Let's look at DIF before taking action upon this information. **While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the `panel-tabset` above (on item fit, PCA, residual correlations, etc).**
+Let's look at DIF before taking action upon this information. **While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the `panel-tabset` above (on item fit, residual correlations, etc).**
 
 ## DIF - differential item functioning
+
+DIF is a complex topic, which is why it gets a separate section here. Even so, this vignette will just brush the surface. For an historical overview, which also includes recent developments, see Thissen [-@thissen_review_2025].
 
 ::: {.callout-note icon="true"}
 While we are keeping DIF as a separate section in this vignette, it is recommended to include DIF-analysis in the parallel analysis above (on item fit, targeting, residual correlations, etc) since DIF tests will help you understand or evaluate item functioning together with the other tests.
 :::
 
-We'll be looking at whether item (threshold) locations are stable between demographic subgroups.
+We'll be looking at whether item (threshold) locations are stable between demographic subgroups. There are usually two key aspects to this analysis. One is whether we can detect DIF for one or more items. The other is the magnitude of DIF and how it affects the use of the overall test, if test scores are biased for any group. I recommend a paper by Chalmers et al. [-@chalmers_it_2016] on the topic of DTF, differential test functioning.
 
 There are several DIF analysis tools available. The first one uses the package `psychotree`, which relies on statistical significance at p < .05 as an indicator for DIF. This is a criterion that is highly sample size sensitive, and we are always interested in the size/magnitude of DIF as well, since that will inform us about the impact of DIF on the estimated latent variable. 
 
-The structure of DIF is also an important and complex aspect, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. We can test this in R using the `lordif` package, as demonstrated in @sec-lordif. However, it should be noted that the `lordif` package does not provide an option to use Rasch models, and there may be results that are caused by also allowing the discrimination parameter to vary across items.
+The structure of DIF is also important to assess, particularly for polytomous data. Uniform DIF means that the DIF is similar across the latent continuum. The `RIciccPlot()` function can be used for DIF analysis and produces curves that show whether DIF is uniform or not. We can also test for uniformity formally in R using the `lordif` package, as demonstrated in @sec-lordif. However, it should be noted that the `lordif` package does not provide an option to use Rasch models, and there may be results that are caused by also allowing the discrimination parameter to vary across items. 
 
 A recent preprint [@henninger_partial_2024] does a great job illustrating "differential step functioning" (DSF), which is when item threshold locations in polytomous data show varying levels of DIF. It also describes a forthcoming development of the `psychotree` where one can use DIF effect size and purification functions to evaluate DIF/DSF. When the updated package is available, I will work to implement these new functions into the `easyRasch` package as well.
 
