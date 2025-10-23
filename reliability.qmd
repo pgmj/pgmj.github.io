@@ -42,6 +42,8 @@ We won't check model fit, just assuming things work here, to see how the reliabi
 
 ## Rasch dichotomous model
 
+For this example, the `eRm::raschdat1` dataset is used, selecting the first 20 items. The dataset has 100 respondents.
+
 ### Bayesian
 
 ```{r}
@@ -876,13 +878,13 @@ data.frame(Metric = c("RMU brms 8000","RMU brms 4000","WLE-RMU PV 4000 (mirt)","
 ```
 
 
-## Partial credit model
+## Partial credit model (PCM)
 
-Polytomous/ordinal data, only 4 items in the dataset.
+For this example, the `eRm::pcmdat2` dataset is used. It has 4 items with 3 response categories each, and 300 respondents. It might not be an optimal dataset to use since item 3 is a bit overfit to the PCM.
 
 ### Bayesian
 
-To run a partial credit model (PCM) with `brms`, we need `family = "acat"`, which defaults to use logit link. 
+To fit a PCM with `brms`, we need `family = "acat"`, which defaults to use logit link. 
 
 ```{r}
 #| eval: false
