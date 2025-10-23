@@ -5,47 +5,42 @@ author:
   name: 'Magnus Johansson'
   affiliation: 'Karolinska Institutet'
   orcid: '0000-0003-1669-592X'
-date: 2025-10-11
+date: 2025-10-23
 date-format: iso
 google-scholar: true
 citation:
   type: 'webpage'
 format: 
   html:
-    code-fold: true
+    code-fold: false
 execute: 
   cache: true
   warning: false
   message: false
 editor_options: 
   chunk_output_type: console
-#bibliography: est_comp.bib
+bibliography: reliability.bib
 ---
 
 ## Introduction
 
-This post has two purposes. The primary one is to compare some reliability metrics, since a new paper [@] inspired some ideas. The main idea I had was to use plausible values instead of fully Bayesian model posterior draws to estimate the "relative measurement uncertainty" (RMU) metric proposed by Bignardi and colleagues. The secondary purpose is to show how to fit Rasch models, dichotomous and partial credit models, using Bayesian models with `brms`, and make some comparisons of person and item parameters relative CML/WLE estimation. There is already an excellent paper on Bayesian Item Response Modeling [@], but I thought a blog post like this might still be a useful addition to learning materials available. And also an opportunity for myself to learn.
-
-
-Bignardi, G., Kievit, R., & Bürkner, P.-C. (2025). A general method for estimating reliability using Bayesian Measurement Uncertainty. OSF. https://doi.org/10.31234/osf.io/h54k8_v1
-
-Bürkner, P.-C. (2021). Bayesian Item Response Modeling in R with brms and Stan. Journal of Statistical Software, 100, 1–54. https://doi.org/10.18637/jss.v100.i05
+This post has two purposes. The primary one is to compare some reliability metrics, since a new paper [@bignardi_general_2025] inspired some ideas. The main idea I had was to use plausible values instead of fully Bayesian model posterior draws to estimate the "relative measurement uncertainty" (RMU) metric proposed by Bignardi and colleagues [-@bignardi_general_2025]. The secondary purpose is to show how to fit Rasch models, dichotomous and partial credit models, using Bayesian models with `brms`, and make some comparisons of person and item parameters relative CML/WLE estimation. There is already an excellent paper on Bayesian Item Response Modeling [@burkner_bayesian_2021], but I thought a blog post like this might still be a useful addition to learning materials available. And also an opportunity for myself to learn.
 
 
 ```{r}
 library(tidyverse)
+library(ggdist)
 library(easyRasch)
 library(brms)
 library(qs2)
+set.seed(789012475)
 ```
 
 ## Method
 
-We won't check model fit, just assuming things work here, to see how the reliability metrics compare and how you specify Rasch models using `brms`. Default priors are used initially, which is not recommended.
+We won't check model fit, just assuming things work here, to see how the reliability metrics compare and how you specify Rasch models using `brms`. Weakly informative priors are used for item parameters, borrowing from Bürkner [-@burkner_bayesian_2021]. We use four parallel chains, each with 2000 iterations of which half are warmup, resulting in 4000 draws from the posterior distribution. For comparison, we also fit the same model with 8000 draws (not shown below).
 
 ## Rasch dichotomous model
-
-
 
 ### Bayesian
 
@@ -53,17 +48,23 @@ We won't check model fit, just assuming things work here, to see how the reliabi
 #| eval: false
 df <- eRm::raschdat1[,1:20] %>%
   rownames_to_column("id") %>%
-  pivot_longer(!id, names_to = "item")
+  pivot_longer(!id, names_to = "item", values_to = "response")
 
-brms_rasch = brm(
-  value ~ 1 + (1 | item) + (1 | id),
+rasch_prior <- prior("normal(0, 3)", class = "sd", group = "id") +
+  prior("normal(0, 3)", class = "sd", group = "item")
+
+brms_rasch <- brm(
+  response ~ 0 + (1 | item) + (1 | id),
   data    = df,
+  prior = rasch_prior,
   chains  = 4,
   cores   = 4,
   iter = 2000,
   family = "bernoulli"
 )
-qs_save(brms_rasch, file = "brms_rasch4000.qs2")
+
+qs_save(brms_rasch, file = "brms_rasch4000.qs2",compress_level = 11)
+qs_save(brms_rasch2, file = "brms_rasch8000.qs2",compress_level = 13)
 ```
 
 
@@ -90,32 +91,15 @@ RMUreliability(posterior_draws_rm8000)
 
 ### Compare to plausible values
 
-From `TAM`
+Also did some timing tests, comparing `TAM` and `mirt` packages, where the latter has options in how to estimate thetas (latent scores) used for generating the plausible values. Since WLE is generally considered to have the lowest bias [@kreiner_specific_2025], this is the default choice in the `RIreliability()` function.
 
 ```{r}
-#| echo: false
-
-rr_rm <- RIreliability(eRm::raschdat1[,1:20], draws = 4000)
-qs_save(rr_rm, file = "rr_rm.qs2")
-
-rr_rm$RMU
-rr_rm$EAP
-rr_rm$PSI
-
-rr_rm8000 <- RIreliability(eRm::raschdat1[,1:20], draws = 8000)
-qs_save(rr_rm8000, file = "rr_rm8000.qs2")
-rr_rm8000$RMU
-```
-
-### PVs with WLE and `mirt`
-
-A *lot* faster than `TAM`, has an option to use WLE-estimated thetas (lower bias), and Metropolis-Hastings posterior draws. See `?mirt::fscores` for details.
-
-```{r}
-RIreliability2 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", boot = FALSE, cpu = 4) {
-
+#| code-fold: true
+# defining a separate function for RIreliability in case I make changes later on in the easyRasch package
+RIreliability3 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", boot = FALSE, cpu = 4, pv = "mirt") {
+  
   message("Note that PSI is calculated with max/min scoring individuals excluded.")
-
+  
   if(min(as.matrix(data), na.rm = T) > 0) {
     stop("The lowest response category needs to coded as 0. Please recode your data.")
   } else if(max(as.matrix(data), na.rm = T) == 1) {
@@ -123,7 +107,7 @@ RIreliability2 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", bo
   } else if(max(as.matrix(data), na.rm = T) > 1) {
     model <- "PCM"
   }
-
+  
   if (model == "PCM") {
     mirt_out <- mirt(
       data,
@@ -143,27 +127,27 @@ RIreliability2 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", bo
     )
     erm_out <- eRm::RM(data)
   }
-
+  
   wle <- RI_iarm_person_estimates(erm_out, properties = TRUE)[[2]] %>%
     as.data.frame()
   rownames(wle) <- NULL
-
+  
   empirical_rel <- mirt::fscores(mirt_out,
                                  method = estim,
                                  theta_lim = c(-10, 10),
                                  full.scores.SE = TRUE,
                                  verbose = FALSE) %>%
     mirt::empirical_rxx()
-
+  
   if (boot == TRUE) {
     require(doParallel)
     registerDoParallel(cores = cpu)
     # bootstrap CI for empirical
     fit <- data.frame()
     fit <- foreach(i = 1:draws, .combine = rbind) %dopar% {
-
+      
       dat <- data[sample(1:nrow(data), nrow(data), replace = TRUE), ]
-
+      
       if (model == "PCM") {
         mirt_out2 <- mirt(
           dat,
@@ -181,95 +165,712 @@ RIreliability2 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", bo
           accelerate = "squarem"
         )
       }
-
+      
       mirt::fscores(mirt_out2,
                     method = estim,
                     theta_lim = c(-10, 10),
                     full.scores.SE = TRUE,
                     verbose = FALSE) %>%
         mirt::empirical_rxx()
-
+      
     }
-
+    
     emp_boot <- mean_hdci(fit) %>%
       mutate(across(where(is.numeric), ~ round(.x, 3)))
-
+    
   }
-
+  
+  if (pv == "mirt") {
   plvals <- mirt::fscores(mirt_out, method = estim,
                           theta_lim = c(-10, 10),
                           plausible.draws = draws,
                           plausible.type = "MH",
                           verbose = FALSE)
-
+  
   rmu <- do.call(cbind.data.frame, plvals) %>%
     RMUreliability(level = conf_int) %>%
     mutate(across(where(is.numeric), ~ round(.x, 3)))
-
+  } else if (pv == "TAM") {
+    estim = "EAP"
+    if (model == "PCM") {
+    tam_out <- TAM::tam.mml(resp = data, irtmodel = "PCM", verbose = FALSE)
+    } else if (model == "RM") {
+    tam_out <- TAM::tam.mml(resp = data, irtmodel = "1PL", verbose = FALSE)
+    }
+    
+    plvals <- TAM::tam.pv(tam_out, nplausible = draws, verbose = FALSE)[["pv"]][,-1]
+    
+    rmu <- RMUreliability(plvals, level = conf_int) %>%
+    mutate(across(where(is.numeric), ~ round(.x, 3)))
+  }
+  
   message(paste0("RMU reliability estimates based on ",draws," posterior draws (plausible values) from ",nrow(data)," respondents.",
                  "\nSee Bignardi, Kievit, & Bürkner (2025). 'A general method for estimating reliability using Bayesian Measurement Uncertainty' for details. ",
-                 "The procedure has been modified in `easyRasch` to use `mirt::fscores(plausible.type = 'MH')` to generate plausible values based on an MML estimated Rasch model."))
-
+                 "The procedure has been modified in `easyRasch` to use plausible values based on an MML estimated Rasch model."))
+  
   if (boot == TRUE) {
-
+    
     return(list(WLE = wle,
                 PSI = eRm::person.parameter(erm_out) %>% eRm::SepRel(),
                 Empirical = paste0(estim,"_empirical = ",round(empirical_rel,3)),
                 Empirical_bootstrap = paste0(estim,"_empirical = ",emp_boot$y," (95% HDCI [",emp_boot$ymin,", ",emp_boot$ymax,"]) (",draws," bootstrap resamples)"),
-                RMU = paste0(estim,"-RMU = ",rmu$rmu_estimate," (95% HDCI [",rmu$hdci_lowerbound,", ",rmu$hdci_upperbound,"]) (",draws," draws)")
+                RMU = paste0(estim,"-RMU = ",rmu$rmu_estimate," (95% HDCI [",rmu$hdci_lowerbound,", ",rmu$hdci_upperbound,"]) (",draws," draws) using package ",pv)
     )
     )
   } else {
     return(list(WLE = wle,
                 PSI = eRm::person.parameter(erm_out) %>% eRm::SepRel(),
                 Empirical = paste0(estim,"_empirical = ",round(empirical_rel,3)),
-                RMU = paste0(estim,"-RMU = ",rmu$rmu_estimate," (95% HDCI [",rmu$hdci_lowerbound,", ",rmu$hdci_upperbound,"]) (",draws," draws)")
+                RMU = paste0(estim,"-RMU = ",rmu$rmu_estimate," (95% HDCI [",rmu$hdci_lowerbound,", ",rmu$hdci_upperbound,"]) (",draws," draws) using package ",pv)
     )
     )
   }
 }
-
 ```
+
 
 ```{r}
 #| eval: false
-rr_rm_wle <- RIreliability2(eRm::raschdat1[,1:20], draws = 4000)
-rr_rm_eap <- RIreliability2(eRm::raschdat1[,1:20], draws = 4000, estim = "EAP")
-rr_rm_wle8000 <- RIreliability2(eRm::raschdat1[,1:20], draws = 8000)
+t0 <- Sys.time()
+rmu_mirt_wle4000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 4000)
+t1 <- Sys.time()
+t1 - t0 # 4.57s
 
-rr_rm_eap$RMU
-rr_rm_wle$RMU
-rr_rm_wle8000$RMU
+t0 <- Sys.time()
+rmu_mirt_eap4000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 4000, estim = "EAP")
+t1 <- Sys.time()
+t1 - t0 # 4.16s
 
-rr_rm_wle$Empirical
+t0 <- Sys.time()
+rmu_tam_eap4000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 4000, pv = "TAM")
+t1 <- Sys.time()
+t1 - t0 # 13.9s
 ```
 
+Using `mirt`, there is not much difference between WLE and EAP, approximately 4.1s for EAP and 4.5s for WLE. `TAM` takes quite a bit longer, at around 14s. I only did two iterations, so take this with a grain of salt.
+
+Now with 8000 draws.
+
+```{r}
+#| eval: false
+t0 <- Sys.time()
+rmu_mirt_wle8000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 8000)
+t1 <- Sys.time()
+t1 - t0 # 8.1 
+
+t0 <- Sys.time()
+rmu_mirt_eap8000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 8000, estim = "EAP")
+t1 <- Sys.time()
+t1 - t0 # 8.1
+
+t0 <- Sys.time()
+rmu_tam_eap8000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 8000, pv = "TAM")
+t1 <- Sys.time()
+t1 - t0 # 13.9s
+```
+
+WLE and EAP with `mirt` are equal in this run, both at 8.1s. `TAM` takes about 31s.
 
 ### Conditional reliability
 
+This function and its code is borrowed from [@mcneish_reliability_2025]. Reporting alpha and omega with 95% confidence intervals.
+
 ```{r}
-RIrelRep(eRm::raschdat1[,1:20])$plot
-RIrelRep(eRm::raschdat1[,1:20], rel = "omega")$plot
+#| echo: false
+RIrelRep <- function(data, items=c(names(data)), rel="alpha", missing="NA", method="CI", width=NULL, raw.low=NULL, raw.high=NULL)
+{
+  if ( !(method%in% c("CI", "width", "raw"))){
+    stop("Error:  the method input must be one of the following options: 'CI','width', or 'raw'")
+  }
+  
+  if (method=="width" & is.null(width)){
+    stop("Error: method='width' requires a user-defined value in the 'width=' option")
+  }
+  
+  if (method=="raw" & (is.null(raw.low)|is.null(raw.high))){
+    stop("Error: method='raw' requires a user-defined values both the 'raw.low=' and 'raw.high' options")
+  }
+  
+  ##recode missing data to NA for R
+  ##only used in Shiny app
+  data[data == missing] <- NA
+  
+  #subset the uploaded data to only include selected items
+  dat<-data[,items]
+  
+  ## delete any rows that are all missing to avoid errors
+  dat<-dat[rowSums(is.na(dat)) != ncol(dat), ]
+  
+  #fit IRT model for which sum scores are a sufficient statistic
+  model<-mirt::mirt(data=dat, itemtype="Rasch", verbose=F)
+  
+  ############
+  #functions for conditional reliability
+  #lifted from ggmirt package (Phillip Masurp, https://github.com/masurp/ggmirt)
+  ############
+  computeItemtrace <- function(pars, Theta, itemloc, offterm = matrix(0L, 1L, length(itemloc)-1L),
+                               CUSTOM.IND, pis = NULL){
+    if(is.null(pis)){
+      itemtrace <- .Call('computeItemTrace', pars, Theta, itemloc, offterm)
+      if(length(CUSTOM.IND)){
+        for(i in CUSTOM.IND)
+          itemtrace[,itemloc[i]:(itemloc[i+1L] - 1L)] <- ProbTrace(pars[[i]], Theta=Theta)
+      }
+    } else {
+      tmp_itemtrace <- vector('list', length(pis))
+      for(g in seq_len(length(pis))){
+        tmp_itemtrace[[g]] <- .Call('computeItemTrace', pars[[g]]@ParObjects$pars, Theta, itemloc, offterm)
+        if(length(CUSTOM.IND)){
+          for(i in CUSTOM.IND)
+            tmp_itemtrace[[g]][,itemloc[i]:(itemloc[i+1L] - 1L)] <- ProbTrace(pars[[g]]@ParObjects$pars[[i]], Theta=Theta)
+        }
+      }
+      itemtrace <- do.call(rbind, tmp_itemtrace)
+    }
+    return(itemtrace)
+  }
+  
+  ExtractGroupPars <- function(x){
+    if(x@itemclass < 0L) return(list(gmeans=0, gcov=matrix(1)))
+    nfact <- x@nfact
+    gmeans <- x@par[seq_len(nfact)]
+    phi_matches <- grepl("PHI", x@parnames)
+    if (x@dentype == "Davidian") {
+      phi <- x@par[phi_matches]
+      tmp <- x@par[-c(seq_len(nfact), which(phi_matches))]
+      gcov <- matrix(0, nfact, nfact)
+      gcov[lower.tri(gcov, diag=TRUE)] <- tmp
+      gcov <- makeSymMat(gcov)
+      return(list(gmeans=gmeans, gcov=gcov, phi=phi))
+    } else {
+      par <- x@par
+      if(x@dentype == "mixture") par <- par[-length(par)] # drop pi
+      tmp <- par[-seq_len(nfact)]
+      gcov <- matrix(0, nfact, nfact)
+      gcov[lower.tri(gcov, diag=TRUE)] <- tmp
+      gcov <- makeSymMat(gcov)
+      return(list(gmeans=gmeans, gcov=gcov))
+    }
+  }
+  
+  makeSymMat <- function(mat){
+    if(ncol(mat) > 1L){
+      mat[is.na(mat)] <- 0
+      mat <- mat + t(mat) - diag(diag(mat))
+    }
+    mat
+  }
+  
+  #compute number of sum scores and number of people with each scores
+  f<-mirt::fscores(model,method="EAPsum", full.scores=F,verbose=F, na.rm=TRUE)
+  
+  ## functions for computing conditional reliabilty (partially lifted for ggmirt package)
+  nfact <- model@Model$nfact
+  J <- model@Data$nitems
+  theta <- f$F1
+  ThetaFull <- Theta <- thetaComb(theta, nfact)
+  info <- testinfo(model, ThetaFull)
+  itemtrace <- computeItemtrace(model@ParObjects$pars, ThetaFull, model@Model$itemloc,
+                                CUSTOM.IND=model@Internals$CUSTOM.IND)
+  mins <- model@Data$mins
+  maxs <- extract.mirt(model, 'K') + mins - 1
+  gp <- ExtractGroupPars(model@ParObjects$pars[[J+1]])
+  score <- c()
+  for(i in 1:J)
+    score <- c(score, (0:(model@Data$K[i]-1) + mins[i]) * (i %in% c(1:J)))
+  score <- matrix(score, nrow(itemtrace), ncol(itemtrace), byrow = TRUE)
+  plt <- data.frame(cbind(info,score=rowSums(score*itemtrace),Theta=Theta))
+  colnames(plt) <- c("info", "score", "Theta")
+  plt$SE <- 1 / sqrt(plt$info)
+  plt$rxx <- plt$info / (plt$info + 1/gp$gcov[1L,1L])
+  
+  #possible sum scores in data
+  plt$sum<-f$Sum.Scores
+  #number of people with each score
+  plt$observed<-f$observed
+  
+  if(method=="CI"){
+    #compute alpha and 95% CI
+    ci<-Bayesrel::strel(data=dat, estimates=rel, n.burnin=5000,n.iter=10000, missing="listwise")
+    low<-as.numeric(ci$Bayes$cred$low)
+    upp<-as.numeric(ci$Bayes$cred$up)
+    est<-as.numeric(ci$Bayes$est)
+  }
+  
+  if(method=="width"){
+    ci<-Bayesrel::strel(data=dat, estimates=rel, n.burnin=5000,n.iter=10000, missing="listwise")
+    est<-as.numeric(ci$Bayes$est)
+    
+    low<-est-width
+    if(low<0){
+      low<-0
+      warning(
+        "Warning: The 'width =' value implies an interval lower bound below 0.
+         The lower bound has been replaced with 0.
+         Check that your width was accurately entered", immediate.=T)
+    }
+    
+    upp<-est+width
+    
+    if (upp>1) {
+      upp<-1
+      
+      warning(
+        "Warning: The 'width =' value implies an interval upper bound above 1.
+       The upper bound has been replaced with 1.
+       Check that your width was accurately entered", immediate.=T)
+    }
+    
+  }
+  
+  if(method=="raw"){
+    
+    low<-raw.low
+    upp<-raw.high
+    
+    if(upp>1) {
+      stop(
+        "Error: The 'raw.high =' option exceeds 1.
+             Check that your width was accurately entered")
+    }
+    
+    if (low<0) {
+      stop(
+        "Error: The 'low =' option is below 0.
+             Check that your width was accurately entered")
+    }
+    
+    if ((raw.low>raw.high | raw.low==raw.high)) {
+      stop(
+        "Error: The interval lower bound exceeds the interval upper bound.
+                 Check that your width was accurately entered")
+    }
+    
+    ci<-Bayesrel::strel(data=dat, estimates=rel, n.burnin=5000,n.iter=10000, missing="listwise")
+    est<-as.numeric(ci$Bayes$est)
+  }
+  
+  #percentage within CI, above CI, and below CI
+  plt$within<-ifelse(low < plt$rxx & plt$rxx < upp, 1,0)
+  plt$above<-ifelse(upp < plt$rxx, 1,0)
+  plt$below<-ifelse(plt$rxx < low, 1,0)
+  people<-round(100*apply(plt[,c("within","above","below")], 2, weighted.mean, w=plt$observed),2)
+  
+  #used for plot legend
+  alpha <- data.frame(yintercept=est, Lines=str_to_title(rel))
+  if(method=="CI"){
+    CI <- data.frame(yintercept=low, Lines=paste(str_to_title(rel),'95% CI'))
+  }
+  
+  if(method!="CI"){
+    CI <- data.frame(yintercept=low, Lines='Test Interval')
+  }
+  
+  
+  #plot
+  #conditional reliability, weighted by number of responses
+  #with alpha and 95% CI
+  #x axis is sum score, not theta score
+  
+  p<-ggplot(plt, aes(x = sum, y = rxx)) +
+    geom_line(aes(color = (observed+1)),lwd=1.5) +
+    scale_colour_gradient("People at Score",high ="#009ca6",low="sienna1")+ #low = "#fff7dd", high = "#009ca6"
+    ylim(0, 1) +
+    theme_minimal(base_size=16)+
+    geom_hline(yintercept=upp, linetype="dotted", lwd=.5)+
+    geom_hline(aes(yintercept=yintercept,  linetype=Lines), CI, lwd=.5)+
+    geom_hline(aes(yintercept=yintercept,  linetype=Lines), alpha, lwd=.5)+
+    xlab("Sum Score") +
+    ylab(paste("Reliability (Cronbach's alpha)"))
+  
+  
+  #print alpha and percentages in console
+  
+  base::cat(paste0("Coefficient ", str_to_title(rel),":                  ", format(round(est,2),nsmall=2)))
+  base::cat("\n")
+  
+  base::cat(paste0("Coefficient ", str_to_title(rel), " 95% CI:          ", "[",round(low,2),",",round(upp,2),"]"))
+  base::cat("\n")
+  base::cat("\n")
+  
+  base::cat(paste0("People above ", str_to_title(rel)," interval:    "))
+  base::cat(paste0(unname(people[2]),"%"))
+  base::cat("\n")
+  
+  base::cat(paste0("People within ", str_to_title(rel)," interval   :    "))
+  base::cat(paste0(unname(people[1]),"%"))
+  base::cat("\n")
+  
+  base::cat(paste0("People below  ", str_to_title(rel), " interval:    "))
+  base::cat(paste0(unname(people[3]),"%"))
+  
+  
+  ##Save a table for Shiny
+  if(method=="CI"){
+    y<-c(paste0("Coefficient ",str_to_title(rel),":"),paste0("Coefficient ", str_to_title(rel), " 95% CI:"), " ",
+         paste0("People above ", str_to_title(rel)," interval:"),
+         paste0("People within ", str_to_title(rel)," interval:"),
+         paste0("People below ", str_to_title(rel)," interval :"),
+         format(round(est,2),nsmall=2),
+         paste0("[",format(round(low,2),nsmall=2),",",format(round(upp,2),nsmall=2),"]"),
+         " ",
+         paste0(unname(people[2]),"%"),
+         paste0(unname(people[1]),"%"),
+         paste0(unname(people[3]),"%"))
+  }
+  
+  if(method!="CI"){
+    y<-c(paste0("Coefficient ",str_to_title(rel),":"),paste0("Specified test interval:"), " ",
+         paste0("People above ", str_to_title(rel)," interval:"),
+         paste0("People within ", str_to_title(rel)," interval:"),
+         paste0("People below ", str_to_title(rel)," interval :"),
+         format(round(est,2),nsmall=2),
+         paste0("[",format(round(low,2),nsmall=2),",",format(round(upp,2),nsmall=2),"]"),
+         " ",
+         paste0(unname(people[2]),"%"),
+         paste0(unname(people[1]),"%"),
+         paste0(unname(people[3]),"%"))
+  }
+  
+  
+  x<-matrix(y, nrow=6, ncol=2)
+  
+  x1<-data.frame(x)
+  
+  d<-plt[,c(6,5,7)]
+  d[,2]<-round(d[,2],3)
+  names(d)<-c("Sum Score","Conditional Reliability","Count")
+  
+  z<-list()
+  
+  #save summary table
+  z$stat<-x1
+  
+  #save plot
+  z$plot<-p
+  
+  #save conditional reliability table
+  z$table<-d
+  
+  #print the plot by default
+  #print(z$plot)
+  
+  #return the plot with the function
+  return(z)
+  
+}
 ```
 
 
-### Summary table
+::: panel-tabset
+#### Alpha
+```{r}
+RIrelRep(eRm::raschdat1[,1:20])$plot
+```
 
-The `brms` model uses 
+#### Omega
+```{r}
+RIrelRep(eRm::raschdat1[,1:20], rel = "omega")$plot
+```
+:::
+
+### Summarizing RMU findings
+
+This is actually a bit tricky. Since RMU uses a random pairing of draws, there is variation in the estimates, both point values and HDCIs. Let's see how much it varies.
 
 ```{r}
-data.frame(Metric = c("RMU Bayes 4000","RMU Bayes 8000","RMU PV 4000","RMU PV 8000","WLE-RMU PV 4000","WLE-RMU PV 8000","EAP","PSI","WLE empirical","Alpha","Omega"),
-           Estimate = c("0.750, 95% HDCI [0.679, 0.819]",
-                        "0.750, 95% HDCI [0.682, 0.823]",
-                        "0.751, 95% HDCI [0.683, 0.818]",
-                        "0.754, 95% HDCI [0.686, 0.821]",
-                        "0.763, 95% HDCI [0.692, 0.825]",
-                        "0.763, 95% HDCI [0.697, 0.826]",
+#| eval: false
+rel <- map_dfr(1:1000, ~ RMUreliability(posterior_draws_rm4000)[1:3])
+qs_save(rel,"rel4000.qs2")
+```
+
+```{r}
+rel <- qs_read("rel4000.qs2")
+rel %>%
+  pivot_longer(everything()) %>% 
+  ggplot(aes(x = value, y = name, fill = name)) +
+  stat_slabinterval() +
+  labs(title = "RMU random variation",
+       subtitle = "Using a `brms` model with 4000 posterior draws, estimating RMU 1000 times",
+       x = "Relative Measurement Uncertainty",
+       y = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+rel %>%
+  pivot_longer(everything()) %>%
+  group_by(name) %>%
+  reframe(min = min(value), 
+          max = max(value),
+          mean_hdci = mean_hdci(value))
+```
+
+Notable variation.
+
+Let's do the same with 8000 draws.
+
+```{r}
+#| eval: false
+
+rel8 <- map_dfr(1:1000, ~ RMUreliability(posterior_draws_rm8000)[1:3])
+qs_save(rel8,"rel8000.qs2")
+```
+
+```{r}
+rel8 <- qs_read("rel8000.qs2")
+rel8 %>%
+  pivot_longer(everything()) %>% 
+  ggplot(aes(x = value, y = name, fill = name)) +
+  stat_slabinterval() +
+  labs(title = "RMU random variation",
+       subtitle = "Using a `brms` model with 8000 posterior draws, estimating RMU 1000 times",
+       x = "Relative Measurement Uncertainty",
+       y = NULL) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+```{r}
+rel8 %>%
+  pivot_longer(everything()) %>%
+  group_by(name) %>%
+  reframe(min = min(value), 
+          max = max(value),
+          mean_hdci = mean_hdci(value))
+```
+
+Pretty much the same with 8000 draws as with 4000.
+
+How about just estimating RMU 50 times, does it converge on the same mean values for point and CI estimates, compared to estimating RMU 1000 times?
+
+```{r}
+t0 <- Sys.time()
+rel50 <- map_dfr(1:50, ~ RMUreliability(posterior_draws_rm4000)[1:3])
+t1 <- Sys.time()
+t1 - t0 # ~3.4s
+
+rel50 %>%
+  pivot_longer(everything()) %>%
+  group_by(name) %>%
+  reframe(mean_hdci = mean_hdci(value))
+```
+
+This finding leads me to incorporate the 50x RMU estimation as a default setting in the `RIreliability()` function in the next version update. Results reported below are based on this method.
+
+```{r}
+#| code-fold: true
+RIreliability50 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", boot = FALSE, cpu = 4, pv = "mirt", iter = 50, verbose = TRUE) {
+  
+  if (verbose == TRUE) {
+  message("Note that PSI is calculated with max/min scoring individuals excluded.")
+  message(paste0("RMU reliability estimates based on ",draws," posterior draws (plausible values) from ",nrow(data)," respondents.",
+                 "\nSee Bignardi, Kievit, & Bürkner (2025). 'A general method for estimating reliability using Bayesian Measurement Uncertainty' for details. ",
+                 "The procedure has been modified in `easyRasch` to use plausible values based on an MML estimated Rasch model."))
+  }
+  
+  if(min(as.matrix(data), na.rm = T) > 0) {
+    stop("The lowest response category needs to coded as 0. Please recode your data.")
+  } else if(max(as.matrix(data), na.rm = T) == 1) {
+    model <- "RM"
+  } else if(max(as.matrix(data), na.rm = T) > 1) {
+    model <- "PCM"
+  }
+  
+  if (model == "PCM") {
+    mirt_out <- mirt(
+      data,
+      model = 1,
+      itemtype = "Rasch",
+      verbose = FALSE,
+      accelerate = "squarem"
+    )
+    erm_out <- eRm::PCM(data)
+  } else if (model == "RM") {
+    mirt_out <- mirt(
+      data,
+      model = 1,
+      itemtype = "1PL",
+      verbose = FALSE,
+      accelerate = "squarem"
+    )
+    erm_out <- eRm::RM(data)
+  }
+  
+  wle <- RI_iarm_person_estimates(erm_out, properties = TRUE)[[2]] %>%
+    as.data.frame()
+  rownames(wle) <- NULL
+  
+  empirical_rel <- mirt::fscores(mirt_out,
+                                 method = estim,
+                                 theta_lim = c(-10, 10),
+                                 full.scores.SE = TRUE,
+                                 verbose = FALSE) %>%
+    mirt::empirical_rxx()
+  
+  if (boot == TRUE) {
+    require(doParallel)
+    registerDoParallel(cores = cpu)
+    # bootstrap CI for empirical
+    fit <- data.frame()
+    fit <- foreach(i = 1:draws, .combine = rbind) %dopar% {
+      
+      dat <- data[sample(1:nrow(data), nrow(data), replace = TRUE), ]
+      
+      if (model == "PCM") {
+        mirt_out2 <- mirt(
+          dat,
+          model = 1,
+          itemtype = "Rasch",
+          verbose = FALSE,
+          accelerate = "squarem"
+        )
+      } else if (model == "RM") {
+        mirt_out2 <- mirt(
+          dat,
+          model = 1,
+          itemtype = "1PL",
+          verbose = FALSE,
+          accelerate = "squarem"
+        )
+      }
+      
+      mirt::fscores(mirt_out2,
+                    method = estim,
+                    theta_lim = c(-10, 10),
+                    full.scores.SE = TRUE,
+                    verbose = FALSE) %>%
+        mirt::empirical_rxx()
+      
+    }
+    
+    emp_boot <- mean_hdci(fit) %>%
+      mutate(across(where(is.numeric), ~ round(.x, 3)))
+    
+  }
+  
+  if (pv == "mirt") {
+  plvals <- mirt::fscores(mirt_out, method = estim,
+                          theta_lim = c(-10, 10),
+                          plausible.draws = draws,
+                          plausible.type = "MH",
+                          verbose = FALSE)
+  
+  rmu_draws <- do.call(cbind.data.frame, plvals) 
+  rmu_iter <- map_dfr(1:iter, ~ RMUreliability(rmu_draws, level = conf_int)[1:3])
+
+  rmu <- rmu_iter %>% 
+    summarise(rmu_estimate = mean(rmu_estimate),
+              hdci_lowerbound = mean(hdci_lowerbound),
+              hdci_upperbound = mean(hdci_upperbound)
+              ) %>% 
+    mutate(across(where(is.numeric), ~ round(.x, 3)))
+  
+  } else if (pv == "TAM") {
+    estim = "EAP"
+    if (model == "PCM") {
+    tam_out <- TAM::tam.mml(resp = data, irtmodel = "PCM", verbose = FALSE)
+    } else if (model == "RM") {
+    tam_out <- TAM::tam.mml(resp = data, irtmodel = "1PL", verbose = FALSE)
+    }
+    
+    plvals <- TAM::tam.pv(tam_out, nplausible = draws, verbose = FALSE)[["pv"]][,-1]
+    
+    rmu_iter <- map_dfr(1:iter, ~ RMUreliability(plvals, level = conf_int)[1:3])
+
+    rmu <- rmu_iter %>% 
+      summarise(rmu_estimate = mean(rmu_estimate),
+                hdci_lowerbound = mean(hdci_lowerbound),
+                hdci_upperbound = mean(hdci_upperbound)
+                ) %>% 
+      mutate(across(where(is.numeric), ~ round(.x, 3)))
+  }
+  
+  if (boot == TRUE) {
+    
+    return(list(WLE = wle,
+                PSI = eRm::person.parameter(erm_out) %>% eRm::SepRel(),
+                Empirical = paste0(estim,"_empirical = ",round(empirical_rel,3)),
+                Empirical_bootstrap = paste0(estim,"_empirical = ",emp_boot$y," (95% HDCI [",emp_boot$ymin,", ",emp_boot$ymax,"]) (",draws," bootstrap resamples)"),
+                RMU = paste0(estim,"-RMU = ",rmu$rmu_estimate," (95% HDCI [",rmu$hdci_lowerbound,", ",rmu$hdci_upperbound,"]) (",draws," draws) using package ",pv," and ",iter," RMU iterations.")
+    )
+    )
+  } else {
+    return(list(WLE = wle,
+                PSI = eRm::person.parameter(erm_out) %>% eRm::SepRel(),
+                Empirical = paste0(estim,"_empirical = ",round(empirical_rel,3)),
+                RMU = paste0(estim,"-RMU = ",rmu$rmu_estimate," (95% HDCI [",rmu$hdci_lowerbound,", ",rmu$hdci_upperbound,"]) (",draws," draws) using package ",pv," and ",iter," RMU iterations.")
+    )
+    )
+  }
+}
+```
+
+Using the 50 iteration setting 10 times with 4000 draws. What is the variation!?
+
+```{r}
+#| eval: false
+iter50 <- map_vec(1:10, ~ RIreliability50(raschdat1[,1:20], draws = 4000, verbose = FALSE)$RMU)
+iter50
+```
+
+Point estimate varies from .761 to .764, with lower/upper CI ranging from .694-.698 and .825 to .827. Two decimal precision may not be reached always, but I think this is close enough. Estimates seem unlikely to vary more than 0.01.
+
+### Summary table
+
+```{r}
+#| eval: false
+#| code-fold: true
+rmu_mirt_wle_full <- RIreliability50(eRm::raschdat1[,1:20], draws = 4000, verbose = F)
+rmu_mirt_eap_full <- RIreliability50(eRm::raschdat1[,1:20], draws = 4000, estim = "EAP", verbose = F)
+
+t0 <- Sys.time()
+rmu_mirt_wle4000 <- RIreliability50(eRm::raschdat1[,1:20], draws = 4000, verbose = F)$RMU
+t1 <- Sys.time()
+t1 - t0 # 8.3s
+
+t0 <- Sys.time()
+rmu_mirt_eap4000 <- RIreliability50(eRm::raschdat1[,1:20], draws = 4000, estim = "EAP", verbose = F)$RMU
+t1 <- Sys.time()
+t1 - t0 # 7.7s
+
+t0 <- Sys.time()
+rmu_tam_eap4000 <- RIreliability50(eRm::raschdat1[,1:20], draws = 4000, pv = "TAM", verbose = F)$RMU
+t1 <- Sys.time()
+t1 - t0 # 10.6s
+
+brms4000 <- map_dfr(1:50, ~ RMUreliability(posterior_draws_rm4000)[1:3]) %>% 
+  summarise(rmu_estimate = mean(rmu_estimate),
+              hdci_lowerbound = mean(hdci_lowerbound),
+              hdci_upperbound = mean(hdci_upperbound)
+              ) %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+brms8000 <- map_dfr(1:50, ~ RMUreliability(posterior_draws_rm8000)[1:3]) %>% 
+  summarise(rmu_estimate = mean(rmu_estimate),
+              hdci_lowerbound = mean(hdci_lowerbound),
+              hdci_upperbound = mean(hdci_upperbound)
+              ) %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+```
+
+```{r}
+#| code-fold: true
+data.frame(Metric = c("RMU brms 8000","RMU brms 4000","WLE-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (TAM)","EAP (TAM)","PSI (eRm)","WLE empirical (mirt)","EAP empirical (mirt)","Alpha","Omega"),
+           Estimate = c("0.750, 95% HDCI [0.678, 0.818]",
+                        "0.750, 95% HDCI [0.679, 0.818]",
+                        "0.762, 95% HDCI [0.696, 0.827]",
+                        "0.762, 95% HDCI [0.695, 0.826]",
+                        "0.740, 95% HDCI [0.669, 0.809]",
                         "0.749",
                         "0.747",
                         "0.792",
+                        "0.761",
                         "0.75 95% CI [0.68,0.82]",
-                        "0.72 95% CI [0.64,0.79]")
+                        "0.72 95% CI [0.64,0.80]")
            ) %>% 
   knitr::kable()
 ```
@@ -281,86 +882,99 @@ Polytomous/ordinal data, only 4 items in the dataset.
 
 ### Bayesian
 
-To get a PCM, we need family = "acat", which defaults to use logit link.
+To run a partial credit model (PCM) with `brms`, we need `family = "acat"`, which defaults to use logit link. 
 
 ```{r}
 #| eval: false
 df2 <- pcmdat2 %>%
   mutate(across(everything(), ~ .x + 1)) %>% # lowest category needs to be 1, unlike most Rasch packages that use 0
   rownames_to_column("id") %>%
-  pivot_longer(!id, names_to = "item")
+  pivot_longer(!id, names_to = "item", values_to = "response")
 
-brms_pcm = brm(
-  value | thres(gr = item) ~ 1 + (1 | id),
+get_prior(response | thres(gr = item) ~ 1 + (1 | id),
   data    = df2,
+  family  = "acat")
+
+prior_pcm <- prior("normal(0, 5)", class = "Intercept") +
+  prior("normal(0, 3)", class = "sd", group = "id")
+
+brms_pcm <- brm(
+  response | thres(gr = item) ~ 1 + (1 | id),
+  data    = df2,
+  prior   = prior_pcm,
   chains  = 4,
   cores   = 4,
-  iter = 2000,
-  family = "acat",
+  iter    = 2000,
+  family  = "acat",
   control = list(adapt_delta = 0.99)
 )
 loo(brms_pcm)
 
-qs_save(brms_pcm, file = "brms_pcm.qs2")
+qs_save(brms_pcm, file = "brms_pcm.qs2", compress_level = 11)
 ```
 
 
 ```{r}
 brms_pcm <- qs_read("brms_pcm.qs2")
 
-summary(brms_pcm)
-(brms_pcm_loo <- loo(brms_pcm))
-
-mcmc_plot(brms_pcm)
-
-posterior_draws_pcm = brms_pcm %>%
+posterior_draws_pcm <- brms_pcm %>%
   as_draws_df() %>%
   select(starts_with("r_id")) %>%
   t()
 ```
 
-
-### Compare to plausible values
-
-```{r}
-RMUreliability(posterior_draws_pcm)
-
-rr_pcm <- RIreliability(eRm::pcmdat2, draws = 4000)
-qs_save(rr_pcm, file = "rr_pcm.qs2")
-rr_pcm$RMU
-rr_pcm$EAP
-rr_pcm$PSI
-```
-
-### WLE-RMU & WLE empirical
-
-```{r}
-rr_pcm_wle <- RIreliability2(eRm::pcmdat2, draws = 4000)
-
-rr_pcm_wle$RMU
-
-rr_pcm_wle$Empirical
-```
-
-
 ### Conditional reliability
 
+::: panel-tabset
+#### Alpha
 ```{r}
 RIrelRep(eRm::pcmdat2)$plot
+```
+
+#### Omega
+```{r}
 RIrelRep(eRm::pcmdat2, rel = "omega")$plot
+```
+:::
+
+### Summary table
+
+```{r}
+#| code-fold: true
+#| eval: false
+brms4000pcm <- map_dfr(1:50, ~ RMUreliability(posterior_draws_pcm)[1:3]) %>% 
+  summarise(rmu_estimate = mean(rmu_estimate),
+              hdci_lowerbound = mean(hdci_lowerbound),
+              hdci_upperbound = mean(hdci_upperbound)
+              ) %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+rmu_mirt_wle_full <- RIreliability50(eRm::pcmdat2, draws = 4000, verbose = F)
+rmu_mirt_eap_full <- RIreliability50(eRm::pcmdat2, draws = 4000, estim = "EAP", verbose = F)
+
+rmu_mirt_wle4000 <- RIreliability50(eRm::pcmdat2, draws = 4000, verbose = F)$RMU
+rmu_mirt_eap4000 <- RIreliability50(eRm::pcmdat2, draws = 4000, estim = "EAP", verbose = F)$RMU
+rmu_tam_eap4000 <- RIreliability50(eRm::pcmdat2, draws = 4000, pv = "TAM", verbose = F)$RMU
 ```
 
 ```{r}
-data.frame(Metric = c("RMU Bayes 4000","RMU PV 4000","WLE-RMU PV 4000","EAP","WLE empirical","PSI","Alpha","Omega"),
-           Estimate = c("0.670, 95% HDCI [0.610, 0.723]",
-                        "0.664, 95% HDCI [0.612, 0.713]",
-                        "0.671, 95% HDCI [0.62, 0.722]",
+#| code-fold: true
+data.frame(Metric = c("RMU brms 4000","WLE-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (TAM)","EAP","WLE empirical (mirt)","EAP empirical (mirt)","PSI","Alpha","Omega"),
+           Estimate = c("0.672, 95% HDCI [0.615, 0.729]",
+                        "0.671, 95% HDCI [0.618, 0.721]",
+                        "0.670, 95% HDCI [0.618, 0.721]",
+                        "0.672, 95% HDCI [0.621, 0.722]",
                         "0.669",
                         "0.718",
+                        "0.670",
                         "0.380",
                         "0.66 95% CI [0.59,0.72]",
-                        "0.63 95% CI [0.57,0.70]")
+                        "0.63 95% CI [0.56,0.70]")
            ) %>% 
   knitr::kable()
+```
+
+```{r}
+sessionInfo()
 ```
 

@@ -28,6 +28,7 @@ website:
       - about.qmd
       - text: "Blog"  
         menu:
+         - reliability.qmd
          - parameterizedQ.qmd
          - latentResp/LatentResponse.qmd
          - SkolverketAPI/skolverketapi.qmd
