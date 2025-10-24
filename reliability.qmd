@@ -1,18 +1,22 @@
 ---
-title: "Bayesian Rasch & reliability"
-subtitle: "Comparing methods"
+title: "RMU --- relative measurement uncertainty"
+subtitle: "Comparing methods and metrics"
 author:
   name: 'Magnus Johansson'
   affiliation: 'Karolinska Institutet'
   orcid: '0000-0003-1669-592X'
+  email: 'magnus.johansson.3@ki.se'
+  degrees: PhD
+  url: https://ki.se/personer/magnus-johansson-3
 date: 2025-10-23
 date-format: iso
+date-modified: last-modified
 google-scholar: true
 citation:
   type: 'webpage'
 format: 
   html:
-    code-fold: false
+    code-fold: true
 execute: 
   cache: true
   warning: false
@@ -24,7 +28,9 @@ bibliography: reliability.bib
 
 ## Introduction
 
-This post has two purposes. The primary one is to compare some reliability metrics, since a new paper [@bignardi_general_2025] inspired some ideas. The main idea I had was to use plausible values instead of fully Bayesian model posterior draws to estimate the "relative measurement uncertainty" (RMU) metric proposed by Bignardi and colleagues [-@bignardi_general_2025]. The secondary purpose is to show how to fit Rasch models, dichotomous and partial credit models, using Bayesian models with `brms`, and make some comparisons of person and item parameters relative CML/WLE estimation. There is already an excellent paper on Bayesian Item Response Modeling [@burkner_bayesian_2021], but I thought a blog post like this might still be a useful addition to learning materials available. And also an opportunity for myself to learn.
+This post has two purposes. The primary one is to compare some reliability metrics, since a new preprint [@bignardi_general_2025] inspired some ideas. They propose a general "relative measurement uncertainty" (RMU) metric, applicable in many situations thanks to Bayesian modeling and posterior MCMC draws. My idea that is evaluated here is to use "plausible values" [@mislevy_randomization_based_1991;@wu_role_2005] instead of fully Bayesian model posterior draws to estimate the "relative measurement uncertainty" (RMU) metric proposed by Bignardi and colleagues [-@bignardi_general_2025]. This would make the RMU metric more accessible to users unfamiliar with Bayesian statistics, and easily applicable to existing Rasch measurement software in R, such as my package `easyRasch`. Please read [the preprint](https://osf.io/h54k8_v1) by Bignardi and colleagues to better understand how the RMU is estimated. A summary is available on pages 12-13.
+
+The secondary purpose is to show how to fit Rasch models, dichotomous and partial credit models (PCM), using Bayesian models with `brms`, and make some comparisons of person and item parameters relative CML/WLE estimation. There is already an excellent paper on Bayesian Item Response Modeling [@burkner_bayesian_2021], but I thought a blog post like this might still be a useful addition to learning materials available. And also an opportunity for myself to learn. This will be added to the post when I have time to work on it.
 
 
 ```{r}
@@ -33,21 +39,27 @@ library(ggdist)
 library(easyRasch)
 library(brms)
 library(qs2)
+
 set.seed(789012475)
 ```
 
 ## Method
 
-We won't check model fit, just assuming things work here, to see how the reliability metrics compare and how you specify Rasch models using `brms`. Weakly informative priors are used for item parameters, borrowing from Bürkner [-@burkner_bayesian_2021]. We use four parallel chains, each with 2000 iterations of which half are warmup, resulting in 4000 draws from the posterior distribution. For comparison, we also fit the same model with 8000 draws (not shown below).
+We won't check model fit in this initial part, as we focus on how the reliability metrics compare and how to specify Rasch models using `brms`. Weakly informative priors are used for item parameters, borrowing from Bürkner [-@burkner_bayesian_2021]. We use four parallel chains with four CPU cores, each with 2000 draws of which half are warmup, resulting in 4000 post-warmup draws from the posterior distribution. In the dichotomous example, we also fit the same model with 8000 draws (code not shown below).
+
+I will at some point add descriptions of the comparison metrics used, and how the `mirt` and `TAM` packages generate plausible values. For now, I hope this will be of use as it is.
 
 ## Rasch dichotomous model
 
 For this example, the `eRm::raschdat1` dataset is used, selecting the first 20 items. The dataset has 100 respondents.
 
-### Bayesian
+### Bayesian model
+
+We need the dataset in long form for `brms`.
 
 ```{r}
 #| eval: false
+#| code-fold: show
 df <- eRm::raschdat1[,1:20] %>%
   rownames_to_column("id") %>%
   pivot_longer(!id, names_to = "item", values_to = "response")
@@ -86,18 +98,24 @@ posterior_draws_rm8000 = brms_rasch8000 %>%
   as_draws_df() %>%
   select(starts_with("r_id")) %>%
   t()
+```
 
+4000 draws:
+```{r}
 RMUreliability(posterior_draws_rm4000)
+```
+
+8000 draws:
+```{r}
 RMUreliability(posterior_draws_rm8000)
 ```
 
-### Compare to plausible values
+### Plausible values
 
-Also did some timing tests, comparing `TAM` and `mirt` packages, where the latter has options in how to estimate thetas (latent scores) used for generating the plausible values. Since WLE is generally considered to have the lowest bias [@kreiner_specific_2025], this is the default choice in the `RIreliability()` function.
+As seen in the code below, I did some simple timing tests to compare the performance of `TAM` and `mirt` packages, where the latter has options in how to estimate thetas (latent scores) used for generating the plausible values (not available in `TAM`). Since WLE is generally considered to have the lowest bias [@kreiner_specific_2025], this is the default choice in the `RIreliability()` function, dubbed WLE-RMU.
 
 ```{r}
-#| code-fold: true
-# defining a separate function for RIreliability in case I make changes later on in the easyRasch package
+# defining a separate function for RIreliability to use in this post, in case I make changes later on in the easyRasch package
 RIreliability3 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", boot = FALSE, cpu = 4, pv = "mirt") {
   
   message("Note that PSI is calculated with max/min scoring individuals excluded.")
@@ -236,12 +254,12 @@ RIreliability3 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", bo
 t0 <- Sys.time()
 rmu_mirt_wle4000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 4000)
 t1 <- Sys.time()
-t1 - t0 # 4.57s
+t1 - t0 # 4.5s
 
 t0 <- Sys.time()
 rmu_mirt_eap4000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 4000, estim = "EAP")
 t1 <- Sys.time()
-t1 - t0 # 4.16s
+t1 - t0 # 4.1s
 
 t0 <- Sys.time()
 rmu_tam_eap4000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 4000, pv = "TAM")
@@ -250,8 +268,6 @@ t1 - t0 # 13.9s
 ```
 
 Using `mirt`, there is not much difference between WLE and EAP, approximately 4.1s for EAP and 4.5s for WLE. `TAM` takes quite a bit longer, at around 14s. I only did two iterations, so take this with a grain of salt.
-
-Now with 8000 draws.
 
 ```{r}
 #| eval: false
@@ -268,14 +284,14 @@ t1 - t0 # 8.1
 t0 <- Sys.time()
 rmu_tam_eap8000 <- RIreliability3(eRm::raschdat1[,1:20], draws = 8000, pv = "TAM")
 t1 <- Sys.time()
-t1 - t0 # 13.9s
+t1 - t0 # 31s
 ```
 
-WLE and EAP with `mirt` are equal in this run, both at 8.1s. `TAM` takes about 31s.
+With 8000 draws, WLE and EAP with `mirt` are both at 8.1s, while `TAM` takes about 31s.
 
 ### Conditional reliability
 
-This function and its code is borrowed from [@mcneish_reliability_2025]. Reporting alpha and omega with 95% confidence intervals.
+This function and its code is borrowed from a recent paper by McNeish and Dumas [-@mcneish_reliability_2025]. Alpha and omega are reported with 95% confidence intervals.
 
 ```{r}
 #| echo: false
@@ -578,7 +594,7 @@ RIrelRep(eRm::raschdat1[,1:20], rel = "omega")$plot
 
 ### Summarizing RMU findings
 
-This is actually a bit tricky. Since RMU uses a random pairing of draws, there is variation in the estimates, both point values and HDCIs. Let's see how much it varies.
+Since RMU uses a random pairing of posterior draws, there is variation in both point values and HDCI estimates if one runs the RMU estimation repeatedly using the same set of draws. Let's investigate how much it varies, using the `brms` model with 4000 draws.
 
 ```{r}
 #| eval: false
@@ -587,19 +603,32 @@ qs_save(rel,"rel4000.qs2")
 ```
 
 ```{r}
+#| fig-height: 4
 rel <- qs_read("rel4000.qs2")
+rel_text <- rel %>% 
+  pivot_longer(everything()) %>% 
+  group_by(name) %>% 
+  summarise(text_location = mean(value))
+
 rel %>%
   pivot_longer(everything()) %>% 
-  ggplot(aes(x = value, y = name, fill = name)) +
+  ggplot(aes(x = value, y = 1, fill = name)) +
   stat_slabinterval() +
+  geom_text(data = rel_text,
+            aes(label = name, x = text_location),
+            position = position_nudge(y = -0.04)) +
   labs(title = "RMU random variation",
-       subtitle = "Using a `brms` model with 4000 posterior draws, estimating RMU 1000 times",
+       subtitle = "Using a `brms` Rasch model with 4000 posterior draws, estimating RMU 1000 times",
        x = "Relative Measurement Uncertainty",
        y = NULL) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        axis.title.x = element_text(vjust = -0.1)) +
+  scale_x_continuous(limits = c(0.65,0.85), breaks = scales::breaks_pretty(8))
 
 ```
+
+CI's have more variation than the point estimate.
 
 ```{r}
 rel %>%
@@ -609,8 +638,6 @@ rel %>%
           max = max(value),
           mean_hdci = mean_hdci(value))
 ```
-
-Notable variation.
 
 Let's do the same with 8000 draws.
 
@@ -622,17 +649,29 @@ qs_save(rel8,"rel8000.qs2")
 ```
 
 ```{r}
+#| fig-height: 4
 rel8 <- qs_read("rel8000.qs2")
+
+rel8_text <- rel8 %>% 
+  pivot_longer(everything()) %>% 
+  group_by(name) %>% 
+  summarise(text_location = mean(value))
+
 rel8 %>%
   pivot_longer(everything()) %>% 
-  ggplot(aes(x = value, y = name, fill = name)) +
+  ggplot(aes(x = value, y = 1, fill = name)) +
   stat_slabinterval() +
+  geom_text(data = rel_text,
+            aes(label = name, x = text_location),
+            position = position_nudge(y = -0.04)) +
   labs(title = "RMU random variation",
-       subtitle = "Using a `brms` model with 8000 posterior draws, estimating RMU 1000 times",
+       subtitle = "Using a `brms` Rasch model with 8000 posterior draws, estimating RMU 1000 times",
        x = "Relative Measurement Uncertainty",
        y = NULL) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        axis.title.x = element_text(vjust = -0.1)) +
+  scale_x_continuous(limits = c(0.65,0.85), breaks = scales::breaks_pretty(8))
 
 ```
 
@@ -645,9 +684,9 @@ rel8 %>%
           mean_hdci = mean_hdci(value))
 ```
 
-Pretty much the same with 8000 draws as with 4000.
+Less variation - more precision in estimates with 8000 draws compared to 4000 draws.
 
-How about just estimating RMU 50 times, does it converge on the same mean values for point and CI estimates, compared to estimating RMU 1000 times?
+How about just estimating RMU 50 times, does it converge on the same mean values for point and CI estimates, compared to estimating RMU 1000 times? This is obviously not a thorough test, it should be evaluated more properly at some point.
 
 ```{r}
 t0 <- Sys.time()
@@ -661,10 +700,11 @@ rel50 %>%
   reframe(mean_hdci = mean_hdci(value))
 ```
 
+Clearly seems more stable than just estimating RMU once.
+
 This finding leads me to incorporate the 50x RMU estimation as a default setting in the `RIreliability()` function in the next version update. Results reported below are based on this method.
 
 ```{r}
-#| code-fold: true
 RIreliability50 <- function(data, conf_int = .95, draws = 1000, estim = "WLE", boot = FALSE, cpu = 4, pv = "mirt", iter = 50, verbose = TRUE) {
   
   if (verbose == TRUE) {
@@ -819,13 +859,12 @@ iter50 <- map_vec(1:10, ~ RIreliability50(raschdat1[,1:20], draws = 4000, verbos
 iter50
 ```
 
-Point estimate varies from .761 to .764, with lower/upper CI ranging from .694-.698 and .825 to .827. Two decimal precision may not be reached always, but I think this is close enough. Estimates seem unlikely to vary more than 0.01.
+Point estimate varies from .761 to .764, with lower/upper CI ranging from .694 to .698 and .825 to .827. Estimates seem unlikely to vary more than 0.01, which I find acceptable.
 
 ### Summary table
 
 ```{r}
 #| eval: false
-#| code-fold: true
 rmu_mirt_wle_full <- RIreliability50(eRm::raschdat1[,1:20], draws = 4000, verbose = F)
 rmu_mirt_eap_full <- RIreliability50(eRm::raschdat1[,1:20], draws = 4000, estim = "EAP", verbose = F)
 
@@ -860,7 +899,6 @@ brms8000 <- map_dfr(1:50, ~ RMUreliability(posterior_draws_rm8000)[1:3]) %>%
 ```
 
 ```{r}
-#| code-fold: true
 data.frame(Metric = c("RMU brms 8000","RMU brms 4000","WLE-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (TAM)","EAP (TAM)","PSI (eRm)","WLE empirical (mirt)","EAP empirical (mirt)","Alpha","Omega"),
            Estimate = c("0.750, 95% HDCI [0.678, 0.818]",
                         "0.750, 95% HDCI [0.679, 0.818]",
@@ -882,12 +920,13 @@ data.frame(Metric = c("RMU brms 8000","RMU brms 4000","WLE-RMU PV 4000 (mirt)","
 
 For this example, the `eRm::pcmdat2` dataset is used. It has 4 items with 3 response categories each, and 300 respondents. It might not be an optimal dataset to use since item 3 is a bit overfit to the PCM.
 
-### Bayesian
+### Bayesian model
 
 To fit a PCM with `brms`, we need `family = "acat"`, which defaults to use logit link. 
 
 ```{r}
 #| eval: false
+#| code-fold: show
 df2 <- pcmdat2 %>%
   mutate(across(everything(), ~ .x + 1)) %>% # lowest category needs to be 1, unlike most Rasch packages that use 0
   rownames_to_column("id") %>%
@@ -942,7 +981,6 @@ RIrelRep(eRm::pcmdat2, rel = "omega")$plot
 ### Summary table
 
 ```{r}
-#| code-fold: true
 #| eval: false
 brms4000pcm <- map_dfr(1:50, ~ RMUreliability(posterior_draws_pcm)[1:3]) %>% 
   summarise(rmu_estimate = mean(rmu_estimate),
@@ -960,7 +998,6 @@ rmu_tam_eap4000 <- RIreliability50(eRm::pcmdat2, draws = 4000, pv = "TAM", verbo
 ```
 
 ```{r}
-#| code-fold: true
 data.frame(Metric = c("RMU brms 4000","WLE-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (mirt)","EAP-RMU PV 4000 (TAM)","EAP","WLE empirical (mirt)","EAP empirical (mirt)","PSI","Alpha","Omega"),
            Estimate = c("0.672, 95% HDCI [0.615, 0.729]",
                         "0.671, 95% HDCI [0.618, 0.721]",
@@ -976,7 +1013,10 @@ data.frame(Metric = c("RMU brms 4000","WLE-RMU PV 4000 (mirt)","EAP-RMU PV 4000 
   knitr::kable()
 ```
 
+## Session info
+
 ```{r}
 sessionInfo()
 ```
 
+## References
