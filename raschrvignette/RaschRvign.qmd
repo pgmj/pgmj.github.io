@@ -38,9 +38,10 @@ If you are new to Rasch Measurement Theory, you may find this intro presentation
 
 This vignette will walk through a sample analysis using an open dataset with polytomous questionnaire data. This will include some data wrangling to structure the item data and itemlabels, then provide examples of the different functions. The full source code of this document can be found either [in this repository](https://github.com/pgmj/pgmj.github.io/blob/main/raschrvignette/RaschRvign.qmd) or by clicking on **\</\> CODE** at the top of this page. You should be able to use the source code "as is" and reproduce this document locally, as long as you have the required packages installed. This page and this website are built using the open source publishing tool [Quarto](https://www.quarto.org).
 
-One of the aims with this package is to simplify reproducible psychometric analysis to shed light on the measurement properties of a scale, questionnaire or test. In a paper recently made available as a preprint [@johansson], our [research group](https://www.ri.se/en/what-we-do/projects/center-for-categorically-based-measurements) propose that the basic aspects of a psychometric analysis should include information about:
+One of the aims with this package is to simplify reproducible psychometric analysis to shed light on the measurement properties of a scale, questionnaire or test. In line with others [@kreiner_validity_2007;@christensen_rasch_2013], I propose that the basic aspects of a psychometric analysis should include information about:
 
--   Unidimensionality
+-   Unidimensionality (for each subscale, if there are multiple)
+-   Local independence of items
 -   Response categories
 -   Invariance
 -   Targeting
@@ -260,7 +261,7 @@ First, we visualize the proportion of missing data on item level.
 RImissing(df)
 ```
 
-No missing data in this dataset. If we had missing data, we could also use `RImissingP()` to look at which respondents have missing data and how much. Just to show what the output of these functions looks like, we'll use `mice::ampute()` to temporarily remove 15% of data.
+No missing data in this dataset. If we had missing data, we could also use `RImissingP()` to look at which respondents have missing data and how much. Just to show what the output of these functions looks like, we'll use `mice::ampute()` to temporarily remove 10% of data.
 
 ```{r}
 RImissing(mice::ampute(df, prop = 0.1)$amp)
@@ -276,7 +277,7 @@ This provides us with an overall picture of the data distribution. As a bonus, a
 RIallresp(df)
 ```
 
-Most R packages for Rasch analysis require the lowest response category to be zero, which makes it necessary for us to recode our data, from using the range of 1-5 to 0-4.
+Most R packages for Rasch analysis require the lowest response category to be coded as zero, which makes it necessary for us to recode our data, from the range of 1-5 to 0-4.
 
 ```{r}
 
@@ -354,11 +355,12 @@ RIitemcols(df)
 
 ## Rasch analysis 1 {#sec-rasch}
 
-The eRm package and Conditional Maximum Likelihood (CML) estimation will be used primarily, with the Partial Credit Model since this is polytomous data.
+The eRm package and Conditional Maximum Likelihood (CML) estimation will be used primarily, with the Partial Credit Model since this is polytomous data. For more information about different estimation methods, see [@robitzsch_comprehensive_2021].
 
-This is also where the [five basic psychometric aspects](https://doi.org/10.31219/osf.io/3htzc) are good to recall.
+This is also where the basic psychometric aspects are good to recall.
 
--   Unidimensionality & local independence
+-   Unidimensionality 
+-   Local independence
 -   Ordering of response categories
 -   Invariance
 -   Targeting
@@ -508,31 +510,31 @@ item_obsexp(PCM(df500))
 ```
 
 
-### Local dependence (Q^3^)
+### Local dependence (Q~3~)
 
 In order to support unidimensionality, items should only be related to each other through the latent variable, and otherwise be independent of each other. This is called "local independence" when fulfilled and "local dependence" (LD) when there are issues. The extreme case of dependence is when all respondents give the same response for two items. Two aspects of LD are often described [@chen_local_1997]:
 
 1. Underlying local dependence (ULD), which is when the locally dependent items are measuring a different latent variable than the other items.
 2. Surface local dependence (SLD), when item content is very similar.
 
-By investigating patterns in model residuals, we can determine whether items are independent or not. There are several tests that can be used to assess LD, of which Yen's Q^3^ generally has good properties. Please see [@edwards_diagnostic_2018] for an overview of different methods. It is recommended to use multiple methods, since they may perform differently with different types of LD. For instance, Chen & Thissen [-@chen_local_1997] report that G^2^ is slightly more powerful than Yen's Q^3^ in detecting SLD, while the reverse is true for ULD.
+By investigating patterns in model residuals, we can determine whether items are independent or not. There are several tests that can be used to assess LD, of which Yen's Q~3~ generally has good properties. Please see [@edwards_diagnostic_2018] for an overview of different methods. It is recommended to use multiple methods, since they may perform differently with different types of LD. For instance, Chen & Thissen [-@chen_local_1997] report that G^2^ is slightly more powerful than Yen's Q~3~ in detecting SLD, while the reverse is true for ULD.
 
 Similarly to item fit, we need to run simulations based on the observed data to get a useful cutoff threshold value for when residual correlations amongst item pairs are larger than would be expected from items that fit a unidimensional Rasch model [@christensen2017].
 
-The simulation/bootstrap procedure can take some time to run, depending on the complexity of your data, but it is necessary to set the appropriate cutoff value. The number of iterations to use has yet to be systematically evaluated, but I recommend no less than 500, and ideally at least 1000 as a starting point. T
+The simulation/bootstrap procedure can take some time to run, depending on the complexity of your data, but it is necessary to set the appropriate cutoff value. The number of iterations to use has yet to be systematically evaluated, but I recommend no less than 500, and at least 1000 as a starting point.
 
 ```{r}
 simcor1 <- RIgetResidCor(df, iterations = 500, cpu = 8)
 RIresidcorr(df, cutoff = simcor1$p995)
 ```
 
-The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations crossing the threshold compared to the average item-pair correlation (for all item-pairs) [@christensen2017]. The threshold used in the example above has selected the 99.5th percentile from the simulations. The `simcor1` object also pre-calculates values for the 95th, 99th and 99.9th percentiles as well as the maximum. If you desire another percentile, you can manually calculate it from the results in the `simcor1` object using `quantile()`.
+The matrix above shows item-pair correlations of item residuals, with highlights in red showing correlations crossing the threshold compared to the average item-pair correlation (for all item-pairs) [@christensen2017]. The threshold used in the example above has selected the 99.5th percentile from the simulations. The `simcor1` object also pre-calculates values for the 95th, 99th, 99.5th and 99.9th percentiles as well as the maximum. If you desire another percentile, you can manually calculate it from the results in the `simcor1` object using `quantile()`.
 
-Rasch model residual correlations  using Yen's Q^3^ are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
+Rasch model residual correlations using Yen's Q~3~ are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
 
 ### Local dependence (G^2^)
 
-Rasch model residual correlations  using Chen & Thissen's G^2^ are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
+Rasch model residual correlations using Chen & Thissen's G^2^ are calculated using the [mirt](https://cran.r-project.org/web/packages/mirt/index.html) package.
 
 ```{r}
 simcor_g2 <- RIgetResidCorG2(df, iterations = 500, cpu = 8)
@@ -1236,7 +1238,7 @@ library(grateful)
 pkgs <- cite_packages(cite.tidyverse = TRUE, 
                       output = "table",
                       bib.file = "grateful-refs.bib",
-                      include.RStudio = TRUE,
+                      include.RStudio = FALSE,
                       out.dir = getwd())
 # If kbl() is used to generate this table, the references will not be added to the Reference list.
 formattable(pkgs, 
@@ -1251,6 +1253,7 @@ Thanks to my [colleagues at RISE](https://www.ri.se/en/what-we-do/projects/cente
 
 ```{r}
 sessionInfo()
+
 ```
 
 
