@@ -3,8 +3,8 @@ title: "easyRasch vignette"
 subtitle: "R package for Rasch analysis"
 author: 
   name: 'Magnus Johansson'
-  affiliation: 'RISE Research Institutes of Sweden'
-  affiliation-url: 'https://www.ri.se/en/person/magnus-p-johansson'
+  affiliation: 'Karolinska Institutet'
+  affiliation-url: 'https://ki.se/en/people/magnus-johansson-3'
   orcid: '0000-0003-1669-592X'
 date: last-modified
 google-scholar: true
@@ -26,9 +26,15 @@ editor_options:
 
 This is an introduction to using the [`easyRasch` R package](https://pgmj.github.io/easyRasch/). A changelog for package updates is available [here](https://pgmj.github.io/easyRasch/news/index.html).
 
+::: {.callout-important icon="true"}
+## Note
+**MacOS 26.1+ known issue**: Users need to add this code to their scripts before loading easyRasch: `options(rgl.useNULL = TRUE)`.
+More details available here: <https://stackoverflow.com/a/66127391>
+:::
+
 ::: {.callout-note icon="true"}
 ## Note
-This packages was previously known as `RISEkbmRasch`.
+This package was previously known as `RISEkbmRasch`.
 :::
 
 Details on package installation are available at the [package GitHub page](https://pgmj.github.io/easyRasch).
@@ -1081,6 +1087,11 @@ RIpfit(df, group = dif$Sex, output = "heatmap")
 Person fit is a useful way to identify respondents with unexpected response patterns and investigate this further.
 
 ### `PerFit` sample code
+
+::: {.callout-note icon="true"}
+## Note
+Since `easyRasch` 0.4.2.3, there is a new function: [`RIu3poly()`](https://pgmj.github.io/easyRasch/reference/RIu3poly.html). It will be added to the vignette later.
+:::
 
 While none of the functions in the `PerFit` package has been implemented in `easyRasch`, this is some code to get you started if you are interested in using it. There are multiple methods/functions available for polytomous and dichotomous data, see the package [documentation](https://www.rdocumentation.org/packages/PerFit/versions/1.4.6/topics/PerFit-package).
 

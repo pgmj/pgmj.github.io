@@ -14,7 +14,7 @@ website:
   announcement: 
     icon: info-circle
     dismissable: true
-    content: "**Note:** easyRasch has new functions, check <https://pgmj.github.io/easyRasch/news/index.html>"
+    content: "**Note:** MacOS users may need to run `options(rgl.useNULL = TRUE)` before loading easyRasch"    
     type: primary
     position: below-navbar
   navbar: 

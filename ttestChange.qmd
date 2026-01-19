@@ -338,6 +338,8 @@ m2 <- glmmTMB(erm_thetas ~ time * tx + (1 | id),
 
 AIC(m1,m2)
 glmmTMB::family_params(m2)
+DHARMa::simulateResiduals(m2, plot = T)
+
 
 comp <- avg_comparisons(m2, variables = list(time = c(1,3)), by = "tx") 
 comp
