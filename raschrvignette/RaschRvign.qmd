@@ -26,9 +26,18 @@ editor_options:
 
 This is an introduction to using the [`easyRasch` R package](https://pgmj.github.io/easyRasch/). A changelog for package updates is available [here](https://pgmj.github.io/easyRasch/news/index.html).
 
+I have also created a package for Bayesian Rasch models, based on the 
+[`brms`](https://paulbuerkner.com/brms/) package and several of the functions showcased in this vignette.
+You can find [`easyRaschBayes`](https://pgmj.github.io/easyRaschBayes/index.html) on 
+[CRAN](https://cloud.r-project.org/web/packages/easyRaschBayes/index.html).
+
+If you find this package and/or vignette helpful, consider buying me a coffee?
+<a href="https://www.buymeacoffee.com/pgmj" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+
+
 ::: {.callout-important icon="true"}
 ## Note
-**MacOS 26.1+ known issue**: Users need to add this code to their scripts before loading easyRasch: `options(rgl.useNULL = TRUE)`.
+**MacOS 26.1+ known issue**: Upgrade package `vcdExtra` to version 0.9.3, or add this code to your easyRasch scripts before loading package `iarm`: `options(rgl.useNULL = TRUE)`.
 More details available here: <https://stackoverflow.com/a/66127391>
 :::
 
@@ -1119,6 +1128,15 @@ flagged.resp(pfit_u3poly) %>%
 :::
 
 The dataframe shown under the tab `Flagged respondents` above contains a variable named `FlaggedID` which represents the row id's. This variable is useful if one wants to filter out respondents with deviant response patterns (person misfit). There are indications that persons with misfit may affect results of Andersen's LR-test for DIF [@artner_simulation_2016].
+
+#### U3 poly considerations
+
+It should be noted that `U3poly()` sometimes produces inconsistent results upon rerunning the same model, especially if you let it estimate the item and person parameters. For this reason, I have created a wrapper function that runs 100 iterations and returns the median percentage of misfitting individuals. You can review the code using `View(RIu3poly)` to see what the wrapper function is doing.
+
+```{r}
+RIu3poly(df500)
+```
+
 
 ### Item fit without aberrant responses
 

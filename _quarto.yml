@@ -14,7 +14,7 @@ website:
   announcement: 
     icon: info-circle
     dismissable: true
-    content: "**Note:** MacOS users may need to run `options(rgl.useNULL = TRUE)` before loading easyRasch"    
+    content: "**Note:** MacOS users should upgrade package `vcdExtra` to avoid error messages"    
     type: primary
     position: below-navbar
   navbar: 
