@@ -1,0 +1,533 @@
+---
+title: "Rasch analysis with Bayesian and frequentist methods"
+subtitle: "A comparison using NHANES data for PHQ-9"
+author:
+  name: 'Magnus Johansson'
+  affiliation: 'Karolinska Institutet'
+  orcid: '0000-0003-1669-592X'
+  email: 'magnus.johansson.3@ki.se'
+  degrees: PhD
+  url: https://ki.se/personer/magnus-johansson-3
+date: 2026-03-31
+date-format: iso
+date-modified: last-modified
+google-scholar: true
+toc: true
+number-sections: true
+syntax-highlighting: github
+toc-depth: 4
+citation:
+  type: 'webpage'
+format: 
+  html:
+    code-fold: false
+execute: 
+  cache: true
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+bibliography: rasch_bayes_comp.bib
+---
+
+```{r}
+library(easyRasch) # only available on github
+library(iarm)
+library(eRm)
+library(mirt)
+library(tidyverse)
+library(brms)
+library(loo)
+options(mc.cores = 8)
+set.seed(92756246)
+library(priorsense)
+library(tidybayes)
+library(easyRaschBayes)
+library(haven)
+select <- dplyr::select
+count <- dplyr::count
+rename <- dplyr::rename
+```
+
+## Introduction
+
+This is an example Rasch analysis using frequentist methods and their Bayesian counterparts, as implemented in the `easyRaschBayes` R package. The frequentist methods are used through the `easyRasch` package, which is mostly a wrapper package except for some [bootstrap/simulation functions](https://pgmj.github.io/simcutoffs.html) [see also @johansson_detecting_2025]. As such, the sections above will highlight which R package contains the frequentist function. For a more extensive discussion on the metrics and their interpretation, see the [`easyRasch` vignette](https://pgmj.github.io/raschrvignette/RaschRvign.html).
+
+## Importing data
+
+Data files manually downloaded from [September 2024 NHANES data website](https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Questionnaire&CycleBeginYear=2024). As the dataset is quite large with 6337 observations, we will select a subsample of n = 750 with complete responses to all 9 items of the PHQ-9 and a reasonable amount (10%) of respondents with all zeroes.
+
+```{r}
+#| eval: false
+d_all <- read_xpt("data/DPQ_L_2024_nhanes.xpt")
+
+d_sub <- d_all[2:10] %>% 
+  mutate(across(everything(), ~ car::recode(.x, "4:9=NA"))) %>% #only responses 0-3 are valid
+  na.omit() %>% 
+  set_names(paste0("q",1:9)) %>% 
+  mutate(sumscore = rowSums(.))
+
+d_sub %>% 
+  summarise(mean(sumscore == 0)) # 24.3%
+
+d_zero <- d_sub %>% 
+  filter(sumscore == 0) %>% 
+  slice_sample(n = 75)
+
+d <- d_sub %>% 
+  filter(sumscore > 0) %>% 
+  slice_sample(n = 675) %>% 
+  bind_rows(d_zero) %>% 
+  select(!sumscore)
+
+saveRDS(d, "data/phq9_nhanes2024_subsample.rds")
+```
+
+```{r}
+d <- readRDS("data/phq9_nhanes2024_subsample.rds")
+head(d)
+```
+
+All PHQ-9 questions/items are introduced with the phrase
+
+> Over the last 2 weeks, how often have you been bothered by the following problems
+
+All items have the same ordinal response categories:
+
+- "Not at all"
+- "Several days"
+- "More than half the days"
+- "Nearly every day"
+
+We'll set up vectors for item and response category labels for later use in plots, etc.
+
+```{r}
+item_desc <- c(
+  "Little interest or pleasure in doing things",
+  "Feeling down, depressed, or hopeless",
+  "Trouble falling or staying asleep, or sleeping too much",
+  "Feeling tired or having little energy", "Poor appetite or overeating",
+  "Feeling bad about yourself - or that you are a failure or have let yourself or your family down",
+  "Trouble concentrating on things, such as reading the newspaper or watching television",
+  "Moving or speaking so slowly that other people could have noticed?",
+  "Thoughts that you would be better off dead or of hurting yourself in some way"
+)
+
+item_resp <- c("Not at all","Several days","More than \nhalf the days","Nearly every day")
+```
+
+
+## Response distributions
+
+Using functions from `easyRaschBayes` with the wide format dataset.
+
+::: panel-tabset
+### Bars
+```{r}
+#| fig-height: 8
+plot_bars(d, text_y = 10, category_labels = item_resp)
+```
+
+### Stacked bars
+```{r}
+#| fig-height: 8
+plot_stackedbars(d, text_size = 4.5, category_labels = item_resp) + 
+  theme_minimal(base_size = 14)
+```
+
+### Tile plot
+```{r}
+#| fig-height: 7
+plot_tile(d, category_labels = item_resp, 
+          item_labels = str_wrap(item_desc,24)) + 
+  theme_minimal(base_size = 13)
+```
+:::
+
+Low frequency use of upper categories of item 9, which is expected in this normal population sample, even if we manipulated the sampling a bit to minimize the floor effects.
+
+## Fit `brms` model
+
+For `brms`, we need data in long format and with the lowest category coded as 1.
+
+```{r}
+dl <- d %>% 
+  mutate(across(everything(), ~ .x + 1)) %>% 
+  rownames_to_column("id") %>% 
+  pivot_longer(!id, 
+               names_to = "item", 
+               values_to = "response")
+```
+
+Now we can fit a Rasch partial credit model (PCM) with a weakly informative prior.
+
+```{r}
+#| eval: false
+
+prior_pcm <- prior(normal(0, 3), class = "Intercept") +
+  prior(normal(0, 3), class = "sd", group = "id")
+
+fit <- brm( 
+  response | thres(gr = item) ~ 1 + (1 | id),
+  data   = dl,
+  family = acat("logit"),
+  prior = prior_pcm,
+  chains = 4,
+  cores  = 4, 
+  iter   = 4000,
+  warmup = 1500,
+  save_pars = save_pars(all = TRUE)
+)
+
+saveRDS(fit,"data/phq9fit.rds")
+```
+
+The model took about 175s to fit on my Macbook Pro with M4 Max chip.
+
+```{r}
+fit <- readRDS("data/phq9fit.rds")
+```
+
+## `brms` model fit
+
+First, we'll run some basic diagnostics for the model.
+
+```{r}
+summary(fit) # review Rhat and ESS metrics
+fit <- add_criterion(fit, criterion = "loo")
+powerscale_sensitivity(fit, get_variables(fit)[1:28])
+```
+
+There are some posterior predictive checks that could be run as well, using `pp_check()`. [A recent preprint](https://www.journalovi.org/2025-sailynoja-visual-predictive-checks/#sec-visual-predictive-checks-for-ordinal-data) has some pp-checks that seem highly relevant but AFAIK has not been implemented in the `bayesplot` package yet. The same paper also critiques the usefulness of `pp_check(type = "bars")` [@sailynoja_recommendations_2025].
+
+## Rasch analysis
+
+For this example, I have opted to use 2000 draws available from the `brmsfit` object. It takes quite a bit of time to extract and compute a large number of draws for the various functions. I would suggest to use 1000 draws for a casual first analysis, and probably 4000+ for a publication ready analysis. This is just based on small scale experimenting, so feel free to run a simulation study if you want hard evidence, or rely on Kruschke's recommendation to have an ESS (effective sample size) of at least 10 000 draws [@kruschke_rejecting_2018] to be on the safe side.
+
+### Conditional item infit
+
+See Müller [-@muller_item_2020] and Johansson [-@johansson_detecting_2025] for more details on this metric and particularly Müller on why the traditional unconditional item fit should not be used with sample sizes above 200. The `easyRasch` package uses parametric bootstrap to determine adaptive cutoff values for every item.
+
+The Bayesian model doesn't need bootstrap, since we can get expected and observed values directly from the model fit object.
+
+::: panel-tabset
+#### iarm/eRm
+```{r}
+simfit <- RIgetfit(d, iterations = 400, cpu = 8)
+RIitemfit(d, simfit)
+RIgetfitPlot(simfit, d)
+```
+
+Item 2 is strongly overfit.
+- 2: "Feeling down, depressed, or hopeless"
+
+Item 3 is strongly underfit, and item 5 is borderline underfit.
+- 3: "Trouble falling or staying asleep, or sleeping too much"
+- 5: "Poor appetite or overeating"
+
+The two psychosomatic symptoms (item 3 and 5) deviate from other items, likely due to multidimensionality, while item 2 is a very general statement that is strongly related to the latent construct.
+
+#### Bayes
+```{r}
+inf1 <- infit_statistic(fit, ndraws_use = 2000)
+inf1post <- infit_post(inf1)
+inf1post$summary
+inf1post$hdi
+inf1post$plot
+```
+
+Based on ppp-values:
+
+- item 2 is overfit
+- item 3, 5, and 8 are underfit
+  - 8: "Moving or speaking so slowly that other people could have noticed?"
+  
+:::
+
+### Item-restscore
+
+Using Goodman-Kruskal's gamma [@kreiner_note_2011].
+
+::: panel-tabset
+#### iarm
+```{r}
+RIrestscore(d)
+```
+
+- Items 2, 6 and 9 are overfit
+- Item 3 is underfit.
+  - 3: "Trouble falling or staying asleep, or sleeping too much"
+  
+#### Bayes
+```{r}
+irest1 <- item_restscore_statistic(fit, ndraws_use = 2000)
+irest1post <- item_restscore_post(irest1)
+irest1post$summary
+irest1post$plot
+```
+
+Since the observed item-restscore is non-parametric, there is no posterior
+distribution, only a point estimate.
+
+Based on ppp-values:
+
+- items 2, 6 and 9 are overfit
+- items 3 and 5 underfit
+  - 3: "Trouble falling or staying asleep, or sleeping too much"
+  - 5: "Poor appetite or overeating"
+:::
+
+### Posterior Predictive Item Fit
+
+Based on code in Bürkner [-@burknerAnalysingStandardProgressive2020] and adapted for polytomous data.
+
+```{r}
+# Categorical log-likelihood criterion (for polytomous models)
+ll_categorical <- function(y, p) log(p)
+
+ll_fit <- fit_statistic_pcm(fit, 
+                  criterion = ll_categorical, 
+                  ndraws_use = 1000,
+                  group = item)
+
+# Summarise: posterior predictive p-values per item
+ll_fit %>%
+  group_by(item) %>%
+  summarise(
+    observed   = mean(crit),
+    replicated = mean(crit_rep),
+    ppp        = mean(crit_rep > crit)
+  )
+
+# Use ggplot2 to make a histogram
+ll_fit %>%
+  ggplot(aes(crit_diff)) +
+  geom_histogram(aes(fill = ifelse(crit_diff > 0, "above","below"))) +
+  facet_wrap("item") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+Based on ppp:
+
+- item 2 is overfit
+- item 3 is underfit, maybe also item 5
+
+### Conditional ICC
+
+::: panel-tabset
+#### iarm
+```{r}
+RIciccPlot(d)
+```
+
+#### Bayes
+```{r}
+plot_icc(fit)
+
+```
+The theta values are off in the 0.2.0 CRAN version, this is fixed in the GitHub development version 0.2.0.1.
+:::
+
+
+### Local dependency
+
+Using Yen's Q3 statistic [@christensen_critical_2017], again with parametric bootstrap to determine a critical value.
+
+::: panel-tabset
+#### mirt
+```{r}
+simcor <- RIgetResidCor(d, iterations = 1000, cpu = 8)
+RIresidcorr(d, simcor$p99)
+```
+
+Based on 1000 simulations and the 99th percentile as a cutoff.
+
+Correlated item pairs, sorted on strongest correlations
+
+- 1 & 2
+  - 1: "Little interest or pleasure in doing things"
+  - 2: "Feeling down, depressed, or hopeless"
+- 2 & 6
+  - 6: "Feeling bad about yourself - or that you are a failure or have let yourself or your family down"
+- 6 & 9
+  - 9: "Thoughts that you would be better off dead or of hurting yourself in some way"
+
+#### Bayes
+```{r}
+q3_1 <- q3_statistic(fit, ndraws_use = 2000)
+q3_1post <- q3_post(q3_1, n_pairs = 8)
+q3_1post$summary %>% head(8)
+q3_1post$hdi %>% head(8)
+```
+
+Item pairs most strongly correlated:
+
+- 2 & 6
+- 1 & 2
+- 6 & 9
+
+A bit less strong but still likely too much:
+
+- 2 & 9
+- 1 & 6
+
+These seem to be clustered together.
+
+```{r}
+#| fig-height: 7
+q3_1post$plot
+```
+:::
+
+
+### PCA of residuals
+
+This is primarily a way to evaluate patterns in the standardized model residuals.
+
+::: panel-tabset
+#### Bayes
+```{r}
+#| cache.lazy: false
+pca1 <- plot_residual_pca(fit, ndraws_use = 2000)
+pca1
+```
+
+#### eRm/stats
+```{r}
+RIpcmPCA(d, rotation = "none")
+simpca <- RIbootPCA(d, iterations = 500, cpu = 8)
+simpca$p95
+simpca$p99
+
+RIloadLoc(d) +
+  coord_flip()
+```
+
+:::
+
+### Response category probabilities
+
+A.k.a. Item Probability Functions
+
+::: panel-tabset
+#### mirt
+```{r}
+mirt(d, model=1, itemtype='Rasch', verbose = FALSE) %>% 
+  plot(type="trace", as.table = TRUE, 
+       theta_lim = c(-3,5))
+```
+#### Bayes
+```{r}
+plot_ipf(fit, theta_range = c(-3,5),
+         category_labels = item_resp,
+         ribbon_alpha = 0.25)
+```
+:::
+
+### Targeting
+
+::: panel-tabset
+#### eRm
+```{r}
+RItargeting(d, fast_thetas = T, 
+            xlim = c(-5,3))
+```
+#### Bayes
+```{r}
+plot_targeting(fit)
+```
+:::
+
+### DIF
+
+For the case of demonstration, we'll generate a random "gender" variable.
+
+```{r}
+#| eval: false
+d2 <- d %>% 
+  mutate(gender = factor(sample(c("M", "F"), n(), TRUE)))
+
+dl2 <- d2 %>% 
+  mutate(across(where(is.numeric), ~ .x + 1)) %>% 
+  rownames_to_column("id") %>% 
+  pivot_longer(!c(id,gender), 
+               names_to = "item", 
+               values_to = "response")
+saveRDS(list(d2,dl2), file = "data/phq9difdata.rds")
+```
+
+```{r}
+difdata <- readRDS("data/phq9difdata.rds")
+d2 <- difdata[[1]]
+dl2 <- difdata[[2]]
+```
+
+
+First, we need to check the response distribution for both gender categories.
+
+```{r}
+RIdifTileplot(d, d2$gender)
+```
+
+No empty cells, which is good, particularly in the lower categories.
+
+::: panel-tabset
+#### eRm table
+```{r}
+RIdifTableLR(d, dif.var = d2$gender)
+```
+#### eRm figure
+```{r}
+RIdifFigureLR(d, dif.var = d2$gender)
+```
+#### eRm threshold figure
+```{r}
+RIdifThreshFigLR(d, dif.var = d2$gender)
+```
+#### iarm CICC
+```{r}
+RIciccPlot(d, dif = "yes", dif_var = d2$gender)
+```
+
+#### Bayes CICC
+
+Does not require refitting the model.
+
+```{r}
+plot_icc(fit, 
+         dif_var = "gender", 
+         dif_data = dl2)
+```
+#### Bayes DIF
+
+This does require refitting the model with the DIF variable included, which will take quite a bit of time. I'll preload the one below, since it took almost 30 minutes on 4 cores.
+
+```{r}
+#| eval: false
+phq9_dif_gender <- dif_statistic(fit, group_var = "gender", data = dl2)
+saveRDS(phq9_dif_gender, "data/phq9_dif_gender_fit.rds")
+```
+
+You can also use `dif_statistic()` to just output a formula for `brms` and refit the model manually.
+
+```{r}
+dif_statistic(fit, group_var = "gender", data = dl2, refit = FALSE)
+```
+
+For polytomous models, it is often also of interest to review the potential effect of DIF on individual threshold locations, which can be done with `dif_type = "non-uniform"`.
+
+```{r}
+phq9_dif_gender <- readRDS("data/phq9_dif_gender_fit.rds")
+
+phq9_dif_gender$summary %>% 
+  knitr::kable()
+phq9_dif_gender$plot
+```
+:::
+
+## Summary
+
+These PHQ-9 data clearly have several significant psychometric weaknesses. Several items show strong misfit to the measurement model, residual correlations, and disordered item category threshold locations. A next step in the analysis process would be to remove one or two misfitting items, in this data items 3 (underfit) and 2 (overfit and having residual correlations), and run a new model. Since this is  intended primarily as a demonstration of the functions available in `easyRaschBayes`, I'll leave the continued analysis to the curious reader.
+
+
