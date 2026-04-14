@@ -14,7 +14,7 @@ website:
   announcement: 
     icon: info-circle
     dismissable: true
-    content: "**Note:** MacOS users should upgrade package `vcdExtra` to avoid error messages"    
+    content: "**Note:** MacOS users of `easyRasch` should upgrade package `vcdExtra` to avoid error messages from `iarm`"    
     type: primary
     position: below-navbar
   navbar: 
@@ -28,6 +28,7 @@ website:
       - about.qmd
       - text: "Blog"  
         menu:
+         - rasch_bayes_comp.qmd
          - reliability.qmd
          - parameterizedQ.qmd
          - latentResp/LatentResponse.qmd
