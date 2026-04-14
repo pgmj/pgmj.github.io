@@ -31,7 +31,7 @@ bibliography: rasch_bayes_comp.bib
 ---
 
 ```{r}
-library(easyRasch) # only available on github
+library(easyRasch) # only available on GitHub, "pgmj/easyRasch"
 library(iarm)
 library(eRm)
 library(mirt)
@@ -42,8 +42,9 @@ options(mc.cores = 8)
 set.seed(92756246)
 library(priorsense)
 library(tidybayes)
-library(easyRaschBayes)
+library(easyRaschBayes) # dev version 0.2.0.1
 library(haven)
+
 select <- dplyr::select
 count <- dplyr::count
 rename <- dplyr::rename
@@ -528,9 +529,11 @@ phq9_dif_gender$plot
 
 ## Summary
 
-These PHQ-9 data clearly have several significant psychometric weaknesses. Several items show strong misfit to the measurement model, residual correlations, and disordered item category threshold locations. A next step in the analysis process would be to remove one or two misfitting items, in this data items 3 (underfit) and 2 (overfit and having residual correlations), and run a new model. Since this is  intended primarily as a demonstration of the functions available in `easyRaschBayes`, I'll leave the continued analysis to the curious reader.
+These PHQ-9 data clearly show several significant psychometric weaknesses. Several items show strong misfit to the measurement model, residual correlations, and disordered item category threshold locations. A next step in the analysis process would be to remove one or two misfitting items, in this data items 3 (underfit) and 2 (overfit and having residual correlations), and run a new model. Since this is  intended primarily as a demonstration of the functions available in `easyRaschBayes`, I'll leave the continued analysis to the curious reader.
 
-However, there are some functions left to demonstrate that would normally only be applied when having arrived at a set of items with adequate psychometric properties. These include reliability and item and person parameters. For this last part, we'll use a model including only PHQ items 1, 4, 6, and 7, since these make up a relatively well-functioning item set regarding item fit and LD. Item threshold locations are not optimally separated, as will be shown.
+However, there are some functions left to demonstrate that would normally only be used when having arrived at a set of items with adequate psychometric properties. These include reliability and item and person parameters. 
+
+For this last part, we'll use a model including only PHQ items 1, 4, 6, and 7, since these make up a well-functioning item set regarding item fit and LD. Item threshold locations are not optimally separated, as will be shown after we look at the recently proposed reliability metric Relative Measurement Uncertainty [RMU, @bignardi_general_2025].
 
 ### Reliability
 
