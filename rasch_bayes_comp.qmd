@@ -44,6 +44,7 @@ library(priorsense)
 library(tidybayes)
 library(easyRaschBayes) # dev version 0.2.0.1
 library(haven)
+library(knitr)
 
 select <- dplyr::select
 count <- dplyr::count
@@ -507,24 +508,29 @@ This does require refitting the model with the DIF variable included, which will
 ```{r}
 #| eval: false
 phq9_dif_gender <- dif_statistic(fit, group_var = "gender", data = dl2)
+
 saveRDS(phq9_dif_gender, "data/phq9_dif_gender_fit.rds")
 ```
 
 You can also use `dif_statistic()` to just output a formula for `brms` and refit the model manually.
 
 ```{r}
-dif_statistic(fit, group_var = "gender", data = dl2, refit = FALSE)
+dif_statistic(fit, group_var = "gender", data = dl2, refit = FALSE)$dif_formula
 ```
 
-For polytomous models, it is often also of interest to review the potential effect of DIF on individual threshold locations, which can be done with `dif_type = "non-uniform"`.
+::: {.callout-note icon="true"}
+## Note
+For polytomous models, it is also of interest to review the potential effect of a DIF variable on individual threshold locations, which can be done with `dif_type = "non-uniform"`. This type of model needs to be fit using `dif_statistic()`, since it does some pre-processing under the hood.
+:::
 
 ```{r}
 phq9_dif_gender <- readRDS("data/phq9_dif_gender_fit.rds")
 
 phq9_dif_gender$summary %>% 
-  knitr::kable()
+  kable()
 phq9_dif_gender$plot
 ```
+
 :::
 
 ## Summary
@@ -587,7 +593,7 @@ RIitemparams(d[,c(1,4,6,7)])
 
 ### Person locations
 
-We get EAP, expected a-posteriori, from `brms`, but Weighted Likelihood Estimation [WLE, @warm_weighted_1989] is also available in the function output. WLE has been shown to have slightly less bias [see also @kreiner_specific_2025]. Note that the extreme values cannot be estimated using WLE, but are set at the `theta_range` boundaries. Standard errors of measurement is also included in the output object.
+We get EAP, expected a-posteriori, from `brms`, but Weighted Likelihood Estimation [WLE, @warm_weighted_1989] is also available in the function output. WLE has been shown to have slightly less bias [see also @kreiner_specific_2025]. Note that the extreme values cannot be estimated using WLE, but are set at the `theta_range` boundaries. Standard errors of measurement are also included in the output object.
 
 ```{r}
 personps <- person_parameters(fit_4item, theta_range = c(-4,4))
