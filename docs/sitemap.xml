@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://pgmj.github.io/raschrvignette/RaschRvign.html</loc>
-    <lastmod>2026-01-19T12:05:46.848Z</lastmod>
+    <lastmod>2026-03-25T10:00:55.498Z</lastmod>
   </url>
   <url>
     <loc>https://pgmj.github.io/powerviz.html</loc>
@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://pgmj.github.io/about.html</loc>
-    <lastmod>2025-02-05T15:09:09.249Z</lastmod>
+    <lastmod>2026-04-14T13:49:34.128Z</lastmod>
   </url>
   <url>
     <loc>https://pgmj.github.io/index.html</loc>
@@ -55,5 +55,9 @@
   <url>
     <loc>https://pgmj.github.io/reliability.html</loc>
     <lastmod>2025-10-24T17:01:20.686Z</lastmod>
+  </url>
+  <url>
+    <loc>https://pgmj.github.io/rasch_bayes_comp.html</loc>
+    <lastmod>2026-04-14T13:32:03.805Z</lastmod>
   </url>
 </urlset>
