@@ -198,7 +198,7 @@ fit <- add_criterion(fit, criterion = "loo")
 powerscale_sensitivity(fit, get_variables(fit)[1:28])
 ```
 
-There are some posterior predictive checks that could be run as well, using `pp_check()`. [A recent preprint](https://www.journalovi.org/2025-sailynoja-visual-predictive-checks/#sec-visual-predictive-checks-for-ordinal-data) has some pp-checks that seem highly relevant but AFAIK has not been implemented in the `bayesplot` package yet. The same paper also critiques the usefulness of `pp_check(type = "bars")` [@sailynoja_recommendations_2025].
+There are additional posterior predictive checks that could be run as well, using `pp_check()`. [A recent preprint](https://www.journalovi.org/2025-sailynoja-visual-predictive-checks/#sec-visual-predictive-checks-for-ordinal-data) presents some new types of pp-checks that seem highly relevant but AFAIK has not been implemented in the `bayesplot` package yet. The same paper also critiques the usefulness of `pp_check(type = "bars_grouped")` [@sailynoja_recommendations_2025].
 
 ## Rasch analysis
 
@@ -530,4 +530,91 @@ phq9_dif_gender$plot
 
 These PHQ-9 data clearly have several significant psychometric weaknesses. Several items show strong misfit to the measurement model, residual correlations, and disordered item category threshold locations. A next step in the analysis process would be to remove one or two misfitting items, in this data items 3 (underfit) and 2 (overfit and having residual correlations), and run a new model. Since this is  intended primarily as a demonstration of the functions available in `easyRaschBayes`, I'll leave the continued analysis to the curious reader.
 
+However, there are some functions left to demonstrate that would normally only be applied when having arrived at a set of items with adequate psychometric properties. These include reliability and item and person parameters. For this last part, we'll use a model including only PHQ items 1, 4, 6, and 7, since these make up a relatively well-functioning item set regarding item fit and LD. Item threshold locations are not optimally separated, as will be shown.
 
+### Reliability
+
+First, we refit the model, modified to include only four items.
+
+```{r}
+#| eval: false
+dl2 <- dl %>% 
+  filter(item %in% paste0("q",c(1,4,6,7)))
+fit_4item <- update(fit, newdata = dl2)
+saveRDS(fit_4item,"data/phq9fit4items.rds")
+```
+
+Next, the draws of person parameters are extracted from the model.
+
+```{r}
+fit_4item <- readRDS("data/phq9fit4items.rds")
+
+posterior_draws = fit_4item %>%
+  as_draws_df() %>%
+  as_tibble() %>% 
+  select(starts_with("r_id")) %>%
+  t()
+
+RMUreliability(posterior_draws)
+```
+
+### Item category probabilities
+
+```{r}
+plot_ipf(fit_4item)
+itemps <- item_parameters(fit_4item)
+itemps$threshold_order
+```
+
+::: panel-tabset
+### Item locations (brms)
+
+```{r}
+itemps$locations_wide %>% 
+  arrange(item) %>% 
+  kable()
+```
+
+### Item locations (eRm)
+
+```{r}
+RIitemparams(d[,c(1,4,6,7)])
+```
+:::
+
+### Person locations
+
+We get EAP, expected a-posteriori, from `brms`, but Weighted Likelihood Estimation [WLE, @warm_weighted_1989] is also available in the function output. WLE has been shown to have slightly less bias [see also @kreiner_specific_2025]. Note that the extreme values cannot be estimated using WLE, but are set at the `theta_range` boundaries. Standard errors of measurement is also included in the output object.
+
+```{r}
+personps <- person_parameters(fit_4item, theta_range = c(-4,4))
+hist(personps$person_estimates$eap, breaks = 20)
+hist(personps$person_estimates$wle, breaks = 20)
+cor.test(personps$person_estimates$eap,
+         personps$person_estimates$wle)
+```
+
+For comparison, here are the WLE person parameters from `eRm`.
+
+```{r}
+eRm_ppar <- RIestThetas(d[,c(1,4,6,7)])
+hist(eRm_ppar$WLE, breaks = 20)
+```
+
+### Transformation table
+
+When data fits the Rasch model, the ordinal sum score is a sufficient statistic for the latent variable. However, the ordinal sum score is not an interval scale variable and it is likely beneficial to transform the sum score to EAP or WLE prior to further statistical analysis.
+
+::: panel-tabset
+#### Bayes
+```{r}
+personps$score_table %>% 
+  kable()
+```
+#### eRm/WLE
+```{r}
+RIscoreSE(d[,c(1,4,6,7)], output = "table")
+```
+:::
+
+## References
